@@ -36,11 +36,12 @@ function addUser(name, lastname, email, password, salt, role) {
   });
 }
 
+
 //update role
-function updateUserRole(id, role) {
+function updateUserRole(email, role) {
   return new Promise((resolve, reject) => {
-    const sql = 'UPDATE USERS SET Role = ? where Id = ?';
-    db.run(sql, role, id, (err) => {
+    const sql = 'UPDATE USERS SET role = ? where email = ?';
+    db.run(sql, role, email, (err) => {
       if (err)
         reject(err);
       else
@@ -49,10 +50,11 @@ function updateUserRole(id, role) {
   });
 }
 
-function deleteUser(id) {
+
+function deleteUser(email) {
   return new Promise((resolve, reject) => {
-    const query = 'DELETE FROM USERS WHERE Id = ?';
-    db.run(query, id, (err) => {
+    const query = 'DELETE FROM USERS WHERE email = ?';
+    db.run(query, email, (err) => {
       if (err) {
         reject(err);
       } else
@@ -60,12 +62,12 @@ function deleteUser(id) {
     });
   });
 };
+/*************HIKES CRUD************/
 
-/*************SERVICES CRUD************/
 
-function readServices() {
+function readHikes() {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM SERVICES';
+    const sql = 'SELECT * FROM HIKES';
     db.all(sql, (err, rows) => {
       if (err) {
         reject(err);
@@ -76,10 +78,10 @@ function readServices() {
   });
 }
 
-function addService(service) {
+function addHikes(hikes) {
   return new Promise((resolve, reject) => {
-    const sql = 'INSERT INTO SERVICES (ServiceName, AverageTime) VALUES(?,?)';
-    db.run(sql, service.name, service.averageTime, (err, rows) => {
+    const sql = 'INSERT INTO HIKES (title, length, expected_time, ascent, difficulty, start_point, end_point, reference_point, description) VALUES(?,?,?,?,?,?,?,?,?)';
+    db.run(sql, hikes.title, hikes.length, hikes.expected_time, hikes.ascent, hikes.difficulty, hikes.start_point, hikes.end_point, hikes.reference_point, hikes.description, (err, rows) => {
       if (err) {
         reject(err);
       } else {
@@ -89,9 +91,9 @@ function addService(service) {
   });
 }
 
-function updateServiceName(oldName, newName) {
+function updateHikesTitle(oldName, newName) {
   return new Promise((resolve, reject) => {
-    const sql = 'UPDATE SERVICES SET ServiceName = ? where ServiceName = ?';
+    const sql = 'UPDATE HIKES SET title = ? where title = ?';
     db.run(sql, newName, oldName, (err) => {
       if (err)
         reject(err);
@@ -101,10 +103,10 @@ function updateServiceName(oldName, newName) {
   });
 }
 
-function updateServiceTime(name, time) {
+function updateHikesLength(title, length) {
   return new Promise((resolve, reject) => {
-    const sql = 'UPDATE SERVICES SET AverageTime = ? where ServiceName = ?';
-    db.run(sql, time, name, (err) => {
+    const sql = 'UPDATE HIKES SET length = ? where title = ?';
+    db.run(sql, length, title, (err) => {
       if(err)
         reject(err);
       else 
@@ -112,11 +114,87 @@ function updateServiceTime(name, time) {
     });
   });
 }
-
-function deleteService(name) {
+function updateHikesET(title, expected_time) {
   return new Promise((resolve, reject) => {
-    const query = 'DELETE FROM SERVICES WHERE ServiceName = ?';
-    db.run(query, name, (err) => {
+    const sql = 'UPDATE HIKES SET expected_time = ? where title = ?';
+    db.run(sql, expected_time, title, (err) => {
+      if(err)
+        reject(err);
+      else 
+        resolve(true);
+    });
+  });
+}
+function updateHikesAscent(title, ascent) {
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE HIKES SET ascent = ? where title = ?';
+    db.run(sql, ascent, title, (err) => {
+      if(err)
+        reject(err);
+      else 
+        resolve(true);
+    });
+  });
+}
+function updateHikesDifficulty(title, difficulty) {
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE HIKES SET difficulty = ? where title = ?';
+    db.run(sql, difficulty, title, (err) => {
+      if(err)
+        reject(err);
+      else 
+        resolve(true);
+    });
+  });
+}
+function updateHikesStartPoint(title, start_point) {
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE HIKES SET start_point = ? where title = ?';
+    db.run(sql, start_point, title, (err) => {
+      if(err)
+        reject(err);
+      else 
+        resolve(true);
+    });
+  });
+}
+function updateHikesEndPoint(title, end_point) {
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE HIKES SET end_point = ? where title = ?';
+    db.run(sql, end_point, title, (err) => {
+      if(err)
+        reject(err);
+      else 
+        resolve(true);
+    });
+  });
+}
+function updateHikesRefPoint(title, reference_point) {
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE HIKES SET reference_point = ? where title = ?';
+    db.run(sql, reference_point, title, (err) => {
+      if(err)
+        reject(err);
+      else 
+        resolve(true);
+    });
+  });
+}
+function updateHikesDescription(title, description) {
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE HIKES SET description = ? where title = ?';
+    db.run(sql, description, title, (err) => {
+      if(err)
+        reject(err);
+      else 
+        resolve(true);
+    });
+  });
+}
+function deleteHikes(title) {
+  return new Promise((resolve, reject) => {
+    const query = 'DELETE FROM SERVICES WHERE title = ?';
+    db.run(query, title, (err) => {
       if (err) {
         reject(err);
       } else
@@ -126,7 +204,7 @@ function deleteService(name) {
 };
 
 /*************COUNTERS CRUD************/
-
+/*
 function readCounters() {
   return new Promise((resolve, reject) => {
     const sql = 'SELECT * FROM Counters ';
@@ -166,7 +244,7 @@ function deleteCounter(id) {
 
 
 /*************QUEUES FUNCTIONS************/
-
+/*
 function readTicketsToBeServed() {
   return new Promise((resolve, reject) => {
     const sql = 'SELECT * FROM Queues WHERE IsCalled = 0 ORDER BY IdTicket';  // IsCalled = 0 -> not served
@@ -206,7 +284,7 @@ function ticketServed(IdTicket) {
 
 
 /**************COUNTERS_SERVICES FUNCTIONS ****************/
-
+/*
 function getCounterByService(serviceName) {
   return new Promise((resolve, reject) => {
     const sql = 'SELECT IdCounter FROM Counters_Services WHERE ServiceName = ?';
@@ -288,7 +366,7 @@ function countServicesForEachCounter() {
 }
 
 /*************SERVICES DATA FUNCTIONS************/
-
+/*
 function countServedTicket() {
   return new Promise((resolve, reject) => {
     const sql = 'SELECT COUNT(*) FROM Service_Data WHERE IsServed=1';
@@ -407,13 +485,9 @@ function numberOfServicesByDay() {
     });
   });
 }
+*/
 
-
-module.exports = {
-  readUsers, addUser, updateUserRole, deleteUser, readServices, addService, updateServiceName, deleteService,
-  readTicketsToBeServed, addCounter, deleteCounter, readCounters, getCounterByService, getServiceByCounter,
-  addServiceToCounter, removeServiceFromCounter, ticketServed, updateServiceTime, newTicket,
-  countCountersForEachService, countServicesForEachCounter, countServedTicket, countAbsentTicket,
-  numberOfTicketByHour, numberOfTicketByDay, numberOfTicketByMonth, numberOfTicketByHourAndService, numberOfTicketByDayAndService, numberOfTicketByMonthAndService,
-  numberOfServicesByDay
+module.exports = { readUsers, addUser, deleteUser, readHikes, addHikes, deleteHikes,
+  updateHikesAscent, updateHikesLength, updateHikesDescription, updateHikesDifficulty, 
+  updateHikesET, updateHikesStartPoint, updateHikesEndPoint, updateHikesRefPoint
 };

@@ -19,7 +19,7 @@ exports.getUserByEmail = (email) => {
       else {
         // by default, the local strategy looks for "username": 
         // not to create confusion in server.js, we can create an object with that property
-        const user = { username: row.email, name: row.name, lastname: row.lastname, role: row.role }
+        const user = { username: row.email, name: row.name, lastname: row.lastname, role: row.role, phone_number: row.phone_number }
         resolve(user);
       }
     });
@@ -41,7 +41,7 @@ exports.getUser = (email, password) => {
         resolve(false);
       }
       else {
-        const user = { username: row.email, name: row.name, lastname: row.lastname, role: row.role }; //NOTA BENE-->QUI NON DOBBIAMO METTERE LA PASSWORD!!-->vedi dopo perchè dobbiamo salvarla come HASH
+        const user = { username: row.email, name: row.name, lastname: row.lastname, role: row.role, phone_number: row.phone_number }; //NOTA BENE-->QUI NON DOBBIAMO METTERE LA PASSWORD!!-->vedi dopo perchè dobbiamo salvarla come HASH
         console.log(user)
         console.log(row.salt)
         //4.2 STEP PASSPORT-->HASHING PASSWORD
