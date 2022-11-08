@@ -8,7 +8,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 
 import { DefaultLayout, LoginLayout, AdminLayout, OfficerLayout } from './components/PageLayout';
 import { Navigation } from './components/Navigation';
-import { ServicesContainer } from './components/serviceCards';
+import { LocalGuide_Home } from './components/localGuide_view';
 
 import MessageContext from './messageCtx';
 import API from './API';
@@ -28,7 +28,7 @@ function App() {
       <MessageContext.Provider value={{handleErrors}}>
         <Container fluid className="App">
           <Routes>
-            <Route path="/*" element={<Main />} />
+            <Route path="/*" element={<Main /> /*<LocalGuide_Home/>*/} />
           </Routes>
           <Toast show={message !== ''} onClose={() => setMessage('')} delay={4000} autohide>
             <Toast.Body>{message}</Toast.Body>
@@ -105,7 +105,7 @@ function Main() {
           loggedIn && currentU.role=='Admin' ? <AdminLayout/> :
          <DefaultLayout />
       } >
-      </Route>
+    </Route>
       <Route path="/login" element={!loggedIn ?  <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} /> 
             
     </Routes>

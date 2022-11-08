@@ -3,11 +3,8 @@ import { Row, Col, Button, Container } from 'react-bootstrap';
 import { Link, useParams, useLocation, Outlet } from 'react-router-dom';
 
 import { LoginForm } from './Auth';
-import { ServicesContainer } from './serviceCards';
-import {Admin} from './admin'
 import MessageContext from '../messageCtx';
 import API from '../API';
-import { Officer } from './officer';
 
 /**
  * Except when we are waiting for the data from the server, this layout is always rendered.
@@ -61,7 +58,6 @@ function DefaultLayout(props) {
     <Container className = "mt-5 pt-5">
       <Row className='justify-content-md-center'>
         <Col md="auto" bg="light" >
-          <ServicesContainer services={services} takeTicket={takeTicket} queues={getQueues}/>
         </Col>
       </Row>
     </Container>
@@ -79,7 +75,6 @@ function AdminLayout(props){
   <Container className = "mt-5 pt-5">
     <Row className="vh-100">
       <Col md={12} className="below-nav">
-        <Admin/>
       </Col>
     </Row>
   </Container>  
@@ -97,7 +92,6 @@ function OfficerLayout(props){
     <Container className = "mt-5 pt-5">
       <Row className='justify-content-md-center'>
         <Col md="auto" bg="light" >
-          <Officer userName={props.userName}/>
         </Col>
       </Row>
     </Container>
