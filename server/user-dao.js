@@ -4,14 +4,14 @@ const sqlite = require('sqlite3');
 const crypto = require('crypto');
 
 // open database
-const db = new sqlite.Database('oqm.db', (err) => {
+const db = new sqlite.Database('hikeTracker.db', (err) => {
   if (err) throw err;
 });
 
-exports.getUserById = (id) => {
+exports.getUserByEmail = (email) => {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM USERS WHERE id = ?';
-    db.get(sql, [id], (err, row) => {
+    const sql = 'SELECT * FROM USERS WHERE email = ?';
+    db.get(sql, [email], (err, row) => {
       if (err)
         reject(err);
       else if (row === undefined)
@@ -19,7 +19,7 @@ exports.getUserById = (id) => {
       else {
         // by default, the local strategy looks for "username": 
         // not to create confusion in server.js, we can create an object with that property
-        const user = { id: row.id, username: row.email, name: row.name }
+        const user = { username: row.email, name: row.name, lastname: row.lastname, role: row.role }
         resolve(user);
       }
     });
@@ -29,7 +29,7 @@ exports.getUserById = (id) => {
 //4.1 STEP PASSPORT-->Check credentials and HASHING PASSWORD with Node's crypto modules
 exports.getUser = (email, password) => {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM USERS WHERE Email = ?';
+    const sql = 'SELECT * FROM USERS WHERE email = ?';
 
     db.get(sql, [email], (err, row) => {
 
@@ -41,7 +41,7 @@ exports.getUser = (email, password) => {
         resolve(false);
       }
       else {
-        const user = { id: row.Id, username: row.Email, name: row.Name, role: row.Role }; //NOTA BENE-->QUI NON DOBBIAMO METTERE LA PASSWORD!!-->vedi dopo perchè dobbiamo salvarla come HASH
+        const user = { username: row.email, name: row.name, surname: row.surname, role: row.role }; //NOTA BENE-->QUI NON DOBBIAMO METTERE LA PASSWORD!!-->vedi dopo perchè dobbiamo salvarla come HASH
         console.log(user)
         console.log(row.salt)
         //4.2 STEP PASSPORT-->HASHING PASSWORD
