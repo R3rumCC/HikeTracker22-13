@@ -311,11 +311,40 @@ function updatePointType(oldIdPoint, type) {
   });
 }
 
+/*************OTHER FUNCTIONS************/
+
+function readPointsByHike(hike) {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT * FROM HIKEPOINT HP POINTS P WHERE P.idPoint=HP.idPoint AND titleHike = ?';
+    db.all(sql, hike.title, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
+function readHikesByPoint(point) {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT * FROM HIKEPOINT HP HIKES H WHERE H.title=HP.title AND idPoint = ?';
+    db.all(sql, point.idPoint, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
 module.exports = {
   readUsers, addUser, deleteUser, updateUserRole,
   readHikes, addHike, deleteHike, updateHike, updateHikeTitle,
   updateHikeAscent, updateHikeLength, updateHikeDescription, updateHikeDifficulty,
   updateHikeET, updateHikeStartPoint, updateHikeEndPoint, updateHikeRefPoint,
   readPoints, addPoint, updatePoint, deletePoint,
-  updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType
+  updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType,
+  readPointsByHike, readHikesByPoint
 };

@@ -3,6 +3,10 @@ import { Row, Col, Button, Container } from 'react-bootstrap';
 import { Link, useParams, useLocation, Outlet } from 'react-router-dom';
 
 import { LoginForm } from './Auth';
+<<<<<<< HEAD
+=======
+import { ServicesContainer } from './serviceCards';
+>>>>>>> 4fe4348769e2cba5c15404f5076a5c74762697d4
 import MessageContext from '../messageCtx';
 import API from '../API';
 
@@ -16,8 +20,7 @@ import API from '../API';
 function DefaultLayout(props) {
 
   const [services, setServices] = useState([]);
-
-  const {handleErrors} = useContext(MessageContext);
+  const { handleErrors } = useContext(MessageContext);
 
   useEffect(() => {
     async function fetchServices() {
@@ -27,37 +30,19 @@ function DefaultLayout(props) {
       } catch (error) {
         handleErrors(error);
       }
-      
+
     }
     fetchServices();
   }, []);
 
-  async function takeTicket(service){
-    if (typeof service === 'string') {
-      try {
-        const tId = await API.takeTicket(service)
-        console.log(tId)
-      } catch (error) {
-        handleErrors(error)
-      }
-    } else {
-      handleErrors({error:"Service must be a valid string"})
-    }
-  }
-
-  async function getQueues(){
-    try {
-      const queues = await API.readQueues();
-      console.log(queues);
-    } catch (e){
-      handleErrors(e);
-    }
-  }
-
   return (
-    <Container className = "mt-5 pt-5">
+    <Container className="mt-5 pt-5">
       <Row className='justify-content-md-center'>
         <Col md="auto" bg="light" >
+<<<<<<< HEAD
+=======
+          <ServicesContainer services={services} takeTicket={takeTicket} queues={getQueues} />
+>>>>>>> 4fe4348769e2cba5c15404f5076a5c74762697d4
         </Col>
       </Row>
     </Container>
@@ -66,6 +51,7 @@ function DefaultLayout(props) {
   )
 }
 
+<<<<<<< HEAD
 
 //ADMIN LAYOUT
 function AdminLayout(props){
@@ -99,6 +85,8 @@ function OfficerLayout(props){
   )
 
 }
+=======
+>>>>>>> 4fe4348769e2cba5c15404f5076a5c74762697d4
 /*
 function MainLayout(props) {
 
@@ -243,4 +231,4 @@ function LoginLayout(props) {
 }
 */
 //export { DefaultLayout, AddLayout, EditLayout, NotFoundLayout, LoginLayout, MainLayout, LoadingLayout };
-export { LoginLayout, DefaultLayout, AdminLayout, OfficerLayout };
+export { LoginLayout, DefaultLayout };

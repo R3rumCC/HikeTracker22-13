@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { Form, Button, Alert, Col, Row } from 'react-bootstrap';
-import {useLocation, useNavigate} from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 function LoginForm(props) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const [show, setShow] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const location = useLocation();
@@ -21,28 +20,31 @@ function LoginForm(props) {
     event.preventDefault();
     const credentials = { username, password };
 
+    if (username.trim() === '') {
+      setErrorMessage('Email cannot be empty.');
+      return;
+    }
+    if (password === '') {                              //password can be formed by only spaces 
+      setErrorMessage('Password cannot be empty.');
+      return;
+    }
     props.login(credentials)
-      .then( () => navigate( oldPath ) )
-      .catch((err) => { 
-        console.log(err)
-        setErrorMessage(err.error); setShow(true); 
-      });
-      
+      .then(() => navigate(oldPath));
+
   };
 
   return (
     <Row className="vh-100 justify-content-md-center">
-    <Col md={4} >
-    <h1 className="pb-5">Login</h1>
-
-      <Form  onSubmit={handleSubmit}>
-          <Alert
-            dismissible
-            show={show}
-            onClose={() => setShow(false)}
-            variant="danger">
+      <Col md={4} >
+        <h1 className="pb-5">Login</h1>
+        {errorMessage ? (
+          <Alert variant="danger" onClose={() => setErrorMessage("")} dismissible>
             {errorMessage}
           </Alert>
+        ) : (
+          false
+        )}
+        <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3" controlId="username">
             <Form.Label>Email</Form.Label>
             <Form.Control
@@ -58,27 +60,28 @@ function LoginForm(props) {
               type="password"
               value={password} placeholder="Enter the password."
               onChange={(ev) => setPassword(ev.target.value)}
-              required={true} minLength={6}
+              required={true} //minLength={6}
             />
           </Form.Group>
           <Button className="mt-3" type="submit">Login</Button>
-      </Form>
+          <Button className="mt-3" onClick={() => navigate(oldPath)}>Cancel</Button>
+        </Form>
       </Col>
-      </Row>
-
+    </Row>
   )
 };
 
 function LogoutButton(props) {
   return (
-        <Button variant="outline-light" floating='right' onClick={props.logout}>Logout</Button>
+    <Button variant="outline-light" floating='right' onClick={props.logout}>Logout</Button>
   )
 }
+
 function LoginButton() {
   const navigate = useNavigate();
   return (
-        <Button variant="outline-light" floating='right' onClick={()=> navigate('/login')}>Login</Button>
-        
+    <Button variant="outline-light" floating='right' onClick={() => navigate('/login')}>Login</Button>
+
   )
 }
 
