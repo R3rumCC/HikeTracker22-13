@@ -4,10 +4,8 @@ import { Link, useParams, useLocation, Outlet } from 'react-router-dom';
 
 import { LoginForm } from './Auth';
 import { ServicesContainer } from './serviceCards';
-import {Admin} from './admin'
 import MessageContext from '../messageCtx';
 import API from '../API';
-import { Officer } from './officer';
 
 /**
  * Except when we are waiting for the data from the server, this layout is always rendered.
@@ -19,8 +17,7 @@ import { Officer } from './officer';
 function DefaultLayout(props) {
 
   const [services, setServices] = useState([]);
-
-  const {handleErrors} = useContext(MessageContext);
+  const { handleErrors } = useContext(MessageContext);
 
   useEffect(() => {
     async function fetchServices() {
@@ -30,38 +27,16 @@ function DefaultLayout(props) {
       } catch (error) {
         handleErrors(error);
       }
-      
+
     }
     fetchServices();
   }, []);
 
-  async function takeTicket(service){
-    if (typeof service === 'string') {
-      try {
-        const tId = await API.takeTicket(service)
-        console.log(tId)
-      } catch (error) {
-        handleErrors(error)
-      }
-    } else {
-      handleErrors({error:"Service must be a valid string"})
-    }
-  }
-
-  async function getQueues(){
-    try {
-      const queues = await API.readQueues();
-      console.log(queues);
-    } catch (e){
-      handleErrors(e);
-    }
-  }
-
   return (
-    <Container className = "mt-5 pt-5">
+    <Container className="mt-5 pt-5">
       <Row className='justify-content-md-center'>
         <Col md="auto" bg="light" >
-          <ServicesContainer services={services} takeTicket={takeTicket} queues={getQueues}/>
+          <ServicesContainer services={services} takeTicket={takeTicket} queues={getQueues} />
         </Col>
       </Row>
     </Container>
@@ -70,41 +45,6 @@ function DefaultLayout(props) {
   )
 }
 
-
-//ADMIN LAYOUT
-function AdminLayout(props){
-
-  return (
-  
-  <Container className = "mt-5 pt-5">
-    <Row className="vh-100">
-      <Col md={12} className="below-nav">
-        <Admin/>
-      </Col>
-    </Row>
-  </Container>  
-  )
-  
-}
-
-//OFFICIER LAYOUT
-function OfficerLayout(props){
-  //implements function here if needed
-  const [ticketList, setTicketList]= useState({})     //? correct approach?
-  
-
-  return (
-    <Container className = "mt-5 pt-5">
-      <Row className='justify-content-md-center'>
-        <Col md="auto" bg="light" >
-          <Officer userName={props.userName}/>
-        </Col>
-      </Row>
-    </Container>
-
-  )
-
-}
 /*
 function MainLayout(props) {
 
@@ -249,4 +189,4 @@ function LoginLayout(props) {
 }
 */
 //export { DefaultLayout, AddLayout, EditLayout, NotFoundLayout, LoginLayout, MainLayout, LoadingLayout };
-export { LoginLayout, DefaultLayout, AdminLayout, OfficerLayout };
+export { LoginLayout, DefaultLayout };
