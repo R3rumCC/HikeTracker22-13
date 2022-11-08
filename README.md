@@ -1,15 +1,15 @@
-# OfficeQueueManagement22-13
+# HikeTracker22-13
 
 Technology used: Javascript - React
 
 ## DB Documentation 
 The tables present in the DB are the following:
 
-### Counters
+### Hikes
 The list of the counters available in the office
 - Id: Primary key identifying the counters of the office
 
-### Services
+### Points
 The list of the services available in the office
 - ServiceName: Primary key identifying a type of service
 - AverageTime: The average time needed to deliver the associated service
@@ -23,27 +23,6 @@ The list of the users, their credentials and their roles
 - Role: The role of the user
 - Password: The hashed password of the user
 - Salt: The salt used in the encryption process
-
-### Counters_Services
-Association table that links counters with the services they provide
-- IdCounter: The Id of a counter
-- ServiceName: The name of the service provided
-
-Both these fields are primary key
-
-### Queues
-Table that saves all the tickets of the day, both served and not, for synchronization purposes
-- IdTicket: Primary key identifying a single ticket, of type XYY, where X is a letter identifying a type service and YY are numbers
-- IsCalled: Boolean specifying whether a ticket has already been called or not 
-
-### Service_Data
-Table that saves each time a service is delivered and by who
-- ServiceName: The name of the service delivered
-- User: The email of the user that delivered the service
-- DateTime: The time at which the service was delivered
-- IsServed: Boolean specifying whether the ticket called was served or absent
-
-The first three fields are primary key
 
 ## Dao Documentation
 

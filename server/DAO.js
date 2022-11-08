@@ -3,7 +3,7 @@
 const sqlite = require('sqlite3');
 //const { Resolver } = require('dns/promises');
 
-const db = new sqlite.Database('oqm.db', (err) => {
+const db = new sqlite.Database('hikeTracker.db', (err) => {
   if (err) {
     throw err;
   }
@@ -25,7 +25,7 @@ function readUsers() {
 
 function addUser(name, lastname, email, password, salt, role) {
   return new Promise((resolve, reject) => {
-    const sql = 'INSERT INTO USERS (Name, Lastname, Email, Password, Salt, Role) VALUES(?,?,?,?,?,?)';
+    const sql = 'INSERT INTO USERS (email, password, role, name, lastname, salt) VALUES(?,?,?,?,?,?)';
     db.run(sql, name, lastname, email, password, salt, role, (err, rows) => {
       if (err) {
         reject(err);
