@@ -8,10 +8,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import { DefaultLayout, LoginLayout, AdminLayout, OfficerLayout } from './components/PageLayout';
 import { Navigation } from './components/Navigation';
-<<<<<<< HEAD
 import { LocalGuide_Home } from './components/localGuide_view';
-=======
->>>>>>> 4fe4348769e2cba5c15404f5076a5c74762697d4
 
 import MessageContext from './messageCtx';
 import API from './API';
@@ -99,41 +96,20 @@ function Main() {
 
   return (
     <>
-<<<<<<< HEAD
-
-    <Navigation logout={handleLogout} user={currentU} loggedIn={loggedIn} />
-
-    <Routes>
-      <Route path="/" element={
-        //DO NOT IMPLEMENTS ROUTES HERE, IN PageLayout.js THERE IS A LAYOUT PER EACH USER, 
-        //USE THAT ONE TO IMPLEMENT FUNCTIONS
-        //JUST PASS THE PROPS IF NEEDED HERE.
-          loggedIn && currentU.role=='Officer' ? <OfficerLayout userName={currentU.name}/> :
-          loggedIn && currentU.role=='Admin' ? <AdminLayout/> :
-         <DefaultLayout />
-      } >
-    </Route>
-      <Route path="/login" element={!loggedIn ?  <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} /> 
-            
-    </Routes>
-  </>
-
-=======
       <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} />
       <Routes>
         <Route path="/" element={
           //DO NOT IMPLEMENTS ROUTES HERE, IN PageLayout.js THERE IS A LAYOUT PER EACH USER, 
           //USE THAT ONE TO IMPLEMENT FUNCTIONS
           //JUST PASS THE PROPS IF NEEDED HERE.
-          loggedIn && currentUser.role == 'Hiker' ? <HikerLayout userName={currentUser.name} /> :
-            loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuideLayout /> :
+          // loggedIn && currentUser.role == 'Hiker' ? <HikerLayout userName={currentUser.name} /> :
+          //   loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuideLayout /> :
               <DefaultLayout />
         } >
         </Route>
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
       </Routes>
     </>
->>>>>>> 4fe4348769e2cba5c15404f5076a5c74762697d4
   );
 }
 
