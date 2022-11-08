@@ -41,7 +41,7 @@ exports.getUser = (email, password) => {
         resolve(false);
       }
       else {
-        const user = { username: row.email, name: row.name, surname: row.surname, role: row.role }; //NOTA BENE-->QUI NON DOBBIAMO METTERE LA PASSWORD!!-->vedi dopo perchè dobbiamo salvarla come HASH
+        const user = { username: row.email, name: row.name, lastname: row.lastname, role: row.role }; //NOTA BENE-->QUI NON DOBBIAMO METTERE LA PASSWORD!!-->vedi dopo perchè dobbiamo salvarla come HASH
         console.log(user)
         console.log(row.salt)
         //4.2 STEP PASSPORT-->HASHING PASSWORD
