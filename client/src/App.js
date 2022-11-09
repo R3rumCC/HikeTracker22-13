@@ -28,7 +28,7 @@ function App() {
       <MessageContext.Provider value={{ handleErrors }}>
         <Container fluid className="App">
           <Routes>
-            <Route path="/*" element={<Main /> /*<LocalGuide_Home/>*/} />
+            <Route path="/*" element={<Main />/*<LocalGuide_Home/>*/} />
           </Routes>
           <Toast show={message !== ''} onClose={() => setMessage('')} delay={4000} autohide>
             <Toast.Body>{message}</Toast.Body>
@@ -102,8 +102,8 @@ function Main() {
           //DO NOT IMPLEMENTS ROUTES HERE, IN PageLayout.js THERE IS A LAYOUT PER EACH USER, 
           //USE THAT ONE TO IMPLEMENT FUNCTIONS
           //JUST PASS THE PROPS IF NEEDED HERE.
-          // loggedIn && currentUser.role == 'Hiker' ? <HikerLayout userName={currentUser.name} /> :
-          //   loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuideLayout /> :
+          loggedIn && currentUser.role == 'Hiker' ? <HikerLayout userName={currentUser.name} /> :
+            loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home /> :
               <DefaultLayout />
         } >
         </Route>
