@@ -64,12 +64,61 @@ function deleteUser(email) {
 
 function readHikes() {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM HIKES';
-    db.all(sql, (err, rows) => {
+    const sql = `
+      SELECT title,
+        length,
+        expected_time,
+        ascent,
+        difficulty,
+        description,
+        SP.idPoint AS start_point_idPoint,
+        SP.address AS start_point_address,
+        SP.nameLocation AS start_point_nameLocation,
+        SP.gps_coordinates AS start_point_coordinates,
+        SP.type AS start_point_type,
+        EP.idPoint AS end_point_idPoint,
+        EP.address AS end_point_address,
+        EP.nameLocation AS end_point_nameLocation,
+        EP.gps_coordinates AS end_point_coordinates,
+        EP.type AS end_point_type
+      FROM Hikes
+      JOIN Points SP
+      ON Hikes.start_point = SP.idPoint
+      JOIN Points EP
+      ON Hikes.end_point = EP.idPoint
+      ;
+    `;
+    db.all(sql, (err, hikes) => {
       if (err) {
         reject(err);
       } else {
-        resolve(rows);
+        resolve(hikes)
+      }
+    });
+  });
+}
+
+function readReferencePoints(title) { // RP for a given hike
+  return new Promise((resolve, reject) => {
+    const sql = `
+    SELECT p.idPoint,
+      p.address,
+      p.nameLocation,
+      p.gps_coordinates,
+      p.type
+    FROM Hikes h
+    JOIN HikePoint hp
+    ON h.title = hp.ttitleHike
+    JOIN Points p
+    ON p.idPoint = hp.idPoint
+    WHERE h.title = ?
+      ;
+    `;
+    db.all(sql, [title], (err, rp) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rp)
       }
     });
   });
@@ -311,40 +360,11 @@ function updatePointType(oldIdPoint, type) {
   });
 }
 
-/*************OTHER FUNCTIONS************/
-
-function readPointsByHike(hike) {
-  return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM HIKEPOINT HP POINTS P WHERE P.idPoint=HP.idPoint AND titleHike = ?';
-    db.all(sql, hike.title, (err, rows) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(rows);
-      }
-    });
-  });
-}
-
-function readHikesByPoint(point) {
-  return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM HIKEPOINT HP HIKES H WHERE H.title=HP.title AND idPoint = ?';
-    db.all(sql, point.idPoint, (err, rows) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(rows);
-      }
-    });
-  });
-}
-
 module.exports = {
   readUsers, addUser, deleteUser, updateUserRole,
   readHikes, addHike, deleteHike, updateHike, updateHikeTitle,
   updateHikeAscent, updateHikeLength, updateHikeDescription, updateHikeDifficulty,
   updateHikeET, updateHikeStartPoint, updateHikeEndPoint, updateHikeRefPoint,
   readPoints, addPoint, updatePoint, deletePoint,
-  updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType,
-  readPointsByHike, readHikesByPoint
+  updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, readReferencePoints
 };

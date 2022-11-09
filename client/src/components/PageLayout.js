@@ -3,10 +3,7 @@ import { Row, Col, Button, Container } from 'react-bootstrap';
 import { Link, useParams, useLocation, Outlet } from 'react-router-dom';
 
 import { LoginForm } from './Auth';
-<<<<<<< HEAD
-=======
-import { ServicesContainer } from './serviceCards';
->>>>>>> 4fe4348769e2cba5c15404f5076a5c74762697d4
+import { HikesContainer } from './hikesCards';
 import MessageContext from '../messageCtx';
 import API from '../API';
 
@@ -19,30 +16,27 @@ import API from '../API';
 //SERVICE CARD LAYOUT FOR NO LOGGED USERS
 function DefaultLayout(props) {
 
-  const [services, setServices] = useState([]);
   const { handleErrors } = useContext(MessageContext);
+  const [hikes, setHikes] = useState([]);
+  const [currentHike, setCurrentHike] = useState({})
 
   useEffect(() => {
-    async function fetchServices() {
+    async function fetchHikes() {
       try {
-        const fetchedServices = await API.getServices();
-        setServices(fetchedServices);
+        const fetchedHikes = await API.getHikes();
+        setHikes(fetchedHikes);
       } catch (error) {
         handleErrors(error);
       }
-
     }
-    fetchServices();
+    fetchHikes();
   }, []);
 
   return (
     <Container className="mt-5 pt-5">
       <Row className='justify-content-md-center'>
         <Col md="auto" bg="light" >
-<<<<<<< HEAD
-=======
-          <ServicesContainer services={services} takeTicket={takeTicket} queues={getQueues} />
->>>>>>> 4fe4348769e2cba5c15404f5076a5c74762697d4
+          <HikesContainer hikes={hikes} setCurrentHike={setCurrentHike}/>
         </Col>
       </Row>
     </Container>
@@ -51,42 +45,6 @@ function DefaultLayout(props) {
   )
 }
 
-<<<<<<< HEAD
-
-//ADMIN LAYOUT
-function AdminLayout(props){
-
-  return (
-  
-  <Container className = "mt-5 pt-5">
-    <Row className="vh-100">
-      <Col md={12} className="below-nav">
-      </Col>
-    </Row>
-  </Container>  
-  )
-  
-}
-
-//OFFICIER LAYOUT
-function OfficerLayout(props){
-  //implements function here if needed
-  const [ticketList, setTicketList]= useState({})     //? correct approach?
-  
-
-  return (
-    <Container className = "mt-5 pt-5">
-      <Row className='justify-content-md-center'>
-        <Col md="auto" bg="light" >
-        </Col>
-      </Row>
-    </Container>
-
-  )
-
-}
-=======
->>>>>>> 4fe4348769e2cba5c15404f5076a5c74762697d4
 /*
 function MainLayout(props) {
 

@@ -68,43 +68,6 @@ const logOut = async () => {
 		return null;
 }
 
-/*************************SERVICES API**********************/
-
-async function getServices() {
-
-	return getJson(fetch('http://localhost:3001' + '/api/services', {
-		method: 'GET',
-		credentials: 'include',
-	})
-	)
-}
-
-/*************************TICKET API**********************/
-
-async function takeTicket(service) {
-	return getJson( fetch('http://localhost:3001' + '/api/Ticket/' + service, {
-		method: 'POST',
-		credentials: 'include',
-	})
-	)
-}
-
-async function takeTicketsToBeServed(){
-	const url = 'http://localhost:3001' + 'api/Ticket/list';
-	const response= await fetch(url);
-    if(response.ok) {
-      const tickets= await response.json();
-      return tickets;
-    }
-    else {
-      try {
-        const errDetail = await response.json();
-        throw errDetail.message;
-      }
-      catch(err) { throw err;}
-    }
-}
-
 /*************************ADMIN API**********************/
 
 async function getAllUsers() {
@@ -192,8 +155,10 @@ function addUser(user) {
   });
 }
 
-async function readQueues(){
-	const url = 'http://localhost:3001' + '/Queues';
+/*************************HIKES API**********************/
+
+async function getHikes(){
+	const url = 'http://localhost:3001' + '/api/getHikes';
 	try {
 		const response = await fetch(url, {
 			method: 'GET',
@@ -217,90 +182,8 @@ async function readQueues(){
 	}
 }
 
-
-/************************************************/
-
-/*************OBJECTS API****************/
-
-/*** API Structure left for reference
-//API: readRiddles--------------------------------------------------------
-async function readRiddles() {
-
-		const url = APIURL + '/riddles';
-		try {
-				const response = await fetch(url);
-				if (response.ok) {
-						// process the response
-						const list = await response.json();
-						const riddleList = list.map((r) => new Riddle(r.id, r.question, r.difficulty, r.duration, r.correct_answer, r.hint_1, r.hint_2, r.status_riddle, r.user_id));
-						return riddleList;
-				} else {
-						// application error (404, 500, ...)
-						console.log(response.statusText);
-						const text = await response.text();
-						throw new TypeError(text);
-				}
-		} catch (ex) {
-				// network error
-				console.log(ex);
-				throw ex;
-		}
-}
-
-//API:addRiddle function---------------------------------
-async function addRiddle(riddle_to_add) {
-		const url = APIURL + '/riddles/addRiddle';
-		try {
-				const response = await fetch(url, {
-						method: 'POST',
-						credentials: 'include',
-						body: JSON.stringify(riddle_to_add),
-						headers: {
-								'Content-Type': 'application/json'
-						}
-
-				});
-				if (response.ok) {
-						return true;
-				} else {
-						console.log(response.statusText);
-						const text = await response.text();
-						throw new TypeError(text);
-				}
-		} catch (ex) {
-				throw ex;
-		}
-}
-
-//API:updateRiddleStatus function--------------------
-async function updateRiddleStatus(id, status) {
-		const url = APIURL + `/riddles/updateRiddleStatus/${id}/${status}`;
-		try {
-				const response = await fetch(url, {
-						method: 'PUT',
-						credentials: 'include',
-						headers: {
-								'Content-Type': 'application/json'
-						}
-
-				});
-				if (response.ok) {
-						return true;
-				} else {
-						console.log(response.statusText);
-						const text = await response.text();
-						throw new TypeError(text);
-				}
-		} catch (ex) {
-				throw ex;
-		}
-}
-****/
-
-
 //EXPORT FUNCTIONS------------------------------
 const API = {
-	logIn, getUserInfo, logOut, getServices, takeTicket, takeTicketsToBeServed,
-	getAllUsers, deleteUser, updateUserRole, addUser, readQueues
+	logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, getHikes
 }
 export default API;
