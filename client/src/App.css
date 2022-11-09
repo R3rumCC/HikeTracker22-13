@@ -50,3 +50,8 @@
     }
 
 }
+
+.leaflet-container {
+    width: 80wh; 
+    height: 80vh;
+}

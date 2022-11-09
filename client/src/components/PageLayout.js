@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Row, Col, Button, Container } from 'react-bootstrap';
 import { Link, useParams, useLocation, Outlet } from 'react-router-dom';
-
+import { HikePage } from './hikePage'
 import { LoginForm } from './Auth';
 import { HikesContainer } from './hikesCards';
 import  FilterForm from './Filter';
@@ -19,7 +19,6 @@ function DefaultLayout(props) {
 
   const { handleErrors } = useContext(MessageContext);
   const [hikes, setHikes] = useState([]);
-  const [currentHike, setCurrentHike] = useState({})
   const [hidden, setHidden] = useState(true);
   const [filteredHikes, setFilteredHikes] = useState([])
   const [filtered, setFiltered] = useState(false)
@@ -52,7 +51,7 @@ function DefaultLayout(props) {
 
       </Row>
       <Row>
-        {hidden ? <HikesContainer hikes={!filtered ? hikes : filteredHikes} setCurrentHike={setCurrentHike}/> : null}
+        {hidden ? <HikesContainer hikes={!filtered ? hikes : filteredHikes} setCurrentHike={props.setCurrentHike}/> : null}
       </Row>
     </Container>
 
@@ -190,10 +189,10 @@ function LoginLayout(props) {
 //MAP LAYOUT
 function HikerLayout(props) {
   return (
-    <Row>
-      Hiker layout
+    <Row className="vh-200">
+        <HikePage currentHike={props.currentHike}></HikePage>
     </Row>
-  );
+  );  
 }
 
 /**

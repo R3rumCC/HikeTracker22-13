@@ -44,6 +44,8 @@ function Main() {
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
+  const [currentHike, setCurrentHike] = useState([])
+
 
   const { handleErrors } = useContext(MessageContext);
 
@@ -102,11 +104,12 @@ function Main() {
           //DO NOT IMPLEMENTS ROUTES HERE, IN PageLayout.js THERE IS A LAYOUT PER EACH USER, 
           //USE THAT ONE TO IMPLEMENT FUNCTIONS
           //JUST PASS THE PROPS IF NEEDED HERE.
-          loggedIn && currentUser.role == 'Hiker' ? <HikerLayout userName={currentUser.name} /> :
+          loggedIn && currentUser.role == 'Hiker' ? <HikerLayout userName={currentUser.name} currentHike={currentHike} /> :
             loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home /> :
-              <DefaultLayout />
+              <DefaultLayout setCurrentHike={setCurrentHike} />
         } >
         </Route>
+        <Route path="/Map" element={<HikerLayout currentHike={currentHike} />} />
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
       </Routes>
     </>

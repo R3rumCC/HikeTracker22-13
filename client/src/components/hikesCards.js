@@ -1,15 +1,6 @@
 import { Card, Button, Container, Row, ListGroup, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-function calcWait(tr, nr, ki, sir){
-
-    //Missing implementation of the calculation
-
-    return tr
-}
-
-
-
 function HikeCard(props) {
     return(
         <Card className ="text-center mr-1 my-1 " border="primary" style={{ width: '18rem' }}>
@@ -23,7 +14,7 @@ function HikeCard(props) {
                 <Card.Text>End Point: {props.hike.end_point_nameLocation}</Card.Text>
                 <ListGroup>Reference Points: {props.hike.reference_points.map((point)=>{return(<ListGroup.Item key={point.idPoint}>{point.nameLocation}</ListGroup.Item>)})}</ListGroup>
                 <Card.Text>Description: {props.hike.description}</Card.Text>
-                <Link to='/Map'><Button onClick={()=>{props.setCurrentHike(props.hike)}}>See on map</Button></Link>
+                <Link to='/Map'><Button onClick={()=>{props.setCurrentHike([props.hike])}}>See on map</Button></Link>
             </Card.Body>
         </Card>
     );
