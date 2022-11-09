@@ -1,4 +1,4 @@
-import { Card, Button, Container, Row, ListGroup } from "react-bootstrap";
+import { Card, Button, Container, Row, ListGroup, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 function calcWait(tr, nr, ki, sir){
@@ -12,9 +12,9 @@ function calcWait(tr, nr, ki, sir){
 
 function HikeCard(props) {
     return(
-        <Card style={{ width: '18rem' }}>
+        <Card className ="text-center mr-1 my-1 " border="primary" style={{ width: '18rem' }}>
+            <Card.Header as="h5">{props.hike.title}</Card.Header>
             <Card.Body>
-                <Card.Title>{props.hike.title}</Card.Title>
                 <Card.Text>Length: {props.hike.length}</Card.Text>
                 <Card.Text>Expected Time: {props.hike.expected_time}</Card.Text>
                 <Card.Text>Ascent: {props.hike.ascent}</Card.Text>
@@ -32,9 +32,9 @@ function HikeCard(props) {
 function HikesContainer(props){
     const hikes = props.hikes;
     return(
-        <Container>
+        <div className="d-flex justify-content-start flex-wrap">
             {hikes.map((hike) => {return(<HikeCard key={hike.title} hike={hike} setCurrentHike={props.setCurrentHike}/>)})}
-        </Container>
+        </div>
     );
 }
 

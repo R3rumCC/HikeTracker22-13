@@ -18,9 +18,13 @@ const LocalStrategy = require('passport-local');
 const session = require('express-session');
 
 const app = express();
+
 // set up the middlewares
 app.use(morgan('dev'));
 app.use(express.json());
+// app.use('/api',userRouter);
+app.use('/api', hikeRouter);
+
 //corsOptions
 const corsOptions = {
   origin: 'http://localhost:3000',
@@ -28,18 +32,14 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// app.use('/api',userRouter);
-app.use('/api', hikeRouter);
-
 //2 STEP PASSPORT-->Passport: set up local strategy-->TODO in USER-DAO
 passport.use(new LocalStrategy(async function verify(username, password, cb) {
   //4 STEP PASSPORT-->getUser in the verify method-->vedi come implemento "getUser" nel "userDao"
   const user = await userDao.getUser(username, password)
-  
+
   //4.4 STEP PASSPORT-->CALLBACK cb check if returned "user" is correct or not
   if (!user)
-    return cb(null, false, 'Incorrect username or password.');
-
+    return cb(null, false, 'Incorrect username and/or password.');
   return cb(null, user);
 }));
 
@@ -52,12 +52,17 @@ passport.deserializeUser(function (user, cb) {
   return cb(null, user);
 });
 
-const isLoggedIn = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  return res.status(401).json({ error: 'Not authorized because not logged in' });
-}
+/*
+// starting from the data in the session, we extract the current (logged-in) user
+passport.deserializeUser((id, done) => {
+  userDao.getUserById(id)
+    .then(user => {
+      done(null, user); // this will be available in req.user
+    }).catch(err => {
+      done(err, null);
+    });
+});
+*/
 
 //6 STEP EXPRESS-SESSION-->Express-session installed on Passport
 app.use(session({
@@ -67,6 +72,13 @@ app.use(session({
 }));
 //3/6.1 STEP PASSPORT/EXPRESS-->Install in our application the local strategy of Passport and Express-Session-->app.use(...)
 app.use(passport.authenticate('session'));
+
+const isLoggedIn = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  return res.status(401).json({ error: 'Not authorized because not logged in' });
+}
 
 
 //**************************************API***************/
@@ -124,31 +136,33 @@ app.put(PREFIX + '/riddles/updateRiddleStatus/:id/:status', isLoggedIn, async (r
 //----------------------------------------------------//
 */
 
-//SESSION
-app.post(PREFIX + '/sessions', function(req, res, next) {
+
+/**************** Users APIs ********************/
+
+//login
+app.post(PREFIX + '/sessions', function (req, res, next) {
   passport.authenticate('local', (err, user, info) => {
-  if (err)
-  return next(err);
-  if (!user) {
-    // display wrong login messages
-    return res.status(401).json({ error: info});
-  }
-  // success, perform the login and extablish a login session
-  req.login(user, (err) => {
     if (err)
       return next(err);
-    
-    // req.user contains the authenticated user, we send all the user info back
-    // this is coming from userDao.getUser() in LocalStratecy Verify Fn
-    return res.json(req.user); // WARN: returns 200 even if .status(200) is missing?
-  });
-})(req, res, next);
+    if (!user) {
+      // display wrong login messages
+      return res.status(401).json({ error: info });
+    }
+    // success, perform the login and extablish a login session
+    req.login(user, (err) => {
+      if (err)
+        return next(err);
+      // req.user contains the authenticated user, we send all the user info back
+      // this is coming from userDao.getUser() in LocalStratecy Verify Fn
+      return res.json(req.user);
+    });
+  })(req, res, next);
 });
 
-
+// check whether the user is logged in or not
 app.get(PREFIX + '/sessions/current', (req, res) => {
   if (req.isAuthenticated()) {
-    res.json(req.user);
+    res.status(200).json(req.user);
   }
   else
     res.status(401).json({ error: 'Not authenticated' });
@@ -157,7 +171,7 @@ app.get(PREFIX + '/sessions/current', (req, res) => {
 // DELETE /api/v0/session/current
 app.delete(PREFIX + '/sessions/current', (req, res) => {
   req.logout(() => {
-    res.end();
+    res.status(200).end();
   });
 });
 
