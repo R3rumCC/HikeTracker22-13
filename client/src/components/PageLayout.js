@@ -21,6 +21,8 @@ function DefaultLayout(props) {
   const [hikes, setHikes] = useState([]);
   const [currentHike, setCurrentHike] = useState({})
   const [hidden, setHidden] = useState(true);
+  const [filteredHikes, setFilteredHikes] = useState([])
+  const [filtered, setFiltered] = useState(false)
 
   useEffect(() => {
     async function fetchHikes() {
@@ -33,23 +35,24 @@ function DefaultLayout(props) {
     }
     fetchHikes();
   }, []);
-
+  
   return (
     <Container className='my-5'>
       <Row bg='white'>
         <Row >
           <Col>
             { <Button className='mt-5 mb-3'  onClick={()=>setHidden( s =>!s)}>Filter</Button> }
+            {filtered ? <Button className='mt-5 mb-3 ms-3'  onClick={()=>{setFiltered(false); setFilteredHikes([])}}>Clear</Button> : null }
           </Col>
 
         </Row>
         <Row>
-          {!hidden ? <FilterForm display='none' ></FilterForm> : null}
+          {!hidden ? <FilterForm hikes={hikes} setFiltered = {setFiltered} setFilteredHikes={setFilteredHikes} setHidden={setHidden} ></FilterForm> : null}
         </Row>
 
       </Row>
       <Row>
-        <HikesContainer hikes={hikes} setCurrentHike={setCurrentHike}/>
+        {hidden ? <HikesContainer hikes={!filtered ? hikes : filteredHikes} setCurrentHike={setCurrentHike}/> : null}
       </Row>
     </Container>
 
