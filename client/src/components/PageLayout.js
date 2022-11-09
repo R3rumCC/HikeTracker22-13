@@ -4,6 +4,7 @@ import { Link, useParams, useLocation, Outlet } from 'react-router-dom';
 
 import { LoginForm } from './Auth';
 import { HikesContainer } from './hikesCards';
+import  FilterForm from './Filter';
 import MessageContext from '../messageCtx';
 import API from '../API';
 
@@ -19,6 +20,7 @@ function DefaultLayout(props) {
   const { handleErrors } = useContext(MessageContext);
   const [hikes, setHikes] = useState([]);
   const [currentHike, setCurrentHike] = useState({})
+  const [hidden, setHidden] = useState(true);
 
   useEffect(() => {
     async function fetchHikes() {
@@ -33,11 +35,21 @@ function DefaultLayout(props) {
   }, []);
 
   return (
-    <Container className="mt-5 pt-5">
-      <Row className='justify-content-md-center'>
-        <Col md="auto" bg="light" >
-          <HikesContainer hikes={hikes} setCurrentHike={setCurrentHike}/>
-        </Col>
+    <Container className='my-5'>
+      <Row bg='white'>
+        <Row >
+          <Col>
+            { <Button className='mt-5 mb-3'  onClick={()=>setHidden( s =>!s)}>Filter</Button> }
+          </Col>
+
+        </Row>
+        <Row>
+          {!hidden ? <FilterForm display='none' ></FilterForm> : null}
+        </Row>
+
+      </Row>
+      <Row>
+        <HikesContainer hikes={hikes} setCurrentHike={setCurrentHike}/>
       </Row>
     </Container>
 
