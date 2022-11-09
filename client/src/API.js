@@ -158,8 +158,31 @@ async function getHikes(){
 	}
 }
 
+/*************************LOCAL GUIDE API**********************/
+
+function addNewHike(newHike) {
+	return new Promise((resolve, reject) => {
+	  fetch(URL + '/hike', {
+		method: 'POST',
+		credentials: 'include',
+		headers: {
+		  'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ newHike }),
+	  }).then((response) => {
+		if (response.ok) {
+		  resolve(null);
+		} else {
+		  response.json()
+			.then((obj) => { reject(obj); })
+			.catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+		}
+	  }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+	});
+  }
+
 //EXPORT FUNCTIONS------------------------------
 const API = {
-	logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, getHikes
+	logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, getHikes, addNewHike
 }
 export default API;
