@@ -23,7 +23,6 @@ const app = express();
 app.use(morgan('dev'));
 app.use(express.json());
 // app.use('/api',userRouter);
-app.use('/api', hikeRouter);
 
 //corsOptions
 const corsOptions = {
@@ -31,6 +30,7 @@ const corsOptions = {
   credentials: true,
 };
 app.use(cors(corsOptions));
+app.use('/api', hikeRouter);
 
 //2 STEP PASSPORT-->Passport: set up local strategy-->TODO in USER-DAO
 passport.use(new LocalStrategy(async function verify(username, password, cb) {

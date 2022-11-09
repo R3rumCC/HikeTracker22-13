@@ -184,6 +184,15 @@ function LoginLayout(props) {
   );
 }
 
+//MAP LAYOUT
+function HikerLayout(props) {
+  return (
+    <Row>
+      Hiker layout
+    </Row>
+  );
+}
+
 /**
  * This layout shuld be rendered while we are waiting a response from the server.
  */
@@ -201,4 +210,4 @@ function LoginLayout(props) {
 }
 */
 //export { DefaultLayout, AddLayout, EditLayout, NotFoundLayout, LoginLayout, MainLayout, LoadingLayout };
-export { LoginLayout, DefaultLayout };
+export { LoginLayout, DefaultLayout, HikerLayout };

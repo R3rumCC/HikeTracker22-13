@@ -6,7 +6,7 @@ import React, { useState, useEffect, useContext, } from 'react';
 import { Container, Toast } from 'react-bootstrap/';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-import { DefaultLayout, LoginLayout, AdminLayout, OfficerLayout } from './components/PageLayout';
+import { DefaultLayout, LoginLayout, HikerLayout, AdminLayout, OfficerLayout } from './components/PageLayout';
 import { Navigation } from './components/Navigation';
 import { LocalGuide_Home } from './components/localGuide_view';
 
