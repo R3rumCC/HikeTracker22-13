@@ -28,7 +28,7 @@ function App() {
       <MessageContext.Provider value={{ handleErrors }}>
         <Container fluid className="App">
           <Routes>
-            <Route path="/*" element={<Main />/*<LocalGuide_Home/>*/} />
+            <Route path="/*" element={/*<Main />*/<LocalGuide_Home/>} />
           </Routes>
           <Toast show={message !== ''} onClose={() => setMessage('')} delay={4000} autohide>
             <Toast.Body>{message}</Toast.Body>
