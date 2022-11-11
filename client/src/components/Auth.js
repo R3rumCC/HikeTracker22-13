@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Form, Button, Alert, Col, Row } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
-
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
 
 function LoginForm(props) {
   const [username, setUsername] = useState('');
@@ -19,6 +20,7 @@ function LoginForm(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     const credentials = { username, password };
+    setErrorMessage('');
 
     if (username.trim() === '') {
       setErrorMessage('Email cannot be empty.');
@@ -73,15 +75,20 @@ function LoginForm(props) {
 
 function LogoutButton(props) {
   return (
+    <>
     <Button variant="outline-light" floating='right' onClick={props.logout}>Logout</Button>
+    <ToastContainer />
+    </>
   )
 }
 
 function LoginButton() {
   const navigate = useNavigate();
   return (
+    <>
     <Button variant="outline-light" floating='right' onClick={() => navigate('/login')}>Login</Button>
-
+    <ToastContainer />
+    </>
   )
 }
 
