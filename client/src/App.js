@@ -12,7 +12,9 @@ import { LocalGuide_Home } from './components/localGuide_view';
 
 import MessageContext from './messageCtx';
 import API from './API';
+import { HikeForm } from './components/newHikeForm';
 import FileUploader from './components/UploadGpxForm';
+
 
 function App() {
 
@@ -102,15 +104,13 @@ function Main() {
       <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} />
       <Routes>
         <Route path="/" element={
-          //DO NOT IMPLEMENTS ROUTES HERE, IN PageLayout.js THERE IS A LAYOUT PER EACH USER, 
-          //USE THAT ONE TO IMPLEMENT FUNCTIONS
-          //JUST PASS THE PROPS IF NEEDED HERE.
           loggedIn && currentUser.role == 'Hiker' ? <HikerLayout userName={currentUser.name} currentHike={currentHike} /> :
             loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home /> :
              <DefaultLayout setCurrentHike={setCurrentHike} />  /* <FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>
-        <Route path="/Map" element={<HikerLayout currentHike={currentHike} />} />
+        {/* <Route path="/NewHike" element={<HikeForm/>} /> THIS WAS A TRY TO DO THE .GPX FILE UPLOAD.*/}
+        <Route path="/Map" element={/*!loggedIn && currentUser.role == 'Hiker' && currentHike.length<=0 ? */<HikerLayout currentHike={currentHike}/> /*: <Navigate replace to='/' />*/} />
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
       </Routes>
     </>
