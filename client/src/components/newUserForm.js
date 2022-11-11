@@ -33,7 +33,7 @@ function UserForm(props) {
 						setErrorMsg("Error: The passwords entered twice must be consistent.");
 					return;
 					}else{
-						newUser = { name: name, lastname: lastname, email: email, password: password, role: role.toLowerCase(),phoneNumber:phoneNumber };
+						newUser = { name: name, lastname: lastname, email: email, password: password, role: role,phoneNumber:phoneNumber };
 					}
 				} else {
 					setErrorMsg("Error: Enter a valid email.");
@@ -79,14 +79,14 @@ function UserForm(props) {
 				<Form.Group className='dropdown'>
                 <DropdownButton className="my-2" title={value === "" ? "Select Your Role" : value} value={role}  onChange={event => {setRole(event.target.title); } }
         >
-          <Dropdown.Item name="hiker"  onClick={e => handleDropdown(e)} >
-            hiker
+          <Dropdown.Item name="Hiker"  onClick={e => handleDropdown(e)} >
+		  Hiker
           </Dropdown.Item>
-          <Dropdown.Item name="hut worker" onClick={e => handleDropdown(e)} >
-          hut worker
+          <Dropdown.Item name="HutWorker" onClick={e => handleDropdown(e)} >
+          HutWorker
           </Dropdown.Item>
-          <Dropdown.Item name="local guide" onClick={e => handleDropdown(e)} >
-           local guide
+          <Dropdown.Item name="LocalGuide" onClick={e => handleDropdown(e)} >
+		  LocalGuide
           </Dropdown.Item>
         </DropdownButton>
                 </Form.Group>
