@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Row, Col, Button, Container, Form, FormGroup, FormLabel, ButtonGroup , InputGroup, Alert} from 'react-bootstrap';
 import API from '../API';
 
+
 //Function for calling the addNewHike API
 const addHike= (newHike)=>{
     //setHikes((oldHikes)=>[...oldHikes, newHike]); --> not necessary(?)
@@ -82,7 +83,9 @@ function HikeForm(props){
     const [endPoint, setEndPoint]= useState()
     //const [refPoints, setRefPoints]= useState([])
     const [description, setDescription]= useState('')
-    //const [map, setMap]= useState()
+
+
+    const [map, setMap]= useState('') //USED TO SAVE MAP STRING
 
     const [errorMsg, setErrorMsg] = useState(""); //to be fixed
     const updateErrorMsg= (val)=>{setErrorMsg(val); }
@@ -95,6 +98,7 @@ function HikeForm(props){
     const changeStartP= (val) =>{setStartPoint(val)}
     const changeEndP= (val) =>{setEndPoint(val)}
     const changeDescription= (val)=>{setDescription(val)}
+
 
     //handler for form submission
     const submitHikeForm= (event)=>{
@@ -140,6 +144,30 @@ function HikeForm(props){
         
     }
     
+    //Import gpx file and read, gpx parse it is used to retreive the start point and the end point (format latitude,longitude)
+    //after have red the file it changes automatically the start point and the end point 
+    const importGpx = (selectedFile) => {
+
+        let gpxParser = require('gpxparser');
+        var gpx = new gpxParser()
+
+        let reader = new FileReader();
+      
+        reader.readAsText(selectedFile);
+      
+        reader.onload = function() {
+          setMap(reader.result)  
+          gpx.parse(reader.result)
+          const positions = gpx.tracks[0].points.map(p => [p.lat, p.lon])
+          changeStartP(positions[0]);
+          changeEndP(positions[positions.length - 1]);
+        };
+      
+        reader.onerror = function() {
+          console.log(reader.error);
+        };
+
+    }
 
     return(<>
         {errorMsg ? <Alert variant="danger" onClose={updateErrorMsg('')}>{errorMsg}</Alert> : <></>}
@@ -198,6 +226,13 @@ function HikeForm(props){
             </Row>
             <Form.Label>//TODO Map</Form.Label>
         </Form.Group>
+
+        {/* This is the form used to import the gpx, on upload of the file it call the importGpx function passing the file object */}
+        <Form.Group controlId="formFile" className="mt-5">
+            <Form.Label>Upload the GPX track</Form.Label>
+            <Form.Control type="file" onChange={(e) => importGpx(e.target.files[0])} />
+        </Form.Group>
+    
         <Form.Group>
 			<Form.Label>Description</Form.Label>
 			<Form.Control value={description} onChange={(ev) => changeDescription(ev.target.value)}/>

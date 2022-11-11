@@ -14,6 +14,7 @@ import MessageContext from './messageCtx';
 import API from './API';
 import { HikeForm } from './components/newHikeForm';
 import FileUploader from './components/UploadGpxForm';
+import { HikePage } from './components/hikePage';
 
 
 function App() {
@@ -106,7 +107,7 @@ function Main() {
         <Route path="/" element={
           loggedIn && currentUser.role == 'Hiker' ? <HikerLayout userName={currentUser.name} currentHike={currentHike} /> :
             loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home /> :
-             <DefaultLayout setCurrentHike={setCurrentHike} />  /* <FileUploadLayout></FileUploadLayout>*/
+             <DefaultLayout setCurrentHike={setCurrentHike} />  /*<FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>
         {/* <Route path="/NewHike" element={<HikeForm/>} /> THIS WAS A TRY TO DO THE .GPX FILE UPLOAD.*/}
