@@ -2,7 +2,7 @@ import { Col, Row } from 'react-bootstrap';
 import { HikesContainer } from './hikesCards';
 import 'leaflet/dist/leaflet.css'
 
-import { MapContainer, Polyline, TileLayer, Map, Marker, Popup } from 'npm i react-leaflet'
+import { MapContainer, Polyline, TileLayer, Map, Marker, Popup } from 'react-leaflet'
 
 
 function HikePage(props) {
