@@ -12,4 +12,5 @@ router.get('/getHikes', async (req, res) => {
         res.status(500).json(error).end();
     }
 });
+router.post('/User',c.addUser);
 module.exports = router
