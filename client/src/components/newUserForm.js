@@ -1,18 +1,26 @@
-import { Button, Alert, Form } from "react-bootstrap";
+import { Button, Alert, Form, DropdownButton,Dropdown,Col,Row} from "react-bootstrap";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 
 function UserForm(props) {
-
+	const reg = '^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{1,3}$';
 	const [name, setName] = useState("");
 	const [lastname, setLastname] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [cPassword, setCPassword] = useState("");
 	const [role, setRole] = useState("");
+	const [phoneNumber, setPhoneNumber] = useState("");
 
 	const [errorMsg, setErrorMsg] = useState(""); // empty string '' = no error
 
 	const navigate = useNavigate();
+	const [value, setvalue] = useState("");
+	const handleDropdown = e => {
+	  setvalue(e.target.name);
+	  setRole(e.target.name);
+	  
+	};
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
@@ -21,11 +29,11 @@ function UserForm(props) {
 			let newUser;
 			if (lastname.trim().length !== 0) {
 				if (email.trim().length !== 0) {
-					if (role.trim().length !== 0 && (role.toLowerCase() === "manager" || role.toLowerCase() === "officier")) {
-						newUser = { name: name, lastname: lastname, email: email, password: password, role: role.toLowerCase() };
-					} else {
-						setErrorMsg("Error: Enter a valid role.");
-						return;
+					if(cPassword!==password){
+						setErrorMsg("Error: The passwords entered twice must be consistent.");
+					return;
+					}else{
+						newUser = { name: name, lastname: lastname, email: email, password: password, role: role,phoneNumber:phoneNumber };
 					}
 				} else {
 					setErrorMsg("Error: Enter a valid email.");
@@ -35,15 +43,17 @@ function UserForm(props) {
 				setErrorMsg("Error: Enter a valid lastname.");
 				return;
 			}
-			props.addUser(newUser);
-			navigate('/');
+			props.CreateNewAccount(newUser);
+			navigate('/login');
 		} else {
 			setErrorMsg("Error: Enter a valid name.");
 		}
 	};
 
 	return (
-		<>
+		<Row className="vh-100 justify-content-md-center">
+		<Col md={4} >
+        <h1 className="pb-5">Register</h1>
 			{errorMsg ? (
 				<Alert variant="danger" onClose={() => setErrorMsg("")} dismissible>
 					{errorMsg}
@@ -66,18 +76,25 @@ function UserForm(props) {
 						onChange={(ev) => setLastname(ev.target.value)}
 					></Form.Control>
 				</Form.Group>
-				<Form.Group>
-					<Form.Label>Role</Form.Label>
-					<Form.Control
-						value={role}
-						onChange={(ev) => setRole(ev.target.value)}
-					></Form.Control>
-				</Form.Group>
+				<Form.Group className='dropdown'>
+                <DropdownButton className="my-2" title={value === "" ? "Select Your Role" : value} value={role}  onChange={event => {setRole(event.target.title); } }
+        >
+          <Dropdown.Item name="Hiker"  onClick={e => handleDropdown(e)} >
+		  Hiker
+          </Dropdown.Item>
+          <Dropdown.Item name="HutWorker" onClick={e => handleDropdown(e)} >
+          HutWorker
+          </Dropdown.Item>
+          <Dropdown.Item name="LocalGuide" onClick={e => handleDropdown(e)} >
+		  LocalGuide
+          </Dropdown.Item>
+        </DropdownButton>
+                </Form.Group>
 				<Form.Group>
 					<Form.Label>Email</Form.Label>
 					<Form.Control
 						value={email}
-						onChange={(ev) => setEmail(ev.target.value)}
+						onChange={(ev) => setEmail(ev.target.value)} required pattern={reg}
 					></Form.Control>
 				</Form.Group>
 				<Form.Group>
@@ -87,10 +104,25 @@ function UserForm(props) {
 						onChange={(ev) => setPassword(ev.target.value)}
 					></Form.Control>
 				</Form.Group>
+				<Form.Group>
+					<Form.Label>Confirm Your Password</Form.Label>
+					<Form.Control
+						value={cPassword}
+						onChange={(ev) => setCPassword(ev.target.value)}
+					></Form.Control>
+				</Form.Group>
+				<Form.Group>
+					<Form.Label>Phone number</Form.Label>
+					<Form.Control
+						value={phoneNumber}
+						onChange={(ev) => setPhoneNumber(ev.target.value)}
+					></Form.Control>
+				</Form.Group>
 				<Button type='submit'>Save</Button>
 				<Button onClick={props.cancel}>Cancel</Button>
 			</Form>
-		</>
+			</Col>
+			</Row>
 	);
 }
 

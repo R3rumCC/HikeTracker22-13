@@ -6,7 +6,7 @@ import React, { useState, useEffect, useContext, } from 'react';
 import { Container, Toast } from 'react-bootstrap/';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-import { DefaultLayout, LoginLayout, HikerLayout, FileUploadLayout } from './components/PageLayout';
+import { DefaultLayout, LoginLayout, HikerLayout,RegisterLayout, FileUploadLayout } from './components/PageLayout';
 import { Navigation } from './components/Navigation';
 import { LocalGuide_Home } from './components/localGuide_view';
 
@@ -100,6 +100,15 @@ function Main() {
   };
   /*****************************************************/
 
+  //********HANDLE_REGISTER*******//
+  const CreateNewAccount = async (user) => {
+    console.log(user);
+   
+    await API.addUser(user);
+    
+  };
+  /*****************************************************/
+
   return (
     <>
       <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} />
@@ -112,6 +121,7 @@ function Main() {
         </Route>
         {/* <Route path="/NewHike" element={<HikeForm/>} /> THIS WAS A TRY TO DO THE .GPX FILE UPLOAD.*/}
         <Route path="/Map" element={/*!loggedIn && currentUser.role == 'Hiker' && currentHike.length<=0 ? */<HikerLayout currentHike={currentHike}/> /*: <Navigate replace to='/' />*/} />
+        <Route path="/register" element={!loggedIn ? <RegisterLayout CreateNewAccount={CreateNewAccount} /> : <Navigate replace to='/' />} />
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
       </Routes>
     </>
