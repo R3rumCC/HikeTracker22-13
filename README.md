@@ -44,7 +44,7 @@ The list of correlations between hikes and points
 
 ### Users functions
 
-- **readUsers()**, returns a list of every user with every field
+- **readUsers()**, returns a list of every user with every field excepted the salt
 - **addUser(name, lastname, email, password, salt, role, phone_number)**, inserts a user in the database, with the relative arguments. The password is already hashed
 - **updateUserRole(email, role)**, updates the user associated with the argument *email* with the argument *role*
 - **deleteUser(email)**, deletes the user associated with the argument *email*
@@ -96,32 +96,98 @@ Carlene Ross:
 
 ## API
 
-#### GET /api/Services
+- GET `/getHikes`
+  - Description: Obtain the entire list of the hikes 
+  - Request body: _None_
+  - Response: `200 OK` (success) 
+  - Response body: Array of objects, each describing an hike:
+    ``` json
+    [
+      {
+        "title": "Hike1",
+        "length": 33,
+        "expected_time": 75,
+        "ascent": 400,
+        "difficulty": "hiker",
+		"description": "A journey through the unspoilt nature of Monte Rosa",
+        "start_point_idPoint": 2,
+		"start_point_address": "Corso Mediterraneo 40",
+		"start_point_nameLocation": "Legnano",
+		"start_point_coordinates": "N 41° 53' 24″ - E 12° 29' 32″",
+		"start_point_type": "hut",
+		"end_point_idPoint": 4,
+		"end_point_address": "Corso Francia 10",
+		"start_point_nameLocation": "Fivizzano",
+		"start_point_coordinates": "N 45° 83' 29″ - E 52° 09' 72″",
+		"start_point_type": "parking lot",
+      },
+      ...
+      {
+        "title": "Hike7",
+        "length": 75,
+        "expected_time": 189,
+        "ascent": 600,
+        "difficulty": "professional hiker",
+		"description": "A hike in the Dolomites Nature Park",
+        "start_point_idPoint": 10,
+		"start_point_address": "Corso Mediterraneo 120",
+		"start_point_nameLocation": "Brunascola",
+		"start_point_coordinates": "N 11° 23' 74″ - E 18° 89' 44″",
+		"start_point_type": "parking lot",
+		"end_point_idPoint": 3,
+		"end_point_address": "Corso Francia 100",
+		"start_point_nameLocation": "Ricortola",
+		"start_point_coordinates": "N 55° 93' 21″ - E 32° 19' 70″",
+		"start_point_type": "parking lot",
+      },
+      ...
+    ]
+    ```
+  - Error responses: `500 Internal Server Error` (database error)
 
-- **Get all existing services**.
-- **Response**: `200 OK` (success); body: List with service name and average required time.
+- POST `/api/v0/sessions`
+  - Description: Authentication of the user trying to login
+  - Request body: An object contains the credentials of the user
+    ``` json
+    {
+    "email": "u1@p.it",
+    "password": "password"
+    }
+    ```
+  - Response: `200 OK` (success) 
+  - Response body: authencticated user
+    ``` json
+    {
+    "email": "u1@p.it", 
+	"password": "password",
+	"role": "local guide",
+    "name": "utente1",
+	"lastname": "goglia",
+	"phone_number": "utente1"
+    }
+    ```
+  - Error responses: `500 Internal Server Error` (generic error), `401 Unauthorized User` (login failed)
 
-```
-[
-	{
-		"ServiceName": "Managment",
-		"AverageTime": 15
-	},
-	{
-		"ServiceName": "Accountant",
-		"AverageTime": 30
-	},
-	{
-		"ServiceName": "Help",
-		"AverageTime": 5
-	}
-]
-```
+- GET `/api/v0/sessions/current`
+  - Description: Checks whether the current user is logged in and obtains his data
+  - Request body: _None_
+  - Response: `200 OK` (success) 
+  - Response body: authenticated user
+    ``` json
+    {
+    "email": "u1@p.it", 
+	"password": "password",
+	"role": "local guide",
+    "name": "utente1",
+	"lastname": "goglia",
+	"phone_number": "utente1"
+    }
+    ```
+  - Error responses: `500 Internal Server Error` (generic error), `401 Unauthorized User` (login failed)
 
-- **Error responses**: `500 Internal Server Error` (generic error).
-
-#### POST /api/Ticket/:ServiceName
-
-- **Generate a new ticket**.
-- **Response**: `200 OK` (success); body: Value of the ticket ID i.e 'M12'.
-- **Error responses**: `500 Internal Server Error` (generic error).
+- DELETE `/api/sessions/current`
+  - Description: Logout dof the current user
+  - Request body: _None_
+  - Response: `200 OK` (success) 
+  - Response body: _None_
+  - Error responses: `500 Internal Server Error` (generic error), `401 Unauthorized User` (login failed)
