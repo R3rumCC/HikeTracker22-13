@@ -114,7 +114,7 @@ function HikeForm(props){
                         newHike={title: title, length: length, expected_time: expTime, ascent: ascent, difficulty: difficulty, 
                                 startPoint:startPoint, endPoint: endPoint, description: description //start/end + ref points + map
                                 }
-                        console.log(newHike);
+                        //console.log(newHike);
                         //NEXT STEPS: 
                         //1) props.addHike (just addHike if defined in this file)
                         //2) reset all state values and/or redirect + success message

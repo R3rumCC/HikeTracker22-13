@@ -6,6 +6,9 @@ import React, { useState, useEffect, useContext, } from 'react';
 import { Container, Toast } from 'react-bootstrap/';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 import { DefaultLayout, LoginLayout, HikerLayout,RegisterLayout, FileUploadLayout } from './components/PageLayout';
 import { Navigation } from './components/Navigation';
 import { LocalGuide_Home } from './components/localGuide_view';
@@ -50,8 +53,15 @@ function Main() {
   const [currentUser, setCurrentUser] = useState({});
   const [currentHike, setCurrentHike] = useState([])
 
+  function handleError(err) {
+    toast.error(
+      err.error,
+      { position: "top-center" },
+      { toastId: 12 }
+    );
+  }
 
-  const { handleErrors } = useContext(MessageContext);
+  //const { handleErrors } = useContext(MessageContext);
 
   //*******CHECK_AUTH*******//
   useEffect(() => {
@@ -61,13 +71,13 @@ function Main() {
         user_curr.name === 'Guest' ? setLoggedIn(false) : setLoggedIn(true);
         setCurrentUser(user_curr);
       } catch (err) {
-        handleErrors(err); // mostly unauthenticated user, thus set not logged in
+        handleError(err); // mostly unauthenticated user, thus set not logged in
         setCurrentUser({});
         setLoggedIn(false);
       }
     };
     checkAuth();
-  }, [loggedIn]);
+  }, [loggedIn]); // eslint-disable-line
   //***********************//
 
   //********HANDLE_LOGIN*******//
@@ -77,9 +87,8 @@ function Main() {
       setLoggedIn(true);
       setCurrentUser(user);
       //setUserFilter(false);
-      //handleMessages({ msg: `Welcome ${user.name}`, type: 'success' });
     } catch (err) {
-      throw err
+      handleError(err);
     }
   };
   //*****************************//
@@ -95,7 +104,7 @@ function Main() {
       //setUserFilter(false);
       //setMessage('');
     } catch (err) {
-      throw err
+      handleError(err);
     }
   };
   /*****************************************************/

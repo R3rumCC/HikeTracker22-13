@@ -5,7 +5,7 @@ var c = require('./hikeController');
 router.get('/getHikes', async (req, res) => {
     try {
         const hikes = await c.getHikes();
-        console.log(hikes)
+        //console.log(hikes)
         res.status(200).json(hikes).end();
     } catch (error) {
         // console.log(error);
