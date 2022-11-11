@@ -3,6 +3,8 @@ import { HikesContainer } from './hikesCards';
 import { Icon } from 'leaflet'
 import { MapContainer, Polyline, TileLayer, Map, Marker, Popup } from 'react-leaflet'
 import { AiFillEnvironment } from "react-icons/ai";
+import { MapContainer, Polyline, TileLayer, Map, Marker, Popup } from 'react-leaflet'
+
 
 // THE GPX FILE MUST BE PASSED AS AN STRING. HERE I LEAVE AN EXAMPLE:
 // THIS PARTICULAR GPX HAS A SINGLE TRACK AND TWO SEGMENTS. THESE 

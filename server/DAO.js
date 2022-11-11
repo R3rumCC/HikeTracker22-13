@@ -108,7 +108,7 @@ function readReferencePoints(title) { // RP for a given hike
       p.type
     FROM Hikes h
     JOIN HikePoint hp
-    ON h.title = hp.ttitleHike
+    ON h.title = hp.titleHike
     JOIN Points p
     ON p.idPoint = hp.idPoint
     WHERE h.title = ?
@@ -300,10 +300,10 @@ function updatePoint(oldIdPoint, newPoint) {
   });
 }
 
-function deletePoint(Id) {
+function deletePoint(id) {
   return new Promise((resolve, reject) => {
     const query = 'DELETE FROM POINTS WHERE idPoint = ?';
-    db.run(query, Id, (err) => {
+    db.run(query, id, (err) => {
       if (err) {
         reject(err);
       } else

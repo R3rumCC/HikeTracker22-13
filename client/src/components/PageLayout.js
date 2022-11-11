@@ -7,6 +7,7 @@ import { HikesContainer } from './hikesCards';
 import  FilterForm from './Filter';
 import MessageContext from '../messageCtx';
 import API from '../API';
+import FileUploader from './UploadGpxForm';
 
 /**
  * Except when we are waiting for the data from the server, this layout is always rendered.
@@ -17,6 +18,7 @@ import API from '../API';
 //SERVICE CARD LAYOUT FOR NO LOGGED USERS
 function DefaultLayout(props) {
 
+  
   const { handleErrors } = useContext(MessageContext);
   const [hikes, setHikes] = useState([]);
   const [hidden, setHidden] = useState(true);
@@ -55,6 +57,17 @@ function DefaultLayout(props) {
       </Row>
     </Container>
 
+
+  )
+  
+
+}
+function FileUploadLayout(){
+
+  return(
+    <Container className='my-5'>
+      <FileUploader></FileUploader>
+    </Container>
 
   )
 }
@@ -212,4 +225,4 @@ function HikerLayout(props) {
 }
 */
 //export { DefaultLayout, AddLayout, EditLayout, NotFoundLayout, LoginLayout, MainLayout, LoadingLayout };
-export { LoginLayout, DefaultLayout, HikerLayout };
+export { LoginLayout, DefaultLayout, HikerLayout, FileUploadLayout };

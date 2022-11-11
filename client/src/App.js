@@ -6,13 +6,15 @@ import React, { useState, useEffect, useContext, } from 'react';
 import { Container, Toast } from 'react-bootstrap/';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-import { DefaultLayout, LoginLayout, HikerLayout, AdminLayout, OfficerLayout } from './components/PageLayout';
+import { DefaultLayout, LoginLayout, HikerLayout, FileUploadLayout } from './components/PageLayout';
 import { Navigation } from './components/Navigation';
 import { LocalGuide_Home } from './components/localGuide_view';
 
 import MessageContext from './messageCtx';
 import API from './API';
 import { HikeForm } from './components/newHikeForm';
+import FileUploader from './components/UploadGpxForm';
+
 
 function App() {
 
@@ -104,7 +106,7 @@ function Main() {
         <Route path="/" element={
           loggedIn && currentUser.role == 'Hiker' ? <HikerLayout userName={currentUser.name} currentHike={currentHike} /> :
             loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home /> :
-              <DefaultLayout setCurrentHike={setCurrentHike} />
+             <DefaultLayout setCurrentHike={setCurrentHike} />  /* <FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>
         {/* <Route path="/NewHike" element={<HikeForm/>} /> THIS WAS A TRY TO DO THE .GPX FILE UPLOAD.*/}
