@@ -29,7 +29,7 @@ function UserForm(props) {
 			let newUser;
 			if (lastname.trim().length !== 0) {
 				if (email.trim().length !== 0) {
-					if(cPassword!=password){
+					if(cPassword!==password){
 						setErrorMsg("Error: The passwords entered twice must be consistent.");
 					return;
 					}else{
