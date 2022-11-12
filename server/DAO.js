@@ -71,6 +71,7 @@ function readHikes() {
         ascent,
         difficulty,
         description,
+        gpx_track,
         SP.idPoint AS start_point_idPoint,
         SP.address AS start_point_address,
         SP.nameLocation AS start_point_nameLocation,

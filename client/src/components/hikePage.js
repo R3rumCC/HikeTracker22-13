@@ -3,13 +3,14 @@ import { HikesContainer } from './hikesCards';
 import { Icon } from 'leaflet'
 import { MapContainer, Polyline, TileLayer, Map, Marker, Popup } from 'react-leaflet'
 import { AiFillEnvironment } from "react-icons/ai";
+import { start } from '@popperjs/core';
 
 
 // THE GPX FILE MUST BE PASSED AS AN STRING. HERE I LEAVE AN EXAMPLE:
 // THIS PARTICULAR GPX HAS A SINGLE TRACK AND TWO SEGMENTS. THESE 
 // SEGMENTS ARE THE ANGLES THAT ARE BINDED BY LINES TO FORM THE PATH.
 
-let mockGpx = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+/*let mockGpx = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 <gpx creator="www.flyisfun.com" version="1.1" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
   <trk>
     <name>Track_n1</name>
@@ -25,13 +26,14 @@ let mockGpx = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
     </trkseg>
   </trk>
 </gpx>`
-
+*/
 function HikePage(props) {
 
     let gpxParser = require('gpxparser');
     var gpx = new gpxParser()
-    gpx.parse(mockGpx) // This attribute is the .gpx file that defines the hike. 
+    gpx.parse(props.currentHike[0].gpx_track) // This attribute is the .gpx file that defines the hike. 
 	const positions = gpx.tracks[0].points.map(p => [p.lat, p.lon])
+    console.log(positions[0]," ",positions[positions.length-1])
 
     return (
         <Col className="vh-100 justify-content-md-center">
@@ -49,8 +51,8 @@ function HikePage(props) {
                 <Col sm={8} className='map'>
                     <MapContainer
                         // for simplicty set center to first gpx point
-                        center={positions[0]}
-                        zoom={9}
+                        center={positions[positions.length/2]}
+                        zoom={13}
                         scrollWheelZoom={false}
                     >
                         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -69,7 +71,12 @@ function HikePage(props) {
                         */}
                         <Marker position={positions[0]}> 
                             <Popup>
-                                THIS IS SOME POP UP WE CAN CUSTOMIZE <br /> FOR WHEN WE CLICK ON THE MARKER
+                                {props.currentHike[0].start_point_address}
+                            </Popup>
+                        </Marker>
+                        <Marker position={positions[positions.length -1]}> 
+                            <Popup>
+                                {props.currentHike[0].end_point_address}
                             </Popup>
                         </Marker>
                     </MapContainer>
