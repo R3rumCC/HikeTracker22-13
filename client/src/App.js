@@ -12,8 +12,6 @@ import { DefaultLayout, LoginLayout, HikerLayout,RegisterLayout, FileUploadLayou
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
-import { DefaultLayout, LoginLayout, HikerLayout,RegisterLayout, FileUploadLayout } from './components/PageLayout';
-
 import { Navigation } from './components/Navigation';
 import { LocalGuide_Home } from './components/localGuide_view';
 
