@@ -38,7 +38,7 @@ const getUserInfo = async () => {
 
 //FINAL STEP-->LOGOUT-->Destroy the session info associated to the authorized user
 async function logOut() {
-	await fetch(URL + 'sessions/current', {
+	await fetch(APIURL + '/sessions/current', {
 	  method: 'DELETE',
 	  credentials: 'include'
 	});
@@ -147,13 +147,13 @@ async function getHikes(){
 			return list;
 		}
 		else{
-			console.log(response.statusText);
+			//console.log(response.statusText);
 			const text = await response.text();
 			throw new TypeError(text);
 		}
 	}
 	catch(e){
-		console.log(e);
+		//console.log(e);
 		throw e;
 	}
 }
