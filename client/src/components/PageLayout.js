@@ -55,7 +55,7 @@ function DefaultLayout(props) {
 
       </Row>
       <Row>
-        {hidden ? <HikesContainer hikes={!filtered ? hikes : filteredHikes} setCurrentHike={props.setCurrentHike}/> : null}
+        {hidden ? <HikesContainer role= {props.role} name ={props.name} hikes={!filtered ? hikes : filteredHikes} setCurrentHike={props.setCurrentHike}/> : null}
       </Row>
     </Container>
 
