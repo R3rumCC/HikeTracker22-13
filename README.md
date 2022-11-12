@@ -82,17 +82,12 @@ The list of correlations between hikes and points
 Mario Rossi:
 - email: mario.rossi@gmail.com
 - password: hello12
-- role: officier
+- role: Hiker
 
 Paulina Knight:
 - email: paulina.knight@gmail.com
 - password: hello13
-- role: manager
-
-Carlene Ross:
-- email: carlene.ross@gmail.com
-- password: hello14
-- role: admin 
+- role: LocalGuide
 
 ## API
 
