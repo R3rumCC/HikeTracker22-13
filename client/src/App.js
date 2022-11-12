@@ -6,7 +6,6 @@ import React, { useState, useEffect, useContext, } from 'react';
 import { Container, Toast } from 'react-bootstrap/';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-
 import { DefaultLayout, LoginLayout, HikerLayout,RegisterLayout, FileUploadLayout, SearchLayout } from './components/PageLayout';
 
 import { toast } from "react-toastify";

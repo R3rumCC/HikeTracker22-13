@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function HikeCard(props) {
     return(
-        <Card className ="text-center mr-1 my-1 " border="primary" style={{ width: '18rem' }}>
+        <Card className ="text-center me-2 my-1  " border="primary" style={{ width: '18rem' }}>
             <Card.Header as="h5">{props.hike.title}</Card.Header>
             <Card.Body>
                 <Card.Text>Length: {props.hike.length}</Card.Text>
