@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 function SearchHut(){
     return(
       <Col className="vh-100 justify-content-md-center">
-      <div>Aaaaa</div>
+
+      Aaaaa
       
       </Col>
     )

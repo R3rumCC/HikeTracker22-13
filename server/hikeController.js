@@ -6,7 +6,15 @@ exports.getHikes = async function()  {
         let fullHikes = []
         let hikes = await dao.readHikes();
         for (let hike of hikes){
-            hike['reference_points'] = await dao.readReferencePoints(hike.title);
+            //hike['reference_points'] = await dao.readReferencePoints(hike.title);
+            hike['reference_points'] = await dao.readListOfReferencePoints(hike.title);
+            let refer_points = [];
+            for (const rp of hike['reference_points'].reference_points.split("-")) {
+                const idPoint = parseInt(rp);
+                const refPoint = await dao.readPointById(idPoint);
+                refer_points.push(refPoint);
+            }
+            hike['reference_points'] = refer_points;
             fullHikes.push(hike)
         }
         return fullHikes;
