@@ -13,6 +13,7 @@ import { DefaultLayout, LoginLayout, HikerLayout,RegisterLayout, FileUploadLayou
 import { Navigation } from './components/Navigation';
 import { LocalGuide_Home } from './components/localGuide_view';
 
+import { SearchHut } from './components/SearchHut';
 import MessageContext from './messageCtx';
 import API from './API';
 import { HikeForm } from './components/newHikeForm';
@@ -132,6 +133,7 @@ function Main() {
         <Route path="/Map" element={/*!loggedIn && currentUser.role == 'Hiker' && currentHike.length<=0 ? */<HikerLayout currentHike={currentHike}/> /*: <Navigate replace to='/' />*/} />
         <Route path="/register" element={!loggedIn ? <RegisterLayout CreateNewAccount={CreateNewAccount} /> : <Navigate replace to='/' />} />
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
+        <Route path="/searchHut" element={loggedIn ? <SearchHut/> : <Navigate replace to='/' />} />
       </Routes>
     </>
   );
