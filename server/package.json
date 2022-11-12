@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "test": "jest",
+    "start": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +20,8 @@
     "promises": "^0.2.5",
     "sqlite3": "^5.0.8"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jest": "^29.3.1"
+  },
   "description": ""
 }
