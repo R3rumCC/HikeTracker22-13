@@ -1,16 +1,13 @@
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
+//Called in PageLayout.SearchLayout and SearchLayout is called in App
 function SearchHut(){
     return(
-      <Form>
-        <Form.Group>
-          <Form.Label>Hut Address</Form.Label>
-          <Form.Control
-            type="text" placeholder="Via Salcazzi"
-          />
-        </Form.Group>
-      </Form>
+      <Col className="vh-100 justify-content-md-center">
+      <div>Aaaaa</div>
+      
+      </Col>
     )
 }
 
