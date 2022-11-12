@@ -6,14 +6,17 @@ import React, { useState, useEffect, useContext, } from 'react';
 import { Container, Toast } from 'react-bootstrap/';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
+<<<<<<< HEAD
+import { DefaultLayout, LoginLayout, HikerLayout,RegisterLayout, FileUploadLayout, SearchLayout } from './components/PageLayout';
+=======
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 import { DefaultLayout, LoginLayout, HikerLayout,RegisterLayout, FileUploadLayout } from './components/PageLayout';
+>>>>>>> af53a99d21131f448f8a9acc0d40fb7688a97c7e
 import { Navigation } from './components/Navigation';
 import { LocalGuide_Home } from './components/localGuide_view';
 
-import { SearchHut } from './components/SearchHut';
 import MessageContext from './messageCtx';
 import API from './API';
 import { HikeForm } from './components/newHikeForm';
@@ -133,7 +136,7 @@ function Main() {
         <Route path="/Map" element={/*!loggedIn && currentUser.role == 'Hiker' && currentHike.length<=0 ? */<HikerLayout currentHike={currentHike}/> /*: <Navigate replace to='/' />*/} />
         <Route path="/register" element={!loggedIn ? <RegisterLayout CreateNewAccount={CreateNewAccount} /> : <Navigate replace to='/' />} />
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
-        <Route path="/searchHut" element={loggedIn ? <SearchHut/> : <Navigate replace to='/' />} />
+        <Route path="/searchHut" element={loggedIn && currentUser.role == 'Hiker' ? <SearchLayout/> : <Navigate replace to='/' />} />
       </Routes>
     </>
   );

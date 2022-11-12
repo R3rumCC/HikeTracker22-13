@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Row, Col, Button, Container } from 'react-bootstrap';
 import { Link, useParams, useLocation, Outlet } from 'react-router-dom';
-import { HikePage } from './hikePage'
+import { SearchHut } from './SearchHut';
+import { HikePage } from './hikePage';
 import { UserForm } from './newUserForm';
 import { LoginForm } from './Auth';
 import { HikesContainer } from './hikesCards';
@@ -219,6 +220,15 @@ function HikerLayout(props) {
   );  
 }
 
+//SEARCH LAYOUT
+function SearchLayout(){
+  <Row className="vh-200">
+      <Col md={12} className="below-nav">
+        <SearchHut />
+      </Col>
+  </Row>
+}
+
 /**
  * This layout shuld be rendered while we are waiting a response from the server.
  */
@@ -236,4 +246,4 @@ function HikerLayout(props) {
 }
 */
 //export { DefaultLayout, AddLayout, EditLayout, NotFoundLayout, LoginLayout, MainLayout, LoadingLayout };
-export { LoginLayout, DefaultLayout, HikerLayout, FileUploadLayout,RegisterLayout };
+export { LoginLayout, DefaultLayout, HikerLayout, FileUploadLayout,RegisterLayout, SearchLayout };
