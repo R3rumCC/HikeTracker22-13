@@ -99,7 +99,7 @@ function readHikes() {
   });
 }
 
-function readReferencePoints(title) { // RP for a given hike
+/*function readReferencePoints(title) { // RP for a given hike
   return new Promise((resolve, reject) => {
     const sql = `
     SELECT p.idPoint,
@@ -116,6 +116,22 @@ function readReferencePoints(title) { // RP for a given hike
       ;
     `;
     db.all(sql, [title], (err, rp) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rp)
+      }
+    });
+  });
+}*/
+
+function readListOfReferencePoints(title) { // RP for a given hike
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT reference_points
+    FROM Hikes H, HikePoint HP, Points P
+    WHERE H.title = HP.titleHike
+    AND title = ?`;
+    db.get(sql, [title], (err, rp) => {
       if (err) {
         reject(err);
       } else {
@@ -276,6 +292,19 @@ function readPoints() {
   });
 }
 
+function readPointById(id) {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT * FROM POINTS WHERE idPoint = ?';
+    db.get(sql, id, (err, row) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(row);
+      }
+    });
+  });
+}
+
 function addPoint(point) {
   return new Promise((resolve, reject) => {
     const sql = 'INSERT INTO POINTS (address, nameLocation, gps_coordinates, type) VALUES(?,?,?,?)';
@@ -367,5 +396,5 @@ module.exports = {
   updateHikeAscent, updateHikeLength, updateHikeDescription, updateHikeDifficulty,
   updateHikeET, updateHikeStartPoint, updateHikeEndPoint, updateHikeRefPoint,
   readPoints, addPoint, updatePoint, deletePoint,
-  updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, readReferencePoints
+  updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, readListOfReferencePoints, readPointById//readReferencePoints
 };
