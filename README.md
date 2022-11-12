@@ -82,7 +82,7 @@ The list of correlations between hikes and points
 Mario Rossi:
 - email: mario.rossi@gmail.com
 - password: hello12
-- role: hiker
+- role: Hiker
 
 Paulina Knight:
 - email: paulina.knight@gmail.com
