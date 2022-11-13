@@ -1,8 +1,23 @@
 import { Button, Form, Col, Row } from 'react-bootstrap';
+import { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import API from '../API';
 
 //Called in PageLayout.SearchLayout and SearchLayout is called in App
 function SearchHut(){
+
+  const { handleErrors } = useContext(MessageContext);
+  const [huts, setHuts] = useState([]);
+
+  useEffect(() =>{
+    try{
+      const list = await API.getHuts();
+      setHuts(list);
+    } catch(e){
+      handleErrors(e);
+    }
+  }, []);
+
     return(
       <Col className="vh-100 justify-content-md-center">
         <Row>
@@ -46,9 +61,12 @@ function SearchHut(){
                 </Form.Group>
               </Col>
             </Row>
-            <Button className="mt-3 me-3">Login</Button>
-            <Button className="mt-3" >Cancel</Button>
+            <Button className="mt-3 me-3">Search</Button>
+            <Button className="mt-3" type='reset'>Cancel</Button>
           </Form>
+        </Row>
+        <Row>
+          Huts will appear here
         </Row>
       </Col>
     )

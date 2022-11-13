@@ -158,6 +158,33 @@ async function getHikes(){
 	}
 }
 
+/*************************HIKER API****************************/
+
+async function getHuts(){
+	const url = 'http://localhost:3001' + '/api/getHuts';
+	try {
+		const response = await fetch(url, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+		}
+		});
+		if(response.ok){
+			const list = await response.json();
+			return list;
+		}
+		else{
+			//console.log(response.statusText);
+			const text = await response.text();
+			throw new TypeError(text);
+		}
+	}
+	catch(e){
+		//console.log(e);
+		throw e;
+	}
+}
+
 /*************************LOCAL GUIDE API**********************/
 
 function addNewHike(newHike) {
@@ -204,6 +231,6 @@ function addNewHike(newHike) {
 
 //EXPORT FUNCTIONS------------------------------
 const API = {
-	logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, getHikes, addNewHike,addPoint
+	logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, getHikes, addNewHike,addPoint, getHuts
 }
 export default API;
