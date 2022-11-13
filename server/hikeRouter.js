@@ -13,4 +13,7 @@ router.get('/getHikes', async (req, res) => {
     }
 });
 router.post('/User',c.addUser);
+
+router.post('/Point',c.addPoint);
+
 module.exports = router

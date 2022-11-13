@@ -57,4 +57,18 @@ exports.addUser =async function(req,res)  {
     }
 )
 }});
+
+
+
+}
+exports.addPoint =async function(req,res)  {
+
+    dao.addPoint(req.body.point).then(
+    result => {
+        return res.status(200).json();                       
+    },
+    error => {
+        return res.status(500).send(error);
+    }
+)
 }

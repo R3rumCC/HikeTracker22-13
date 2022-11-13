@@ -39,7 +39,7 @@ function LocalGuide_Home(props){
         <InsertionOptions setHikeForm={selectHike} setParkingForm={selectParking} setHutForm={selectHut}></InsertionOptions>
         <Form>
             <div>{hikeForm ? <HikeForm/> : <></>}</div>
-            <div>{parkingLotForm ? <ParkingLotForm/> : <></>}</div>
+            <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} test={props.test}/> : <></>}</div>
             <div>{hutForm ? <HutForm/> : <></>}</div>
         </Form>
 
@@ -306,9 +306,75 @@ function HutForm(props){
 /**PARKING FORM */
 
 function ParkingLotForm(props){
-    return(<>
-        <text>parking lot form</text>
-  </>)
+   
+    const [title, setTitle]= useState('')
+    const [position,setPosition]= useState('')
+    const [address, setAddress]= useState('')
+    const [type, setType]= useState('Parking Lot')
+    //const [map, setMap]= useState()
+
+    const [errorMsg, setErrorMsg] = useState("");
+
+
+    const handleSubmit = (event) => {
+        console.log(123123);
+		event.preventDefault();
+		// validation
+		if (title.trim().length !== 0) {
+			let newPoint;
+				if (address.trim().length !== 0) {
+						newPoint = {nameLocation: title, address: address,gps_coordinates:position, type: type };				
+				} else {
+					setErrorMsg("Error: Enter a valid address.");
+					return;
+				}
+			props.CreateNewPoint(newPoint);
+			alert('New parking lot added.');
+            console.log(newPoint);
+        }
+		else {
+			setErrorMsg("Error: Enter a valid title.");
+		}
+	};
+
+    return(
+
+
+<>
+        {errorMsg ? (
+            <Alert variant="danger" onClose={() => setErrorMsg("")} dismissible>
+                {errorMsg}
+            </Alert>
+        ) : (
+            false
+        )}
+        <Form onSubmit={handleSubmit} style={{fontSize:15, fontWeight:'bold'}} >
+            <Form.Group>
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                    value={title}
+                    onChange={(ev) => setTitle(ev.target.value)}
+                ></Form.Control>
+            </Form.Group>
+            <Form.Group>
+                <Form.Label>position</Form.Label>
+                <Form.Control
+                    value={position}
+                    onChange={(ev) => setPosition(ev.target.value)} 
+                ></Form.Control>
+            </Form.Group>
+            <Form.Group>
+                <Form.Label>Address</Form.Label>
+                <Form.Control
+                    value={address}
+                    onChange={(ev) => setAddress(ev.target.value)}
+                ></Form.Control>
+            </Form.Group>
+            <Button type='submit'>Save</Button>
+            <Button onClick={props.cancel}>Cancel</Button>
+        </Form>
+        
+   </>     )
 }
 
 export {LocalGuide_Home}
