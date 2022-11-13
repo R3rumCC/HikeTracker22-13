@@ -34,7 +34,9 @@ const Navigation = (props) => {
               </Navbar.Text>
             </Col> : null}
             <Col>
-              {props.loggedIn ? <SearchHutButton searchPage={searchPage} setSearchPage={setSearchPage} /> : <></>}
+              <Form>
+                  {props.loggedIn && props.user.role == "Hiker" ? <SearchHutButton searchPage={searchPage} setSearchPage={setSearchPage} /> : <></>}
+              </Form>
             </Col>
             <Col >
               {props.loggedIn ? <LogoutButton logout={props.logout} /> :  <LoginButton />}
