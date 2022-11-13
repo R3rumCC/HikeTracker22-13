@@ -121,8 +121,8 @@ function UserForm(props) {
 						onChange={(ev) => setPhoneNumber(ev.target.value)}
 					></Form.Control>
 				</Form.Group>
-				<Button type='submit'>Save</Button>
-				<Button onClick={props.cancel}>Cancel</Button>
+				<Button className='mt-3' type='submit'>Save</Button>
+				<Button className='mt-3 ms-3' onClick={props.cancel}>Cancel</Button>
 			</Form>
 			</Col>
 			</Row>
