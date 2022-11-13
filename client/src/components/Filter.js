@@ -4,7 +4,6 @@ import { Form, Button, Row, Col} from "react-bootstrap";
 
 const FilterForm = (props) => {
 
-    const [geographical_area, setGeographicalArea] = useState('')
     const [title, setTitle] = useState('')
     const [length, setLength] = useState('')
     const [expected_time, setExpectedTime] = useState('')
@@ -14,21 +13,25 @@ const FilterForm = (props) => {
     const [end_point, setEndPoint] = useState('')
     const [reference_points, setReferencePoints] = useState('')
     const [description, setDescription] = useState('')
+    const [city, setCity] = useState('')
+    const [province, setProvince] = useState('')
+    const [country, setCountry] = useState('')
 
     function handleSubmit(event) {
         const $ = require( "jquery" );
         let filteredHikes = ''
-        const filter = {geographical_area: geographical_area, title: title, length: length, expected_time: expected_time, ascent: ascent,
+        const filter = {city: city, country:country, province:province, title: title, length: length, expected_time: expected_time, ascent: ascent,
         difficulty: difficulty,start_point_nameLocation: start_point, end_point_nameLocation: end_point, reference_points: reference_points,
         description: description}
-        console.log(filter.geographical_area)
 
-        if(filter.geographical_area){
-            $.getJSON('http://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + filter.geographical_area, function(data) {
+
+        if(filter.city || filter.country || filter.province){
+            let str = "https://nominatim.openstreetmap.org/search?format=json&limit=1&city="+filter.city +"&county="+filter.province+"&country="+filter.country
+            $.getJSON(str
+            , function(data) {
 
                 $.each(data, function(key, val) {
                     filteredHikes = props.hikes.filter( (hike) =>{
-
                         let bool = true
                         //console.log(hike)
                         for (const key in hike){
@@ -43,12 +46,26 @@ const FilterForm = (props) => {
                                 if (filter[key] != hike[key])
                                     bool = false     
                             }
-                            if(filter.geographical_area){
-                                bool = false
-                                bool = val.display_name.split(',').some((v)=>{console.log(v.trim()); console.log(hike.start_point_address.split(',').map((v)=>v.trim())); return (hike.start_point_address.split(',').map((v)=>v.trim()).includes(v.trim())) || (hike.end_point_address.split(',').map((v)=>v.trim()).includes(v.trim()))})
-
-                            } 
                         }
+                        if(bool){
+                            if(filter.city||filter.province||filter.country){
+
+                                let values = val.display_name.split(',')
+                                if(filter.city)
+                                    bool = (hike.start_point_address.split(',').map((v)=>v.trim())).includes(values[0].trim())  || (hike.end_point_address.split(',').map((v)=>v.trim())).includes(values[0].trim())
+                                console.log(bool)
+                                if(filter.province && bool){
+                                    bool = (hike.start_point_address.split(',').map((v)=>v.trim())).includes(filter.city ? values[1].trim() : values[0].trim())  || (hike.end_point_address.split(',').map((v)=>v.trim())).includes(filter.city ? values[1].trim() : values[0].trim())
+                                    console.log(hike.start_point_address.split(',').map((v)=>v.trim()))
+                                }
+    
+                                if(filter.country && bool)
+                                    bool = (hike.start_point_address.split(',').map((v)=>v.trim())).includes(values[values.length - 1].trim())  || (hike.end_point_address.split(',').map((v)=>v.trim())).includes(values[values.length-1].trim())   
+                                //some((v)=>{/*console.log(v.trim()); console.log(hike.start_point_address.split(',').map((v)=>v.trim()));*/
+                                //    return (hike.start_point_address.split(',').map((v)=>v.trim())[3].includes(v.trim())) || (hike.end_point_address.split(',').map((v)=>v.trim()).includes(v.trim()))})
+                            }
+                        }
+ 
                         return bool
                         
                     }
@@ -103,13 +120,28 @@ const FilterForm = (props) => {
             <Row>
                 <Col>
                     <Form.Group className="mb-3">
-                        <Form.Label>Geographical Area</Form.Label>
-                        <Form.Control type="text" required={false} value={geographical_area} placeholder = {'Turin'} onChange={event => setGeographicalArea(event.target.value)}/>
+                        <Form.Label>City</Form.Label>
+                        <Form.Control type="text" required={false} value={city} placeholder = {'Turin'} onChange={event => setCity(event.target.value)}/>
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group className="mb-3">
-                        <Form.Label>Title</Form.Label>
+                        <Form.Label>Province</Form.Label>
+                        <Form.Control type="text" required={false} value={province} placeholder = {'Hike#1'} onChange={event => setProvince(event.target.value)}/>
+                    </Form.Group>
+                </Col>
+                <Col>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Country</Form.Label>
+                        <Form.Control type="text" required={false} value={country} placeholder = {123} onChange={event => setCountry(event.target.value)}/>
+                    </Form.Group>   
+                </Col>  
+
+            </Row>
+            <Row>
+                <Col>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Hike Title</Form.Label>
                         <Form.Control type="text" required={false} value={title} placeholder = {'Hike#1'} onChange={event => setTitle(event.target.value)}/>
                     </Form.Group>
                 </Col>

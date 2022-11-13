@@ -24,7 +24,7 @@ function HikesContainer(props){
     const hikes = props.hikes;
     return(
         <div className="d-flex justify-content-start flex-wrap">
-            {hikes.length != 0 ? hikes.map((hike) => {return(<HikeCard role={props.role} key={hike.title} hike={hike} setCurrentHike={props.setCurrentHike}/>)}) : <div>No result found</div>}
+            {hikes.length != 0 ? hikes.map((hike) => {return(<HikeCard role={props.role} key={hike.title} hike={hike} setCurrentHike={props.setCurrentHike}/>)}) : <h3>No result found</h3>}
         </div>
     );
 }
