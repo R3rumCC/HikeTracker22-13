@@ -36,12 +36,9 @@ function App() {
       <MessageContext.Provider value={{ handleErrors }}>
         <Container fluid className="App">
           <Routes>
-<<<<<<< HEAD
-            <Route path="/*" element={<Main />/*<LocalGuide_Home/> */}/>
-=======
             <Route path="/*" element={<Main />/*<LocalGuide_Home/>*/} />
->>>>>>> 9754d06bd57ac6c7f68bc67288c3992b51eaca09
           </Routes>
+          {}
           <Toast show={message !== ''} onClose={() => setMessage('')} delay={4000} autohide>
             <Toast.Body>{message}</Toast.Body>
           </Toast>
@@ -59,11 +56,13 @@ function Main() {
   const [currentHike, setCurrentHike] = useState([]);
 
   function handleError(err) {
+    
     toast.error(
       err.error,
       { position: "top-center" },
       { toastId: 12 }
     );
+    
   }
 
   //const { handleErrors } = useContext(MessageContext);
@@ -131,6 +130,12 @@ function Main() {
     
   };
 
+  //********HANDLE_NEW_HIKE*******//
+  const CreateNewHike = async (hike) => {
+    console.log(hike)
+     await API.addNewHike(hike)    
+  };
+
   // const test = async()=>{
   //   console.log("this is text")
   // }
@@ -141,7 +146,7 @@ function Main() {
       <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} />
       <Routes>
         <Route path="/" element={
-            loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint}/> :
+            loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHike={CreateNewHike}/> :
              <DefaultLayout role = {loggedIn ? currentUser.role : ''} setCurrentHike={setCurrentHike} />  /*<FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>

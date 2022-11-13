@@ -1,5 +1,6 @@
 import { Card, Button, Container, Row, ListGroup, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import React, { Component }  from 'react';
 
 function HikeCard(props) {
     return(
