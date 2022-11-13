@@ -19,7 +19,7 @@ const Navigation = (props) => {
   const [searchPage, setSearchPage] = useState(false);
 
   return (
-    <Navbar bg="primary" expand="lg" variant="dark" fixed="top" className="justify-content-between">
+    <Navbar bg="primary" expand="lg" variant="dark" className="justify-content-between">
       <Link to="/">
         <Navbar.Brand>
         <i className="bi bi-compass icon-size m-2"/> Hike Tracker
@@ -28,20 +28,16 @@ const Navigation = (props) => {
       <Nav>
         <Container fluid>
           <Row>
-            <Col>
+            {props.loggedIn ? <Col >
               <Navbar.Text >
-                {props.user && props.user.name && `Welcome, ${props.user.role ? props.user.role : ''} ${props.user.name}!`}
+                { `Welcome, ${props.user.role} ${props.user.name }!`}
               </Navbar.Text>
-            </Col>
+            </Col> : null}
             <Col>
-              <Form>
-                  {props.loggedIn ? <SearchHutButton searchPage={searchPage} setSearchPage={setSearchPage} /> : <></>}
-              </Form>
+              {props.loggedIn ? <SearchHutButton searchPage={searchPage} setSearchPage={setSearchPage} /> : <></>}
             </Col>
-            <Col xs={6}>
-              <Form className="me-5" >
-                  {props.loggedIn ? <LogoutButton logout={props.logout} /> :  <LoginButton />}
-              </Form>
+            <Col >
+              {props.loggedIn ? <LogoutButton logout={props.logout} /> :  <LoginButton />}
             </Col>
           </Row>
         </Container>

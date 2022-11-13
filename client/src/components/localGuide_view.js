@@ -147,7 +147,7 @@ function HikeForm(props){
     //Import gpx file and read, gpx parse it is used to retreive the start point and the end point (format latitude,longitude)
     //after have red the file it changes automatically the start point and the end point 
     const importGpx = (selectedFile) => {
-
+        const $ = require( "jquery" );
         let gpxParser = require('gpxparser');
         var gpx = new gpxParser()
 
@@ -156,15 +156,27 @@ function HikeForm(props){
         reader.readAsText(selectedFile);
       
         reader.onload = function() {
-          setMap(reader.result)  
-          gpx.parse(reader.result)
-          const positions = gpx.tracks[0].points.map(p => [p.lat, p.lon])
-          changeStartP(positions[0]);
-          changeEndP(positions[positions.length - 1]);
+            setMap(reader.result)  
+            gpx.parse(reader.result)
+            const positions = gpx.tracks[0].points.map(p => [p.lat, p.lon])
+            console.log(positions[0]);
+            console.log(positions[positions.length-1]);
+            $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+positions[0][0]+'&lon='+positions[0][1]+'&format=json&limit=1&q=', function(data) {
+
+            $.each(data, function(key, val) {
+                changeStartP(data.display_name);
+            })      
+            }); 
+            $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+positions[positions.length-1][0]+'&lon='+positions[positions.length-1][1]+'&format=json&limit=1&q=', function(data) {
+
+                $.each(data, function(key, val) {
+                    changeEndP(data.display_name);
+                })        
+            });
         };
       
         reader.onerror = function() {
-          console.log(reader.error);
+            console.log(reader.error);
         };
 
     }
