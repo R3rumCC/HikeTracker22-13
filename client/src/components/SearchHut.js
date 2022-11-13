@@ -10,23 +10,43 @@ function SearchHut(){
         </Row>
         <Row>
           <Form>
-            <Form.Group className="mb-3" controlId="username">
-              <Form.Label>Email</Form.Label>
+            <Form.Group className="mb-3" controlId="geo">
+              <Form.Label>Geographical Area</Form.Label>
               <Form.Control
-                type="email"
-                placeholder="Example: john.doe@polito.it"
-                required={true}
+                type="text"
+                placeholder="Enter the geographival area of the hut"
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="password">
-              <Form.Label>Password</Form.Label>
+            <Form.Group className="mb-3" controlId="name">
+              <Form.Label>Name</Form.Label>
               <Form.Control
-                type="password"
-                placeholder="Enter the password."
-                required={true} //minLength={6}
+                type="text"
+                placeholder="Enter the name of the hut"
               />
             </Form.Group>
-            <Button className="mt-3 me-3" type="submit">Login</Button>
+            <Row>
+              <Col>
+                <Form.Group>
+                  <Form.Label>Latitude</Form.Label>
+                  <Form.Control
+                    type="number" step="0.0000001"
+                    min="-90.0000000" max="90.0000000"
+                    placeholder='Enter the latitude'
+                  />
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group>
+                  <Form.Label>Longitude</Form.Label>
+                  <Form.Control
+                    type="number" step="0.0000001"
+                    min="-180.0000000" max="180.0000000"
+                    placeholder='Enter the longitude'
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Button className="mt-3 me-3">Login</Button>
             <Button className="mt-3" >Cancel</Button>
           </Form>
         </Row>
