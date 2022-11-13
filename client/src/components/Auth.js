@@ -68,7 +68,7 @@ function LoginForm(props) {
           <Button className="mt-3 me-3" type="submit">Login</Button>
           <Button className="mt-3" onClick={() => navigate(oldPath)}>Cancel</Button>
           <Link to='/register'>
-          <Button variant='success' >no account? get one now </Button>
+          <Button variant='success' className='mt-3 ms-3'>Don't you have account? Get one now </Button>
         </Link>
         </Form>
       </Col>
