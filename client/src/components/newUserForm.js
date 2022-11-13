@@ -44,6 +44,7 @@ function UserForm(props) {
 				return;
 			}
 			props.CreateNewAccount(newUser);
+			alert('New user registration succeeded');
 			navigate('/login');
 		} else {
 			setErrorMsg("Error: Enter a valid name.");
