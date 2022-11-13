@@ -14,10 +14,9 @@ code {
 }
 
 html {
-  background-color: rgba(65, 224, 65, 0.2);
+  /*background-color: rgba(65, 224, 65, 0.2);*/
 }
 
 #root {
-  background-color: rgba(65, 224, 65, 0.2);
   padding-bottom: 50px;
 }

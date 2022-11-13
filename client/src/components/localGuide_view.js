@@ -36,11 +36,11 @@ function LocalGuide_Home(props){
             HELLO LOCAL GUIDE
         </text>
         <InsertionOptions setHikeForm={selectHike} setParkingForm={selectParking} setHutForm={selectHut}></InsertionOptions>
-        <Form>
-            <div>{hikeForm ? <HikeForm/> : <></>}</div>
-            <div>{parkingLotForm ? <ParkingLotForm/> : <></>}</div>
-            <div>{hutForm ? <HutForm/> : <></>}</div>
-        </Form>
+        <div>
+            {hikeForm ? <HikeForm/> : <></>}
+            {parkingLotForm ? <ParkingLotForm/> : <></>}
+            {hutForm ? <HutForm/> : <></>}
+        </div>
 
     </Container>
     )
@@ -78,11 +78,14 @@ function HikeForm(props){
     const [expTime, setExpTime] = useState('')
     const [ascent, setAscent]= useState('')
     const [difficulty, setDifficulty]= useState('')
-    const [startPoint, setStartPoint]= useState()
-    const [endPoint, setEndPoint]= useState()
+    const [startPoint, setStartPoint]= useState('')
+    const [endPoint, setEndPoint]= useState('')
     //const [refPoints, setRefPoints]= useState([])
     const [description, setDescription]= useState('')
     //const [map, setMap]= useState()
+
+    const[points, setPoints]= useState([]);
+    //const Points
 
     const [errorMsg, setErrorMsg] = useState(""); //to be fixed
     const updateErrorMsg= (val)=>{setErrorMsg(val); }
@@ -101,14 +104,14 @@ function HikeForm(props){
         event.preventDefault();
         let newHike;
         //Checks on needed fields
-        if(title!== ''){ 
+        if(title!== ""){ 
             if(length!== '' && difficulty=== ''){
                  if(startPoint!=='' && endPoint!==''){
                     if(description!==''){
 
                         //here do the check on user's role and then add the new Hike
                         newHike={title: title, length: length, expected_time: expTime, ascent: ascent, difficulty: difficulty, 
-                                startPoint:startPoint, endPoint: endPoint, description: description //start/end + ref points + map
+                                startPoint:startPoint, endPoint: endPoint, description: description // ref points + map
                                 }
                         console.log(newHike);
                         //NEXT STEPS: 
@@ -142,7 +145,8 @@ function HikeForm(props){
     
 
     return(<>
-        {errorMsg ? <Alert variant="danger" onClose={updateErrorMsg('')}>{errorMsg}</Alert> : <></>}
+        {errorMsg ? (<Alert variant="danger" onClose={()=>{setErrorMsg("");}}> {errorMsg}</Alert>) : (false)}
+        
 
     <Form id='hikeForm' style={{fontSize:15, fontWeight:'bold'}} onSubmit={submitHikeForm}>
         <Form.Group>
@@ -205,7 +209,7 @@ function HikeForm(props){
         <Form.Group>
             <Form.Label>//TODO   Reference Points</Form.Label>
         </Form.Group>
-        <Button type='submit' style={{background:'green'}}>SAVE</Button>
+        <Button type='submit' style={{background:'green'}} onClick={submitHikeForm}>SAVE</Button>
     </Form>
     </>)
 }

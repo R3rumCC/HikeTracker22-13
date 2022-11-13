@@ -6,6 +6,7 @@ import { MapContainer, Polyline, TileLayer, Map, Marker, Popup } from 'npm i rea
 
 
 function HikePage(props) {
+    
     return (
         <Col className="vh-100 justify-content-md-center">
             <Row fixed="top" className=''>
@@ -35,6 +36,7 @@ function HikePage(props) {
             </Row>
         </Col>
     )
+    
 };
 
 
