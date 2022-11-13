@@ -24,6 +24,16 @@ exports.getHikes = async function()  {
     }
 }
 
+exports.getHuts = async function() {
+    try{
+        const huts = await dao.getHuts();
+        return huts;
+    } catch(e){
+        console.log(e);
+        throw e;
+    }
+}
+
 function RandomIndex(min, max, i,_charStr){
     
     let index = Math.floor(Math.random()*(max-min+1)+min),

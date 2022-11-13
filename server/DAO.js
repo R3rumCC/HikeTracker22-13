@@ -390,11 +390,24 @@ function updatePointType(oldIdPoint, type) {
   });
 }
 
+function readHuts(){
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT * FROM POINTS WHERE type = Hut';
+    db.all(sql, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
 module.exports = {
   readUsers, addUser, deleteUser, updateUserRole,
   readHikes, addHike, deleteHike, updateHike, updateHikeTitle,
   updateHikeAscent, updateHikeLength, updateHikeDescription, updateHikeDifficulty,
   updateHikeET, updateHikeStartPoint, updateHikeEndPoint, updateHikeRefPoint,
-  readPoints, addPoint, updatePoint, deletePoint,
+  readPoints, addPoint, updatePoint, deletePoint, readHuts,
   updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, readListOfReferencePoints, readPointById//readReferencePoints
 };

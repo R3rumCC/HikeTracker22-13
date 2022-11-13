@@ -2,6 +2,7 @@ import { Button, Form, Col, Row } from 'react-bootstrap';
 import { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../API';
+import MessageContext from '../messageCtx';
 
 //Called in PageLayout.SearchLayout and SearchLayout is called in App
 function SearchHut(){
@@ -9,13 +10,18 @@ function SearchHut(){
   const { handleErrors } = useContext(MessageContext);
   const [huts, setHuts] = useState([]);
 
-  useEffect(() =>{
+  async function getHuts(){
     try{
       const list = await API.getHuts();
       setHuts(list);
     } catch(e){
       handleErrors(e);
     }
+  }
+
+  useEffect(() =>{
+    getHuts();
+    console.log(huts);
   }, []);
 
     return(

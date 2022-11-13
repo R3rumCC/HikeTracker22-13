@@ -16,4 +16,13 @@ router.post('/User',c.addUser);
 
 router.post('/Point',c.addPoint);
 
+router.get('/getHuts', async (req, res) => {
+    try{
+        const huts = await c.getHuts();
+        res.status(200).json(huts).end();
+    } catch (e){
+        res.status(500).json(e).end();
+    }
+});
+
 module.exports = router
