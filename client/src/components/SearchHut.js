@@ -1,8 +1,20 @@
-import { Button, Form, Col, Row } from 'react-bootstrap';
+import { Button, Form, Col, Row, Card } from 'react-bootstrap';
 import { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../API';
 import MessageContext from '../messageCtx';
+
+function HutCard(props){
+  return(
+    <Card>
+      <Card.Header>{props.hut.nameLocation}</Card.Header>
+      <Card.Body>
+        <Card.Text>Address: {props.hut.address}</Card.Text>
+        <Card.Text>Coordinates: {props.hut.gps_coordinates}</Card.Text>
+      </Card.Body>
+    </Card>
+  )
+}
 
 //Called in PageLayout.SearchLayout and SearchLayout is called in App
 function SearchHut(){
@@ -13,6 +25,8 @@ function SearchHut(){
   async function getHuts(){
     try{
       const list = await API.getHuts();
+      console.log("Post API");
+      console.log(list);
       setHuts(list);
     } catch(e){
       handleErrors(e);

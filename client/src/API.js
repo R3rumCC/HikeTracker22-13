@@ -165,6 +165,7 @@ async function getHuts(){
 	try {
 		const response = await fetch(url, {
 			method: 'GET',
+			credentials: 'include',
 			headers: {
 				'Content-Type': 'application/json'
 		}
@@ -180,7 +181,7 @@ async function getHuts(){
 		}
 	}
 	catch(e){
-		//console.log(e);
+		console.log(e);
 		throw e;
 	}
 }

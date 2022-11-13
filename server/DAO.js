@@ -392,7 +392,7 @@ function updatePointType(oldIdPoint, type) {
 
 function readHuts(){
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM POINTS WHERE type = Hut';
+    const sql = 'SELECT * FROM POINTS where type = Hut';
     db.all(sql, (err, rows) => {
       if (err) {
         reject(err);

@@ -26,7 +26,7 @@ exports.getHikes = async function()  {
 
 exports.getHuts = async function() {
     try{
-        const huts = await dao.getHuts();
+        const huts = await dao.readHuts();
         return huts;
     } catch(e){
         console.log(e);
