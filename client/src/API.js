@@ -158,6 +158,34 @@ async function getHikes(){
 	}
 }
 
+/*************************HIKER API****************************/
+
+async function getHuts(){
+	const url = 'http://localhost:3001' + '/api/getHuts';
+	try {
+		const response = await fetch(url, {
+			method: 'GET',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json'
+		}
+		});
+		if(response.ok){
+			const list = await response.json();
+			return list;
+		}
+		else{
+			//console.log(response.statusText);
+			const text = await response.text();
+			throw new TypeError(text);
+		}
+	}
+	catch(e){
+		console.log(e);
+		throw e;
+	}
+}
+
 /*************************LOCAL GUIDE API**********************/
 
 function addNewHike(newHike) {
@@ -181,8 +209,29 @@ function addNewHike(newHike) {
 	});
   }
 
+  function addPoint(point) {
+	return new Promise((resolve, reject) => {
+	  fetch(URL + '/Point', {
+		method: 'POST',
+		credentials: 'include',
+		headers: {
+		  'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ point }),
+	  }).then((response) => {
+		if (response.ok) {
+		  resolve(null);
+		} else {
+		  response.json()
+			.then((obj) => { reject(obj); })
+			.catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+		}
+	  }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+	});
+  }
+
 //EXPORT FUNCTIONS------------------------------
 const API = {
-	logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, getHikes, addNewHike
+	logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, getHikes, addNewHike,addPoint, getHuts
 }
 export default API;

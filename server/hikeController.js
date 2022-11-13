@@ -24,6 +24,16 @@ exports.getHikes = async function()  {
     }
 }
 
+exports.getHuts = async function() {
+    try{
+        const huts = await dao.readHuts();
+        return huts;
+    } catch(e){
+        console.log(e);
+        throw e;
+    }
+}
+
 function RandomIndex(min, max, i,_charStr){
     
     let index = Math.floor(Math.random()*(max-min+1)+min),
@@ -57,4 +67,18 @@ exports.addUser =async function(req,res)  {
     }
 )
 }});
+
+
+
+}
+exports.addPoint =async function(req,res)  {
+ //   console.log(req.body.point);
+    dao.addPoint(req.body.point).then(
+    result => {
+        return res.status(200).json();                       
+    },
+    error => {
+        return res.status(500).send(error);
+    }
+)
 }

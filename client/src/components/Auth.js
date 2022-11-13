@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Form, Button, Alert, Col, Row } from 'react-bootstrap';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Form, Button, Alert, Col, Row} from 'react-bootstrap';
+import { useLocation, useNavigate,Link } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from "react-toastify";
 
@@ -66,6 +66,9 @@ function LoginForm(props) {
           </Form.Group>
           <Button className="mt-3 me-3" type="submit">Login</Button>
           <Button className="mt-3" onClick={() => navigate(oldPath)}>Cancel</Button>
+          <Link to='/register'>
+          <Button variant='success' >no account? get one now </Button>
+        </Link>
         </Form>
       </Col>
     </Row>

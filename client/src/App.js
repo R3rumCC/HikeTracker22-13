@@ -52,7 +52,7 @@ function Main() {
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
-  const [currentHike, setCurrentHike] = useState([])
+  const [currentHike, setCurrentHike] = useState([]);
 
   function handleError(err) {
     toast.error(
@@ -112,11 +112,24 @@ function Main() {
 
   //********HANDLE_REGISTER*******//
   const CreateNewAccount = async (user) => {
-    console.log(user);
+    //console.log(user);
    
     await API.addUser(user);
     
   };
+  /*****************************************************/
+
+  //********HANDLE_ADD_POINT*******//
+  const CreateNewPoint = async (point) => {
+    console.log(point);
+   
+    await API.addPoint(point)
+    
+  };
+
+  // const test = async()=>{
+  //   console.log("this is text")
+  // }
   /*****************************************************/
 
   return (
@@ -124,7 +137,7 @@ function Main() {
       <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} />
       <Routes>
         <Route path="/" element={
-            loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home /> :
+            loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint}/> :
              <DefaultLayout role = {loggedIn ? currentUser.role : ''} setCurrentHike={setCurrentHike} />  /*<FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>
