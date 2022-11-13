@@ -33,15 +33,15 @@ function LocalGuide_Home(props){
     
     //The container                    
     return(<Container>
-        <text style={{color: 'green', fontSize:30, fontWeight:'bold', textAlign:'center'}}>
+        <div style={{color: 'green', fontSize:30, fontWeight:'bold', textAlign:'center'}}>
             HELLO LOCAL GUIDE
-        </text>
+        </div>
         <InsertionOptions setHikeForm={selectHike} setParkingForm={selectParking} setHutForm={selectHut}></InsertionOptions>
-        <Form>
+        <Row>
             <div>{hikeForm ? <HikeForm/> : <></>}</div>
-            <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} test={props.test}/> : <></>}</div>
+            <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} /> : <></>}</div>
             <div>{hutForm ? <HutForm/> : <></>}</div>
-        </Form>
+        </Row>
 
     </Container>
     )
@@ -317,7 +317,7 @@ function ParkingLotForm(props){
 
 
     const handleSubmit = (event) => {
-        console.log(123123);
+        console.log(props.test);
 		event.preventDefault();
 		// validation
 		if (title.trim().length !== 0) {
@@ -358,6 +358,7 @@ function ParkingLotForm(props){
             </Form.Group>
             <Form.Group>
                 <Form.Label>position</Form.Label>
+                <Form.Label>//TODO Map</Form.Label>
                 <Form.Control
                     value={position}
                     onChange={(ev) => setPosition(ev.target.value)} 
@@ -371,6 +372,7 @@ function ParkingLotForm(props){
                 ></Form.Control>
             </Form.Group>
             <Button type='submit'>Save</Button>
+            {/* <Button onClick={props.test}>test</Button> */}
             <Button onClick={props.cancel}>Cancel</Button>
         </Form>
         

@@ -53,7 +53,6 @@ function Main() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
   const [currentHike, setCurrentHike] = useState([]);
-  const [test,setTest]=useState('this is a text.')
 
   function handleError(err) {
     toast.error(
@@ -127,6 +126,10 @@ function Main() {
     await API.addPoint(point)
     
   };
+
+  // const test = async()=>{
+  //   console.log("this is text")
+  // }
   /*****************************************************/
 
   return (
@@ -134,7 +137,7 @@ function Main() {
       <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} />
       <Routes>
         <Route path="/" element={
-            loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} test={test}/> :
+            loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint}/> :
              <DefaultLayout role = {loggedIn ? currentUser.role : ''} setCurrentHike={setCurrentHike} />  /*<FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>

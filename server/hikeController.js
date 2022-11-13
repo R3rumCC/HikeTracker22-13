@@ -62,7 +62,7 @@ exports.addUser =async function(req,res)  {
 
 }
 exports.addPoint =async function(req,res)  {
-
+ //   console.log(req.body.point);
     dao.addPoint(req.body.point).then(
     result => {
         return res.status(200).json();                       
