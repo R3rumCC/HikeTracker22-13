@@ -3,12 +3,6 @@ import { Row, Col, Button, Container, Form, FormGroup, FormLabel, ButtonGroup , 
 import API from '../API';
 
 
-//Function for calling the addNewHike API
-const addHike= (newHike)=>{
-    //setHikes((oldHikes)=>[...oldHikes, newHike]); --> not necessary(?)
-    API.addNewHike(newHike)//.then(()=>{setDirty(true)});
-}
-
 function LocalGuide_Home(props){
     //states to select the form from buttons
     const [hikeForm, setHikeForm]= useState(false);
@@ -38,11 +32,10 @@ function LocalGuide_Home(props){
         </div>
         <InsertionOptions setHikeForm={selectHike} setParkingForm={selectParking} setHutForm={selectHut}></InsertionOptions>
         <Row>
-            <div>{hikeForm ? <HikeForm/> : <></>}</div>
+            <div>{hikeForm ? <HikeForm CreateNewHike={props.CreateNewHike}/> : <></>}</div>
             <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} /> : <></>}</div>
-            <div>{hutForm ? <HutForm/> : <></>}</div>
+            <div>{hutForm ? <HutForm CreateNewPoint={props.CreateNewPoint}/> : <></>}</div>
         </Row>
-
     </Container>
     )
 }
@@ -79,22 +72,24 @@ function HikeForm(props){
     const [expTime, setExpTime] = useState('')
     const [ascent, setAscent]= useState('')
     const [difficulty, setDifficulty]= useState('')
-    const [startPoint, setStartPoint]= useState()
-    const [endPoint, setEndPoint]= useState()
-    //const [refPoints, setRefPoints]= useState([])
+    //start and end point must be choosen from the list of points
+    const [startPoint, setStartPoint]= useState(0)
+    const [endPoint, setEndPoint]= useState(0)
+    const [refPoints, setRefPoints]= useState([])
     const [description, setDescription]= useState('')
 
 
     const [map, setMap]= useState('') //USED TO SAVE MAP STRING
+    //const[points, setPoints]= useState([]);
+    //const Points
 
     const [errorMsg, setErrorMsg] = useState(""); //to be fixed
-    const updateErrorMsg= (val)=>{setErrorMsg(val); }
 
-    const changeTitle= (val)=>{setTitle(val); console.log(title)}
+    const changeTitle= (val)=>{setTitle(val)}
     const changeLength= (val)=>{setLength(val)}
     const changeExpTime= (val)=>{setExpTime(val)}
     const changeAscent= (val)=>{setAscent(val)}
-    const changeDifficulty= (val)=>{setDifficulty(val)}
+    const changeDifficulty= (val)=>{setDifficulty(val);}
     const changeStartP= (val) =>{setStartPoint(val)}
     const changeEndP= (val) =>{setEndPoint(val)}
     const changeDescription= (val)=>{setDescription(val)}
@@ -105,28 +100,20 @@ function HikeForm(props){
         event.preventDefault();
         let newHike;
         //Checks on needed fields
-        if(title!== ''){ 
-            if(length!== '' && difficulty=== ''){
-                 if(startPoint!=='' && endPoint!==''){
-                    if(description!==''){
+        if(title!== ""){ 
+            if(length!== "" && difficulty!== ""){
+                 if(startPoint!==0 && endPoint!==0){
+                    if(description!== ""){
 
-                        //here do the check on user's role and then add the new Hike
+                        const sql = 'INSERT INTO HIKES (title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description) VALUES(?,?,?,?,?,?,?,?,?)';
+
+                        //here do the check on user's role (?) and then add the new Hike
                         newHike={title: title, length: length, expected_time: expTime, ascent: ascent, difficulty: difficulty, 
-                                startPoint:startPoint, endPoint: endPoint, description: description //start/end + ref points + map
+                                startPoint:startPoint, endPoint: endPoint, reference_points: refPoints,description: description //map
                                 }
-                        //console.log(newHike);
-                        //NEXT STEPS: 
-                        //1) props.addHike (just addHike if defined in this file)
-                        //2) reset all state values and/or redirect + success message
-                        //2
-                        setTitle('')
-                        setLength('')
-                        setExpTime('')
-                        setAscent('')
-                        setStartPoint('')
-                        setEndPoint('')
-                        setDifficulty('')
-                        setDescription('')
+                        console.log(newHike);
+                        props.CreateNewHike(newHike)
+                        alert('New Hike correctly added!')
 
                     }else{
                         setErrorMsg("Enter a description before submit.");
@@ -140,8 +127,14 @@ function HikeForm(props){
         } else{
             setErrorMsg("Enter a title before submit."); 
         }
-           
-        
+    }
+
+    const reset= ()=>{
+        setTitle(''); 
+        setLength(''); setExpTime(''); setAscent('')
+        setStartPoint(0); setEndPoint(0)
+        //setRefPoints() --> vector
+        setDifficulty(''); setDescription('')
     }
     
     //Import gpx file and read, gpx parse it is used to retreive the start point and the end point (format latitude,longitude)
@@ -182,9 +175,9 @@ function HikeForm(props){
     }
 
     return(<>
-        {errorMsg ? <Alert variant="danger" onClose={updateErrorMsg('')}>{errorMsg}</Alert> : <></>}
-
-    <Form id='hikeForm' style={{fontSize:15, fontWeight:'bold'}} onSubmit={submitHikeForm}>
+        {errorMsg ? (<Alert variant="danger" onClose={()=>{setErrorMsg("");}} dismissible> {errorMsg}</Alert>) : (false)}
+        
+    <Form id='hikeForm' onSubmit={submitHikeForm} style={{fontSize:15, fontWeight:'bold'}}>
         <Form.Group>
 			<Form.Label>Title</Form.Label>
 			<Form.Control value={title} onChange={(ev) => changeTitle(ev.target.value)}/>
@@ -192,7 +185,7 @@ function HikeForm(props){
         <Form.Group>
             <Row>
                 <Col>
-			        <Form.Label>Lenght</Form.Label>
+			        <Form.Label>Length</Form.Label>
                     <InputGroup className="mb-3">
                         <Form.Control value={length} onChange={(ev) => changeLength(ev.target.value)} placeholder="3.2"/>
                         <InputGroup.Text id="basic-addon2">Km</InputGroup.Text>
@@ -216,11 +209,11 @@ function HikeForm(props){
                 </Col>
                 <Col>
                     <Form.Label>Difficulty</Form.Label>
-                    <Form.Select>
+                    <Form.Select onChange={(ev) => changeDifficulty(ev.target.value)}>
                         <option label=''></option>
-                        <option value='easy'  label="Easy" onChange={(ev) => changeDifficulty(ev.target.value)}/>
-                        <option value='medium' label="Medium" onChange={(ev) => changeDifficulty(ev.target.value)}/>
-                        <option value='hard' label="Hard" onChange={(ev) => changeDifficulty(ev.target.value)}/>
+                        <option value='easy'  label="Easy"/>
+                        <option value='medium' label="Medium"/>
+                        <option value='hard' label="Hard"/>
                     </Form.Select>
                 </Col>
             </Row>
@@ -253,6 +246,7 @@ function HikeForm(props){
             <Form.Label>//TODO   Reference Points</Form.Label>
         </Form.Group>
         <Button type='submit' style={{background:'green'}}>SAVE</Button>
+        <Button style={{background:'green'}} onClick={reset}>Cancel</Button>
     </Form>
     </>)
 }
@@ -264,21 +258,51 @@ function HutForm(props){
 
     const [title, setTitle]= useState('')
     const [position,setPosition]= useState('')
-    const [description, setDescription]= useState('')
+    const [address, setAddress]= useState('')
     //const [refPoints, setRefPoints]= useState([])
     //const [map, setMap]= useState()
 
     const [errorMsg, setErrorMsg] = useState("");
-    const updateErrorMsg= (val)=>{setErrorMsg(val); }
 
     const changeTitle= (val)=>{setTitle(val);}
     const changePosition= (val)=>{setPosition(val)}
-    const changeDescription= (val)=>{setDescription(val)}
+    const changeAddress= (val)=>{setAddress(val)}
+
+    const submitHutForm= (event)=>{
+        event.preventDefault();
+        let newHut;
+        if(title!==""){
+            if(position!==''){
+                if(address!==""){
+
+                    newHut= {address: address, nameLocation: title, gps_coordinates: position , type: 'Hut'}
+                    console.log('Before form submission newHut=')
+                    console.log(newHut)
+                    //call to the API
+                    props.CreateNewPoint(newHut)
+			        alert('New Hut correctly added!')
+                    
+                    console.log(newHut)
+
+                }else{
+                    setErrorMsg("An address for the hut is required."); 
+                }
+            }else{
+                setErrorMsg("A position for the hut is required."); 
+            }
+        }else{
+            setErrorMsg("Enter a title before submit."); 
+        }
+    }
+
+    const reset= ()=>{
+        setTitle(''); setPosition(''); setAddress('')
+    }
 
     return(<>
-        {/*errorMsg ? <Alert variant="danger" onClose={updateErrorMsg('')}>{errorMsg}</Alert> : <></>   -->TO BE CHECKED*/}
+        {errorMsg ? (<Alert variant="danger" onClose={()=>{setErrorMsg("");}} dismissible> {errorMsg}</Alert>) : (false)}
 
-    <Form id='hutForm' style={{fontSize:15, fontWeight:'bold'}}>
+    <Form id='hutForm' onSubmit={submitHutForm} style={{fontSize:15, fontWeight:'bold'}}>
         <Form.Group>
 			<Form.Label>Title</Form.Label>
 			<Form.Control value={title} onChange={(ev) => changeTitle(ev.target.value)}/>
@@ -290,14 +314,15 @@ function HutForm(props){
             </Row>
             <Form.Label>//TODO Map</Form.Label>
             <Row>
-			    <Form.Label>Description</Form.Label>
-			    <Form.Control value={description} onChange={(ev) => changeDescription(ev.target.value)}/>
+			    <Form.Label>Address</Form.Label>
+			    <Form.Control value={address} onChange={(ev) => changeAddress(ev.target.value)}/>
             </Row>
 		</Form.Group>
         <Form.Group>
-            <Form.Label>//TODO   Reference Points</Form.Label>
+            <Form.Label>//TODO Add Reference Points</Form.Label>
         </Form.Group>
         <Button type='submit' style={{background:'red'}}>SAVE</Button>
+        <Button style={{background:'red'}} onClick={reset}>Cancel</Button>
     </Form>
     </>)
 }

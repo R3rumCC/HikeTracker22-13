@@ -190,7 +190,7 @@ async function getHuts(){
 
 function addNewHike(newHike) {
 	return new Promise((resolve, reject) => {
-	  fetch(URL + '/hike', {
+	  fetch(URL + '/newHike', {
 		method: 'POST',
 		credentials: 'include',
 		headers: {
@@ -232,6 +232,6 @@ function addNewHike(newHike) {
 
 //EXPORT FUNCTIONS------------------------------
 const API = {
-	logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, getHikes, addNewHike,addPoint, getHuts
+	logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, addNewHike, getHikes, addPoint, getHuts
 }
 export default API;

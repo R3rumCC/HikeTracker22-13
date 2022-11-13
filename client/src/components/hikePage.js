@@ -4,6 +4,8 @@ import { Icon } from 'leaflet'
 import { MapContainer, Polyline, TileLayer, Map, Marker, Popup } from 'react-leaflet'
 import { AiFillEnvironment } from "react-icons/ai";
 import { start } from '@popperjs/core';
+import React, { Component }  from 'react';
+
 
 
 // THE GPX FILE MUST BE PASSED AS AN STRING. HERE I LEAVE AN EXAMPLE:
@@ -34,8 +36,7 @@ function HikePage(props) {
     gpx.parse(props.currentHike[0].gpx_track) // This attribute is the .gpx file that defines the hike. 
 	const positions = gpx.tracks[0].points.map(p => [p.lat, p.lon])
     console.log(positions[0]," ",positions[positions.length-1])
-
-    return (
+ return (
         <Col className="vh-100 justify-content-md-center">
             <Row className='my-3'>
                 <Col sm={4}>
@@ -81,6 +82,7 @@ function HikePage(props) {
             </Row>
         </Col>
     )
+    
 };
 
 
