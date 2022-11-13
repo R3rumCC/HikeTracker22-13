@@ -11,16 +11,19 @@
     "bootstrap-icons": "^1.9.1",
     "dayjs": "^1.11.3",
     "gpxparser": "^3.0.8",
+    "jquery": "^3.6.1",
+    "jsdom": "^20.0.2",
     "leaflet": "^1.9.2",
     "react": "^18.2.0",
     "react-bootstrap": "^2.4.0",
     "react-bootstrap-icons": "^1.9.1",
     "react-dom": "^18.2.0",
+    "react-icons": "^4.6.0",
     "react-leaflet": "^4.1.0",
     "react-router-dom": "^6.3.0",
     "react-script": "^2.0.5",
     "react-scripts": "5.0.1",
-    "react-toastify": "^9.0.8",
+    "react-toastify": "^9.1.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -50,5 +53,6 @@
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "index.js",
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {}
 }

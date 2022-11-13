@@ -71,6 +71,7 @@ function readHikes() {
         ascent,
         difficulty,
         description,
+        gpx_track,
         SP.idPoint AS start_point_idPoint,
         SP.address AS start_point_address,
         SP.nameLocation AS start_point_nameLocation,
@@ -98,7 +99,7 @@ function readHikes() {
   });
 }
 
-function readReferencePoints(title) { // RP for a given hike
+/*function readReferencePoints(title) { // RP for a given hike
   return new Promise((resolve, reject) => {
     const sql = `
     SELECT p.idPoint,
@@ -108,13 +109,29 @@ function readReferencePoints(title) { // RP for a given hike
       p.type
     FROM Hikes h
     JOIN HikePoint hp
-    ON h.title = hp.ttitleHike
+    ON h.title = hp.titleHike
     JOIN Points p
     ON p.idPoint = hp.idPoint
     WHERE h.title = ?
       ;
     `;
     db.all(sql, [title], (err, rp) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rp)
+      }
+    });
+  });
+}*/
+
+function readListOfReferencePoints(title) { // RP for a given hike
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT reference_points
+    FROM Hikes H, HikePoint HP, Points P
+    WHERE H.title = HP.titleHike
+    AND title = ?`;
+    db.get(sql, [title], (err, rp) => {
       if (err) {
         reject(err);
       } else {
@@ -275,6 +292,19 @@ function readPoints() {
   });
 }
 
+function readPointById(id) {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT * FROM POINTS WHERE idPoint = ?';
+    db.get(sql, id, (err, row) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(row);
+      }
+    });
+  });
+}
+
 function addPoint(point) {
   return new Promise((resolve, reject) => {
     const sql = 'INSERT INTO POINTS (address, nameLocation, gps_coordinates, type) VALUES(?,?,?,?)';
@@ -300,10 +330,10 @@ function updatePoint(oldIdPoint, newPoint) {
   });
 }
 
-function deletePoint(Id) {
+function deletePoint(id) {
   return new Promise((resolve, reject) => {
     const query = 'DELETE FROM POINTS WHERE idPoint = ?';
-    db.run(query, Id, (err) => {
+    db.run(query, id, (err) => {
       if (err) {
         reject(err);
       } else
@@ -360,11 +390,24 @@ function updatePointType(oldIdPoint, type) {
   });
 }
 
+function readHuts(){
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT * FROM POINTS where type = Hut';
+    db.all(sql, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
 module.exports = {
   readUsers, addUser, deleteUser, updateUserRole,
   readHikes, addHike, deleteHike, updateHike, updateHikeTitle,
   updateHikeAscent, updateHikeLength, updateHikeDescription, updateHikeDifficulty,
   updateHikeET, updateHikeStartPoint, updateHikeEndPoint, updateHikeRefPoint,
-  readPoints, addPoint, updatePoint, deletePoint,
-  updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, readReferencePoints
+  readPoints, addPoint, updatePoint, deletePoint, readHuts,
+  updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, readListOfReferencePoints, readPointById//readReferencePoints
 };

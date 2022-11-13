@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Row, Col, Button, Container } from 'react-bootstrap';
 import { Link, useParams, useLocation, Outlet } from 'react-router-dom';
-import { HikePage } from './hikePage'
+import { SearchHut } from './SearchHut';
+import { HikePage } from './hikePage';
+import { UserForm } from './newUserForm';
 import { LoginForm } from './Auth';
 import { HikesContainer } from './hikesCards';
 import  FilterForm from './Filter';
 import MessageContext from '../messageCtx';
 import API from '../API';
+import FileUploader from './UploadGpxForm';
 
 /**
  * Except when we are waiting for the data from the server, this layout is always rendered.
@@ -17,6 +20,7 @@ import API from '../API';
 //SERVICE CARD LAYOUT FOR NO LOGGED USERS
 function DefaultLayout(props) {
 
+  
   const { handleErrors } = useContext(MessageContext);
   const [hikes, setHikes] = useState([]);
   const [hidden, setHidden] = useState(true);
@@ -36,7 +40,10 @@ function DefaultLayout(props) {
   }, []);
   
   return (
-    <Container className='my-5'>
+    <Container >
+      <Row>
+        <h1>Welcome, this is the Available Hikes List!</h1>
+      </Row>
       <Row bg='white'>
         <Row >
           <Col>
@@ -51,12 +58,33 @@ function DefaultLayout(props) {
 
       </Row>
       <Row>
-        {hidden ? <HikesContainer hikes={!filtered ? hikes : filteredHikes} setCurrentHike={props.setCurrentHike}/> : null}
+        {hidden ? <HikesContainer role= {props.role} name ={props.name} hikes={!filtered ? hikes : filteredHikes} setCurrentHike={props.setCurrentHike}/> : null}
       </Row>
     </Container>
 
 
   )
+  
+
+}
+function FileUploadLayout(){
+
+  return(
+    <Container className='my-5'>
+      <FileUploader></FileUploader>
+    </Container>
+
+  )
+}
+
+function RegisterLayout(props) {
+  return (
+    <Row className="vh-200">
+      <Col md={12} className="below-nav">
+        <UserForm CreateNewAccount={props.CreateNewAccount} />
+      </Col>
+    </Row>
+  );
 }
 
 /*
@@ -195,6 +223,17 @@ function HikerLayout(props) {
   );  
 }
 
+//SEARCH LAYOUT
+function SearchLayout(){
+  return (  
+    <Row className="vh-200">
+        <Col md={12} className="below-nav">
+          <SearchHut />
+        </Col>
+    </Row>
+  )
+}
+
 /**
  * This layout shuld be rendered while we are waiting a response from the server.
  */
@@ -212,4 +251,4 @@ function HikerLayout(props) {
 }
 */
 //export { DefaultLayout, AddLayout, EditLayout, NotFoundLayout, LoginLayout, MainLayout, LoadingLayout };
-export { LoginLayout, DefaultLayout, HikerLayout };
+export { LoginLayout, DefaultLayout, HikerLayout, FileUploadLayout,RegisterLayout, SearchLayout };

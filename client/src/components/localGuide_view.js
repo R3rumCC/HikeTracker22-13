@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Row, Col, Button, Container, Form, FormGroup, FormLabel, ButtonGroup , InputGroup, Alert} from 'react-bootstrap';
 import API from '../API';
 
+
 //Function for calling the addNewHike API
 const addHike= (newHike)=>{
     //setHikes((oldHikes)=>[...oldHikes, newHike]); --> not necessary(?)
@@ -32,15 +33,23 @@ function LocalGuide_Home(props){
     
     //The container                    
     return(<Container>
-        <text style={{color: 'green', fontSize:30, fontWeight:'bold', textAlign:'center'}}>
+        <div style={{color: 'green', fontSize:30, fontWeight:'bold', textAlign:'center'}}>
             HELLO LOCAL GUIDE
-        </text>
+        </div>
         <InsertionOptions setHikeForm={selectHike} setParkingForm={selectParking} setHutForm={selectHut}></InsertionOptions>
+<<<<<<< HEAD
         <div>
             {hikeForm ? <HikeForm/> : <></>}
             {parkingLotForm ? <ParkingLotForm/> : <></>}
             {hutForm ? <HutForm/> : <></>}
         </div>
+=======
+        <Row>
+            <div>{hikeForm ? <HikeForm/> : <></>}</div>
+            <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} /> : <></>}</div>
+            <div>{hutForm ? <HutForm/> : <></>}</div>
+        </Row>
+>>>>>>> 9754d06bd57ac6c7f68bc67288c3992b51eaca09
 
     </Container>
     )
@@ -82,7 +91,9 @@ function HikeForm(props){
     const [endPoint, setEndPoint]= useState('')
     //const [refPoints, setRefPoints]= useState([])
     const [description, setDescription]= useState('')
-    //const [map, setMap]= useState()
+
+
+    const [map, setMap]= useState('') //USED TO SAVE MAP STRING
 
     const[points, setPoints]= useState([]);
     //const Points
@@ -99,6 +110,7 @@ function HikeForm(props){
     const changeEndP= (val) =>{setEndPoint(val)}
     const changeDescription= (val)=>{setDescription(val)}
 
+
     //handler for form submission
     const submitHikeForm= (event)=>{
         event.preventDefault();
@@ -113,7 +125,7 @@ function HikeForm(props){
                         newHike={title: title, length: length, expected_time: expTime, ascent: ascent, difficulty: difficulty, 
                                 startPoint:startPoint, endPoint: endPoint, description: description // ref points + map
                                 }
-                        console.log(newHike);
+                        //console.log(newHike);
                         //NEXT STEPS: 
                         //1) props.addHike (just addHike if defined in this file)
                         //2) reset all state values and/or redirect + success message
@@ -143,6 +155,42 @@ function HikeForm(props){
         
     }
     
+    //Import gpx file and read, gpx parse it is used to retreive the start point and the end point (format latitude,longitude)
+    //after have red the file it changes automatically the start point and the end point 
+    const importGpx = (selectedFile) => {
+        const $ = require( "jquery" );
+        let gpxParser = require('gpxparser');
+        var gpx = new gpxParser()
+
+        let reader = new FileReader();
+      
+        reader.readAsText(selectedFile);
+      
+        reader.onload = function() {
+            setMap(reader.result)  
+            gpx.parse(reader.result)
+            const positions = gpx.tracks[0].points.map(p => [p.lat, p.lon])
+            console.log(positions[0]);
+            console.log(positions[positions.length-1]);
+            $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+positions[0][0]+'&lon='+positions[0][1]+'&format=json&limit=1&q=', function(data) {
+
+            $.each(data, function(key, val) {
+                changeStartP(data.display_name);
+            })      
+            }); 
+            $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+positions[positions.length-1][0]+'&lon='+positions[positions.length-1][1]+'&format=json&limit=1&q=', function(data) {
+
+                $.each(data, function(key, val) {
+                    changeEndP(data.display_name);
+                })        
+            });
+        };
+      
+        reader.onerror = function() {
+            console.log(reader.error);
+        };
+
+    }
 
     return(<>
         {errorMsg ? (<Alert variant="danger" onClose={()=>{setErrorMsg("");}}> {errorMsg}</Alert>) : (false)}
@@ -202,6 +250,13 @@ function HikeForm(props){
             </Row>
             <Form.Label>//TODO Map</Form.Label>
         </Form.Group>
+
+        {/* This is the form used to import the gpx, on upload of the file it call the importGpx function passing the file object */}
+        <Form.Group controlId="formFile" className="mt-5">
+            <Form.Label>Upload the GPX track</Form.Label>
+            <Form.Control type="file" onChange={(e) => importGpx(e.target.files[0])} />
+        </Form.Group>
+    
         <Form.Group>
 			<Form.Label>Description</Form.Label>
 			<Form.Control value={description} onChange={(ev) => changeDescription(ev.target.value)}/>
@@ -263,9 +318,77 @@ function HutForm(props){
 /**PARKING FORM */
 
 function ParkingLotForm(props){
-    return(<>
-        <text>parking lot form</text>
-  </>)
+   
+    const [title, setTitle]= useState('')
+    const [position,setPosition]= useState('')
+    const [address, setAddress]= useState('')
+    const [type, setType]= useState('Parking Lot')
+    //const [map, setMap]= useState()
+
+    const [errorMsg, setErrorMsg] = useState("");
+
+
+    const handleSubmit = (event) => {
+        console.log(props.test);
+		event.preventDefault();
+		// validation
+		if (title.trim().length !== 0) {
+			let newPoint;
+				if (address.trim().length !== 0) {
+						newPoint = {nameLocation: title, address: address,gps_coordinates:position, type: type };				
+				} else {
+					setErrorMsg("Error: Enter a valid address.");
+					return;
+				}
+			props.CreateNewPoint(newPoint);
+			alert('New parking lot added.');
+            console.log(newPoint);
+        }
+		else {
+			setErrorMsg("Error: Enter a valid title.");
+		}
+	};
+
+    return(
+
+
+<>
+        {errorMsg ? (
+            <Alert variant="danger" onClose={() => setErrorMsg("")} dismissible>
+                {errorMsg}
+            </Alert>
+        ) : (
+            false
+        )}
+        <Form onSubmit={handleSubmit} style={{fontSize:15, fontWeight:'bold'}} >
+            <Form.Group>
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                    value={title}
+                    onChange={(ev) => setTitle(ev.target.value)}
+                ></Form.Control>
+            </Form.Group>
+            <Form.Group>
+                <Form.Label>position</Form.Label>
+                <Form.Label>//TODO Map</Form.Label>
+                <Form.Control
+                    value={position}
+                    onChange={(ev) => setPosition(ev.target.value)} 
+                ></Form.Control>
+            </Form.Group>
+            <Form.Group>
+                <Form.Label>Address</Form.Label>
+                <Form.Control
+                    value={address}
+                    onChange={(ev) => setAddress(ev.target.value)}
+                ></Form.Control>
+            </Form.Group>
+            <Button type='submit'>Save</Button>
+            {/* <Button onClick={props.test}>test</Button> */}
+            <Button onClick={props.cancel}>Cancel</Button>
+        </Form>
+        
+   </>     )
 }
 
 export {LocalGuide_Home}

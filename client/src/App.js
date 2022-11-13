@@ -6,12 +6,20 @@ import React, { useState, useEffect, useContext, } from 'react';
 import { Container, Toast } from 'react-bootstrap/';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-import { DefaultLayout, LoginLayout, HikerLayout, AdminLayout, OfficerLayout } from './components/PageLayout';
+import { DefaultLayout, LoginLayout, HikerLayout,RegisterLayout, FileUploadLayout, SearchLayout } from './components/PageLayout';
+
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 import { Navigation } from './components/Navigation';
 import { LocalGuide_Home } from './components/localGuide_view';
 
 import MessageContext from './messageCtx';
 import API from './API';
+import { HikeForm } from './components/newHikeForm';
+import FileUploader from './components/UploadGpxForm';
+import { HikePage } from './components/hikePage';
+
 
 function App() {
 
@@ -28,7 +36,11 @@ function App() {
       <MessageContext.Provider value={{ handleErrors }}>
         <Container fluid className="App">
           <Routes>
+<<<<<<< HEAD
             <Route path="/*" element={<Main />/*<LocalGuide_Home/> */}/>
+=======
+            <Route path="/*" element={<Main />/*<LocalGuide_Home/>*/} />
+>>>>>>> 9754d06bd57ac6c7f68bc67288c3992b51eaca09
           </Routes>
           <Toast show={message !== ''} onClose={() => setMessage('')} delay={4000} autohide>
             <Toast.Body>{message}</Toast.Body>
@@ -44,10 +56,17 @@ function Main() {
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
-  const [currentHike, setCurrentHike] = useState([])
+  const [currentHike, setCurrentHike] = useState([]);
 
+  function handleError(err) {
+    toast.error(
+      err.error,
+      { position: "top-center" },
+      { toastId: 12 }
+    );
+  }
 
-  const { handleErrors } = useContext(MessageContext);
+  //const { handleErrors } = useContext(MessageContext);
 
   //*******CHECK_AUTH*******//
   useEffect(() => {
@@ -57,13 +76,13 @@ function Main() {
         user_curr.name === 'Guest' ? setLoggedIn(false) : setLoggedIn(true);
         setCurrentUser(user_curr);
       } catch (err) {
-        handleErrors(err); // mostly unauthenticated user, thus set not logged in
+        handleError(err); // mostly unauthenticated user, thus set not logged in
         setCurrentUser({});
         setLoggedIn(false);
       }
     };
     checkAuth();
-  }, [loggedIn]);
+  }, [loggedIn]); // eslint-disable-line
   //***********************//
 
   //********HANDLE_LOGIN*******//
@@ -73,9 +92,8 @@ function Main() {
       setLoggedIn(true);
       setCurrentUser(user);
       //setUserFilter(false);
-      //handleMessages({ msg: `Welcome ${user.name}`, type: 'success' });
     } catch (err) {
-      throw err
+      handleError(err);
     }
   };
   //*****************************//
@@ -91,9 +109,31 @@ function Main() {
       //setUserFilter(false);
       //setMessage('');
     } catch (err) {
-      throw err
+      handleError(err);
     }
   };
+  /*****************************************************/
+
+  //********HANDLE_REGISTER*******//
+  const CreateNewAccount = async (user) => {
+    //console.log(user);
+   
+    await API.addUser(user);
+    
+  };
+  /*****************************************************/
+
+  //********HANDLE_ADD_POINT*******//
+  const CreateNewPoint = async (point) => {
+    console.log(point);
+   
+    await API.addPoint(point)
+    
+  };
+
+  // const test = async()=>{
+  //   console.log("this is text")
+  // }
   /*****************************************************/
 
   return (
@@ -101,16 +141,15 @@ function Main() {
       <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} />
       <Routes>
         <Route path="/" element={
-          //DO NOT IMPLEMENTS ROUTES HERE, IN PageLayout.js THERE IS A LAYOUT PER EACH USER, 
-          //USE THAT ONE TO IMPLEMENT FUNCTIONS
-          //JUST PASS THE PROPS IF NEEDED HERE.
-          loggedIn && currentUser.role == 'Hiker' ? <HikerLayout userName={currentUser.name} currentHike={currentHike} /> :
-            loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home /> :
-              <DefaultLayout setCurrentHike={setCurrentHike} />
+            loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint}/> :
+             <DefaultLayout role = {loggedIn ? currentUser.role : ''} setCurrentHike={setCurrentHike} />  /*<FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>
-        <Route path="/Map" element={<HikerLayout currentHike={currentHike} />} />
+        {/* <Route path="/NewHike" element={<HikeForm/>} /> THIS WAS A TRY TO DO THE .GPX FILE UPLOAD.*/}
+        <Route path="/map" element={loggedIn && currentUser.role == 'Hiker' && currentHike.length != 0 ? <HikerLayout currentHike={currentHike}/> : <Navigate replace to='/' />} />
+        <Route path="/register" element={!loggedIn ? <RegisterLayout CreateNewAccount={CreateNewAccount} /> : <Navigate replace to='/' />} />
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
+        <Route path="/searchHut" element={loggedIn && currentUser.role == 'Hiker' ? <SearchLayout/> : <Navigate replace to='/' />} />
       </Routes>
     </>
   );

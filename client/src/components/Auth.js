@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Form, Button, Alert, Col, Row } from 'react-bootstrap';
-import { useLocation, useNavigate } from 'react-router-dom';
-
+import { Form, Button, Alert, Col, Row} from 'react-bootstrap';
+import { useLocation, useNavigate,Link } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
 
 function LoginForm(props) {
   const [username, setUsername] = useState('');
@@ -19,6 +20,7 @@ function LoginForm(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     const credentials = { username, password };
+    setErrorMessage('');
 
     if (username.trim() === '') {
       setErrorMessage('Email cannot be empty.');
@@ -34,9 +36,8 @@ function LoginForm(props) {
   };
 
   return (
-    <Row className="vh-100 justify-content-md-center">
+    <Row className="vh-100 justify-content-md-center my-5">
       <Col md={4} >
-        <h1 className="pb-5">Login</h1>
         {errorMessage ? (
           <Alert variant="danger" onClose={() => setErrorMessage("")} dismissible>
             {errorMessage}
@@ -63,8 +64,11 @@ function LoginForm(props) {
               required={true} //minLength={6}
             />
           </Form.Group>
-          <Button className="mt-3" type="submit">Login</Button>
+          <Button className="mt-3 me-3" type="submit">Login</Button>
           <Button className="mt-3" onClick={() => navigate(oldPath)}>Cancel</Button>
+          <Link to='/register'>
+          <Button variant='success' >no account? get one now </Button>
+        </Link>
         </Form>
       </Col>
     </Row>
@@ -73,15 +77,20 @@ function LoginForm(props) {
 
 function LogoutButton(props) {
   return (
+    <>
     <Button variant="outline-light" floating='right' onClick={props.logout}>Logout</Button>
+    <ToastContainer />
+    </>
   )
 }
 
 function LoginButton() {
   const navigate = useNavigate();
   return (
+    <>
     <Button variant="outline-light" floating='right' onClick={() => navigate('/login')}>Login</Button>
-
+    <ToastContainer />
+    </>
   )
 }
 

@@ -45,10 +45,10 @@ exports.getUser = (email, password) => {
         console.log(user)
         console.log(row.salt)
         //4.2 STEP PASSPORT-->HASHING PASSWORD
-        crypto.scrypt(password, row.Salt, 32, function (err, hashedPassword) {
+        crypto.scrypt(password, row.salt, 32, function (err, hashedPassword) {
           if (err) reject(err);
           //4.3 STEP PASSPORT-->CHECK IF HASHED PASSWORD==STORED PASSWORD
-          if (!crypto.timingSafeEqual(Buffer.from(row.Password, 'hex'), hashedPassword)){
+          if (!crypto.timingSafeEqual(Buffer.from(row.password, 'hex'), hashedPassword)){
             resolve(false);
           }
           else

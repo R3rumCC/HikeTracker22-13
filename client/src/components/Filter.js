@@ -1,9 +1,10 @@
 import { end } from "@popperjs/core";
 import { useState } from "react";
-import { Form, Button} from "react-bootstrap";
+import { Form, Button, Row, Col} from "react-bootstrap";
 
 const FilterForm = (props) => {
-    
+
+    const [geographical_area, setGeographicalArea] = useState('')
     const [title, setTitle] = useState('')
     const [length, setLength] = useState('')
     const [expected_time, setExpectedTime] = useState('')
@@ -15,36 +16,75 @@ const FilterForm = (props) => {
     const [description, setDescription] = useState('')
 
     function handleSubmit(event) {
-        const filter = {title: title, length: length, expected_time: expected_time, ascent: ascent,
+        const $ = require( "jquery" );
+        let filteredHikes = ''
+        const filter = {geographical_area: geographical_area, title: title, length: length, expected_time: expected_time, ascent: ascent,
         difficulty: difficulty,start_point_nameLocation: start_point, end_point_nameLocation: end_point, reference_points: reference_points,
         description: description}
+        console.log(filter.geographical_area)
 
-        const filtereHikes = props.hikes.filter( (hike) =>{
-            let bool = true
-            console.log(hike)
-            for (const key in hike){
-                console.log(`${key} : ${hike[key]}  `);
-                console.log(filter[key])
-                if(key == "reference_points" && filter[key]){
-                    bool = false
-                    for(const v in hike[key]){
-                        console.log(hike[key][v].nameLocation)
-                        if(hike[key][v].nameLocation == filter[key])
-                            bool = true
+        if(filter.geographical_area){
+            $.getJSON('http://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + filter.geographical_area, function(data) {
+
+                $.each(data, function(key, val) {
+                    filteredHikes = props.hikes.filter( (hike) =>{
+
+                        let bool = true
+                        //console.log(hike)
+                        for (const key in hike){
+                            if(key == "reference_points" && filter[key]){
+                                bool = false
+                                for(const v in hike[key]){
+                                    if(hike[key][v].nameLocation == filter[key])
+                                        bool = true
+                                }
+                            }
+                            else if(filter[key] ){
+                                if (filter[key] != hike[key])
+                                    bool = false     
+                            }
+                            if(filter.geographical_area){
+                                bool = false
+                                bool = val.display_name.split(',').some((v)=>{console.log(v.trim()); console.log(hike.start_point_address.split(',').map((v)=>v.trim())); return (hike.start_point_address.split(',').map((v)=>v.trim()).includes(v.trim())) || (hike.end_point_address.split(',').map((v)=>v.trim()).includes(v.trim()))})
+
+                            } 
+                        }
+                        return bool
+                        
                     }
+                    )
+                    console.log(filteredHikes)
+                    props.setFilteredHikes(filteredHikes)  
+                })            
+            });
+
+        }
+        else{
+            filteredHikes = props.hikes.filter( (hike) =>{
+
+                let bool = true
+                console.log(hike)
+                for (const key in hike){
+                    if(key == "reference_points" && filter[key]){
+                        bool = false
+                        for(const v in hike[key]){
+                            if(hike[key][v].nameLocation == filter[key])
+                                bool = true
+                        }
+                    }
+                    else if(filter[key] ){
+                        if (filter[key] != hike[key])
+                            bool = false     
+                    } 
                 }
-               else if(filter[key] ){
-                    if (filter[key] != hike[key])
-                        bool = false     
-                } 
+                return bool
                 
             }
-            return bool
-            
+            )
+            console.log(filteredHikes)
+            props.setFilteredHikes(filteredHikes)  
+
         }
-        )
-        console.log(filtereHikes)
-        props.setFilteredHikes(filtereHikes)  
         props.setFiltered(true)  
         props.setHidden(true)
 
@@ -60,42 +100,77 @@ const FilterForm = (props) => {
     }
       return (
         <Form className="block-example border border-primary rounded mb-0 form-padding my-2 mx-2" onSubmit={handleSubmit}>
-            <Form.Group className="mb-3">
-                <Form.Label>Title</Form.Label>
-                <Form.Control type="text" required={false} value={title} placeholder = {'Hike#1'} onChange={event => setTitle(event.target.value)}/>
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>Length meters</Form.Label>
-                <Form.Control type="number" required={false} value={length} placeholder = {123} onChange={event => setLength(event.target.value)}/>
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>Expected time minutes</Form.Label>
-                <Form.Control type="number" required={false} value={expected_time} placeholder = {112} onChange={event => setExpectedTime(event.target.value)}/>
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>Ascent meters</Form.Label>
-                <Form.Control type="number" required={false} value={ascent} placeholder = {100} onChange={event => setAscent(event.target.value)}/>
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>Difficulty</Form.Label>
-                <Form.Control type="text" required={false} value={difficulty} placeholder = {'easy'} onChange={event => setDifficulty(event.target.value)}/>
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>Start Point</Form.Label>
-                <Form.Control type="text" required={false} value={start_point} placeholder = {'Hut#1'} onChange={event => setStartPoint(event.target.value)}/>
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>End Point</Form.Label>
-                <Form.Control type="text" required={false} value={end_point} placeholder = {'Hut#2'} onChange={event => setEndPoint(event.target.value)}/>
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>Refernce Points</Form.Label>
-                <Form.Control type="text" required={false} value={reference_points} placeholder = {'Hut#3'} onChange={event => setReferencePoints(event.target.value)}/>
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>Description</Form.Label>
-                <Form.Control type="text" required={false} value={description} placeholder = {'mountain'} onChange={event => setDescription(event.target.value)}/>
-            </Form.Group>
+            <Row>
+                <Col>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Geographical Area</Form.Label>
+                        <Form.Control type="text" required={false} value={geographical_area} placeholder = {'Turin'} onChange={event => setGeographicalArea(event.target.value)}/>
+                    </Form.Group>
+                </Col>
+                <Col>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Title</Form.Label>
+                        <Form.Control type="text" required={false} value={title} placeholder = {'Hike#1'} onChange={event => setTitle(event.target.value)}/>
+                    </Form.Group>
+                </Col>
+                <Col>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Length meters</Form.Label>
+                        <Form.Control type="number" required={false} value={length} placeholder = {123} onChange={event => setLength(event.target.value)}/>
+                    </Form.Group>   
+                </Col>  
+
+            </Row>
+            <Row>
+                <Col>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Expected time minutes</Form.Label>
+                        <Form.Control type="number" required={false} value={expected_time} placeholder = {112} onChange={event => setExpectedTime(event.target.value)}/>
+                    </Form.Group>
+                </Col>
+                <Col>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Ascent meters</Form.Label>
+                        <Form.Control type="number" required={false} value={ascent} placeholder = {100} onChange={event => setAscent(event.target.value)}/>
+                    </Form.Group>
+                </Col>    
+                <Col>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Difficulty</Form.Label>
+                        <Form.Control type="text" required={false} value={difficulty} placeholder = {'easy'} onChange={event => setDifficulty(event.target.value)}/>
+                    </Form.Group>
+                
+                </Col>              
+
+            </Row>
+            <Row>
+                <Col>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Start Point</Form.Label>
+                        <Form.Control type="text" required={false} value={start_point} placeholder = {'Hut#1'} onChange={event => setStartPoint(event.target.value)}/>
+                    </Form.Group>
+                </Col>   
+                <Col>
+                    <Form.Group className="mb-3">
+                        <Form.Label>End Point</Form.Label>
+                        <Form.Control type="text" required={false} value={end_point} placeholder = {'Hut#2'} onChange={event => setEndPoint(event.target.value)}/>
+                    </Form.Group>
+                
+                </Col>   
+                <Col>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Refernce Points</Form.Label>
+                        <Form.Control type="text" required={false} value={reference_points} placeholder = {'Hut#3'} onChange={event => setReferencePoints(event.target.value)}/>
+                    </Form.Group>
+                
+                </Col>   
+            </Row>
+            <Row>
+                <Form.Group className="mb-3">
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control type="text" required={false} value={description} placeholder = {'mountain'} onChange={event => setDescription(event.target.value)}/>
+                </Form.Group>
+            </Row>
             
         <Button className="mb-3" variant="primary" type="submit">Search</Button>
         </Form>
