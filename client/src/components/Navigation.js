@@ -28,20 +28,22 @@ const Navigation = (props) => {
       <Nav>
         <Container fluid>
           <Row>
-            <Col>
+            {props.loggedIn ? <Col >
               <Navbar.Text >
-                {props.user && props.user.name && `Welcome, ${props.user.role ? props.user.role : ''} ${props.user.name}!`}
+                { `Welcome, ${props.user.role} ${props.user.name }!`}
               </Navbar.Text>
-            </Col>
+            </Col> : null}
             <Col>
+<<<<<<< HEAD
               <Form>
                   {props.loggedIn && props.user.role == "Hiker" ? <SearchHutButton searchPage={searchPage} setSearchPage={setSearchPage} /> : <></>}
               </Form>
+=======
+              {props.loggedIn ? <SearchHutButton searchPage={searchPage} setSearchPage={setSearchPage} /> : <></>}
+>>>>>>> ad9f249e46abda68d6757ebd573c4e3e39184dc4
             </Col>
-            <Col xs={6}>
-              <Form className="me-5" >
-                  {props.loggedIn ? <LogoutButton logout={props.logout} /> :  <LoginButton />}
-              </Form>
+            <Col >
+              {props.loggedIn ? <LogoutButton logout={props.logout} /> :  <LoginButton />}
             </Col>
           </Row>
         </Container>

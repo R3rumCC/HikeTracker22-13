@@ -37,10 +37,7 @@ function HikePage(props) {
 
     return (
         <Col className="vh-100 justify-content-md-center">
-            <Row fixed="top" className=''>
-                <h1 className="pb-3">HIKER PAGE</h1>
-            </Row>
-            <Row className='mt-2'>
+            <Row className='my-3'>
                 <Col sm={4}>
                     {/* THIS ROW CONTAINS A SELECTED CARD. */}
                     {props.currentHike.length > 0 ? 
