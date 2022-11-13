@@ -222,11 +222,13 @@ function HikerLayout(props) {
 
 //SEARCH LAYOUT
 function SearchLayout(){
-  <Row className="vh-200">
-      <Col md={12} className="below-nav">
-        <SearchHut />
-      </Col>
-  </Row>
+  return(
+    <Row className="vh-200">
+        <Col md={12} className="below-nav">
+          <SearchHut />
+        </Col>
+    </Row>
+  )
 }
 
 /**
