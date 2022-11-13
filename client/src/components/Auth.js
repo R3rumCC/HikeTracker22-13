@@ -36,9 +36,8 @@ function LoginForm(props) {
   };
 
   return (
-    <Row className="vh-100 justify-content-md-center">
+    <Row className="vh-100 justify-content-md-center my-5">
       <Col md={4} >
-        <h1 className="pb-5">Login</h1>
         {errorMessage ? (
           <Alert variant="danger" onClose={() => setErrorMessage("")} dismissible>
             {errorMessage}

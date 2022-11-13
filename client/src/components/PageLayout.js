@@ -40,7 +40,10 @@ function DefaultLayout(props) {
   }, []);
   
   return (
-    <Container className='my-5'>
+    <Container >
+      <Row>
+        <h1>Welcome, this is the Available Hikes List!</h1>
+      </Row>
       <Row bg='white'>
         <Row >
           <Col>
@@ -222,11 +225,12 @@ function HikerLayout(props) {
 
 //SEARCH LAYOUT
 function SearchLayout(){
-  <Row className="vh-200">
+  return (  <Row className="vh-200">
       <Col md={12} className="below-nav">
         <SearchHut />
       </Col>
   </Row>
+  )
 }
 
 /**
