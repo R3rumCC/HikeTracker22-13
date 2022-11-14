@@ -10,6 +10,7 @@ import  FilterForm from './Filter';
 import MessageContext from '../messageCtx';
 import API from '../API';
 import FileUploader from './UploadGpxForm';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 /**
  * Except when we are waiting for the data from the server, this layout is always rendered.
@@ -27,6 +28,8 @@ function DefaultLayout(props) {
   const [filteredHikes, setFilteredHikes] = useState([])
   const [filtered, setFiltered] = useState(false)
 
+  
+
   useEffect(() => {
     async function fetchHikes() {
       try {
@@ -40,32 +43,35 @@ function DefaultLayout(props) {
   }, []);
   
   return (
-    <Container >
-      <Row>
-        <h1>Welcome, this is the Available Hikes List!</h1>
-      </Row>
-      <Row bg='white'>
-        <Row >
-          <Col>
-            { <Button className='mt-5 mb-3'  onClick={()=>setHidden( s =>!s)}>Filter</Button> }
-            {filtered ? <Button className='mt-5 mb-3 ms-3'  onClick={()=>{setFiltered(false); setFilteredHikes([])}}>Clear</Button> : null }
-          </Col>
 
-        </Row>
-        <Row>
-          {!hidden ? <FilterForm hikes={hikes} setFiltered = {setFiltered} setFilteredHikes={setFilteredHikes} setHidden={setHidden} ></FilterForm> : null}
-        </Row>
+  <>
+    { props.isLoading ? 
+        (<ClipLoader color={'#fff'} size={150} />) : (
+        <Container >
+          <Row>
+            <h1>Welcome, this is the Available Hikes List!</h1>
+          </Row>
+          <Row bg='white'>
+            <Row >
+              <Col>
+                { <Button className='mt-5 mb-3'  onClick={()=>setHidden( s =>!s)}>Filter</Button> }
+                {filtered ? <Button className='mt-5 mb-3 ms-3'  onClick={()=>{setFiltered(false); setFilteredHikes([])}}>Clear</Button> : null }
+              </Col>
 
-      </Row>
-      <Row>
-        {hidden ? <HikesContainer role= {props.role} name ={props.name} hikes={!filtered ? hikes : filteredHikes} setCurrentHike={props.setCurrentHike}/> : null}
-      </Row>
-    </Container>
+            </Row>
+            <Row>
+              {!hidden ? <FilterForm isLoading={props.isLoading} setLoading={props.setLoading} hikes={hikes} setFiltered = {setFiltered} setFilteredHikes={setFilteredHikes} setHidden={setHidden} ></FilterForm> : null}
+            </Row>
 
-
+          </Row>
+          <Row>
+            {hidden ? <HikesContainer role= {props.role} name ={props.name} hikes={!filtered ? hikes : filteredHikes} setCurrentHike={props.setCurrentHike}/> : null}
+          </Row>
+        </Container>
+        )
+    }
+    </>
   )
-  
-
 }
 function FileUploadLayout(){
 

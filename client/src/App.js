@@ -54,7 +54,7 @@ function Main() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
   const [currentHike, setCurrentHike] = useState([]);
-
+  const [isLoading, setLoading] = useState(false);
   function handleError(err) {
     
     toast.error(
@@ -147,7 +147,7 @@ function Main() {
       <Routes>
         <Route path="/" element={
             loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHike={CreateNewHike}/> :
-             <DefaultLayout role = {loggedIn ? currentUser.role : ''} setCurrentHike={setCurrentHike} />  /*<FileUploadLayout></FileUploadLayout>*/
+             <DefaultLayout role = {loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike} />  /*<FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>
         {/* <Route path="/NewHike" element={<HikeForm/>} /> THIS WAS A TRY TO DO THE .GPX FILE UPLOAD.*/}
