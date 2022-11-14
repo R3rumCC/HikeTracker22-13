@@ -36,6 +36,10 @@ function LoginForm(props) {
 
   };
 
+  const cancel=()=>{
+    navigate('/');
+  }
+
   return (
     <Row className="vh-100 justify-content-md-center my-5">
       <Col md={4} >
@@ -66,7 +70,7 @@ function LoginForm(props) {
             />
           </Form.Group>
           <Button className="mt-3 me-3" type="submit">Login</Button>
-          <Button className="mt-3" onClick={() => navigate(oldPath)}>Cancel</Button>
+          <Button className="mt-3" onClick={cancel}>Cancel</Button>
           <Link to='/register'>
           <Button variant='success' className='mt-3 ms-3'>Don't you have account? Get one now </Button>
         </Link>
