@@ -24,7 +24,7 @@ const FilterForm = (props) => {
         difficulty: difficulty,start_point_nameLocation: start_point, end_point_nameLocation: end_point, reference_points: reference_points,
         description: description}
 
-
+        props.setLoading(true)
         if(filter.city || filter.country || filter.province){
             let str = "https://nominatim.openstreetmap.org/search?format=json&limit=1&city="+filter.city +"&county="+filter.province+"&country="+filter.country
             $.getJSON(str
@@ -71,7 +71,8 @@ const FilterForm = (props) => {
                     }
                     )
                     console.log(filteredHikes)
-                    props.setFilteredHikes(filteredHikes)  
+                    props.setFilteredHikes(filteredHikes)
+                    props.setLoading(false)  
                 })            
             });
 
@@ -99,7 +100,8 @@ const FilterForm = (props) => {
             }
             )
             console.log(filteredHikes)
-            props.setFilteredHikes(filteredHikes)  
+            props.setFilteredHikes(filteredHikes)
+            props.setLoading(false)  
 
         }
         props.setFiltered(true)  
@@ -127,13 +129,13 @@ const FilterForm = (props) => {
                 <Col>
                     <Form.Group className="mb-3">
                         <Form.Label>Province</Form.Label>
-                        <Form.Control type="text" required={false} value={province} placeholder = {'Hike#1'} onChange={event => setProvince(event.target.value)}/>
+                        <Form.Control type="text" required={false} value={province} placeholder = {'Turin'} onChange={event => setProvince(event.target.value)}/>
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group className="mb-3">
                         <Form.Label>Country</Form.Label>
-                        <Form.Control type="text" required={false} value={country} placeholder = {123} onChange={event => setCountry(event.target.value)}/>
+                        <Form.Control type="text" required={false} value={country} placeholder = {'Italy'} onChange={event => setCountry(event.target.value)}/>
                     </Form.Group>   
                 </Col>  
 
