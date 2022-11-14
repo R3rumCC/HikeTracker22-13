@@ -403,6 +403,17 @@ function readHuts(){
   });
 }
 
+exports.run = (stmt, params) => {
+  return new Promise((res, rej) => {
+      db.run(stmt, params, (error) => {
+          if (error) {
+              return rej(error.message);
+          }
+          return res(true);
+      });
+  })
+}
+
 module.exports = {
   readUsers, addUser, deleteUser, updateUserRole,
   readHikes, addHike, deleteHike, updateHike, updateHikeTitle,
