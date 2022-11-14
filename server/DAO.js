@@ -143,6 +143,7 @@ function readListOfReferencePoints(title) { // RP for a given hike
 
 function addHike(hike) {
   return new Promise((resolve, reject) => {
+    console.log('Inside addHike, DAO, server side');
     const sql = 'INSERT INTO HIKES (title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description) VALUES(?,?,?,?,?,?,?,?,?)';
     db.run(sql, hike.title, hike.length, hike.expected_time, hike.ascent, hike.difficulty, hike.start_point, hike.end_point, hike.reference_points, hike.description, (err, rows) => {
       if (err) {

@@ -24,6 +24,17 @@ exports.getHikes = async function()  {
     }
 }
 
+exports.addHike =async function(req,res)  {
+       dao.addHike(req.body.newHike).then(
+       result => {
+           return res.status(200).json();                       
+       },
+       error => {
+           return res.status(500).send(error);
+       }
+   )
+   }
+
 exports.getHuts = async function() {
     try{
         const huts = await dao.readHuts();
