@@ -403,7 +403,7 @@ function readHuts(){
   });
 }
 
-exports.run = (stmt, params) => {
+function run(stmt, params){
   return new Promise((res, rej) => {
       db.run(stmt, params, (error) => {
           if (error) {
@@ -420,5 +420,6 @@ module.exports = {
   updateHikeAscent, updateHikeLength, updateHikeDescription, updateHikeDifficulty,
   updateHikeET, updateHikeStartPoint, updateHikeEndPoint, updateHikeRefPoint,
   readPoints, addPoint, updatePoint, deletePoint, readHuts,
-  updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, readListOfReferencePoints, readPointById//readReferencePoints
+  updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, readListOfReferencePoints, readPointById,//readReferencePoints
+  run
 };
