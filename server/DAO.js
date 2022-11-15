@@ -23,7 +23,7 @@ function readUsers() {
   });
 }
 
-function addUser(name, lastname, email, password, salt, role, phone_number) {
+function addUser(email, password, role, name, lastname, phone_number, salt) {
   return new Promise((resolve, reject) => {
     const sql = 'INSERT INTO USERS (email, password, role, name, lastname, phone_number, salt) VALUES(?,?,?,?,?,?,?)';
     db.run(sql, email, password, role, name, lastname, phone_number, salt, (err, rows) => {
@@ -403,23 +403,11 @@ function readHuts(){
   });
 }
 
-function run(stmt, params){
-  return new Promise((res, rej) => {
-      db.run(stmt, params, (error) => {
-          if (error) {
-              return rej(error.message);
-          }
-          return res(true);
-      });
-  })
-}
-
 module.exports = {
   readUsers, addUser, deleteUser, updateUserRole,
   readHikes, addHike, deleteHike, updateHike, updateHikeTitle,
   updateHikeAscent, updateHikeLength, updateHikeDescription, updateHikeDifficulty,
   updateHikeET, updateHikeStartPoint, updateHikeEndPoint, updateHikeRefPoint,
   readPoints, addPoint, updatePoint, deletePoint, readHuts,
-  updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, readListOfReferencePoints, readPointById,//readReferencePoints
-  run
+  updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, readListOfReferencePoints, readPointById//readReferencePoints
 };
