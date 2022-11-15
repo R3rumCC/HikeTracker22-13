@@ -2,13 +2,6 @@
 
 const dao = require('../DAO');
 
-const sqlite = require('sqlite3');
-
-// open database
-const db = new sqlite.Database('hikeTracker.db', (err) => {
-  if (err) throw err;
-});
-
 function deleteUsers() {
   return new Promise((resolve, reject) => {
     const query = 'DELETE FROM Users';
@@ -52,6 +45,10 @@ function User(email, password, role, name, lastname, phone_number, salt) {
 
 deleteUsers();
 insertUsers();
+
+describe("User test", ()=>{
+
+});
 
 test('test readUsers', async () => {
   const data = await dao.readUsers();
