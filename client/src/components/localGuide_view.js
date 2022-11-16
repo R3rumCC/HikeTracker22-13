@@ -151,7 +151,20 @@ function HikeForm(props){
         reader.onload = function() {
             setMap(reader.result)  
             gpx.parse(reader.result)
-            const positions = gpx.tracks[0].points.map(p => [p.lat, p.lon])
+            const positions = gpx.tracks[0].points.map(p => [p.lat, p.lon, p.ele])
+            let trackPoints = gpx.tracks[0].points.map((o)=>o.ele).filter((x)=>x!=null)
+            console.log(trackPoints)
+            if(trackPoints.length != 0){
+                let maxPoint = Math.max(...trackPoints)
+                let minPoint = Math.min(...trackPoints)
+                console.log(maxPoint)
+                console.log(minPoint)
+                var totalElevation = (Number(maxPoint - minPoint).toFixed(2));
+                changeAscent(totalElevation);
+            }
+
+            var totalDistance = (Number(gpx.tracks[0].distance.total/1000).toFixed(2));
+            changeLength(totalDistance);
             console.log(positions[0]);
             console.log(positions[positions.length-1]);
             $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+positions[0][0]+'&lon='+positions[0][1]+'&format=json&limit=1&q=', function(data) {
@@ -246,7 +259,7 @@ function HikeForm(props){
             <Form.Label>//TODO   Reference Points</Form.Label>
         </Form.Group>
         <Button type='submit' style={{background:'green'}}>SAVE</Button>
-        <Button style={{background:'green'}} onClick={reset}>Cancel</Button>
+        <Button style={{background:'green'}} onClick={reset} className = 'ms-2'>Cancel</Button>
     </Form>
     </>)
 }

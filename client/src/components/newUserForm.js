@@ -52,6 +52,10 @@ function UserForm(props) {
 			setErrorMsg("Error: Enter a valid name.");
 		}
 	};
+	
+	const cancel =()=>{
+		navigate('/');
+	}
 
 	return (
 		<Row className="vh-100 justify-content-md-center">
@@ -122,7 +126,7 @@ function UserForm(props) {
 					></Form.Control>
 				</Form.Group>
 				<Button className='mt-3' type='submit'>Save</Button>
-				<Button className='mt-3 ms-3' onClick={props.cancel}>Cancel</Button>
+				<Button className='mt-3 ms-3' onClick={cancel}>Cancel</Button>
 			</Form>
 			</Col>
 			</Row>
