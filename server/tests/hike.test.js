@@ -128,4 +128,10 @@ describe("Hike test", () => {
     expect(check).toEqual(refer_points);
   });*/
 
+  test('test updateHike', async () => {               
+    const newHike = new Hike('Hike#5', '7.0', '5', '6.0', 'Tourist', '1', '2', '2-3-4', 'First easy example hike');
+    const check = await dao.updateHike('Hike#1', newHike);
+    expect(check).toBe(true);
+  });
+
 });
