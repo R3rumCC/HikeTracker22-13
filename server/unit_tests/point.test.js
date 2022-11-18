@@ -3,9 +3,6 @@
 const dao = require('../DAO');
 const testDao = require('../test-dao');
 
-// PROBLEM ->  I think that the tests are right, but there is a problem with the autoincrement id.
-//             when I do beforeEach for reset db before a test the new points have other ids and the tests fail
-
 describe("Points test", () => {
   beforeEach(async () => {
     await testDao.run('DELETE FROM Points');
