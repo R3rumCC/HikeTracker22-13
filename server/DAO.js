@@ -99,32 +99,6 @@ function readHikes() {
   });
 }
 
-/*function readReferencePoints(title) { // RP for a given hike
-  return new Promise((resolve, reject) => {
-    const sql = `
-    SELECT p.idPoint,
-      p.address,
-      p.nameLocation,
-      p.gps_coordinates,
-      p.type
-    FROM Hikes h
-    JOIN HikePoint hp
-    ON h.title = hp.titleHike
-    JOIN Points p
-    ON p.idPoint = hp.idPoint
-    WHERE h.title = ?
-      ;
-    `;
-    db.all(sql, [title], (err, rp) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(rp)
-      }
-    });
-  });
-}*/
-
 function readListOfReferencePoints(title) { // RP for a given hike
   return new Promise((resolve, reject) => {
     const sql = `SELECT reference_points
