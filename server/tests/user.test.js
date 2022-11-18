@@ -76,4 +76,16 @@ describe("User test", () => {
     expect(data).toEqual(users_check);
   });
 
+  test('test updateUserRole', async () => {
+    const mario = new User('mario.rossi@gmail.com',
+      'db17841d152b23d6feea12d9e385634e41312dc2f8971bb0a22853e2a3ff8ebe',
+      'Hiker', 'Mario', 'Rossi', '+39 3486289468', 'f4d3ed63888571824485d5d37dbd9fec');
+    const check = await dao.updateUserRole(mario.email, "LocalGuide");
+    expect(check).toBe(true);
+    const data = await dao.readUsers();
+    const user_check = data[0];
+    expect(user_check.role).not.toBe("Hiker");
+    expect(user_check.role).toBe("LocalGuide");
+  });
+
 });
