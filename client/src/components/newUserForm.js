@@ -24,11 +24,12 @@ function UserForm(props) {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
+		props.checkUser(email).then((result) =>{		
 		// validation
 		if (name.trim().length !== 0) {
 			let newUser;
 			if (lastname.trim().length !== 0) {
-				if (email.trim().length !== 0) {
+				if (email.trim().length !== 0&&result) {
 					if(cPassword!==password){
 						
 						setErrorMsg("Error: The passwords entered twice must be consistent.");
@@ -51,6 +52,7 @@ function UserForm(props) {
 		} else {
 			setErrorMsg("Error: Enter a valid name.");
 		}
+	})
 	};
 	
 	const cancel =()=>{

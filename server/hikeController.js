@@ -87,7 +87,7 @@ exports.addUser =async function(req,res)  {
 
 exports.getUser =async function(req,res)  {
  //   console.log(req.body.point);
-    dao.getUserByEmail(req.body.email).then(
+    dao.getUserByEmail(req.params.email).then(
     result => {
         return res.status(200).json(result);                       
     },
