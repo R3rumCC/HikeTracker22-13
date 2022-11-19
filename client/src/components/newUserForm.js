@@ -72,14 +72,14 @@ function UserForm(props) {
 				<Form.Group>
 					<Form.Label>Name</Form.Label>
 					<Form.Control
-						value={name}
+						value={name} placeholder="Enter your name."
 						onChange={(ev) => setName(ev.target.value)}
 					></Form.Control>
 				</Form.Group>
 				<Form.Group>
 					<Form.Label>Lastname</Form.Label>
 					<Form.Control
-						value={lastname}
+						value={lastname} placeholder="Enter your lastname."
 						onChange={(ev) => setLastname(ev.target.value)}
 					></Form.Control>
 				</Form.Group>
@@ -100,28 +100,31 @@ function UserForm(props) {
 				<Form.Group>
 					<Form.Label>Email</Form.Label>
 					<Form.Control
-						value={email}
+						value={email} placeholder="Enter your Email."
 						onChange={(ev) => setEmail(ev.target.value)} required pattern={reg}
 					></Form.Control>
 				</Form.Group>
 				<Form.Group>
 					<Form.Label>Password</Form.Label>
 					<Form.Control
-						value={password}
-						onChange={(ev) => setPassword(ev.target.value)}
+						 type="password"
+						 value={password} placeholder="Enter the password."
+						 onChange={(ev) => setPassword(ev.target.value)}
+						 required={true} //minLength={6}
 					></Form.Control>
 				</Form.Group>
 				<Form.Group>
 					<Form.Label>Confirm Your Password</Form.Label>
 					<Form.Control
-						value={cPassword}
+					type="password"
+						value={cPassword} placeholder="Enter the password."
 						onChange={(ev) => setCPassword(ev.target.value)}
 					></Form.Control>
 				</Form.Group>
 				<Form.Group>
 					<Form.Label>Phone number</Form.Label>
 					<Form.Control
-						value={phoneNumber}
+						value={phoneNumber} placeholder="Enter the phone number."
 						onChange={(ev) => setPhoneNumber(ev.target.value)}
 					></Form.Control>
 				</Form.Group>
