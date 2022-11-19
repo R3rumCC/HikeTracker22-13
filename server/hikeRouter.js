@@ -13,7 +13,7 @@ router.get('/getHikes', async (req, res) => {
     }
 });
 router.post('/User',c.addUser);
-
+router.get('/User',c.getUser);
 router.post('/Point',c.addPoint);
 
 router.get('/getHuts', async (req, res) => {

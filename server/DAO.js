@@ -23,6 +23,19 @@ function readUsers() {
   });
 }
 
+function getUserByEmail(email) {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT * FROM Users WHERE email=?';
+    db.all(sql,[email], (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
 function addUser(email, password, role, name, lastname, phone_number, salt) {
   return new Promise((resolve, reject) => {
     const sql = 'INSERT INTO USERS (email, password, role, name, lastname, phone_number, salt) VALUES(?,?,?,?,?,?,?)';
@@ -382,7 +395,7 @@ module.exports = {
   readUsers, addUser, deleteUser, updateUserRole,
   readHikes, addHike, deleteHike, updateHike, updateHikeTitle,
   updateHikeAscent, updateHikeLength, updateHikeDescription, updateHikeDifficulty,
-  updateHikeET, updateHikeStartPoint, updateHikeEndPoint, updateHikeRefPoint,
+  updateHikeET, updateHikeStartPoint, updateHikeEndPoint, updateHikeRefPoint,getUserByEmail,
   readPoints, addPoint, updatePoint, deletePoint, readHuts,
   updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, readListOfReferencePoints, readPointById//readReferencePoints
 };

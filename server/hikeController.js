@@ -70,7 +70,7 @@ exports.addUser =async function(req,res)  {
     crypto.scrypt(req.body.user.password, salt, 32, function (err, value){
         if (err) reject(err);
         else{
-    dao.addUser(req.body.user.name, req.body.user.lastname, req.body.user.email, value, salt, req.body.user.role, req.body.user.phoneNumber).then(
+    dao.addUser(req.body.user.email,value,req.body.user.role,req.body.user.name, req.body.user.lastname,req.body.user.phoneNumber,salt).then(
     result => {
         return res.status(200).json();                       
     },
@@ -83,6 +83,20 @@ exports.addUser =async function(req,res)  {
 
 
 }
+
+
+exports.getUser =async function(req,res)  {
+ //   console.log(req.body.point);
+    dao.getUserByEmail(req.body.email).then(
+    result => {
+        return res.status(200).json(result);                       
+    },
+    error => {
+        return res.status(500).send(error);
+    }
+)
+}
+
 exports.addPoint =async function(req,res)  {
  //   console.log(req.body.point);
     dao.addPoint(req.body.point).then(
