@@ -18,7 +18,7 @@ import MessageContext from './messageCtx';
 import API from './API';
 import { HikeForm } from './components/newHikeForm';
 import FileUploader from './components/UploadGpxForm';
-import { HikePage } from './components/hikePage';   
+import { GenericMap, HikePage } from './components/hikePage';   
 
 
 function App() {
@@ -174,6 +174,7 @@ function Main() {
         </Route>
         {/* <Route path="/NewHike" element={<HikeForm/>} /> THIS WAS A TRY TO DO THE .GPX FILE UPLOAD.*/}
         <Route path="/map" element={loggedIn && currentUser.role == 'Hiker' && currentHike.length != 0 ? <HikerLayout currentHike={currentHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers}/> : <Navigate replace to='/' />} />
+        {/* <Route path="/genMap" element={<GenericMap currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers}/>} /> */}
         <Route path="/register" element={!loggedIn ? <RegisterLayout CreateNewAccount={CreateNewAccount} checkUser={checkUser} checkCode={checkCode} sendEmail={sendEmail}/> : <Navigate replace to='/' />} />
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
         <Route path="/searchHut" element={loggedIn && currentUser.role == 'Hiker' ? <SearchLayout/> : <Navigate replace to='/' />} />

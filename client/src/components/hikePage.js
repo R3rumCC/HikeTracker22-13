@@ -30,19 +30,9 @@ import React, { Component }  from 'react';
 </gpx>`
 */
 function HikePage(props) {
-
-    let gpxParser = require('gpxparser');
-    var gpx = new gpxParser()
-    gpx.parse(props.currentHike[0].gpx_track)
-    var positions//No track positions as default
-    try { // Set positions if there is a  gpx map selected
-        positions = gpx.tracks[0].points.map(p => [p.lat, p.lon])
-    } catch (error) {
-        positions = [] 
-    }
     
     // console.log(positions[0]," ",positions[positions.length-1])
- return (
+    return (
         <Col className="vh-100 justify-content-md-center">
             <Row className='my-3'>
                 <Col sm={4}>
@@ -52,7 +42,7 @@ function HikePage(props) {
                     }
                 </Col>
                 <Col sm={8} className='map'>
-                    <GenericMap positions={positions} currentHike={props.currentHike} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></GenericMap>
+                    <GenericMap currentHike={props.currentHike} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></GenericMap>
                 </Col>
             </Row>
         </Col>
@@ -61,10 +51,16 @@ function HikePage(props) {
 };
 
 function GenericMap(props){ //Map to be inserted anywhere. 
-
-    return(
-        <>
-            {props.positions.length<=0 ? // If the track is empty, show an empty map
+    /*
+    REQUIRES THE FOLLOWING PROPS:
+        -'currentMarkers':An array of the markers to draw on the map (Can be empty)
+        -'setCurrentMarkers': State setter of currentMarkers
+    OPTIONAL:
+        -'currentHike': A hike to be ploted. Can be skiped.
+    */
+    if (props.currentHike==undefined) {
+        return(
+            <>
                 <MapContainer
                     className="leaflet-container"
                     center={[33.8735578, 35.86379]} //Center somewhere random as default
@@ -73,24 +69,48 @@ function GenericMap(props){ //Map to be inserted anywhere.
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                     <MapHandler></MapHandler> 
                     <SelectedMarkers currentMarkers={props.currentMarkers}></SelectedMarkers>
-                </MapContainer> :
-                // If there is a map to plot:
+                </MapContainer>
+            </>
+        )
+    }
+    
+    if(props.currentHike.length<=0) {
+        return(
+            <>
                 <MapContainer
-                    center={props.positions[props.positions.length/2]}
+                    className="leaflet-container"
+                    center={[33.8735578, 35.86379]} //Center somewhere random as default
+                    zoom={9}
+                >
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                    <MapHandler></MapHandler> 
+                    <SelectedMarkers currentMarkers={props.currentMarkers}></SelectedMarkers>
+                </MapContainer>
+            </>
+        )
+    }else{
+        let gpxParser = require('gpxparser');
+        var gpx = new gpxParser()
+        gpx.parse(props.currentHike[0].gpx_track)
+        var positions = gpx.tracks[0].points.map(p => [p.lat, p.lon])
+        return(
+            <>
+                <MapContainer
+                    center={positions[positions.length/2]}
                     zoom={13}
                     scrollWheelZoom={false}
                 >
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                     <Polyline
                         pathOptions={{ fillColor: 'red', color: 'blue' }}
-                        positions={props.positions}
+                        positions={positions}
                     />
-                    <Marker position={props.positions[0]}> 
+                    <Marker position={positions[0]}> 
                         <Popup>
                             {props.currentHike[0].start_point_address}
                         </Popup>
                     </Marker>
-                    <Marker position={props.positions[props.positions.length -1]}> 
+                    <Marker position={positions[positions.length -1]}> 
                         <Popup>
                             {props.currentHike[0].end_point_address}
                         </Popup>
@@ -98,10 +118,9 @@ function GenericMap(props){ //Map to be inserted anywhere.
                     <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></MapHandler>
                     <SelectedMarkers currentMarkers={props.currentMarkers}></SelectedMarkers>
                 </MapContainer>
-            }
-        </>
-
-    );
+            </>
+        )
+    }
 
 }
 
