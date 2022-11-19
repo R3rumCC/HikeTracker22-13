@@ -14,6 +14,7 @@ router.get('/getHikes', async (req, res) => {
 });
 router.post('/User',c.addUser);
 router.get('/User/:email',c.getUser);
+router.get('/Code/:email',c.checkCode);
 router.post('/Point',c.addPoint);
 
 router.get('/getHuts', async (req, res) => {

@@ -1,5 +1,6 @@
 const express = require('express');
 const email = express.Router();
+const dao = require('./DAO');
 const nodemailer = require('nodemailer');
 
 //  creat a sender
@@ -13,9 +14,9 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-email.get('/', (req, res) => {
-    const to=req.body.email;
-    let code = Math.floor(Math.random()*900000)
+email.get('/getCode/:email',async (req, res) => {
+    const to=req.params.email;
+    let code = Math.floor(Math.random()*900000) +100000
 
     const mailOptions = {
         from:'"HIKETRACKER"<736076274@qq.com>',
@@ -28,6 +29,22 @@ email.get('/', (req, res) => {
         if (error) return console.log(error);
         console.log(info);
     });
+    dao.addCode(to,code).then(
+        result => {
+            return res.status(200).json();                       
+        },
+        error => {
+            dao.updateCode(to,code).then(
+                result => {
+                    return res.status(200).json();                       
+                },
+                error => {
+                    return res.status(500).send(error);
+                }
+            );
+        }
+    )
+   
     res.send('已成功发送邮件！');
 });
 

@@ -24,7 +24,8 @@ function UserForm(props) {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		props.checkUser(email).then((result) =>{		
+		props.checkUser(email).then((result) =>{
+		// console.log(result);		
 		// validation
 		if (name.trim().length !== 0) {
 			let newUser;

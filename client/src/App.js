@@ -122,12 +122,10 @@ function Main() {
   };
 
   const checkUser = async (email) => {
-
-    const u =await API.checkUser(email);
- 
-    if(u!=[]) return false;
-    else return true;
-    
+    const u = await API.checkUser(email);
+      // console.log(u);
+      if(u.error) return true;
+      else return false;
   };
   /*****************************************************/
 

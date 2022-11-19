@@ -26,10 +26,12 @@ function readUsers() {
 function getUserByEmail(email) {
   return new Promise((resolve, reject) => {
     const sql = 'SELECT * FROM Users WHERE email=?';
-    db.all(sql,[email], (err, rows) => {
+    db.get(sql,[email], (err, rows) => {
       if (err) {
         reject(err);
-      } else {
+      }if (rows == undefined)
+      resolve({ error: 'NOT found' }); 
+      else {
         resolve(rows);
       }
     });
@@ -391,11 +393,64 @@ function readHuts(){
   });
 }
 
+/*************Verification Code************/
+function addCode(email,code) {
+  return new Promise((resolve, reject) => {
+    const sql = 'INSERT INTO Verification_Code (email,code) VALUES(?,?)';
+    db.run(sql, email,code, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(true);
+      }
+    });
+  });
+}
+
+function getCode(email){
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT * FROM Verification_Code where email = ?';
+    db.all(sql,[email], (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
+function deleteCode(email) {
+  return new Promise((resolve, reject) => {
+    const query = 'DELETE FROM Verification_Code WHERE email = ?';
+    db.run(query, [email], (err) => {
+      if (err) {
+        reject(err);
+      } else{
+
+        resolve(true);
+      }
+    });
+  });
+};
+
+function updateCode(email,code) {
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE Verification_Code SET code = ? where email = ?';
+    db.run(sql, code,email, (err) => {
+      if (err)
+        reject(err);
+      else
+        resolve(true);
+    });
+  });
+}
+
 module.exports = {
   readUsers, addUser, deleteUser, updateUserRole,
   readHikes, addHike, deleteHike, updateHike, updateHikeTitle,
   updateHikeAscent, updateHikeLength, updateHikeDescription, updateHikeDifficulty,
   updateHikeET, updateHikeStartPoint, updateHikeEndPoint, updateHikeRefPoint,getUserByEmail,
-  readPoints, addPoint, updatePoint, deletePoint, readHuts,
+  readPoints, addPoint, updatePoint, deletePoint, readHuts,addCode,deleteCode,getCode,updateCode,
   updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, readListOfReferencePoints, readPointById//readReferencePoints
 };

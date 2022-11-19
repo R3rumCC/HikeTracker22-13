@@ -72,9 +72,17 @@ exports.addUser =async function(req,res)  {
         else{
     dao.addUser(req.body.user.email,value,req.body.user.role,req.body.user.name, req.body.user.lastname,req.body.user.phoneNumber,salt).then(
     result => {
-        return res.status(200).json();                       
+        dao.deleteCode(req.body.user.email).then(
+            result => {
+                return res.status(200).json();                       
+            },
+            error => {
+                return res.status(500).send(error);
+            }
+        );                     
     },
     error => {
+
         return res.status(500).send(error);
     }
 )
@@ -83,6 +91,18 @@ exports.addUser =async function(req,res)  {
 
 
 }
+
+exports.checkCode =async function(req,res)  {
+    //   console.log(req.body.point);
+       dao.getCode(req.params.email).then(
+       result => {
+           return res.status(200).json(result);                       
+       },
+       error => {
+           return res.status(500).send(error);
+       }
+   )
+   }
 
 
 exports.getUser =async function(req,res)  {
@@ -96,6 +116,8 @@ exports.getUser =async function(req,res)  {
     }
 )
 }
+
+
 
 exports.addPoint =async function(req,res)  {
  //   console.log(req.body.point);

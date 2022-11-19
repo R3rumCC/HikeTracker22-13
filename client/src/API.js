@@ -132,26 +132,18 @@ function addUser(user) {
 }
 
 async function checkUser(email) {
-	return new Promise((resolve, reject) => {
-		  fetch(URL + `/User/${email}`)
-			  .then((response) => {
-				  if (response.ok) {
-					  response.json()
-						  .then(json => resolve(json.map((user) => ({
-							  id: user.Id,
-							  name: user.Name,
-							  lastname: user.Lastname,
-							  email: user.Email,
-							  role: user.Role,
-						  }))))
-						  .catch(err => reject({ error: "Cannot parse server response" }))
-				  } else {
-					  response.json()
-						  .then((obj) => { reject(obj); })
-						  .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
-				  }
-			  }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
-	  });
+		const response = await fetch(`http://localhost:3001/api/User/${email}`,{
+			credentials: 'include',
+		});
+	
+	    const resJson = await response.json();
+
+    	if(response.ok){
+        	return resJson;
+    	}
+    	else
+        	throw resJson;
+	
   };
 
 /*************************HIKES API**********************/
@@ -252,9 +244,36 @@ function addNewHike(newHike) {
 	  }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
 	});
   }
+/*************************Email Verification**********************/
+
+  async function getEmail(email){
+	const url = 'http://localhost:3001' + '/email/getCode/' +email;
+	try {
+		const response = await fetch(url, {
+			method: 'GET',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json'
+		}
+		});
+		if(response.ok){
+			const list = await response.json();
+			return list;
+		}
+		else{
+
+			const text = await response.text();
+			throw new TypeError(text);
+		}
+	}
+	catch(e){
+		console.log(e);
+		throw e;
+	}
+}
 
 //EXPORT FUNCTIONS------------------------------
 const API = {
-	logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, addNewHike, getHikes, addPoint, getHuts,checkUser
+	logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, addNewHike, getHikes, addPoint, getHuts,checkUser,getEmail
 }
 export default API;
