@@ -1,5 +1,5 @@
 const dao = require('./DAO');
-var crypto = require('crypto')
+var crypto = require('crypto');
 
 exports.getHikes = async function()  {
     try {
@@ -55,6 +55,7 @@ function RandomIndex(min, max, i,_charStr){
     return index;
 }
 
+
 exports.addUser =async function(req,res)  {
     const  _charStr ='abacdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789';
     let min = 0, max = _charStr.length-1, salt = '';
@@ -69,11 +70,19 @@ exports.addUser =async function(req,res)  {
     crypto.scrypt(req.body.user.password, salt, 32, function (err, value){
         if (err) reject(err);
         else{
-    dao.addUser(req.body.user.name, req.body.user.lastname, req.body.user.email, value, salt, req.body.user.role, req.body.user.phoneNumber).then(
+    dao.addUser(req.body.user.email,value,req.body.user.role,req.body.user.name, req.body.user.lastname,req.body.user.phoneNumber,salt).then(
     result => {
-        return res.status(200).json();                       
+        dao.deleteCode(req.body.user.email).then(
+            result => {
+                return res.status(200).json();                       
+            },
+            error => {
+                return res.status(500).send(error);
+            }
+        );                     
     },
     error => {
+
         return res.status(500).send(error);
     }
 )
@@ -82,6 +91,34 @@ exports.addUser =async function(req,res)  {
 
 
 }
+
+exports.checkCode =async function(req,res)  {
+    //   console.log(req.body.point);
+       dao.getCode(req.params.email).then(
+       result => {
+           return res.status(200).json(result);                       
+       },
+       error => {
+           return res.status(500).send(error);
+       }
+   )
+   }
+
+
+exports.getUser =async function(req,res)  {
+ //   console.log(req.body.point);
+    dao.getUserByEmail(req.params.email).then(
+    result => {
+        return res.status(200).json(result);                       
+    },
+    error => {
+        return res.status(500).send(error);
+    }
+)
+}
+
+
+
 exports.addPoint =async function(req,res)  {
  //   console.log(req.body.point);
     dao.addPoint(req.body.point).then(

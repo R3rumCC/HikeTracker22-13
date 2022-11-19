@@ -131,6 +131,21 @@ function addUser(user) {
   });
 }
 
+async function checkUser(email) {
+		const response = await fetch(`http://localhost:3001/api/User/${email}`,{
+			credentials: 'include',
+		});
+	
+	    const resJson = await response.json();
+
+    	if(response.ok){
+        	return resJson;
+    	}
+    	else
+        	throw resJson;
+	
+  };
+
 /*************************HIKES API**********************/
 
 async function getHikes(){
@@ -229,9 +244,39 @@ function addNewHike(newHike) {
 	  }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
 	});
   }
+/*************************Email Verification**********************/
+
+  async function sendEmail(email){
+		const response = await fetch(`http://localhost:3001/email/getCode/${email}`,{
+			credentials: 'include',
+		});
+	
+		const resJson = await response.json();
+	
+		if(response.ok){
+        	return null;
+    	}
+    	else
+        	throw resJson;
+	}
+
+	async function checkCode(email){
+		const response = await fetch(`http://localhost:3001/api/Code/${email}`,{
+			credentials: 'include',
+		});
+	
+		const resJson = await response.json();
+	
+		if(response.ok){
+
+        	return resJson;
+    	}
+    	else
+        	throw resJson;
+	}
 
 //EXPORT FUNCTIONS------------------------------
 const API = {
-	logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, addNewHike, getHikes, addPoint, getHuts
+	logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, addNewHike, getHikes, addPoint, getHuts,checkUser,sendEmail,checkCode
 }
 export default API;

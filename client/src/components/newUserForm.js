@@ -11,6 +11,8 @@ function UserForm(props) {
 	const [cPassword, setCPassword] = useState("");
 	const [role, setRole] = useState("Hiker");
 	const [phoneNumber, setPhoneNumber] = useState("");
+	const [code,setCode]=useState('');
+	const [dbcode,setDBCode]=useState('');
 
 	const [errorMsg, setErrorMsg] = useState(""); // empty string '' = no error
 
@@ -24,18 +26,36 @@ function UserForm(props) {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
+		props.checkCode(email).then((result)=>{
+			setDBCode(result);
+		})
+		props.checkUser(email).then((result) =>{
+		// console.log(result);		
 		// validation
 		if (name.trim().length !== 0) {
 			let newUser;
 			if (lastname.trim().length !== 0) {
 				if (email.trim().length !== 0) {
+					if(result){
+					
 					if(cPassword!==password){
-						
 						setErrorMsg("Error: The passwords entered twice must be consistent.");
 					return;
 					}else{
-						newUser = { name: name, lastname: lastname, email: email, password: password, role: role,phoneNumber:phoneNumber };
-						
+						if(code!==''){
+							if(code==dbcode){
+						newUser = { name: name, lastname: lastname, email: email, password: password, role: role,phoneNumber:phoneNumber };	
+					}else{
+						setErrorMsg("Verification code is wrong.");
+					return;
+					}				
+					}
+						else {setErrorMsg("Verification code cannot be empty"); return;}
+					}
+					}
+					else{
+						setErrorMsg("This email has been registered.");
+					return;
 					}
 				} else {
 					setErrorMsg("Error: Enter a valid email.");
@@ -51,10 +71,35 @@ function UserForm(props) {
 		} else {
 			setErrorMsg("Error: Enter a valid name.");
 		}
+	})
 	};
 	
 	const cancel =()=>{
 		navigate('/');
+	}
+
+	const sendCode =(event) =>{
+		event.preventDefault();
+
+			if(email!==''){
+				props.checkUser(email).then((result) =>{
+					if(result){
+					 props.sendEmail(email);
+					alert('The verification code has been sent to your email');
+					}else{
+						setErrorMsg("This email has been registered.");
+					return;
+					}
+				})
+				}
+				else{
+					setErrorMsg("Email cannot be empty.");
+					return;
+				}
+			
+				
+
+		
 	}
 
 	return (
@@ -72,14 +117,14 @@ function UserForm(props) {
 				<Form.Group>
 					<Form.Label>Name</Form.Label>
 					<Form.Control
-						value={name}
+						value={name} placeholder="Enter your name."
 						onChange={(ev) => setName(ev.target.value)}
 					></Form.Control>
 				</Form.Group>
 				<Form.Group>
 					<Form.Label>Lastname</Form.Label>
 					<Form.Control
-						value={lastname}
+						value={lastname} placeholder="Enter your lastname."
 						onChange={(ev) => setLastname(ev.target.value)}
 					></Form.Control>
 				</Form.Group>
@@ -100,29 +145,40 @@ function UserForm(props) {
 				<Form.Group>
 					<Form.Label>Email</Form.Label>
 					<Form.Control
-						value={email}
+						value={email} placeholder="Enter your Email."
 						onChange={(ev) => setEmail(ev.target.value)} required pattern={reg}
 					></Form.Control>
 				</Form.Group>
 				<Form.Group>
 					<Form.Label>Password</Form.Label>
 					<Form.Control
-						value={password}
-						onChange={(ev) => setPassword(ev.target.value)}
+						 type="password"
+						 value={password} placeholder="Enter the password."
+						 onChange={(ev) => setPassword(ev.target.value)}
+						 required={true} //minLength={6}
 					></Form.Control>
 				</Form.Group>
 				<Form.Group>
 					<Form.Label>Confirm Your Password</Form.Label>
 					<Form.Control
-						value={cPassword}
+					type="password"
+						value={cPassword} placeholder="Enter the password."
 						onChange={(ev) => setCPassword(ev.target.value)}
 					></Form.Control>
 				</Form.Group>
 				<Form.Group>
 					<Form.Label>Phone number</Form.Label>
 					<Form.Control
-						value={phoneNumber}
+						value={phoneNumber} placeholder="Enter the phone number."
 						onChange={(ev) => setPhoneNumber(ev.target.value)}
+					></Form.Control>
+				</Form.Group>
+				<Button className='mt-3 ms-3' onClick={sendCode}>Send Verification Code</Button>
+				<Form.Group>
+					<Form.Label>Verification Code</Form.Label>
+					<Form.Control
+						value={code} placeholder="Enter the verification code."
+						onChange={(ev) => setCode(ev.target.value)}
 					></Form.Control>
 				</Form.Group>
 				<Button className='mt-3' type='submit'>Save</Button>
