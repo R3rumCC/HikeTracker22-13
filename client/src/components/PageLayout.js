@@ -28,6 +28,7 @@ function DefaultLayout(props) {
   const [filteredHikes, setFilteredHikes] = useState([])
   const [filtered, setFiltered] = useState(false)
 
+
   
 
   useEffect(() => {
@@ -224,7 +225,7 @@ function LoginLayout(props) {
 function HikerLayout(props) {
   return (
     <Row className="vh-200">
-        <HikePage currentHike={props.currentHike}></HikePage>
+        <HikePage currentHike={props.currentHike} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></HikePage>
     </Row>
   );  
 }

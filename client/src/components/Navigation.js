@@ -19,8 +19,9 @@ const Navigation = (props) => {
   const [searchPage, setSearchPage] = useState(false);
 
   return (
+    // 
     <Navbar bg="primary" expand="lg" variant="dark" className="justify-content-between">
-      <Link to="/">
+      <Link to="/" onClick={()=>{props.setCurrentMarkers([])}}>
         <Navbar.Brand>
         <i className="bi bi-compass icon-size m-2"/> Hike Tracker
         </Navbar.Brand>

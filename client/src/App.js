@@ -18,7 +18,7 @@ import MessageContext from './messageCtx';
 import API from './API';
 import { HikeForm } from './components/newHikeForm';
 import FileUploader from './components/UploadGpxForm';
-import { HikePage } from './components/hikePage';
+import { HikePage } from './components/hikePage';   
 
 
 function App() {
@@ -55,6 +55,8 @@ function Main() {
   const [currentUser, setCurrentUser] = useState({});
   const [currentHike, setCurrentHike] = useState([]);
   const [isLoading, setLoading] = useState(false);
+  //Remember to clear the current markers if the user leaves the page
+  const [currentMarkers, setCurrentMarkers] = useState([]) //List of selected positions [[Lat, Lng], [Lat2, Lng2], ...] on a map.
   function handleError(err) {
     
     toast.error(
@@ -143,15 +145,15 @@ function Main() {
 
   return (
     <>
-      <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} />
+      <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} setCurrentMarkers={setCurrentMarkers}/>
       <Routes>
         <Route path="/" element={
             loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHike={CreateNewHike}/> :
-             <DefaultLayout role = {loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike} />  /*<FileUploadLayout></FileUploadLayout>*/
+              <DefaultLayout role = {loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike} />  /*<FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>
         {/* <Route path="/NewHike" element={<HikeForm/>} /> THIS WAS A TRY TO DO THE .GPX FILE UPLOAD.*/}
-        <Route path="/map" element={loggedIn && currentUser.role == 'Hiker' && currentHike.length != 0 ? <HikerLayout currentHike={currentHike}/> : <Navigate replace to='/' />} />
+        <Route path="/map" element={loggedIn && currentUser.role == 'Hiker' && currentHike.length != 0 ? <HikerLayout currentHike={currentHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers}/> : <Navigate replace to='/' />} />
         <Route path="/register" element={!loggedIn ? <RegisterLayout CreateNewAccount={CreateNewAccount} /> : <Navigate replace to='/' />} />
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
         <Route path="/searchHut" element={loggedIn && currentUser.role == 'Hiker' ? <SearchLayout/> : <Navigate replace to='/' />} />
