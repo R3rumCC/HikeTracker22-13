@@ -10,8 +10,6 @@ const morgan = require('morgan'); // logging middleware
 const { validationResult, body, param } = require('express-validator');
 const PREFIX = '/api/v0';
 
-const dayjs = require('dayjs');
-
 //1 STEP PASSPORT-->Passport-related imports
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
