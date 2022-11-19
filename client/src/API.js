@@ -131,6 +131,29 @@ function addUser(user) {
   });
 }
 
+async function checkUser(email) {
+	return new Promise((resolve, reject) => {
+		  fetch(URL + `/User/${email}`)
+			  .then((response) => {
+				  if (response.ok) {
+					  response.json()
+						  .then(json => resolve(json.map((user) => ({
+							  id: user.Id,
+							  name: user.Name,
+							  lastname: user.Lastname,
+							  email: user.Email,
+							  role: user.Role,
+						  }))))
+						  .catch(err => reject({ error: "Cannot parse server response" }))
+				  } else {
+					  response.json()
+						  .then((obj) => { reject(obj); })
+						  .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+				  }
+			  }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+	  });
+  };
+
 /*************************HIKES API**********************/
 
 async function getHikes(){
@@ -232,6 +255,6 @@ function addNewHike(newHike) {
 
 //EXPORT FUNCTIONS------------------------------
 const API = {
-	logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, addNewHike, getHikes, addPoint, getHuts
+	logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, addNewHike, getHikes, addPoint, getHuts,checkUser
 }
 export default API;

@@ -120,6 +120,15 @@ function Main() {
     await API.addUser(user);
     
   };
+
+  const checkUser = async (email) => {
+
+    const u =await API.checkUser(email);
+ 
+    if(u!=[]) return false;
+    else return true;
+    
+  };
   /*****************************************************/
 
   //********HANDLE_ADD_POINT*******//
@@ -152,7 +161,7 @@ function Main() {
         </Route>
         {/* <Route path="/NewHike" element={<HikeForm/>} /> THIS WAS A TRY TO DO THE .GPX FILE UPLOAD.*/}
         <Route path="/map" element={loggedIn && currentUser.role == 'Hiker' && currentHike.length != 0 ? <HikerLayout currentHike={currentHike}/> : <Navigate replace to='/' />} />
-        <Route path="/register" element={!loggedIn ? <RegisterLayout CreateNewAccount={CreateNewAccount} /> : <Navigate replace to='/' />} />
+        <Route path="/register" element={!loggedIn ? <RegisterLayout CreateNewAccount={CreateNewAccount} checkUser={checkUser}/> : <Navigate replace to='/' />} />
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
         <Route path="/searchHut" element={loggedIn && currentUser.role == 'Hiker' ? <SearchLayout/> : <Navigate replace to='/' />} />
       </Routes>
