@@ -122,6 +122,13 @@ function Main() {
     await API.addUser(user);
     
   };
+
+  const checkUser = async (email) => {
+    const u = await API.checkUser(email);
+      // console.log(u);
+      if(u.error) return true;
+      else return false;
+  };
   /*****************************************************/
 
   //********HANDLE_ADD_POINT*******//
@@ -138,9 +145,22 @@ function Main() {
      await API.addNewHike(hike)    
   };
 
-  // const test = async()=>{
-  //   console.log("this is text")
-  // }
+    //********HANDLE_VERIFICATION_CODE*******//
+    const sendEmail = async(email)=>{
+
+      await API.sendEmail(email);  
+    }
+
+    const checkCode = async(email)=>{
+
+      const c= await API.checkCode(email);  
+      return c.code;
+
+    }
+
+
+
+  
   /*****************************************************/
 
   return (
@@ -154,7 +174,7 @@ function Main() {
         </Route>
         {/* <Route path="/NewHike" element={<HikeForm/>} /> THIS WAS A TRY TO DO THE .GPX FILE UPLOAD.*/}
         <Route path="/map" element={loggedIn && currentUser.role == 'Hiker' && currentHike.length != 0 ? <HikerLayout currentHike={currentHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers}/> : <Navigate replace to='/' />} />
-        <Route path="/register" element={!loggedIn ? <RegisterLayout CreateNewAccount={CreateNewAccount} /> : <Navigate replace to='/' />} />
+        <Route path="/register" element={!loggedIn ? <RegisterLayout CreateNewAccount={CreateNewAccount} checkUser={checkUser} checkCode={checkCode} sendEmail={sendEmail}/> : <Navigate replace to='/' />} />
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
         <Route path="/searchHut" element={loggedIn && currentUser.role == 'Hiker' ? <SearchLayout/> : <Navigate replace to='/' />} />
       </Routes>
