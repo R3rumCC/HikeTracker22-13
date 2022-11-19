@@ -21,7 +21,7 @@ email.get('/getCode/:email',async (req, res) => {
     const mailOptions = {
         from:'"HIKETRACKER"<736076274@qq.com>',
         to, 
-        subject:'Thie is your Verification Code', // title
+        subject:'This is your Verification Code', // title
        html:`<div style="vh-100 justify-content-md-center"><h1 style="text-align:center;">${code}</h1></div>`
     };
     //  send
@@ -45,7 +45,7 @@ email.get('/getCode/:email',async (req, res) => {
         }
     )
    
-    res.send('已成功发送邮件！');
+    res.send('The verification code has been sent to your email');
 });
 
 module.exports = email;

@@ -410,10 +410,13 @@ function addCode(email,code) {
 function getCode(email){
   return new Promise((resolve, reject) => {
     const sql = 'SELECT * FROM Verification_Code where email = ?';
-    db.all(sql,[email], (err, rows) => {
+    db.get(sql,[email], (err, rows) => {
       if (err) {
         reject(err);
-      } else {
+      }
+      if (rows == undefined)
+      resolve({ error: 'NOT found' });
+       else {
         resolve(rows);
       }
     });

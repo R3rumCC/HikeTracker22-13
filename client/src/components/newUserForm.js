@@ -11,6 +11,8 @@ function UserForm(props) {
 	const [cPassword, setCPassword] = useState("");
 	const [role, setRole] = useState("Hiker");
 	const [phoneNumber, setPhoneNumber] = useState("");
+	const [code,setCode]=useState('');
+	const [dbcode,setDBCode]=useState('');
 
 	const [errorMsg, setErrorMsg] = useState(""); // empty string '' = no error
 
@@ -24,20 +26,36 @@ function UserForm(props) {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
+		props.checkCode(email).then((result)=>{
+			setDBCode(result);
+		})
 		props.checkUser(email).then((result) =>{
 		// console.log(result);		
 		// validation
 		if (name.trim().length !== 0) {
 			let newUser;
 			if (lastname.trim().length !== 0) {
-				if (email.trim().length !== 0&&result) {
+				if (email.trim().length !== 0) {
+					if(result){
+					
 					if(cPassword!==password){
-						
 						setErrorMsg("Error: The passwords entered twice must be consistent.");
 					return;
 					}else{
-						newUser = { name: name, lastname: lastname, email: email, password: password, role: role,phoneNumber:phoneNumber };
-						
+						if(code!==''){
+							if(code==dbcode){
+						newUser = { name: name, lastname: lastname, email: email, password: password, role: role,phoneNumber:phoneNumber };	
+					}else{
+						setErrorMsg("Verification code is wrong.");
+					return;
+					}				
+					}
+						else {setErrorMsg("Verification code cannot be empty"); return;}
+					}
+					}
+					else{
+						setErrorMsg("This email has been registered.");
+					return;
 					}
 				} else {
 					setErrorMsg("Error: Enter a valid email.");
@@ -58,6 +76,30 @@ function UserForm(props) {
 	
 	const cancel =()=>{
 		navigate('/');
+	}
+
+	const sendCode =(event) =>{
+		event.preventDefault();
+
+			if(email!==''){
+				props.checkUser(email).then((result) =>{
+					if(result){
+					 props.sendEmail(email);
+					alert('The verification code has been sent to your email');
+					}else{
+						setErrorMsg("This email has been registered.");
+					return;
+					}
+				})
+				}
+				else{
+					setErrorMsg("Email cannot be empty.");
+					return;
+				}
+			
+				
+
+		
 	}
 
 	return (
@@ -129,6 +171,14 @@ function UserForm(props) {
 					<Form.Control
 						value={phoneNumber} placeholder="Enter the phone number."
 						onChange={(ev) => setPhoneNumber(ev.target.value)}
+					></Form.Control>
+				</Form.Group>
+				<Button className='mt-3 ms-3' onClick={sendCode}>Send Verification Code</Button>
+				<Form.Group>
+					<Form.Label>Verification Code</Form.Label>
+					<Form.Control
+						value={code} placeholder="Enter the verification code."
+						onChange={(ev) => setCode(ev.target.value)}
 					></Form.Control>
 				</Form.Group>
 				<Button className='mt-3' type='submit'>Save</Button>

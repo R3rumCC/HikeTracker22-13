@@ -246,34 +246,37 @@ function addNewHike(newHike) {
   }
 /*************************Email Verification**********************/
 
-  async function getEmail(email){
-	const url = 'http://localhost:3001' + '/email/getCode/' +email;
-	try {
-		const response = await fetch(url, {
-			method: 'GET',
+  async function sendEmail(email){
+		const response = await fetch(`http://localhost:3001/email/getCode/${email}`,{
 			credentials: 'include',
-			headers: {
-				'Content-Type': 'application/json'
-		}
 		});
+	
+		const resJson = await response.json();
+	
 		if(response.ok){
-			const list = await response.json();
-			return list;
-		}
-		else{
+        	return null;
+    	}
+    	else
+        	throw resJson;
+	}
 
-			const text = await response.text();
-			throw new TypeError(text);
-		}
+	async function checkCode(email){
+		const response = await fetch(`http://localhost:3001/api/Code/${email}`,{
+			credentials: 'include',
+		});
+	
+		const resJson = await response.json();
+	
+		if(response.ok){
+
+        	return resJson;
+    	}
+    	else
+        	throw resJson;
 	}
-	catch(e){
-		console.log(e);
-		throw e;
-	}
-}
 
 //EXPORT FUNCTIONS------------------------------
 const API = {
-	logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, addNewHike, getHikes, addPoint, getHuts,checkUser,getEmail
+	logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, addNewHike, getHikes, addPoint, getHuts,checkUser,sendEmail,checkCode
 }
 export default API;

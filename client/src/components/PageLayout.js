@@ -87,7 +87,7 @@ function RegisterLayout(props) {
   return (
     <Row className="vh-200">
       <Col md={12} className="below-nav">
-        <UserForm CreateNewAccount={props.CreateNewAccount} checkUser={props.checkUser}/>
+        <UserForm CreateNewAccount={props.CreateNewAccount} checkUser={props.checkUser} sendEmail={props.sendEmail} checkCode={props.checkCode}/>
       </Col>
     </Row>
   );
