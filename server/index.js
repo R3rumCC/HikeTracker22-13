@@ -4,6 +4,7 @@ const express = require('express');
 const dao = require('./DAO');
 const userDao = require('./user-dao.js');
 const hikeRouter = require('./hikeRouter');
+const email = require('./Email');
 const cors = require('cors');
 const morgan = require('morgan'); // logging middleware
 const { validationResult, body, param } = require('express-validator');
@@ -31,6 +32,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.use('/api', hikeRouter);
+app.use('/email', email);
 
 //2 STEP PASSPORT-->Passport: set up local strategy-->TODO in USER-DAO
 passport.use(new LocalStrategy(async function verify(username, password, cb) {
