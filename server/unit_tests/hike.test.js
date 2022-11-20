@@ -117,7 +117,6 @@ describe("Hike test", () => {
   /*test('test readListOfReferencesPoints', async () => {
     const hike = new Hike('Hike#1', '5.0', '5', '5.0', 'Tourist', '1', '2', '2-3', 'First easy example hike');
     const ref = await dao.readListOfReferencePoints(hike.title);
-    console.log(ref)
     let refer_points = [];
     for (const rp of ref.reference_points.split("-")) {
       const idPoint = parseInt(rp);

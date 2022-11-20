@@ -44,7 +44,6 @@ describe("Points test", () => {
     const data = await dao.readPoints();
     const p1 = new Point(1, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
                         'Hut#1', '45.177786,7.083372', 'Hut');
-                        console.log(p1)
     const p2 = new Point(2, 'Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy',
                         'Hut#2', '45.203531,7.07734', 'Hut');
     const p3 = new Point(3, '327, Lago di San Bernolfo - Collalunga, Vinadio, Cuneo, Piedmont, Italy',

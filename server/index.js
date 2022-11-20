@@ -8,7 +8,7 @@ const email = require('./Email');
 const cors = require('cors');
 const morgan = require('morgan'); // logging middleware
 const { validationResult, body, param } = require('express-validator');
-const PREFIX = '/api/v0';
+const PREFIX = '/api';
 
 //1 STEP PASSPORT-->Passport-related imports
 const passport = require('passport');
