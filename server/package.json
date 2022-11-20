@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "apiTest": "mocha 'tests/**/*.js'",
+    "apiTest": "mocha 'tests/**/*.js' --timeout 10000",
     "start": "nodemon index.js"
   },
   "author": "",
