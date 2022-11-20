@@ -1,10 +1,9 @@
-const APIURL = 'http://localhost:3001/api/v0';
 const URL = 'http://localhost:3001/api';
 
 /*************************AUTHENTICATION API**********************/
 
 async function logIn(credentials) {
-	let response = await fetch(APIURL + '/sessions', {
+	let response = await fetch(URL + '/sessions', {
 	  method: 'POST',
 	  credentials: 'include',
 	  headers: {
@@ -25,7 +24,7 @@ const guest = { id: 0, name: 'Guest' }; //Dummy object in case of error
 
 //API: getUserInfo----------------------------------------------------
 const getUserInfo = async () => {
-	const response = await fetch(APIURL + '/sessions/current', {
+	const response = await fetch(URL + '/sessions/current', {
 		credentials: 'include',
 	});
 	const user = await response.json();
@@ -38,7 +37,7 @@ const getUserInfo = async () => {
 
 //FINAL STEP-->LOGOUT-->Destroy the session info associated to the authorized user
 async function logOut() {
-	await fetch(APIURL + '/sessions/current', {
+	await fetch(URL + '/sessions/current', {
 	  method: 'DELETE',
 	  credentials: 'include'
 	});
