@@ -11,7 +11,6 @@ let agent = chai.request.agent(app); //.agent() is needed for keep cookies from 
 
 describe('test login', () => {
 
-  loginUser(500, 'paologoglia@gmail.com', 'password');    //user doesn't exist
   loginUser(200, 'mario.rossi@gmail.com', 'hello12');     //correct email and password
   loginUser(401, 'mario.rossi@gmail.com', 'password');    //wrong password
 
@@ -25,10 +24,7 @@ function loginUser(expectedHTTPStatus, username, password) {
       .set('Content-Type', 'application/json')
       .send(reqBody)
       .then(function (res) {
-        console.log(res.status);
-        console.log(expectedHTTPStatus)
-        //res.status.should.be.equal(expectedHTTPStatus);
         res.should.have.status(expectedHTTPStatus);
-      })//.then(done());
+      });
   });
 }
