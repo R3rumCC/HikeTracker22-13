@@ -42,8 +42,6 @@ exports.getUser = (email, password) => {
       }
       else {
         const user = { username: row.email, name: row.name, lastname: row.lastname, role: row.role, phone_number: row.phone_number }; //NOTA BENE-->QUI NON DOBBIAMO METTERE LA PASSWORD!!-->vedi dopo perchè dobbiamo salvarla come HASH
-        console.log(user)
-        console.log(row.salt)
         //4.2 STEP PASSPORT-->HASHING PASSWORD
         crypto.scrypt(password, row.salt, 32, function (err, hashedPassword) {
           if (err) reject(err);

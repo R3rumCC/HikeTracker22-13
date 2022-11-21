@@ -28,6 +28,7 @@ function DefaultLayout(props) {
   const [filteredHikes, setFilteredHikes] = useState([])
   const [filtered, setFiltered] = useState(false)
 
+
   
 
   useEffect(() => {
@@ -87,7 +88,7 @@ function RegisterLayout(props) {
   return (
     <Row className="vh-200">
       <Col md={12} className="below-nav">
-        <UserForm CreateNewAccount={props.CreateNewAccount} />
+        <UserForm CreateNewAccount={props.CreateNewAccount} checkUser={props.checkUser} sendEmail={props.sendEmail} checkCode={props.checkCode}/>
       </Col>
     </Row>
   );
@@ -224,7 +225,7 @@ function LoginLayout(props) {
 function HikerLayout(props) {
   return (
     <Row className="vh-200">
-        <HikePage currentHike={props.currentHike}></HikePage>
+        <HikePage currentHike={props.currentHike} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></HikePage>
     </Row>
   );  
 }

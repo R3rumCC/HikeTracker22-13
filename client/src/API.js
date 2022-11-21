@@ -1,10 +1,9 @@
-const APIURL = 'http://localhost:3001/api/v0';
 const URL = 'http://localhost:3001/api';
 
 /*************************AUTHENTICATION API**********************/
 
 async function logIn(credentials) {
-	let response = await fetch(APIURL + '/sessions', {
+	let response = await fetch(URL + '/sessions', {
 	  method: 'POST',
 	  credentials: 'include',
 	  headers: {
@@ -25,7 +24,7 @@ const guest = { id: 0, name: 'Guest' }; //Dummy object in case of error
 
 //API: getUserInfo----------------------------------------------------
 const getUserInfo = async () => {
-	const response = await fetch(APIURL + '/sessions/current', {
+	const response = await fetch(URL + '/sessions/current', {
 		credentials: 'include',
 	});
 	const user = await response.json();
@@ -38,7 +37,7 @@ const getUserInfo = async () => {
 
 //FINAL STEP-->LOGOUT-->Destroy the session info associated to the authorized user
 async function logOut() {
-	await fetch(APIURL + '/sessions/current', {
+	await fetch(URL + '/sessions/current', {
 	  method: 'DELETE',
 	  credentials: 'include'
 	});
@@ -130,6 +129,21 @@ function addUser(user) {
     }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
   });
 }
+
+async function checkUser(email) {
+		const response = await fetch(`http://localhost:3001/api/User/${email}`,{
+			credentials: 'include',
+		});
+	
+	    const resJson = await response.json();
+
+    	if(response.ok){
+        	return resJson;
+    	}
+    	else
+        	throw resJson;
+	
+  };
 
 /*************************HIKES API**********************/
 
@@ -229,9 +243,39 @@ function addNewHike(newHike) {
 	  }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
 	});
   }
+/*************************Email Verification**********************/
+
+  async function sendEmail(email){
+		const response = await fetch(`http://localhost:3001/email/getCode/${email}`,{
+			credentials: 'include',
+		});
+	
+		const resJson = await response.json();
+	
+		if(response.ok){
+        	return null;
+    	}
+    	else
+        	throw resJson;
+	}
+
+	async function checkCode(email){
+		const response = await fetch(`http://localhost:3001/api/Code/${email}`,{
+			credentials: 'include',
+		});
+	
+		const resJson = await response.json();
+	
+		if(response.ok){
+
+        	return resJson;
+    	}
+    	else
+        	throw resJson;
+	}
 
 //EXPORT FUNCTIONS------------------------------
 const API = {
-	logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, addNewHike, getHikes, addPoint, getHuts
+	logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, addNewHike, getHikes, addPoint, getHuts,checkUser,sendEmail,checkCode
 }
 export default API;

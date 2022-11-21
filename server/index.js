@@ -4,12 +4,11 @@ const express = require('express');
 const dao = require('./DAO');
 const userDao = require('./user-dao.js');
 const hikeRouter = require('./hikeRouter');
+const email = require('./Email');
 const cors = require('cors');
 const morgan = require('morgan'); // logging middleware
 const { validationResult, body, param } = require('express-validator');
-const PREFIX = '/api/v0';
-
-const dayjs = require('dayjs');
+const PREFIX = '/api';
 
 //1 STEP PASSPORT-->Passport-related imports
 const passport = require('passport');
@@ -31,6 +30,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.use('/api', hikeRouter);
+app.use('/email', email);
 
 //2 STEP PASSPORT-->Passport: set up local strategy-->TODO in USER-DAO
 passport.use(new LocalStrategy(async function verify(username, password, cb) {
@@ -179,3 +179,5 @@ app.delete(PREFIX + '/sessions/current', (req, res) => {
 
 //SERVER RUNNING
 app.listen(3001, () => { console.log('Server running on Port: 3001') });
+
+module.exports = app;
