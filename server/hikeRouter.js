@@ -12,6 +12,9 @@ router.get('/getHikes', async (req, res) => {
         res.status(500).json(error).end();
     }
 });
+
+router.post('/newHike', c.addHike);
+
 router.post('/User',c.addUser);
 
 router.post('/Point',c.addPoint);
