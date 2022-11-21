@@ -2,9 +2,6 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 chai.should();
-//let expect = chai.expect;
-
-//const testDao = require('../test-dao');
 
 const app = require('../index');
 let agent = chai.request.agent(app); //.agent() is needed for keep cookies from one reuqent

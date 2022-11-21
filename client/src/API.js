@@ -3,72 +3,72 @@ const URL = 'http://localhost:3001/api';
 /*************************AUTHENTICATION API**********************/
 
 async function logIn(credentials) {
-	let response = await fetch(URL + '/sessions', {
-	  method: 'POST',
-	  credentials: 'include',
-	  headers: {
-		'Content-Type': 'application/json',
-	  },
-	  body: JSON.stringify(credentials),
-	});
-	if (response.ok) {
-	  const user = await response.json();
-	  return user;
-	} else {
-	  const errDetail = await response.json();
-	  throw errDetail; 
-	}
+  let response = await fetch(URL + '/sessions', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(credentials),
+  });
+  if (response.ok) {
+    const user = await response.json();
+    return user;
+  } else {
+    const errDetail = await response.json();
+    throw errDetail;
   }
+}
 
 const guest = { id: 0, name: 'Guest' }; //Dummy object in case of error
 
 //API: getUserInfo----------------------------------------------------
 const getUserInfo = async () => {
-	const response = await fetch(URL + '/sessions/current', {
-		credentials: 'include',
-	});
-	const user = await response.json();
-	if (response.ok) {
-		return user;
-	} else {
-		return guest;
-	}
+  const response = await fetch(URL + '/sessions/current', {
+    credentials: 'include',
+  });
+  const user = await response.json();
+  if (response.ok) {
+    return user;
+  } else {
+    return guest;
+  }
 };
 
 //FINAL STEP-->LOGOUT-->Destroy the session info associated to the authorized user
 async function logOut() {
-	await fetch(URL + '/sessions/current', {
-	  method: 'DELETE',
-	  credentials: 'include'
-	});
-  }
+  await fetch(URL + '/sessions/current', {
+    method: 'DELETE',
+    credentials: 'include'
+  });
+}
 
 /*************************ADMIN API**********************/
 
 async function getAllUsers() {
   return new Promise((resolve, reject) => {
-		fetch(URL + '/User')
-			.then((response) => {
-				if (response.ok) {
-					response.json()
-						.then(json => resolve(json.map((user) => ({
-							id: user.Id,
-							name: user.Name,
-							lastname: user.Lastname,
-							email: user.Email,
-							role: user.Role,
-						}))))
-						.catch(err => reject({ error: "Cannot parse server response" }))
-				} else {
-					response.json()
-						.then((obj) => { reject(obj); })
-						.catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
-				}
-			}).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
-	});
+    fetch(URL + '/User')
+      .then((response) => {
+        if (response.ok) {
+          response.json()
+            .then(json => resolve(json.map((user) => ({
+              id: user.Id,
+              name: user.Name,
+              lastname: user.Lastname,
+              email: user.Email,
+              role: user.Role,
+            }))))
+            .catch(err => reject({ error: "Cannot parse server response" }))
+        } else {
+          response.json()
+            .then((obj) => { reject(obj); })
+            .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+        }
+      }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+  });
 };
 
-function deleteUser(user) { 
+function deleteUser(user) {
   return new Promise((resolve, reject) => {
     fetch(URL + '/User/' + user.id, {
       method: 'DELETE',
@@ -81,7 +81,7 @@ function deleteUser(user) {
         resolve(null);
       } else {
         response.json()
-          .then((message) => { reject(message); }) 
+          .then((message) => { reject(message); })
           .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
       }
     }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
@@ -102,7 +102,7 @@ function updateUserRole(user, newRole) {
         resolve(null);
       } else {
         response.json()
-          .then((obj) => { reject(obj); }) 
+          .then((obj) => { reject(obj); })
           .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
       }
     }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
@@ -131,151 +131,151 @@ function addUser(user) {
 }
 
 async function checkUser(email) {
-		const response = await fetch(`http://localhost:3001/api/User/${email}`,{
-			credentials: 'include',
-		});
-	
-	    const resJson = await response.json();
+  const response = await fetch(`http://localhost:3001/api/User/${email}`, {
+    credentials: 'include',
+  });
 
-    	if(response.ok){
-        	return resJson;
-    	}
-    	else
-        	throw resJson;
-	
-  };
+  const resJson = await response.json();
+
+  if (response.ok) {
+    return resJson;
+  }
+  else
+    throw resJson;
+
+};
 
 /*************************HIKES API**********************/
 
-async function getHikes(){
-	const url = 'http://localhost:3001' + '/api/getHikes';
-	try {
-		const response = await fetch(url, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json'
-		}
-		});
-		if(response.ok){
-			const list = await response.json();
-			return list;
-		}
-		else{
-			//console.log(response.statusText);
-			const text = await response.text();
-			throw new TypeError(text);
-		}
-	}
-	catch(e){
-		//console.log(e);
-		throw e;
-	}
+async function getHikes() {
+  const url = 'http://localhost:3001' + '/api/getHikes';
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    if (response.ok) {
+      const list = await response.json();
+      return list;
+    }
+    else {
+      //console.log(response.statusText);
+      const text = await response.text();
+      throw new TypeError(text);
+    }
+  }
+  catch (e) {
+    //console.log(e);
+    throw e;
+  }
 }
 
 /*************************HIKER API****************************/
 
-async function getHuts(){
-	const url = 'http://localhost:3001' + '/api/getHuts';
-	try {
-		const response = await fetch(url, {
-			method: 'GET',
-			credentials: 'include',
-			headers: {
-				'Content-Type': 'application/json'
-		}
-		});
-		if(response.ok){
-			const list = await response.json();
-			return list;
-		}
-		else{
-			//console.log(response.statusText);
-			const text = await response.text();
-			throw new TypeError(text);
-		}
-	}
-	catch(e){
-		console.log(e);
-		throw e;
-	}
+async function getHuts() {
+  const url = 'http://localhost:3001' + '/api/getHuts';
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    if (response.ok) {
+      const list = await response.json();
+      return list;
+    }
+    else {
+      //console.log(response.statusText);
+      const text = await response.text();
+      throw new TypeError(text);
+    }
+  }
+  catch (e) {
+    console.log(e);
+    throw e;
+  }
 }
 
 /*************************LOCAL GUIDE API**********************/
 
 function addNewHike(newHike) {
-	return new Promise((resolve, reject) => {
-	  fetch(URL + '/newHike', {
-		method: 'POST',
-		credentials: 'include',
-		headers: {
-		  'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({ newHike }),
-	  }).then((response) => {
-		if (response.ok) {
-		  resolve(null);
-		} else {
-		  response.json()
-			.then((obj) => { reject(obj); })
-			.catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
-		}
-	  }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
-	});
-  }
+  return new Promise((resolve, reject) => {
+    fetch(URL + '/newHike', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ newHike }),
+    }).then((response) => {
+      if (response.ok) {
+        resolve(null);
+      } else {
+        response.json()
+          .then((obj) => { reject(obj); })
+          .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+      }
+    }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+  });
+}
 
-  function addPoint(point) {
-	return new Promise((resolve, reject) => {
-	  fetch(URL + '/Point', {
-		method: 'POST',
-		credentials: 'include',
-		headers: {
-		  'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({ point }),
-	  }).then((response) => {
-		if (response.ok) {
-		  resolve(null);
-		} else {
-		  response.json()
-			.then((obj) => { reject(obj); })
-			.catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
-		}
-	  }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
-	});
-  }
+function addPoint(point) {
+  return new Promise((resolve, reject) => {
+    fetch(URL + '/Point', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ point }),
+    }).then((response) => {
+      if (response.ok) {
+        resolve(null);
+      } else {
+        response.json()
+          .then((obj) => { reject(obj); })
+          .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+      }
+    }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+  });
+}
 /*************************Email Verification**********************/
 
-  async function sendEmail(email){
-		const response = await fetch(`http://localhost:3001/email/getCode/${email}`,{
-			credentials: 'include',
-		});
-	
-		const resJson = await response.json();
-	
-		if(response.ok){
-        	return null;
-    	}
-    	else
-        	throw resJson;
-	}
+async function sendEmail(email) {
+  const response = await fetch(`http://localhost:3001/email/getCode/${email}`, {
+    credentials: 'include',
+  });
 
-	async function checkCode(email){
-		const response = await fetch(`http://localhost:3001/api/Code/${email}`,{
-			credentials: 'include',
-		});
-	
-		const resJson = await response.json();
-	
-		if(response.ok){
+  const resJson = await response.json();
 
-        	return resJson;
-    	}
-    	else
-        	throw resJson;
-	}
+  if (response.ok) {
+    return null;
+  }
+  else
+    throw resJson;
+}
+
+async function checkCode(email) {
+  const response = await fetch(`http://localhost:3001/api/Code/${email}`, {
+    credentials: 'include',
+  });
+
+  const resJson = await response.json();
+
+  if (response.ok) {
+
+    return resJson;
+  }
+  else
+    throw resJson;
+}
 
 //EXPORT FUNCTIONS------------------------------
 const API = {
-	logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, addNewHike, getHikes, addPoint, getHuts,checkUser,sendEmail,checkCode
+  logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, addNewHike, getHikes, addPoint, getHuts, checkUser, sendEmail, checkCode
 }
 export default API;

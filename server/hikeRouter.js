@@ -12,7 +12,17 @@ router.get('/getHikes', async (req, res) => {
         res.status(500).json(error).end();
     }
 });
-router.post('/User',c.addUser);
+
+//router.post('/User',c.addUser);
+router.post('/User', async (req, res) => {
+    try{
+        const user = await c.addUser();
+        res.status(200).json();
+    } catch (error) {
+        res.status(500).json(error).end();
+    }
+});
+
 router.get('/User/:email',c.getUser);
 router.get('/Code/:email',c.checkCode);
 router.post('/Point',c.addPoint);

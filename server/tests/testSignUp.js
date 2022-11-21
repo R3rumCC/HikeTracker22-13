@@ -44,8 +44,10 @@ describe('test user signup', () => {
 function registerNewUser(expectedHTTPStatus, name, lastname, role, password, email, phone_number) {
   it('registering a new user', (done) => {
     const user = new User(name,lastname,email,password,role,phone_number);
+    reqBody = JSON.stringify(user);
     return agent.post('/api/User')
-      .send(user)
+      .set('Content-Type', 'application/json')
+      .send(reqBody)
       .then(function (res) {
         res.should.have.status(expectedHTTPStatus);
       }).then(done());
@@ -55,15 +57,19 @@ function registerNewUser(expectedHTTPStatus, name, lastname, role, password, ema
 function registerTwoTimeNewUser(expectedHTTPStatus, name, lastname, role, password, email, phone_number) {
   it('registering two time a new user', (done) => {
     const user = new User(name,lastname,email,password,role,phone_number);
+    reqBody = JSON.stringify(user);
     return agent.post('/api/User')
-      .send(user)
+      .set('Content-Type', 'application/json')
+      .send(reqBody)
       .then(function (res) {
         const user = new User(name,lastname,email,password,role,phone_number);
+        reqBody = JSON.stringify(user);
         agent.post('/api/User')
-          .send(user)
+          .set('Content-Type', 'application/json')
+          .send(reqBody)
           .then(function (res) {
             res.should.have.status(expectedHTTPStatus);
-          }).then(done());
+          });
       }).then(done());
   });
 }
