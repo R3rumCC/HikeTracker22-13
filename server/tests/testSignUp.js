@@ -8,13 +8,13 @@ const testDao = require('../test-dao');
 const app = require('../index');
 let agent = chai.request.agent(app); //.agent() is needed for keep cookies from one reuqent
 
-function User(name, lastname, email, password, role, phone_number) {
+function User(name, lastname, email, password, role, phoneNumber) {
   this.name = name;
   this.lastname = lastname;
   this.email = email;
   this.password = password;
   this.role = role;
-  this.phone_number = phone_number;
+  this.phoneNumber = phoneNumber;
 }
 
 describe('test user signup', () => {
@@ -34,17 +34,17 @@ describe('test user signup', () => {
   });
 
   registerNewUser(200, 'Paolo', 'Goglia', 'Hiker', 'password', 'paologoglia@gmail.com', '+39 3207549337');
-  registerNewUser(500, 'Giovanni', undefined, undefined, 'password', 'giovanni@gmail.com', '+39 3209030302');
+  registerNewUser(500, 'Giovanni', null, undefined, 'password', null, '+39 3209030302');
   registerTwoTimeNewUser(500, 'Paolo', 'Goglia', 'Hiker', 'password', 'paologoglia@gmail.com', '+39 3207549337');
   registerNewUser(500, 'Fabio', 'Magico', 'LocalGuide', 'password', 'fabiomagicogmail.com', '+39 3401216784');
-  registerNewUser(500, 'Marco', 'Pietra', undefined, 'password', 'marcopietra.com', '+39 3334545670');
+  registerNewUser(500, 'Marco', 'Pietra', null, 'password', 'marcopietra.com', '+39 3334545670');
 
 });
 
-function registerNewUser(expectedHTTPStatus, name, lastname, role, password, email, phone_number) {
+function registerNewUser(expectedHTTPStatus, name, lastname, role, password, email, phoneNumber) {
   it('registering a new user', (done) => {
-    const user = new User(name,lastname,email,password,role,phone_number);
-    reqBody = JSON.stringify(user);
+    const user = new User(name,lastname,email,password,role,phoneNumber);
+    reqBody = JSON.stringify({user});
     return agent.post('/api/User')
       .set('Content-Type', 'application/json')
       .send(reqBody)
@@ -54,16 +54,16 @@ function registerNewUser(expectedHTTPStatus, name, lastname, role, password, ema
   });
 }
 
-function registerTwoTimeNewUser(expectedHTTPStatus, name, lastname, role, password, email, phone_number) {
+function registerTwoTimeNewUser(expectedHTTPStatus, name, lastname, role, password, email, phoneNumber) {
   it('registering two time a new user', (done) => {
-    const user = new User(name,lastname,email,password,role,phone_number);
-    reqBody = JSON.stringify(user);
+    const user = new User(name,lastname,email,password,role,phoneNumber);
+    reqBody = JSON.stringify({user});
     return agent.post('/api/User')
       .set('Content-Type', 'application/json')
       .send(reqBody)
       .then(function (res) {
-        const user = new User(name,lastname,email,password,role,phone_number);
-        reqBody = JSON.stringify(user);
+        const user = new User(name,lastname,email,password,role,phoneNumber);
+        reqBody = JSON.stringify({user});
         agent.post('/api/User')
           .set('Content-Type', 'application/json')
           .send(reqBody)
