@@ -57,6 +57,10 @@ function RandomIndex(min, max, i, _charStr) {
 
 
 exports.addUser = async function (req, res) {
+	const u = await dao.getUserByEmail(req.body.user.email);
+	// console.log(u);
+	if(!u.error){ res.status(422).send("This email has been registered.").end(); }
+	else{
 	const _charStr = 'abacdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789';
 	let min = 0, max = _charStr.length - 1, salt = '';
 	let len = 32;
@@ -90,7 +94,7 @@ exports.addUser = async function (req, res) {
 				reject (error);
 			});*/
 		}
-	});
+	});}
 }
 
 /*exports.addUser = function (req, res) {
@@ -138,7 +142,6 @@ exports.checkCode = async function (req, res) {
 
 
 exports.getUser = async function (req, res) {
-	//   console.log(req.body.point);
 	dao.getUserByEmail(req.params.email).then(
 		result => {
 			return res.status(200).json(result);
