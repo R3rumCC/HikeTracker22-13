@@ -33,11 +33,11 @@ describe('test user signup', () => {
             'LocalGuide', 'Paulina', 'Knight', '+39 3276958421', 'a5b9cde522b8c9fb127f173da288d699')");
   });
 
-  registerNewUser(200, 'Paolo', 'Goglia', 'Hiker', 'password', 'paologoglia@gmail.com', '+39 3207549337');
+  /*registerNewUser(200, 'Paolo', 'Goglia', 'Hiker', 'password', 'paologoglia@gmail.com', '+39 3207549337');
   registerNewUser(500, 'Giovanni', null, undefined, 'password', null, '+39 3209030302');
   registerTwoTimeNewUser(500, 'Paolo', 'Goglia', 'Hiker', 'password', 'paologoglia@gmail.com', '+39 3207549337');
   registerNewUser(500, 'Fabio', 'Magico', 'LocalGuide', 'password', 'fabiomagicogmail.com', '+39 3401216784');
-  registerNewUser(500, 'Marco', 'Pietra', null, 'password', 'marcopietra.com', '+39 3334545670');
+  registerNewUser(500, 'Marco', 'Pietra', null, 'password', 'marcopietra.com', '+39 3334545670');*/
 
 });
 
