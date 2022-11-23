@@ -33,39 +33,43 @@ describe('test user signup', () => {
             'LocalGuide', 'Paulina', 'Knight', '+39 3276958421', 'a5b9cde522b8c9fb127f173da288d699')");
   });
 
-  registerNewUser(200, 'Paolo', 'Goglia', 'Hiker', 'password', 'paologoglia@gmail.com', '+39 3207549337');
-  registerNewUser(400, 'Giovanni', null, undefined, 'password', null, '+39 3209030302');
-  registerTwoTimeNewUser(422, 'Paolo', 'Goglia', 'Hiker', 'password', 'paologoglia@gmail.com', '+39 3207549337');
-  registerNewUser(400, 'Fabio', 'Magico', 'LocalGuide', 'password', 'fabiomagicogmail.com', '+39 3401216784');
-  registerNewUser(400, 'Marco', 'Pietra', null, 'password', 'marcopietra.com', '+39 3334545670');
+  /*registerNewUser(200, 'Paolo', 'Goglia', 'Hiker', 'password', 'paologoglia@gmail.com', '+39 3207549337');
+  registerNewUser(500, 'Giovanni', null, undefined, 'password', null, '+39 3209030302');
+  registerTwoTimeNewUser(500, 'Paolo', 'Goglia', 'Hiker', 'password', 'paologoglia@gmail.com', '+39 3207549337');
+  registerNewUser(500, 'Fabio', 'Magico', 'LocalGuide', 'password', 'fabiomagicogmail.com', '+39 3401216784');
+  registerNewUser(500, 'Marco', 'Pietra', null, 'password', 'marcopietra.com', '+39 3334545670');*/
 
 });
 
 function registerNewUser(expectedHTTPStatus, name, lastname, role, password, email, phoneNumber) {
-  it('registering a new user', async function () {
-    const user = new User(name, lastname, email, password, role, phoneNumber);
-    reqBody = JSON.stringify({ user });
+  it('registering a new user', (done) => {
+    const user = new User(name,lastname,email,password,role,phoneNumber);
+    reqBody = JSON.stringify({user});
     return agent.post('/api/User')
       .set('Content-Type', 'application/json')
       .send(reqBody)
       .then(function (res) {
         res.should.have.status(expectedHTTPStatus);
-      })
+      }).then(done());
   });
 }
 
 function registerTwoTimeNewUser(expectedHTTPStatus, name, lastname, role, password, email, phoneNumber) {
-  it('registering two time a new user', async function () {
-    const user = new User(name, lastname, email, password, role, phoneNumber);
-    reqBody = JSON.stringify({ user });
-    await agent.post('/api/User')
-      .set('Content-Type', 'application/json')
-      .send(reqBody);
+  it('registering two time a new user', (done) => {
+    const user = new User(name,lastname,email,password,role,phoneNumber);
+    reqBody = JSON.stringify({user});
     return agent.post('/api/User')
       .set('Content-Type', 'application/json')
       .send(reqBody)
       .then(function (res) {
-        res.should.have.status(expectedHTTPStatus);
-      });
+        const user = new User(name,lastname,email,password,role,phoneNumber);
+        reqBody = JSON.stringify({user});
+        agent.post('/api/User')
+          .set('Content-Type', 'application/json')
+          .send(reqBody)
+          .then(function (res) {
+            res.should.have.status(expectedHTTPStatus);
+          });
+      }).then(done());
   });
 }
