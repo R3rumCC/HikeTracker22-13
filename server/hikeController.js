@@ -59,74 +59,40 @@ function RandomIndex(min, max, i, _charStr) {
 exports.addUser = async function (req, res) {
 	const u = await dao.getUserByEmail(req.body.user.email);
 	// console.log(u);
-	if(!u.error){ res.status(422).send("This email has been registered.").end(); }
-	else{
-	const _charStr = 'abacdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789';
-	let min = 0, max = _charStr.length - 1, salt = '';
-	let len = 32;
-	for (var i = 0, index; i < len; i++) {
-		index = RandomIndex(min, max, i, _charStr);
-		salt += _charStr[index];
-	}
-
-	// var hash = crypto.createHmac('sha512', salt); 
-	// var hash = crypto.createHash('sha512', salt); //use sha512 
-	crypto.scrypt(req.body.user.password, salt, 32, function (err, value) {
-		if (err) reject(err);
-		else {
-			dao.addUser(req.body.user.email, value, req.body.user.role, req.body.user.name, req.body.user.lastname, req.body.user.phoneNumber, salt).then(
-				result => {
-					dao.deleteCode(req.body.user.email).then(
-						result => {
-							return res.status(200).json();
-						},
-						error => {
-							return res.status(500).send(error);
-						}
-					);
-				},
-				error => {
-					console.log(error)
-					return res.status(500).send(error);
-				}
-			)/*.catch((error) => {
-				console.log(error)
-				reject (error);
-			});*/
+	if (!u.error) { res.status(422).send("This email has been registered.").end(); }
+	else {
+		const _charStr = 'abacdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789';
+		let min = 0, max = _charStr.length - 1, salt = '';
+		let len = 32;
+		for (var i = 0, index; i < len; i++) {
+			index = RandomIndex(min, max, i, _charStr);
+			salt += _charStr[index];
 		}
-	});}
-}
 
-/*exports.addUser = function (req, res) {
-	const _charStr = 'abacdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789';
-	let min = 0, max = _charStr.length - 1, salt = '';
-	let len = 32;
-	for (var i = 0, index; i < len; i++) {
-		index = RandomIndex(min, max, i, _charStr);
-		salt += _charStr[index];
-	}
-
-	// var hash = crypto.createHmac('sha512', salt); 
-	// var hash = crypto.createHash('sha512', salt); //use sha512 
-	crypto.scrypt(req.body.user.password, salt, 32, async function (err, value) {
-		if (err)
-			reject(err);
-		else {
-			try {
-				await dao.addUser(req.body.user.email, value, req.body.user.role, req.body.user.name, req.body.user.lastname, req.body.user.phoneNumber, salt);
-				try {
-					await dao.deleteCode(req.body.user.email)
-					return res.status(200).json();
-				}catch (error) {
+		// var hash = crypto.createHmac('sha512', salt); 
+		// var hash = crypto.createHash('sha512', salt); //use sha512 
+		crypto.scrypt(req.body.user.password, salt, 32, function (err, value) {
+			if (err) reject(err);
+			else {
+				dao.addUser(req.body.user.email, value, req.body.user.role, req.body.user.name, req.body.user.lastname, req.body.user.phoneNumber, salt).then(
+					result => {
+						dao.deleteCode(req.body.user.email).then(
+							result => {
+								return res.status(200).json();
+							},
+							error => {
+								return res.status(500).send(error);
+							}
+						);
+					},
+					error => {
 						return res.status(500).send(error);
 					}
-				} catch (error) {
-					console.log(error)
-					return await res.status(500).send(error);
-				}
+				)
 			}
-	});
-}*/
+		});
+	}
+}
 
 exports.checkCode = async function (req, res) {
 	//   console.log(req.body.point);
