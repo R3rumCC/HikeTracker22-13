@@ -54,8 +54,8 @@ passport.deserializeUser(function (user, cb) {
 
 /*
 // starting from the data in the session, we extract the current (logged-in) user
-passport.deserializeUser((id, done) => {
-  userDao.getUserById(id)
+passport.deserializeUser((email, done) => {
+  userDao.getUserByEmail(email)
     .then(user => {
       done(null, user); // this will be available in req.user
     }).catch(err => {
@@ -80,70 +80,14 @@ const isLoggedIn = (req, res, next) => {
   return res.status(401).json({ error: 'Not authorized because not logged in' });
 }
 
-
-//**************************************API***************/
-
-
-/*************BACKEND API************/    //structure left for references
-/*
-//readRiddles------------------------------------------------
-app.get(PREFIX + '/riddles', (req, res) => {
-  dao.readRiddles().then(
-    (value) => {
-      res.json(value);
-    }
-  ).catch(
-    (err) => {
-      res.status(500).json({ error: err });
-    }
-  );
-});
-
-//addRiddle-----------------------------------------------------------------------
-app.post(PREFIX + '/riddles/addRiddle', isLoggedIn, [
-  //BODY PARAMS VALIDATION ADD
-  body('question').not().isEmpty(),
-  body('status_riddle').not().isEmpty()], async (req, res) => {
-
-    //VALIDATOR & CHECK ERRORS ADD
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    //TRY-CATCH ADD
-    const riddle = { ...req.body, user_id: req.user.id };
-    try {
-      const value = await dao.addRiddle(riddle);
-      res.end();
-    } catch (e) {
-      res.status(400).json({ error: e });
-    }
-  });
-
-//updateRiddleStatus----------------------------------------------------
-app.put(PREFIX + '/riddles/updateRiddleStatus/:id/:status', isLoggedIn, async (req, res) => {
-
-  //TRY-CATCH ADD
-  try {
-    const value = await dao.updateRiddleStatus(req.params.id, req.params.status);
-    res.end();
-  } catch (e) {
-    res.status(400).json({ error: e });
-  }
-});
-
-//----------------------------------------------------//
-*/
-
-
 /**************** Users APIs ********************/
 
 //login
 app.post(PREFIX + '/sessions', function (req, res, next) {
   passport.authenticate('local', (err, user, info) => {
-    if (err)
+    if (err) {
       return next(err);
+    }
     if (!user) {
       // display wrong login messages
       return res.status(401).json({ error: info });

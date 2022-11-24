@@ -51,6 +51,15 @@ describe("Login test", () => {
 		expect(check).toBe(false);
 	});
 
+	test('login with wrong email', async () => {
+		const pauline = new User('paulina.knight@gmail.com',
+			'bcd7df7ca984af35ce385885af445b8481ab54c6b518da3d6970a6eeef0045a1',
+			'LocalGuide', 'Paulina', 'Knight', '+39 3276958421', 'a5b9cde522b8c9fb127f173da288d699');
+		await dao.addUser(pauline.email, pauline.password, pauline.role, pauline.name, pauline.lastname, pauline.phone_number, pauline.salt);
+		const check = await testDao.login('pauline.email', 'hello13');
+		expect(check).toBe(false);
+	});
+
 	test('login with a non existing user', async () => {
 		const pauline = new User('paulina.knight@gmail.com',
 			'bcd7df7ca984af35ce385885af445b8481ab54c6b518da3d6970a6eeef0045a1',
