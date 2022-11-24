@@ -61,6 +61,12 @@ describe("Points test", () => {
     expect(data).toEqual(p2);
   });
 
+  test('test readPointById without match', async () => {
+    const data = await dao.readPointById(30);
+    const check = "NOT found";
+    expect(data.error).toEqual(check);
+  });
+
   test('test deletePoint', async () => {
     const data = await dao.readPoints();
     const p1 = new Point(1, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
@@ -89,6 +95,67 @@ describe("Points test", () => {
     const data = await dao.readPoints();
     const points_check = [p1];
     expect(data).toEqual(points_check);
+  });
+
+  /*test('test addPoint, double insert', async () => {      unique address or coordinates?
+    await testDao.run('DELETE FROM Points');
+    await testDao.run('DELETE FROM SQLITE_SEQUENCE');
+    const p1 = new Point(1, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
+                        'Hut#1', '45.177786,7.083372', 'Hut');
+    const check = await dao.addPoint(p1);
+    expect(check).toBe(true);
+    const data = await dao.readPoints();
+    const points_check = [p1];
+    expect(data).toEqual(points_check);
+    try {
+      await dao.addPoint(p1);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: UNIQUE constraint failed: Points.idPoint");
+    }  
+  });*/
+
+  test('test addPoint wrong number of fields', async () => {   //also valid for wrong type
+    await testDao.run('DELETE FROM Points');
+    const p1 = new Point(1, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
+                        'Hut#1', 'Hut');
+    try {
+      await dao.addPoint(p1);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Points.type");    //the last field is always type
+    }
+  });
+
+  test('test addPoint wrong address', async () => {   
+    await testDao.run('DELETE FROM Points');
+    const p1 = new Point(1, null,
+                        'Hut#1', '45.177786,7.083372', 'Hut');
+    try {
+      await dao.addPoint(p1);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Points.address");  
+    }
+  });
+
+  test('test addPoint wrong location', async () => {   
+    await testDao.run('DELETE FROM Points');
+    const p1 = new Point(1, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
+                        null, '45.177786,7.083372', 'Hut');
+    try {
+      await dao.addPoint(p1);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Points.nameLocation");  
+    }
+  });
+
+  test('test addPoint wrong coordinates', async () => {   
+    await testDao.run('DELETE FROM Points');
+    const p1 = new Point(1, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
+                        'Hut#1', null, 'Hut');
+    try {
+      await dao.addPoint(p1);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Points.gps_coordinates");  
+    }
   });
 
   test('test updatePoint', async () => {

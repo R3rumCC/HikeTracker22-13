@@ -26,11 +26,11 @@ function readUsers() {
 function getUserByEmail(email) {
   return new Promise((resolve, reject) => {
     const sql = 'SELECT * FROM Users WHERE email=?';
-    db.get(sql,[email], (err, rows) => {
+    db.get(sql, [email], (err, rows) => {
       if (err) {
         reject(err);
-      }if (rows == undefined)
-      resolve({ error: 'NOT found' }); 
+      } if (rows == undefined)
+        resolve({ error: 'NOT found' });
       else {
         resolve(rows);
       }
@@ -288,7 +288,9 @@ function readPointById(id) {
     db.get(sql, id, (err, row) => {
       if (err) {
         reject(err);
-      } else {
+      } if (row == undefined)
+        resolve({ error: 'NOT found' });
+      else {
         resolve(row);
       }
     });
@@ -380,10 +382,10 @@ function updatePointType(oldIdPoint, type) {
   });
 }
 
-function readHuts(){
+function readHuts() {
   return new Promise((resolve, reject) => {
     const sql = 'SELECT * FROM POINTS where type = ?';
-    db.all(sql,"Hut", (err, rows) => {
+    db.all(sql, "Hut", (err, rows) => {
       if (err) {
         reject(err);
       } else {
@@ -394,10 +396,10 @@ function readHuts(){
 }
 
 /*************Verification Code************/
-function addCode(email,code) {
+function addCode(email, code) {
   return new Promise((resolve, reject) => {
     const sql = 'INSERT INTO Verification_Code (email,code) VALUES(?,?)';
-    db.run(sql, email,code, (err, rows) => {
+    db.run(sql, email, code, (err, rows) => {
       if (err) {
         reject(err);
       } else {
@@ -407,16 +409,16 @@ function addCode(email,code) {
   });
 }
 
-function getCode(email){
+function getCode(email) {
   return new Promise((resolve, reject) => {
     const sql = 'SELECT * FROM Verification_Code where email = ?';
-    db.get(sql,[email], (err, rows) => {
+    db.get(sql, [email], (err, rows) => {
       if (err) {
         reject(err);
       }
       if (rows == undefined)
-      resolve({ error: 'NOT found' });
-       else {
+        resolve({ error: 'NOT found' });
+      else {
         resolve(rows);
       }
     });
@@ -429,7 +431,7 @@ function deleteCode(email) {
     db.run(query, [email], (err) => {
       if (err) {
         reject(err);
-      } else{
+      } else {
 
         resolve(true);
       }
@@ -437,10 +439,10 @@ function deleteCode(email) {
   });
 };
 
-function updateCode(email,code) {
+function updateCode(email, code) {
   return new Promise((resolve, reject) => {
     const sql = 'UPDATE Verification_Code SET code = ? where email = ?';
-    db.run(sql, code,email, (err) => {
+    db.run(sql, code, email, (err) => {
       if (err)
         reject(err);
       else
@@ -453,7 +455,7 @@ module.exports = {
   readUsers, addUser, deleteUser, updateUserRole,
   readHikes, addHike, deleteHike, updateHike, updateHikeTitle,
   updateHikeAscent, updateHikeLength, updateHikeDescription, updateHikeDifficulty,
-  updateHikeET, updateHikeStartPoint, updateHikeEndPoint, updateHikeRefPoint,getUserByEmail,
-  readPoints, addPoint, updatePoint, deletePoint, readHuts,addCode,deleteCode,getCode,updateCode,
+  updateHikeET, updateHikeStartPoint, updateHikeEndPoint, updateHikeRefPoint, getUserByEmail,
+  readPoints, addPoint, updatePoint, deletePoint, readHuts, addCode, deleteCode, getCode, updateCode,
   updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, readListOfReferencePoints, readPointById//readReferencePoints
 };
