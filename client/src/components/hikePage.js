@@ -90,7 +90,9 @@ function GenericMap(props){ //Map to be inserted anywhere.
         // let gpxParser = require('gpxparser');
         // var gpx = new gpxParser()
         // gpx.parse(props.currentHike[0].gpx_track)
+        // let geoJSON = gpx.toGeoJSON()
         let geoJSON = JSON.parse(props.currentHike[0].gpx_track) //Get the object from a string
+        // console.log(JSON.stringify(geoJSON))
         // var positions = gpx.tracks[0].points.map(p => [p.lat, p.lon])
         var positions = geoJSON.features[0].geometry.coordinates.map(p => [p[1], p[0]])
         return(
