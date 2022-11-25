@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Row, Col, Button, Container, Form, FormGroup, FormLabel, ButtonGroup , InputGroup, Alert} from 'react-bootstrap';
+import { GenericMap } from './hikePage';
 import API from '../API';
 
 
@@ -32,7 +33,7 @@ function LocalGuide_Home(props){
         </div>
         <InsertionOptions setHikeForm={selectHike} setParkingForm={selectParking} setHutForm={selectHut}></InsertionOptions>
         <Row>
-            <div>{hikeForm ? <HikeForm CreateNewHike={props.CreateNewHike}/> : <></>}</div>
+            <div>{hikeForm ? <HikeForm CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike}/> : <></>}</div>
             <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} /> : <></>}</div>
             <div>{hutForm ? <HutForm CreateNewPoint={props.CreateNewPoint}/> : <></>}</div>
         </Row>
@@ -72,27 +73,27 @@ function HikeForm(props){
     const [expTime, setExpTime] = useState('')
     const [ascent, setAscent]= useState('')
     const [difficulty, setDifficulty]= useState('')
-    //start and end point must be choosen from the list of points
-    const [startPoint, setStartPoint]= useState(0)
-    const [endPoint, setEndPoint]= useState(0)
-    const [refPoints, setRefPoints]= useState([])
     const [description, setDescription]= useState('')
 
-
+    const [startPoint, setStartPoint]= useState('')
+    const [startPointGps, setStartPointGps]= useState('')
+    const [endPoint, setEndPoint]= useState('')
+    const [endPointGps, setEndPointGps]= useState('')
+    let reference_points= []
     const [map, setMap]= useState('') //USED TO SAVE MAP STRING
-    //const[points, setPoints]= useState([]);
-    //const Points
 
-    const [errorMsg, setErrorMsg] = useState(""); //to be fixed
+    const [errorMsg, setErrorMsg] = useState("");
 
     const changeTitle= (val)=>{setTitle(val)}
     const changeLength= (val)=>{setLength(val)}
     const changeExpTime= (val)=>{setExpTime(val)}
     const changeAscent= (val)=>{setAscent(val)}
     const changeDifficulty= (val)=>{setDifficulty(val);}
-    const changeStartP= (val) =>{setStartPoint(val)}
-    const changeEndP= (val) =>{setEndPoint(val)}
     const changeDescription= (val)=>{setDescription(val)}
+    const changeStartP= (val) =>{setStartPoint(val)}
+    const changeStartPGps= (val) =>{setStartPointGps(val)}
+    const changeEndP= (val) =>{setEndPoint(val)}
+    const changeEndPGps= (val) =>{setEndPointGps(val)}
 
 
     //handler for form submission
@@ -105,14 +106,19 @@ function HikeForm(props){
                  if(startPoint!==0 && endPoint!==0){
                     if(description!== ""){
 
-                        const sql = 'INSERT INTO HIKES (title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description) VALUES(?,?,?,?,?,?,?,?,?)';
+                        let start= {address: startPoint, gps_coordinates: startPointGps}
+                        let startId= props.CreateNewPoint(start) //try to use startId and endId instead of performing again the search
+                        let end= {address: endPoint, gps_coordinates: endPointGps}
+                        let endId= props.CreateNewPoint(end);
 
-                        //here do the check on user's role (?) and then add the new Hike
+                        //check on user's role (?)
                         newHike={title: title, length: length, expected_time: expTime, ascent: ascent, difficulty: difficulty, 
-                                startPoint:startPoint, endPoint: endPoint, reference_points: refPoints,description: description //map
+                                startPoint: startPoint, endPoint: endPoint, reference_points: reference_points,
+                                description: description, gpx_track: 'gpx_track'
+                                //gpx_track: map --> request entity too large
                                 }
-                        console.log(newHike);
                         props.CreateNewHike(newHike)
+                        console.log('after CreateNewHike');
                         alert('New Hike correctly added!')
 
                     }else{
@@ -132,9 +138,9 @@ function HikeForm(props){
     const reset= ()=>{
         setTitle(''); 
         setLength(''); setExpTime(''); setAscent('')
-        setStartPoint(0); setEndPoint(0)
-        //setRefPoints() --> vector
         setDifficulty(''); setDescription('')
+        setStartPoint(''); setStartPointGps('');
+        setEndPoint(''); setEndPointGps('');
     }
     
     //Import gpx file and read, gpx parse it is used to retreive the start point and the end point (format latitude,longitude)
@@ -152,6 +158,14 @@ function HikeForm(props){
             setMap(reader.result)  
             gpx.parse(reader.result)
             const positions = gpx.tracks[0].points.map(p => [p.lat, p.lon, p.ele])
+            //storing lat and lon inside the status of start/end point
+            let gps_start= `${positions[0][0]}, ${positions[0][1]}`
+            changeStartPGps(gps_start);
+            let gps_end= `${positions[positions.length-1][0]}, ${positions[positions.length-1][1]}`
+            changeEndPGps(gps_end);
+            console.log('gps_start=' + gps_start + ', STATE startP= ' + startPointGps)
+            console.log('gps_end= ' + gps_end + ', STATE endP= ' + endPointGps)
+
             let trackPoints = gpx.tracks[0].points.map((o)=>o.ele).filter((x)=>x!=null)
             console.log(trackPoints)
             if(trackPoints.length != 0){
@@ -224,9 +238,9 @@ function HikeForm(props){
                     <Form.Label>Difficulty</Form.Label>
                     <Form.Select onChange={(ev) => changeDifficulty(ev.target.value)}>
                         <option label=''></option>
-                        <option value='easy'  label="Easy"/>
-                        <option value='medium' label="Medium"/>
-                        <option value='hard' label="Hard"/>
+                        <option value='Tourist'  label="Tourist"/>
+                        <option value='Hiker' label="Hiker"/>
+                        <option value='Professional hiker' label="Professional Hiker"/>
                     </Form.Select>
                 </Col>
             </Row>
@@ -242,7 +256,6 @@ function HikeForm(props){
                     <Form.Control value={endPoint} onChange={(ev) => changeEndP(ev.target.value)}/>
                 </Col>
             </Row>
-            <Form.Label>//TODO Map</Form.Label>
         </Form.Group>
 
         {/* This is the form used to import the gpx, on upload of the file it call the importGpx function passing the file object */}
@@ -255,9 +268,6 @@ function HikeForm(props){
 			<Form.Label>Description</Form.Label>
 			<Form.Control value={description} onChange={(ev) => changeDescription(ev.target.value)}/>
 		</Form.Group>
-        <Form.Group>
-            <Form.Label>//TODO   Reference Points</Form.Label>
-        </Form.Group>
         <Button type='submit' style={{background:'green'}}>SAVE</Button>
         <Button style={{background:'green'}} onClick={reset} className = 'ms-2'>Cancel</Button>
     </Form>
