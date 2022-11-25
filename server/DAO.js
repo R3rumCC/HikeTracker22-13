@@ -133,9 +133,10 @@ function readListOfReferencePoints(title) { // RP for a given hike
 function addHike(hike) {
   return new Promise((resolve, reject) => {
     console.log('Inside addHike, DAO, server side');
-    const sql = 'INSERT INTO HIKES (title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description) VALUES(?,?,?,?,?,?,?,?,?)';
-    db.run(sql, hike.title, hike.length, hike.expected_time, hike.ascent, hike.difficulty, hike.start_point, hike.end_point, hike.reference_points, hike.description, (err, rows) => {
+    const sql = 'INSERT INTO HIKES (title, length, expected_time, ascent, difficulty, start_point, end_point, description, reference_points, gpx_track) VALUES(?,?,?,?,?,?,?,?,?,?)';
+    db.run(sql, hike.title, hike.length, hike.expected_time, hike.ascent, hike.difficulty, hike.start_point, hike.end_point, hike.description, hike.reference_points, hike.gpx_track, (err, rows) => {
       if (err) {
+        console.log(err)
         reject(err);
       } else {
         resolve(true);
@@ -292,6 +293,22 @@ function readPointById(id) {
         resolve({ error: 'NOT found' });
       else {
         resolve(row);
+      }
+    });
+  });
+}
+
+//It checks if the address exists
+function checkPresenceByAddress(addr) {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT idPoint FROM POINTS WHERE address = ?';
+    db.get(sql, addr, (err, id) => {
+      if (err) {
+        reject(err);
+      } if (id == undefined)
+      resolve(null);
+      else {
+        resolve(id);
       }
     });
   });
@@ -456,6 +473,6 @@ module.exports = {
   readHikes, addHike, deleteHike, updateHike, updateHikeTitle,
   updateHikeAscent, updateHikeLength, updateHikeDescription, updateHikeDifficulty,
   updateHikeET, updateHikeStartPoint, updateHikeEndPoint, updateHikeRefPoint, getUserByEmail,
-  readPoints, addPoint, updatePoint, deletePoint, readHuts, addCode, deleteCode, getCode, updateCode,
+  readPoints, checkPresenceByAddress, addPoint, updatePoint, deletePoint, readHuts, addCode, deleteCode, getCode, updateCode,
   updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, readListOfReferencePoints, readPointById//readReferencePoints
 };
