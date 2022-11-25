@@ -30,15 +30,10 @@ exports.addHike = async function (req, res) {
 	console.log('inside addHike')
 	let startId= await dao.checkPresenceByAddress(req.body.newHike.startPoint)
 	let endId= await dao.checkPresenceByAddress(req.body.newHike.endPoint)
-	console.log(startId , endId)
-	/*
-	req.body.newHike.startPoint= startId
-	req.body.newHike.endPoint= endId
-	*/
-	// (title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track) VALUES(?,?,?,?,?,?,?,?,?,?)';
+	console.log(startId.idPoint , endId.idPoint)
 
 	let hike= {title: req.body.newHike.title, length: req.body.newHike.length, expected_time: req.body.newHike.expected_time, 
-				ascent: req.body.newHike.ascent, difficulty: req.body.newHike.difficulty, startPoint:  startId, endPoint: endId, 
+				ascent: req.body.newHike.ascent, difficulty: req.body.newHike.difficulty, start_point: startId.idPoint, end_point: endId.idPoint, 
 				reference_points: req.body.newHike.reference_points, description: req.body.newHike.description, gpx_track: req.body.newHike.gpx_track}
 	console.log('before db call: ')
 	console.log(hike)
@@ -142,16 +137,18 @@ exports.getUser = async function (req, res) {
 //-if present, a positive feedback is sent anyway
 exports.addPoint = async function (req, res) {
 	
+	console.log('inside add point')
+
 	try {
 		const id = await dao.checkPresenceByAddress(req.body.point.address)
-		
+		console.log(id)
 		if(id!==null){
 			return res.status(200).json(id);
 
 		}else{
 			dao.addPoint(req.body.point).then(
 				result => {
-					return res.status(200).json();
+					return res.status(200).json(result);
 				},
 				error => {
 					return res.status(500).send(error);
