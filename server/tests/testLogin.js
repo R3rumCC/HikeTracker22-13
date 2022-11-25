@@ -11,6 +11,7 @@ describe('test login', () => {
 
   loginUser(200, 'mario.rossi@gmail.com', 'hello12');     //correct email and password
   loginUser(401, 'mario.rossi@gmail.com', 'password');    //wrong password
+  loginUser(401, 'xxxxxxxxx@gmail.com', 'hello12');    //wrong email
   logout(200, 'mario.rossi@gmail.com', 'hello12');
   obtainUserNotAuthenticated(401, 'mario.rossi@gmail.com', 'password');
   obtainUserAuthenticated(200, 'mario.rossi@gmail.com', 'hello12');
