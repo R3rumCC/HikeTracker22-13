@@ -83,7 +83,7 @@ router.get('/Code/:email', [
 
 	
 
-router.post('/Hike', c.addHike);
+router.post('/newHike', c.addHike);
 
 router.post('/Point', c.addPoint);
 
