@@ -34,10 +34,14 @@ describe('test user signup', () => {
   });
 
   registerNewUser(200, 'Paolo', 'Goglia', 'Hiker', 'password', 'paologoglia@gmail.com', '+39 3207549337');
-  registerNewUser(400, 'Giovanni', null, undefined, 'password', null, '+39 3209030302');
-  registerTwoTimeNewUser(422, 'Paolo', 'Goglia', 'Hiker', 'password', 'paologoglia@gmail.com', '+39 3207549337');
+  registerNewUser(400, null, 'Goglia', 'Hiker', 'password', 'paologoglia@gmail.com', '+39 3207549337');
+  registerNewUser(400, 'Giovanni', null, 'Hiker', 'password', 'giovanni@gmail.com', '+39 3209030302');
+  registerNewUser(400, 'Paolo', 'Goglia', null, 'password', 'paologoglia@gmail.com', '+39 3207549337');
+  registerNewUser(400, 'Paolo', 'Goglia', 'Hiker', null, 'paologoglia@gmail.com', '+39 3207549337');
+  registerNewUser(400, 'Paolo', 'Goglia', 'Hiker', 'password', null, '+39 3207549337');
+  registerNewUser(400, 'Paolo', 'Goglia', 'Hiker', 'password', 'paologoglia@gmail.com', null);
   registerNewUser(400, 'Fabio', 'Magico', 'LocalGuide', 'password', 'fabiomagicogmail.com', '+39 3401216784');
-  registerNewUser(400, 'Marco', 'Pietra', null, 'password', 'marcopietra.com', '+39 3334545670');
+  registerTwoTimeNewUser(422, 'Paolo', 'Goglia', 'Hiker', 'password', 'paologoglia@gmail.com', '+39 3207549337');
 
 });
 
