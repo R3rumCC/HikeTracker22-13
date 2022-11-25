@@ -243,6 +243,8 @@ function addPoint(point) {
     }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
   });
 }
+
+
 /*************************Email Verification**********************/
 
 async function sendEmail(email) {
