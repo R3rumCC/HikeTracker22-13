@@ -111,11 +111,11 @@ function GenericMap(props){ //Map to be inserted anywhere.
         let gpxParser = require('gpxparser');
         var gpx = new gpxParser()
         gpx.parse(map)
-        let geoJSON = gpx.toGeoJSON()
+        //let geoJSON = gpx.toGeoJSON()
         //let geoJSON = JSON.parse(props.currentHike[0].gpx_track) //Get the object from a string
         // console.log(JSON.stringify(geoJSON))
-        //var positions = gpx.tracks[0].points.map(p => [p.lat, p.lon])
-        var positions = geoJSON.features[0].geometry.coordinates.map(p => [p[1], p[0]])
+        var positions = gpx.tracks[0].points.map(p => [p.lat, p.lon])
+        //var positions = geoJSON.features[0].geometry.coordinates.map(p => [p[1], p[0]])
         return(
             <>{ map != '' ? 
                 <MapContainer
@@ -125,10 +125,10 @@ function GenericMap(props){ //Map to be inserted anywhere.
                 >
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                     {/* This object below is needed if we are passing the path line as a parsed XML, not as a GeoJSON */}
-                    { <Polyline
+                     <Polyline
                         pathOptions={{ fillColor: 'red', color: 'blue' }}
                         positions={positions}
-                    /> }
+                    /> 
                     <Marker position={positions[0]}> 
                         <Popup>
                             {props.currentHike[0].start_point_address}
@@ -139,9 +139,9 @@ function GenericMap(props){ //Map to be inserted anywhere.
                             {props.currentHike[0].end_point_address}
                         </Popup>
                     </Marker>
-                    <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></MapHandler>
-                    <SelectedMarkers currentMarkers={props.currentMarkers}></SelectedMarkers>
-                    {<GeoJSON data={geoJSON}></GeoJSON>}
+                    {/*<MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></MapHandler>*/}
+                    {/*<SelectedMarkers currentMarkers={props.currentMarkers}></SelectedMarkers>*/}
+                    {/*<GeoJSON data={geoJSON}></GeoJSON>*/}
                 </MapContainer>
                 : null}
                 

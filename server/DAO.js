@@ -132,9 +132,11 @@ function readListOfReferencePoints(title) { // RP for a given hike
 
 function addHike(hike) {
   return new Promise((resolve, reject) => {
+    console.log('Inside addHike, DAO, server side');
     const sql = 'INSERT INTO HIKES (title, length, expected_time, ascent, difficulty, start_point, end_point, description, reference_points, gpx_track) VALUES(?,?,?,?,?,?,?,?,?,?)';
-    db.run(sql, hike.title, hike.length, hike.expected_time, hike.ascent, hike.difficulty, hike.start_point_idPoint, hike.end_point_idPoint, hike.description, hike.reference_points, hike.gpx_track, (err, rows) => {
+    db.run(sql, hike.title, hike.length, hike.expected_time, hike.ascent, hike.difficulty, hike.start_point, hike.end_point, hike.description, hike.reference_points, hike.gpx_track, (err, rows) => {
       if (err) {
+        console.log(err)
         reject(err);
       } else {
         resolve(true);
@@ -246,7 +248,7 @@ function updateHikeDescription(title, description) {
 function updateHike(oldHikeTitle, newHike) {
   return new Promise((resolve, reject) => {
     const sql = 'UPDATE HIKES SET title = ?, length = ?, expected_time = ?, ascent = ?, difficulty = ?, start_point = ?, end_point = ?, reference_points = ?, description = ? where title = ?';
-    db.run(sql, newHike.title, newHike.length, newHike.expected_time, newHike.ascent, newHike.difficulty, newHike.start_point_idPoint, newHike.end_point_idPoint, newHike.reference_points, newHike.description, oldHikeTitle, (err) => {
+    db.run(sql, newHike.title, newHike.length, newHike.expected_time, newHike.ascent, newHike.difficulty, newHike.start_point, newHike.end_point, newHike.reference_points, newHike.description, oldHikeTitle, (err) => {
       if (err)
         reject(err);
       else

@@ -6,7 +6,7 @@ const storage = multer.diskStorage({
   },
   //Specify the name of the file. The date is prefixed to avoid overwriting of files.
   filename: function (req, file, cb) {
-    cb(null, file.originalname)
+    cb(null, file.originalname.replace(/\s/g, ''))
   },
 })
 

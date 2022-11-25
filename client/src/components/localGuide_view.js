@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Row, Col, Button, Container, Form, FormGroup, FormLabel, ButtonGroup , InputGroup, Alert} from 'react-bootstrap';
+import { MapContainer, Polyline, TileLayer, Map, Marker, Popup, useMapEvents, GeoJSON, useMap } from 'react-leaflet'
 import { GenericMap } from './hikePage';
 import API from '../API';
 import axiosInstance from "../utils/axios"
@@ -81,7 +82,7 @@ function HikeForm(props){
     const [endPointGps, setEndPointGps]= useState('')
     let reference_points= []
     const [map, setMap]= useState('') //USED TO SAVE MAP STRING
-
+    const [gpxPos, setGpxPos] = useState(null)
     const [errorMsg, setErrorMsg] = useState("");
 
     const changeTitle= (val)=>{setTitle(val)}
@@ -95,8 +96,13 @@ function HikeForm(props){
     const changeEndP= (val) =>{setEndPoint(val)}
     const changeEndPGps= (val) =>{setEndPointGps(val)}
 
-    const [progress, setProgress] = useState()
   
+    function MyComponent() {
+        const map = useMap()
+        console.log(gpxPos[gpxPos.length/2])
+        map.flyTo(gpxPos[gpxPos.length/2],13)
+        return null
+      }
     const submitFile = () => {
         var myBlob = new Blob(
             [map],
@@ -164,7 +170,11 @@ function HikeForm(props){
         const $ = require( "jquery" );
         let gpxParser = require('gpxparser');
         var gpx = new gpxParser()
-
+        setTitle(''); 
+        setLength(''); setExpTime(''); setAscent('')
+        setDifficulty(''); setDescription('')
+        setStartPoint(''); setStartPointGps('');
+        setEndPoint(''); setEndPointGps('');
         let reader = new FileReader();
       
         reader.readAsText(selectedFile);
@@ -172,44 +182,57 @@ function HikeForm(props){
         reader.onload = function() { 
             gpx.parse(reader.result)
             let geoJSON = gpx.toGeoJSON()
-            setMap(reader.result)  
-            const positions = gpx.tracks[0].points.map(p => [p.lat, p.lon, p.ele])
-            //storing lat and lon inside the status of start/end point
-            let gps_start= `${positions[0][0]}, ${positions[0][1]}`
-            changeStartPGps(gps_start);
-            let gps_end= `${positions[positions.length-1][0]}, ${positions[positions.length-1][1]}`
-            changeEndPGps(gps_end);
-            console.log('gps_start=' + gps_start + ', STATE startP= ' + startPointGps)
-            console.log('gps_end= ' + gps_end + ', STATE endP= ' + endPointGps)
 
-            let trackPoints = gpx.tracks[0].points.map((o)=>o.ele).filter((x)=>x!=null)
-            console.log(trackPoints)
-            if(trackPoints.length != 0){
-                let maxPoint = Math.max(...trackPoints)
-                let minPoint = Math.min(...trackPoints)
-                console.log(maxPoint)
-                console.log(minPoint)
-                var totalElevation = (Number(maxPoint - minPoint).toFixed(2));
-                changeAscent(totalElevation);
+
+            const positions = gpx.tracks[0].points.map(p => [p.lat, p.lon, p.ele]).filter((x) => x[2]!= null)
+            console.log(positions)
+            if(positions.length == 0){
+                setErrorMsg("No Elevation available")
+
+
             }
+            else{
 
-            var totalDistance = (Number(gpx.tracks[0].distance.total/1000).toFixed(2));
-            changeLength(totalDistance);
-            console.log(positions[0]);
-            console.log(positions[positions.length-1]);
-            $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+positions[0][0]+'&lon='+positions[0][1]+'&format=json&limit=1&q=', function(data) {
+                //storing lat and lon inside the status of start/end point
+                let gps_start= `${positions[0][0]}, ${positions[0][1]}`
+                changeStartPGps(gps_start);
+                let gps_end= `${positions[positions.length-1][0]}, ${positions[positions.length-1][1]}`
+                changeEndPGps(gps_end);
+                console.log('gps_start=' + gps_start + ', STATE startP= ' + startPointGps)
+                console.log('gps_end= ' + gps_end + ', STATE endP= ' + endPointGps)
 
-            $.each(data, function(key, val) {
-                changeStartP(data.display_name);
-            })      
-            }); 
-            $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+positions[positions.length-1][0]+'&lon='+positions[positions.length-1][1]+'&format=json&limit=1&q=', function(data) {
+                let trackPoints = gpx.tracks[0].points.map((o)=>o.ele).filter((x)=>x!=null)
+                console.log(trackPoints)
+                if(trackPoints.length != 0){
+                    let maxPoint = Math.max(...trackPoints)
+                    let minPoint = Math.min(...trackPoints)
+                    console.log(maxPoint)
+                    console.log(minPoint)
+                    var totalElevation = (Number(maxPoint - minPoint).toFixed(2));
+                    changeAscent(totalElevation);
+                    
+                }
+
+                var totalDistance = (Number(gpx.tracks[0].distance.total/1000).toFixed(2));
+                changeLength(totalDistance);
+                console.log(positions[0]);
+                console.log(positions[positions.length-1]);
+                $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+positions[0][0]+'&lon='+positions[0][1]+'&format=json&limit=1&q=', function(data) {
 
                 $.each(data, function(key, val) {
-                    changeEndP(data.display_name);
-                })        
-            });
+                    changeStartP(data.display_name);
+                })      
+                }); 
+                $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+positions[positions.length-1][0]+'&lon='+positions[positions.length-1][1]+'&format=json&limit=1&q=', function(data) {
 
+                    $.each(data, function(key, val) {
+                        changeEndP(data.display_name);
+                    })        
+                });
+                
+                setMap(reader.result) 
+                setGpxPos(positions)
+            }
         };
       
         reader.onerror = function() {
@@ -285,9 +308,38 @@ function HikeForm(props){
 			<Form.Label>Description</Form.Label>
 			<Form.Control value={description} onChange={(ev) => changeDescription(ev.target.value)}/>
 		</Form.Group>
-        <Button type='submit' style={{background:'green'}}>SAVE</Button>
-        <Button style={{background:'green'}} onClick={reset} className = 'ms-2'>Cancel</Button>
+        <Button className= 'mt-y' type='submit' style={{background:'green'}}>SAVE</Button>
+        <Button style={{background:'green'}} onClick={reset} className = 'ms-2 my-2'>Cancel</Button>
     </Form>
+    {gpxPos != null ?
+        <>
+        <MapContainer
+            className='map'
+            center={gpxPos[gpxPos.length/2]}
+            zoom={13}
+            scrollWheelZoom={false}
+            >
+
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                {/* This object below is needed if we are passing the path line as a parsed XML, not as a GeoJSON */}
+                    <Polyline
+                    pathOptions={{ fillColor: 'red', color: 'blue' }}
+                    positions={gpxPos}
+                /> 
+                <Marker position={gpxPos[0]}> 
+                    <Popup>
+                        {startPoint}
+                    </Popup>
+                </Marker>
+                <Marker position={gpxPos[gpxPos.length -1]}> 
+                    <Popup>
+                        {endPoint}
+                    </Popup>
+                </Marker>
+                <MyComponent></MyComponent>
+        </MapContainer>
+        </>
+    : null}
     </>)
 }
 
