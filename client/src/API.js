@@ -42,6 +42,35 @@ async function logOut() {
     credentials: 'include'
   });
 }
+/*************************FILE UPLOAD API**********************/
+
+async function getMap(name) {
+  name = name.replace(/\s/g, '') 
+  const url = 'http://localhost:3001/api/Maps/'+name;
+  try {
+      const response = await fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+          'Content-Type': 'text/plain'
+      }
+      });
+      if (response.ok) {
+      const map = await response.text();
+      return map;
+      }
+      else {
+      //console.log(response.statusText);
+      const text = await response.text();
+      throw new TypeError(text);
+      }
+  }
+  catch (e) {
+      console.log(e);
+      throw e;
+  }
+  }
+
 
 /*************************ADMIN API**********************/
 
@@ -276,8 +305,9 @@ async function checkCode(email) {
     throw resJson;
 }
 
+
 //EXPORT FUNCTIONS------------------------------
 const API = {
-  logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, addNewHike, getHikes, addPoint, getHuts, checkUser, sendEmail, checkCode
+  logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, addNewHike, getHikes, addPoint, getHuts, checkUser, sendEmail, checkCode, getMap
 }
 export default API;

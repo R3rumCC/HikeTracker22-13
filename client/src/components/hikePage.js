@@ -1,9 +1,9 @@
 import { Col, Row } from 'react-bootstrap';
 import { HikesContainer } from './hikesCards';
 import { MapContainer, Polyline, TileLayer, Map, Marker, Popup, useMapEvents, GeoJSON } from 'react-leaflet'
-import React, { Component, useState }  from 'react';
-
-
+import React, { Component, useState, useEffect }  from 'react';
+import axiosInstance from "../utils/axios"
+import API from '../API';
 
 // THE GPX FILE MUST BE PASSED AS AN STRING. HERE I LEAVE AN EXAMPLE:
 // THIS PARTICULAR GPX HAS A SINGLE TRACK AND TWO SEGMENTS. THESE 
@@ -27,6 +27,7 @@ let mockGpx = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 </gpx>`
 
 const $ = require( "jquery" );
+
 
 function HikePage(props) {
     
@@ -57,6 +58,24 @@ function GenericMap(props){ //Map to be inserted anywhere.
     OPTIONAL:
         -'currentHike': A hike to be ploted. Can be skiped. Must be a GeoJSON to be plotted.
     */
+
+    const [map,setMap] = useState('')
+
+
+    async function gpxmap(name) {
+        try {
+            const map = await API.getMap(name);
+            console.log(map)
+            setMap(map);
+            } catch (error) {
+            throw error
+            }
+    }
+    useEffect(() =>{
+        if(props.currentHike.length > 0){
+            gpxmap(props.currentHike[0].gpx_track.replace(/\s/g, ''))
+            }
+      }, []);
     if (!props.currentHike) {
         return(
             <>
@@ -87,18 +106,18 @@ function GenericMap(props){ //Map to be inserted anywhere.
                 </MapContainer>
             </>
         )
-    }else{
+    }else if(map != ''){
         // The commented stuff is only required if we are not passing a GeoJSON
         let gpxParser = require('gpxparser');
         var gpx = new gpxParser()
-        gpx.parse(props.currentHike[0].gpx_track)
+        gpx.parse(map)
         let geoJSON = gpx.toGeoJSON()
         //let geoJSON = JSON.parse(props.currentHike[0].gpx_track) //Get the object from a string
         // console.log(JSON.stringify(geoJSON))
-        // var positions = gpx.tracks[0].points.map(p => [p.lat, p.lon])
+        //var positions = gpx.tracks[0].points.map(p => [p.lat, p.lon])
         var positions = geoJSON.features[0].geometry.coordinates.map(p => [p[1], p[0]])
         return(
-            <>
+            <>{ map != '' ? 
                 <MapContainer
                     center={positions[positions.length/2]}
                     zoom={13}
@@ -106,10 +125,10 @@ function GenericMap(props){ //Map to be inserted anywhere.
                 >
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                     {/* This object below is needed if we are passing the path line as a parsed XML, not as a GeoJSON */}
-                    {/* <Polyline
+                    { <Polyline
                         pathOptions={{ fillColor: 'red', color: 'blue' }}
                         positions={positions}
-                    /> */}
+                    /> }
                     <Marker position={positions[0]}> 
                         <Popup>
                             {props.currentHike[0].start_point_address}
@@ -122,11 +141,18 @@ function GenericMap(props){ //Map to be inserted anywhere.
                     </Marker>
                     <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></MapHandler>
                     <SelectedMarkers currentMarkers={props.currentMarkers}></SelectedMarkers>
-                    <GeoJSON data={geoJSON}></GeoJSON>
+                    {<GeoJSON data={geoJSON}></GeoJSON>}
                 </MapContainer>
+                : null}
                 
             </>
         )
+    }else{
+        return(
+            <>
+            </>
+        )
+
     }
 
 }

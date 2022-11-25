@@ -2,6 +2,9 @@
 
 const express = require('express');
 const dao = require('./DAO');
+const upload = require("./upload")
+const multer = require("multer")
+const path = require('path');
 const userDao = require('./user-dao.js');
 const hikeRouter = require('./hikeRouter');
 const email = require('./Email');
@@ -31,7 +34,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use('/api', hikeRouter);
 app.use('/email', email);
-
 //2 STEP PASSPORT-->Passport: set up local strategy-->TODO in USER-DAO
 passport.use(new LocalStrategy(async function verify(username, password, cb) {
   //4 STEP PASSPORT-->getUser in the verify method-->vedi come implemento "getUser" nel "userDao"
@@ -119,7 +121,49 @@ app.delete(PREFIX + '/sessions/current', (req, res) => {
   });
 });
 
-//***************************************** */ 
+//*******************UPLOAD API********************** */ 
+
+app.use(function (err, req, res, next) {
+  // Check if the error is thrown from multer
+  if (err instanceof multer.MulterError) {
+    res.statusCode = 400
+    res.send({ code: err.code })
+  } else if (err) {
+    // If it is not multer error then check if it is our custom error for FILE_MISSING
+    if (err.message === "FILE_MISSING") {
+      res.statusCode = 400
+      res.send({ code: "FILE_MISSING" })
+    } else {
+      //For any other errors set code as GENERIC_ERROR
+      res.statusCode = 500
+      res.send({ code: "GENERIC_ERROR" })
+    }
+  }
+})
+
+app.post("/upload_file", upload.single("file"), function (req, res) {
+  if (!req.file) {
+    //If the file is not uploaded, then throw custom error with message: FILE_MISSING
+    throw Error("FILE_MISSING")
+  } else {
+    //If the file is uploaded, then send a success response.
+    res.send({ status: "success" })
+  }
+})
+app.get(PREFIX+'/Maps/:name', (req, res, next) => {
+  const fileName = req.params.name;
+  var options = {
+    root: path.join(__dirname,'/uploads')
+  };
+  res.sendFile(fileName, options, (err) => {
+      if (err) {
+          next(err);
+      } else {
+          console.log('File Sent:', fileName);
+      }
+  });
+});
+
 
 //SERVER RUNNING
 app.listen(3001, () => { console.log('Server running on Port: 3001') });

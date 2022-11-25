@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Row, Col, Button, Container, Form, FormGroup, FormLabel, ButtonGroup , InputGroup, Alert} from 'react-bootstrap';
 import { GenericMap } from './hikePage';
 import API from '../API';
-
+import axiosInstance from "../utils/axios"
 
 function LocalGuide_Home(props){
     //states to select the form from buttons
@@ -95,8 +95,23 @@ function HikeForm(props){
     const changeEndP= (val) =>{setEndPoint(val)}
     const changeEndPGps= (val) =>{setEndPointGps(val)}
 
+    const [progress, setProgress] = useState()
+  
+    const submitFile = () => {
+        var myBlob = new Blob(
+            [map],
+            {type: "text/plain"}
+        )
+        let formData = new FormData()
+  
+        formData.append("file", myBlob, title)
 
-    //handler for form submission
+        axiosInstance.post("/upload_file", formData, {
+            headers: {
+            "Content-Type": "text/plain",
+            },
+        })
+    }
     const submitHikeForm= (event)=>{
         event.preventDefault();
         let newHike;
@@ -105,7 +120,6 @@ function HikeForm(props){
             if(length!== "" && difficulty!== ""){
                  if(startPoint!==0 && endPoint!==0){
                     if(description!== ""){
-
                         let start= {address: startPoint, gps_coordinates: startPointGps}
                         let startId= props.CreateNewPoint(start) //try to use startId and endId instead of performing again the search
                         let end= {address: endPoint, gps_coordinates: endPointGps}
@@ -114,10 +128,11 @@ function HikeForm(props){
                         //check on user's role (?)
                         newHike={title: title, length: length, expected_time: expTime, ascent: ascent, difficulty: difficulty, 
                                 startPoint: startPoint, endPoint: endPoint, reference_points: reference_points,
-                                description: description, gpx_track: 'gpx_track'
+                                description: description, gpx_track: title
                                 //gpx_track: map --> request entity too large
                                 }
                         props.CreateNewHike(newHike)
+                        submitFile()
                         console.log('after CreateNewHike');
                         alert('New Hike correctly added!')
 
@@ -154,9 +169,10 @@ function HikeForm(props){
       
         reader.readAsText(selectedFile);
       
-        reader.onload = function() {
-            setMap(reader.result)  
+        reader.onload = function() { 
             gpx.parse(reader.result)
+            let geoJSON = gpx.toGeoJSON()
+            setMap(reader.result)  
             const positions = gpx.tracks[0].points.map(p => [p.lat, p.lon, p.ele])
             //storing lat and lon inside the status of start/end point
             let gps_start= `${positions[0][0]}, ${positions[0][1]}`
@@ -193,6 +209,7 @@ function HikeForm(props){
                     changeEndP(data.display_name);
                 })        
             });
+
         };
       
         reader.onerror = function() {
