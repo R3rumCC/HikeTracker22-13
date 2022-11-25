@@ -1,5 +1,6 @@
 const dao = require('./DAO');
 var crypto = require('crypto');
+const { start } = require('repl');
 
 exports.getHikes = async function () {
 	try {
@@ -25,6 +26,13 @@ exports.getHikes = async function () {
 }
 
 exports.addHike = async function (req, res) {
+
+	let startId= await dao.checkPresenceByAddress(req.body.newHike.startPoint)
+	let endId= await dao.checkPresenceByAddress(req.body.newHike.endPoint)
+
+	req.body.newHike.startPoint= startId
+	req.body.newHike.endPoint= endId
+
 	dao.addHike(req.body.newHike).then(
 		result => {
 			return res.status(200).json();
@@ -119,15 +127,30 @@ exports.getUser = async function (req, res) {
 }
 
 
-
+//It checks for the presence of the point in the db, then:
+//-if not present, it is added;
+//-if present, a positive feedback is sent anyway
 exports.addPoint = async function (req, res) {
-	//   console.log(req.body.point);
-	dao.addPoint(req.body.point).then(
-		result => {
-			return res.status(200).json();
-		},
-		error => {
-			return res.status(500).send(error);
+	
+	try {
+		const id = await dao.checkPresenceByAddress(req.body.point.address)
+		
+		if(id!==null){
+			return res.status(200).json(id);
+
+		}else{
+			dao.addPoint(req.body.point).then(
+				result => {
+					return res.status(200).json();
+				},
+				error => {
+					return res.status(500).send(error);
+				}
+			)
 		}
-	)
+
+	} catch (e) {
+		console.log(e);
+		throw e;
+	}	
 }

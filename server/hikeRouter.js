@@ -80,7 +80,13 @@ router.get('/Code/:email', [
 },
 
 	c.checkCode);
+
+	
+
+router.post('/Hike', c.addHike);
+
 router.post('/Point', c.addPoint);
+
 
 router.get('/getHuts', async (req, res) => {
 	try {
