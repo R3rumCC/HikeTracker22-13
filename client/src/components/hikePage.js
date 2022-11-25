@@ -1,7 +1,7 @@
 import { Col, Row } from 'react-bootstrap';
 import { HikesContainer } from './hikesCards';
 import { MapContainer, Polyline, TileLayer, Map, Marker, Popup, useMapEvents, GeoJSON } from 'react-leaflet'
-import React, { Component }  from 'react';
+import React, { Component, useState }  from 'react';
 
 
 
@@ -25,6 +25,8 @@ let mockGpx = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
     </trkseg>
   </trk>
 </gpx>`
+
+const $ = require( "jquery" );
 
 function HikePage(props) {
     
@@ -87,11 +89,11 @@ function GenericMap(props){ //Map to be inserted anywhere.
         )
     }else{
         // The commented stuff is only required if we are not passing a GeoJSON
-        // let gpxParser = require('gpxparser');
-        // var gpx = new gpxParser()
-        // gpx.parse(props.currentHike[0].gpx_track)
-        // let geoJSON = gpx.toGeoJSON()
-        let geoJSON = JSON.parse(props.currentHike[0].gpx_track) //Get the object from a string
+        let gpxParser = require('gpxparser');
+        var gpx = new gpxParser()
+        gpx.parse(props.currentHike[0].gpx_track)
+        let geoJSON = gpx.toGeoJSON()
+        //let geoJSON = JSON.parse(props.currentHike[0].gpx_track) //Get the object from a string
         // console.log(JSON.stringify(geoJSON))
         // var positions = gpx.tracks[0].points.map(p => [p.lat, p.lon])
         var positions = geoJSON.features[0].geometry.coordinates.map(p => [p[1], p[0]])
@@ -132,25 +134,35 @@ function GenericMap(props){ //Map to be inserted anywhere.
 function MapHandler(props) { //Handles just the clicks on the map
     const map = useMapEvents({
         click: (e) => {
-            var newSelectedMarkers = props.currentMarkers.concat(e.latlng)
-            props.setCurrentMarkers(newSelectedMarkers)
+            console.log(e.latlng)
+            $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+e.latlng.lat+'&lon='+e.latlng.lng+'&format=json&limit=1', function(data) {
+                var newSelectedMarker = {latlng: e.latlng , address: data.display_name}
+                var newSelectedMarkers = [...props.currentMarkers,newSelectedMarker]
+                props.setCurrentMarkers(newSelectedMarkers)    
+            })
             // console.log(props.currentMarkers)
         },
     })
     return null
 }
-
 function  SelectedMarkers(props){
     return(
         <>
             {/* {console.log(props.currentMarkers)} */}
-            {props.currentMarkers.length>=0 ? props.currentMarkers.map( p => {
+            {props.currentMarkers.length>0 ? props.currentMarkers.map( p => {
+
                 return(
-                    <Marker key={Math.random()} position={p}>
-                        <Popup>
-                            New Marker
-                        </Popup>
-                    </Marker>)})
+                    
+                    <Marker key={Math.random()} position={p.latlng}>
+                        {  
+                            <Popup>
+                                {p.address}
+                            </Popup>
+                        }
+                    </Marker>
+                    
+                   )
+            })
             : ''}
         </>
     );
