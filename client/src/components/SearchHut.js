@@ -8,7 +8,7 @@ function HutContainer(props) {
   const huts = props.huts;
   return (
     <div className="d-flex justify-content-start flex-wrap">
-      {huts.length != 0 ? huts.map((hut) => { return (<HutCard nameLocation={hut.nameLocation} address={hut.address} gps_coordinates={hut.gps_coordinates} />) }) : <h3>No result found</h3>}
+      {huts.length != 0 ? huts.map((hut) => { return (<HutCard key={Math.random()} nameLocation={hut.nameLocation} address={hut.address} gps_coordinates={hut.gps_coordinates} />) }) : <h3>No result found</h3>}
     </div>
   );
 }

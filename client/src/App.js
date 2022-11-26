@@ -56,7 +56,7 @@ function Main() {
   const [currentHike, setCurrentHike] = useState([]);
   const [isLoading, setLoading] = useState(false);
   //Remember to clear the current markers if the user leaves the page
-  const [currentMarkers, setCurrentMarkers] = useState([{}]) //List of selected positions [[Lat, Lng], [Lat2, Lng2], ...] on a map.
+  const [currentMarkers, setCurrentMarkers] = useState([]) //List of selected positions [[Lat, Lng], [Lat2, Lng2], ...] on a map.
   function handleError(err) {
     
     toast.error(

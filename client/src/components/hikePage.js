@@ -1,35 +1,59 @@
 import { Col, Row } from 'react-bootstrap';
 import { HikesContainer } from './hikesCards';
 import { MapContainer, Polyline, TileLayer, Map, Marker, Popup, useMapEvents, GeoJSON, useMap } from 'react-leaflet'
-import React, { Component, useState, useEffect }  from 'react';
+import React, { Component, useState, useEffect, useContext }  from 'react';
 import axiosInstance from "../utils/axios"
 import API from '../API';
+import { UNSAFE_NavigationContext, useNavigate } from "react-router-dom";
 
 // THE GPX FILE MUST BE PASSED AS AN STRING. HERE I LEAVE AN EXAMPLE:
 // THIS PARTICULAR GPX HAS A SINGLE TRACK AND TWO SEGMENTS. THESE 
 // SEGMENTS ARE THE ANGLES THAT ARE BINDED BY LINES TO FORM THE PATH.
 
-let mockGpx = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
-<gpx creator="www.flyisfun.com" version="1.1" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
-  <trk>
-    <name>Track_n1</name>
-    <trkseg>
-      <trkpt lat="-48.843895" lon="10.9835696">
-        <ele>126.75549</ele>
-        <time>2016-04-16T11:05:00Z</time>
-      </trkpt>
-      <trkpt lat="-48.843254" lon="11.9823042">
-        <ele>126.90486</ele>
-        <time>2016-04-16T11:05:05Z</time>
-      </trkpt>
-    </trkseg>
-  </trk>
-</gpx>`
+// let mockGpx = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+// <gpx creator="www.flyisfun.com" version="1.1" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+//   <trk>
+//     <name>Track_n1</name>
+//     <trkseg>
+//       <trkpt lat="-48.843895" lon="10.9835696">
+//         <ele>126.75549</ele>
+//         <time>2016-04-16T11:05:00Z</time>
+//       </trkpt>
+//       <trkpt lat="-48.843254" lon="11.9823042">
+//         <ele>126.90486</ele>
+//         <time>2016-04-16T11:05:05Z</time>
+//       </trkpt>
+//     </trkseg>
+//   </trk>
+// </gpx>`;
+
+
 
 const $ = require( "jquery" );
 
 
+
+
 function HikePage(props) {
+
+    const useBackListener = (callback) => { // Handler for the back button
+        const navigator = useContext(UNSAFE_NavigationContext).navigator;
+        useEffect(() => {
+            const listener = ({ location, action }) => {
+                console.log("listener", { location, action });
+                if (action === "POP") {
+                    callback({ location, action });
+                }
+            };
+            const unlisten = navigator.listen(listener);
+            return unlisten;
+        }, [callback, navigator]);
+    };
+
+    useBackListener(({ location }) =>{
+        console.log("Navigated Back", { location });
+        props.setCurrentMarkers([])
+    });
     
     // console.log(positions[0]," ",positions[positions.length-1])
     return (
@@ -128,8 +152,8 @@ function GenericMap(props){ //Map to be inserted anywhere.
                             {endPoint}
                         </Popup>
                     </Marker>
-                    {/*<MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></MapHandler>*/}
-                    {/*<SelectedMarkers currentMarkers={props.currentMarkers}></SelectedMarkers>*/}
+                    <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></MapHandler>
+                    <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>
                     <MyComponent gpxPos = {positions}></MyComponent>
                     {<GeoJSON data={geoJSON}></GeoJSON>}
                 </MapContainer>
@@ -158,13 +182,16 @@ function GenericMap(props){ //Map to be inserted anywhere.
 function MapHandler(props) { //Handles just the clicks on the map
     const map = useMapEvents({
         click: (e) => {
-            console.log(e.latlng)
+            // console.log(e.latlng)
             $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+e.latlng.lat+'&lon='+e.latlng.lng+'&format=json&limit=1', function(data) {
                 var newSelectedMarker = {latlng: e.latlng , address: data.display_name}
-                var newSelectedMarkers = [...props.currentMarkers,newSelectedMarker]
-                props.setCurrentMarkers(newSelectedMarkers)    
+                if(!props.currentMarkers.find(p=>p.address==newSelectedMarker.address)){
+                    var newSelectedMarkers = [...props.currentMarkers,newSelectedMarker]
+                    props.setCurrentMarkers(newSelectedMarkers)    
+                }else{  
+                    console.log("Location already selected")
+                }
             })
-            // console.log(props.currentMarkers)
         },
     })
     return null
@@ -177,7 +204,16 @@ function  SelectedMarkers(props){
 
                 return(
                     
-                    <Marker key={Math.random()} position={p.latlng}>
+                    <Marker key={Math.random()} position={p.latlng}
+                        eventHandlers={{
+                            click: (e) => {
+                                console.log("CLICKERD")
+                                let newSelectedMarkers = props.currentMarkers.filter(m=>m.address!=p.address);
+                                props.setCurrentMarkers(newSelectedMarkers);
+                                console.log(props.currentMarkers)   
+                            }
+                        }}
+                    >
                         {  
                             <Popup>
                                 {p.address}
@@ -185,7 +221,7 @@ function  SelectedMarkers(props){
                         }
                     </Marker>
                     
-                   )
+                )
             })
             : ''}
         </>
