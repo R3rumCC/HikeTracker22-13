@@ -1,11 +1,18 @@
 import { end } from "@popperjs/core";
 import { useState, React } from "react";
-import { Form, Button, Row, Col} from "react-bootstrap";
-
+import { Form, Button, Row, Col, Container} from "react-bootstrap";
+import MultiRangeSlider, {ChangeResult} from "multi-range-slider-react";
+import '../App.css';
 const FilterForm = (props) => {
 
     const [title, setTitle] = useState('')
     const [length, setLength] = useState('')
+    const [minLength, setminLength] = useState(0)
+    const [maxLength, setmaxLength] = useState(20)
+    const [etMin, setETmin] = useState(0)
+    const [etMax, setETmax] = useState(5)
+    const [ascentMin, setAscentMin] = useState(0)
+    const [ascentMax, setAscentMax] = useState(1000)
     const [expected_time, setExpectedTime] = useState('')
     const [ascent, setAscent] = useState('')
     const [difficulty, setDifficulty] = useState('')
@@ -16,6 +23,7 @@ const FilterForm = (props) => {
     const [city, setCity] = useState('')
     const [province, setProvince] = useState('')
     const [country, setCountry] = useState('')
+
 
     function handleSubmit(event) {
         const $ = require( "jquery" );
@@ -118,96 +126,179 @@ const FilterForm = (props) => {
         event.preventDefault();
     }
       return (
-        <Form className="block-example border border-primary rounded mb-0 form-padding my-2 mx-2" onSubmit={handleSubmit}>
-            <Row>
-                <Col>
-                    <Form.Group className="mb-3">
-                        <Form.Label>City</Form.Label>
-                        <Form.Control type="text" required={false} value={city} placeholder = {'Turin'} onChange={event => setCity(event.target.value)}/>
-                    </Form.Group>
-                </Col>
-                <Col>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Province</Form.Label>
-                        <Form.Control type="text" required={false} value={province} placeholder = {'Turin'} onChange={event => setProvince(event.target.value)}/>
-                    </Form.Group>
-                </Col>
-                <Col>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Country</Form.Label>
-                        <Form.Control type="text" required={false} value={country} placeholder = {'Italy'} onChange={event => setCountry(event.target.value)}/>
-                    </Form.Group>   
-                </Col>  
+        <Form  className="border border-primary rounded d-flex justify-content-space-center flex-wrap" onSubmit={handleSubmit}>
 
-            </Row>
-            <Row>
-                <Col>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Hike Title</Form.Label>
-                        <Form.Control type="text" required={false} value={title} placeholder = {'Hike#1'} onChange={event => setTitle(event.target.value)}/>
-                    </Form.Group>
-                </Col>
-                <Col>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Length meters</Form.Label>
-                        <Form.Control type="number" required={false} value={length} placeholder = {123} onChange={event => setLength(event.target.value)}/>
-                    </Form.Group>   
-                </Col>  
+            <Form.Group className="my-2 mx-2" style={{ width: 'maxWidth' }}>
+                <Form.Label>City</Form.Label>
+                <Form.Control type="text" required={false} value={city} placeholder = {'Turin'} onChange={event => setCity(event.target.value)}/>
+            </Form.Group>
 
-            </Row>
-            <Row>
-                <Col>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Expected time minutes</Form.Label>
-                        <Form.Control type="number" required={false} value={expected_time} placeholder = {112} onChange={event => setExpectedTime(event.target.value)}/>
-                    </Form.Group>
-                </Col>
-                <Col>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Ascent meters</Form.Label>
-                        <Form.Control type="number" required={false} value={ascent} placeholder = {100} onChange={event => setAscent(event.target.value)}/>
-                    </Form.Group>
-                </Col>    
-                <Col>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Difficulty</Form.Label>
-                        <Form.Control type="text" required={false} value={difficulty} placeholder = {'easy'} onChange={event => setDifficulty(event.target.value)}/>
-                    </Form.Group>
-                
-                </Col>              
 
-            </Row>
-            <Row>
-                <Col>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Start Point</Form.Label>
-                        <Form.Control type="text" required={false} value={start_point} placeholder = {'Hut#1'} onChange={event => setStartPoint(event.target.value)}/>
-                    </Form.Group>
-                </Col>   
-                <Col>
-                    <Form.Group className="mb-3">
-                        <Form.Label>End Point</Form.Label>
-                        <Form.Control type="text" required={false} value={end_point} placeholder = {'Hut#2'} onChange={event => setEndPoint(event.target.value)}/>
-                    </Form.Group>
-                
-                </Col>   
-                <Col>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Refernce Points</Form.Label>
-                        <Form.Control type="text" required={false} value={reference_points} placeholder = {'Hut#3'} onChange={event => setReferencePoints(event.target.value)}/>
-                    </Form.Group>
-                
-                </Col>   
-            </Row>
-            <Row>
-                <Form.Group className="mb-3">
-                    <Form.Label>Description</Form.Label>
-                    <Form.Control type="text" required={false} value={description} placeholder = {'mountain'} onChange={event => setDescription(event.target.value)}/>
-                </Form.Group>
-            </Row>
+            <Form.Group className="my-2 mx-2" style={{ width: 'maxWidth' }}>
+                <Form.Label>Province</Form.Label>
+                <Form.Control type="text" required={false} value={province} placeholder = {'Turin'} onChange={event => setProvince(event.target.value)}/>
+            </Form.Group>
+
+
+            <Form.Group className="my-2 mx-2" style={{ width: 'maxWidth' }}>
+                <Form.Label>Country</Form.Label>
+                <Form.Control type="text" required={false} value={country} placeholder = {'Italy'} onChange={event => setCountry(event.target.value)}/>
+            </Form.Group>   
+
+
+
+            <Form.Group className="my-2 mx-2" style={{ width: 'maxWidth' }}>
+                <Form.Label>Hike Title</Form.Label>
+                <Form.Control type="text" required={false} value={title} placeholder = {'Hike#1'} onChange={event => setTitle(event.target.value)}/>
+            </Form.Group>
+
+            <Form.Group className="my-2 mx-2" style={{ width: 'maxWidth' }}>
+                <Form.Label>Difficulty</Form.Label>
+                    <Form.Select onChange={(e) => setDifficulty(e.target.value)}>
+                        <option label=''></option>
+                        <option value='Tourist'  label="Tourist"/>
+                        <option value='Hiker' label="Hiker"/>
+                        <option value='Professional hiker' label="Professional Hiker"/>
+                    </Form.Select>
+            </Form.Group>
             
-        <Button className="mb-3" variant="primary" type="submit">Search</Button>
-        </Form>
+            <Form.Group className="my-2 mx-2" style={{ width: 'maxWidth' }}>
+                <Form.Label>Length</Form.Label>
+                <Row className="mx-2">
+                    <MultiRangeSlider
+                        min={0}
+                        max={100}
+                        step={1}
+                        ruler ={false}
+                        label = {true}
+                        barInnerColor ={'#0091ea'}
+                        style = {{border: 'none', boxShadow: 'none'}}
+                        minValue={minLength}
+                        maxValue={maxLength}
+                        minCaption = {minLength}
+                        maxCaption = {maxLength}
+                        onInput={(e) => {
+                            setminLength(e.minValue);
+                            setmaxLength(e.maxValue);
+                        }}
+                    />
+                </Row>
+                <Row>
+                    <Col>
+                        <Form.Group className="mb-3">
+                            <Form.Label>From</Form.Label>
+                            <Form.Control type="number" required={false} value={minLength} placeholder = {minLength} onChange={event => setminLength(event.target.value)}/>
+                        </Form.Group>  
+                    </Col>
+                    <Col>
+                        <Form.Group className="mb-3">
+                            <Form.Label>to</Form.Label>
+                            <Form.Control type="number" required={false} value={maxLength} placeholder = {maxLength} onChange={event => setmaxLength(event.target.value)}/>
+                        </Form.Group>  
+                    </Col>
+                </Row>
+            </Form.Group>   
+
+            <Form.Group className="my-2 mx-2" style={{ width: 'maxWidth' }}>
+                <Form.Label>Expected time hours</Form.Label>
+                <Row className="mx-2">
+                    <MultiRangeSlider
+                        min={0}
+                        max={24}
+                        step={1}
+                        ruler ={false}
+                        label = {true}
+                        barInnerColor ={'#0091ea'}
+                        style = {{border: 'none', boxShadow: 'none'}}
+                        minValue={etMin}
+                        maxValue={etMax}
+                        minCaption = {etMin}
+                        maxCaption = {etMax}
+                        onInput={(e) => {
+                            setETmin(e.minValue)
+                            setETmax(e.maxValue)
+                        }}
+                    />
+                </Row>
+                <Row>
+                    <Col>
+                        <Form.Group className="mb-3">
+                            <Form.Label>From</Form.Label>
+                            <Form.Control type="number" required={false} value={etMin} placeholder = {etMin} onChange={event => setETmin(event.target.value)}/>
+                        </Form.Group>  
+                    </Col>
+                    <Col>
+                        <Form.Group className="mb-3">
+                            <Form.Label>to</Form.Label>
+                            <Form.Control type="number" required={false} value={etMax} placeholder = {etMax} onChange={event => setETmax(event.target.value)}/>
+                        </Form.Group>  
+                    </Col>
+                </Row>
+            </Form.Group>   
+
+            <Form.Group className="my-2 mx-2" style={{ width: 'maxWidth' }}>
+                <Form.Label>Ascent</Form.Label>
+                <Row className="mx-2">
+                    <MultiRangeSlider
+                        min={0}
+                        max={2000}
+                        step={10}
+                        ruler ={false}
+                        label = {true}
+                        barInnerColor ={'#0091ea'}
+                        style = {{border: 'none', boxShadow: 'none'}}
+                        minValue={ascentMin}
+                        maxValue={ascentMax}
+                        minCaption = {ascentMin}
+                        maxCaption = {ascentMax}
+                        onInput={(e) => {
+                            setAscentMin(e.minValue)
+                            setAscentMax(e.maxValue)
+                        }}
+                    />
+                </Row>
+                <Row>
+                    <Col>
+                        <Form.Group className="mb-3">
+                            <Form.Label>From</Form.Label>
+                            <Form.Control type="number" required={false} value={ascentMin} placeholder = {ascentMin} onChange={event => setAscentMin(event.target.value)}/>
+                        </Form.Group>  
+                    </Col>
+                    <Col>
+                        <Form.Group className="mb-3">
+                            <Form.Label>to</Form.Label>
+                            <Form.Control type="number" required={false} value={ascentMax} placeholder = {ascentMax} onChange={event => setAscentMax(event.target.value)}/>
+                        </Form.Group>  
+                    </Col>
+                </Row>
+            </Form.Group>     
+            <Row>
+            <Form.Group className="" style={{ width: 'maxWidth' }}>
+                <Form.Label>Start Point</Form.Label>
+                <Form.Control type="text" required={false} value={start_point} placeholder = {'Hut#1'} onChange={event => setStartPoint(event.target.value)}/>
+            </Form.Group>
+
+            <Form.Group className="" style={{ width: 'maxWidth' }}>
+                <Form.Label>End Point</Form.Label>
+                <Form.Control type="text" required={false} value={end_point} placeholder = {'Hut#2'} onChange={event => setEndPoint(event.target.value)}/>
+            </Form.Group>
+        
+
+            <Form.Group className="" style={{ width: 'maxWidth' }}>
+                <Form.Label>Refernce Points</Form.Label>
+                <Form.Control type="text" required={false} value={reference_points} placeholder = {'Hut#3'} onChange={event => setReferencePoints(event.target.value)}/>
+            </Form.Group>
+        
+
+            <Form.Group className="mb-2 me-2" style={{ width: 'maxWidth' }}>
+                <Form.Label>Description</Form.Label>
+                <Form.Control type="text" required={false} value={description} placeholder = {'mountain'} onChange={event => setDescription(event.target.value)}/>
+            </Form.Group>
+            </Row>
+            <Button className="align-self-end mb-2 ms-2" variant="primary" type="submit">Search</Button>
+
+    </Form>
+
         
       );
   }
