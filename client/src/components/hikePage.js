@@ -111,11 +111,11 @@ function GenericMap(props){ //Map to be inserted anywhere.
         let gpxParser = require('gpxparser');
         var gpx = new gpxParser()
         gpx.parse(map)
-        //let geoJSON = gpx.toGeoJSON()
+        let geoJSON = gpx.toGeoJSON()
         //let geoJSON = JSON.parse(props.currentHike[0].gpx_track) //Get the object from a string
         // console.log(JSON.stringify(geoJSON))
-        var positions = gpx.tracks[0].points.map(p => [p.lat, p.lon])
-        //var positions = geoJSON.features[0].geometry.coordinates.map(p => [p[1], p[0]])
+        //var positions = gpx.tracks[0].points.map(p => [p.lat, p.lon,p.ele]).filter((p)=> p[2]!=null)
+        var positions = geoJSON.features[0].geometry.coordinates.map(p => [p[1], p[0],p[2]]).filter((p)=> p[2]!=null)
         return(
             <>{ map != '' ? 
                 <MapContainer
@@ -141,7 +141,7 @@ function GenericMap(props){ //Map to be inserted anywhere.
                     </Marker>
                     {/*<MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></MapHandler>*/}
                     {/*<SelectedMarkers currentMarkers={props.currentMarkers}></SelectedMarkers>*/}
-                    {/*<GeoJSON data={geoJSON}></GeoJSON>*/}
+                    {<GeoJSON data={geoJSON}></GeoJSON>}
                 </MapContainer>
                 : null}
                 
