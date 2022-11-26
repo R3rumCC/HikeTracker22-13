@@ -127,6 +127,7 @@ function HikeForm(props){
             if(length!== "" && difficulty!== ""){
                  if(startPoint!==0 && endPoint!==0){
                     if(description!== ""){
+                        if(map !== ''){
                         let start= {address: startPoint, gps_coordinates: startPointGps}
                         let startId= props.CreateNewPoint(start) //try to use startId and endId instead of performing again the search
                         let end= {address: endPoint, gps_coordinates: endPointGps}
@@ -142,7 +143,17 @@ function HikeForm(props){
                         submitFile()
                         console.log('after CreateNewHike');
                         alert('New Hike correctly added!')
-
+                        document.getElementById('hikeForm').hidden = true;
+                        setTitle(''); 
+                        setLength(''); setExpTime(''); setAscent('')
+                        setDifficulty(''); setDescription('')
+                        setStartPoint(''); setStartPointGps('');
+                        setEndPoint(''); setEndPointGps('');
+                        setErrorMsg(''); setMap(''); setGpxPos(null);
+                            }
+                            else{
+                                setErrorMsg("Enter a valid gpx file.");
+                            }
                     }else{
                         setErrorMsg("Enter a description before submit.");
                     }
@@ -163,6 +174,7 @@ function HikeForm(props){
         setDifficulty(''); setDescription('')
         setStartPoint(''); setStartPointGps('');
         setEndPoint(''); setEndPointGps('');
+        setErrorMsg(''); setMap(''); setGpxPos(null);
     }
     
     //Import gpx file and read, gpx parse it is used to retreive the start point and the end point (format latitude,longitude)
@@ -176,6 +188,7 @@ function HikeForm(props){
         setDifficulty(''); setDescription('')
         setStartPoint(''); setStartPointGps('');
         setEndPoint(''); setEndPointGps('');
+        setErrorMsg('');
         let reader = new FileReader();
       
         reader.readAsText(selectedFile);
@@ -188,7 +201,8 @@ function HikeForm(props){
             const positions = gpx.tracks[0].points.map(p => [p.lat, p.lon, p.ele]).filter((x) => x[2]!= null)
             if(positions.length == 0){
                 setErrorMsg("No Elevation available")
-
+                setGpxPos(null)
+                setMap('')
             }
             else{
 

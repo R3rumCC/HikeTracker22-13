@@ -65,7 +65,6 @@ function GenericMap(props){ //Map to be inserted anywhere.
     async function gpxmap(name) {
         try {
             const map = await API.getMap(name);
-            console.log(map)
             setMap(map);
             } catch (error) {
             throw error
