@@ -195,8 +195,6 @@ function HikeForm(props){
       
         reader.onload = function() { 
             gpx.parse(reader.result)
-            let geoJSON = gpx.toGeoJSON()
-
 
             const positions = gpx.tracks[0].points.map(p => [p.lat, p.lon, p.ele]).filter((x) => x[2]!= null)
             if(positions.length == 0){
@@ -232,15 +230,11 @@ function HikeForm(props){
                 console.log(positions[positions.length-1]);
                 $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+positions[0][0]+'&lon='+positions[0][1]+'&format=json&limit=1&q=', function(data) {
 
-                $.each(data, function(key, val) {
-                    changeStartP(data.display_name);
-                })      
+                    changeStartP(data.display_name);    
                 }); 
                 $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+positions[positions.length-1][0]+'&lon='+positions[positions.length-1][1]+'&format=json&limit=1&q=', function(data) {
 
-                    $.each(data, function(key, val) {
-                        changeEndP(data.display_name);
-                    })        
+                    changeEndP(data.display_name);      
                 });
                 
                 setMap(reader.result) 
@@ -326,31 +320,7 @@ function HikeForm(props){
     </Form>
     {gpxPos != null ?
         <>
-        <MapContainer
-            className='map'
-            center={gpxPos[Math.round(gpxPos.length/2)]}
-            zoom={gpxPos.length/100 > 1 ? 13 : 15}
-            scrollWheelZoom={false}
-            >
-
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                {/* This object below is needed if we are passing the path line as a parsed XML, not as a GeoJSON */}
-                    <Polyline
-                    pathOptions={{ fillColor: 'red', color: 'blue' }}
-                    positions={gpxPos}
-                /> 
-                <Marker position={gpxPos[0]}> 
-                    <Popup>
-                        {startPoint}
-                    </Popup>
-                </Marker>
-                <Marker position={gpxPos[gpxPos.length -1]}> 
-                    <Popup>
-                        {endPoint}
-                    </Popup>
-                </Marker>
-                <MyComponent></MyComponent>
-        </MapContainer>
+        <GenericMap gpxFile = {map} currentHike ={[]} currentMarkers = {[]} setCurrentMarkers ={''}/>
         </>
     : null}
     </>)

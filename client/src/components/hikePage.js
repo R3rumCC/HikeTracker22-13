@@ -1,6 +1,6 @@
 import { Col, Row } from 'react-bootstrap';
 import { HikesContainer } from './hikesCards';
-import { MapContainer, Polyline, TileLayer, Map, Marker, Popup, useMapEvents, GeoJSON } from 'react-leaflet'
+import { MapContainer, Polyline, TileLayer, Map, Marker, Popup, useMapEvents, GeoJSON, useMap } from 'react-leaflet'
 import React, { Component, useState, useEffect }  from 'react';
 import axiosInstance from "../utils/axios"
 import API from '../API';
@@ -60,6 +60,16 @@ function GenericMap(props){ //Map to be inserted anywhere.
     */
 
     const [map,setMap] = useState('')
+    const [startPoint, setStartPoint]= useState('')
+    const [endPoint, setEndPoint]= useState('')
+
+    function MyComponent({gpxPos}) {
+        const map = useMap()
+
+        map.flyTo(gpxPos[Math.round(gpxPos.length/2)],gpxPos.length/100 > 1 ? 13 : 15)
+
+        return null
+      }
 
 
     async function gpxmap(name) {
@@ -74,38 +84,12 @@ function GenericMap(props){ //Map to be inserted anywhere.
         if(props.currentHike.length > 0){
             gpxmap(props.currentHike[0].gpx_track.replace(/\s/g, ''))
             }
-      }, []);
-    if (!props.currentHike) {
-        return(
-            <>
-                <MapContainer
-                    className="leaflet-container"
-                    center={[33.8735578, 35.86379]} //Center somewhere random as default
-                    zoom={9}
-                >
-                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                    <MapHandler></MapHandler> 
-                    <SelectedMarkers currentMarkers={props.currentMarkers}></SelectedMarkers>
-                </MapContainer>
-            </>
-        )
-    }
-    
-    if(props.currentHike.length<=0) {
-        return(
-            <>
-                <MapContainer
-                    className="leaflet-container"
-                    center={[33.8735578, 35.86379]} //Center somewhere random as default
-                    zoom={9}
-                >
-                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                    <MapHandler></MapHandler> 
-                    <SelectedMarkers currentMarkers={props.currentMarkers}></SelectedMarkers>
-                </MapContainer>
-            </>
-        )
-    }else if(map != ''){
+        else{
+            setMap(props.gpxFile)
+        }
+      }, [props.gpxFile]);
+
+        if(map != ''){
         // The commented stuff is only required if we are not passing a GeoJSON
         let gpxParser = require('gpxparser');
         var gpx = new gpxParser()
@@ -115,6 +99,12 @@ function GenericMap(props){ //Map to be inserted anywhere.
         // console.log(JSON.stringify(geoJSON))
         //var positions = gpx.tracks[0].points.map(p => [p.lat, p.lon,p.ele]).filter((p)=> p[2]!=null)
         var positions = geoJSON.features[0].geometry.coordinates.map(p => [p[1], p[0],p[2]]).filter((p)=> p[2]!=null)
+        $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+positions[0][0]+'&lon='+positions[0][1]+'&format=json&limit=1&q=', function(data) {
+            setStartPoint(data.display_name);    
+            })
+        $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+positions[positions.length-1][0]+'&lon='+positions[positions.length-1][1]+'&format=json&limit=1&q=', function(data) {
+            setEndPoint(data.display_name);           
+            })
         return(
             <>{ map != '' ? 
                 <MapContainer
@@ -130,29 +120,38 @@ function GenericMap(props){ //Map to be inserted anywhere.
                     /> 
                     <Marker position={positions[0]}> 
                         <Popup>
-                            {props.currentHike[0].start_point_address}
+                            {startPoint}
                         </Popup>
                     </Marker>
                     <Marker position={positions[positions.length -1]}> 
                         <Popup>
-                            {props.currentHike[0].end_point_address}
+                            {endPoint}
                         </Popup>
                     </Marker>
                     {/*<MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></MapHandler>*/}
                     {/*<SelectedMarkers currentMarkers={props.currentMarkers}></SelectedMarkers>*/}
+                    <MyComponent gpxPos = {positions}></MyComponent>
                     {<GeoJSON data={geoJSON}></GeoJSON>}
                 </MapContainer>
                 : null}
                 
             </>
-        )
-    }else{
-        return(
-            <>
-            </>
-        )
-
-    }
+        )    
+        }else if (props.currentHike<=0) {
+            return(
+                <>
+                    <MapContainer
+                        className="leaflet-container"
+                        center={[33.8735578, 35.86379]} //Center somewhere random as default
+                        zoom={9}
+                    >
+                        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                        <MapHandler></MapHandler> 
+                        <SelectedMarkers currentMarkers={props.currentMarkers}></SelectedMarkers>
+                    </MapContainer>
+                </>
+            )
+        }
 
 }
 
