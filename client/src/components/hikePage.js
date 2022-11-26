@@ -119,8 +119,8 @@ function GenericMap(props){ //Map to be inserted anywhere.
         return(
             <>{ map != '' ? 
                 <MapContainer
-                    center={positions[positions.length/2]}
-                    zoom={13}
+                    center={positions[Math.round(positions.length/2)]}
+                    zoom={positions.length/100 > 1 ? 13 : 15}
                     scrollWheelZoom={false}
                 >
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />

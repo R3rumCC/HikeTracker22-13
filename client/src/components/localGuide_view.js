@@ -99,8 +99,9 @@ function HikeForm(props){
   
     function MyComponent() {
         const map = useMap()
-        console.log(gpxPos[gpxPos.length/2])
-        map.flyTo(gpxPos[gpxPos.length/2],13)
+        
+        map.flyTo(gpxPos[Math.round(gpxPos.length/2)],gpxPos.length/100 > 1 ? 13 : 15)
+
         return null
       }
     const submitFile = () => {
@@ -185,10 +186,8 @@ function HikeForm(props){
 
 
             const positions = gpx.tracks[0].points.map(p => [p.lat, p.lon, p.ele]).filter((x) => x[2]!= null)
-            console.log(positions)
             if(positions.length == 0){
                 setErrorMsg("No Elevation available")
-
 
             }
             else{
@@ -315,8 +314,8 @@ function HikeForm(props){
         <>
         <MapContainer
             className='map'
-            center={gpxPos[gpxPos.length/2]}
-            zoom={13}
+            center={gpxPos[Math.round(gpxPos.length/2)]}
+            zoom={gpxPos.length/100 > 1 ? 13 : 15}
             scrollWheelZoom={false}
             >
 
