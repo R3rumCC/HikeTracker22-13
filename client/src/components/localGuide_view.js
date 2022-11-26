@@ -97,13 +97,6 @@ function HikeForm(props){
     const changeEndPGps= (val) =>{setEndPointGps(val)}
 
   
-    function MyComponent() {
-        const map = useMap()
-        
-        map.flyTo(gpxPos[Math.round(gpxPos.length/2)],gpxPos.length/100 > 1 ? 13 : 15)
-
-        return null
-      }
     const submitFile = () => {
         var myBlob = new Blob(
             [map],

@@ -142,7 +142,7 @@ function GenericMap(props){ //Map to be inserted anywhere.
                 <>
                     <MapContainer
                         className="leaflet-container"
-                        center={[33.8735578, 35.86379]} //Center somewhere random as default
+                        center={[42.715, 12.437]} //Center somewhere random as default
                         zoom={9}
                     >
                         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
