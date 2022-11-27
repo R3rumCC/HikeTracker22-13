@@ -32,10 +32,9 @@ exports.getHikes = async function () {
 
 exports.addHike = async function (req, res) {
 
-	//console.log('inside addHike')
-	let startId = await dao.checkPresenceByAddress(req.body.newHike.startPoint)
-	let endId = await dao.checkPresenceByAddress(req.body.newHike.endPoint)
-	console.log(startId.idPoint, endId.idPoint)
+	const startId = await dao.checkPresenceByAddress(req.body.newHike.startPoint)
+	const endId = await dao.checkPresenceByAddress(req.body.newHike.endPoint)
+	//console.log(startId.idPoint, endId.idPoint)
 
 	let hike = {
 		title: req.body.newHike.title, length: req.body.newHike.length, expected_time: req.body.newHike.expected_time,

@@ -303,8 +303,9 @@ function checkPresenceByAddress(addr) {
     db.get(sql, addr, (err, id) => {
       if (err) {
         reject(err);
-      } if (id == undefined)
-      resolve(null);
+      } if (id == undefined) {
+        resolve(null);
+      }
       else {
         resolve(id);
       }
