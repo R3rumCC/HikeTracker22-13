@@ -9,7 +9,7 @@ exports.getHikes = async function () {
 		for (let hike of hikes) {
 			//hike['reference_points'] = await dao.readReferencePoints(hike.title);
 			hike['reference_points'] = await dao.readListOfReferencePoints(hike.title);
-			if(hike['reference_points']){
+			if (hike['reference_points']) {
 				let refer_points = [];
 				for (const rp of hike['reference_points'].reference_points.split("-")) {
 					const idPoint = parseInt(rp);
@@ -18,7 +18,7 @@ exports.getHikes = async function () {
 				}
 				hike['reference_points'] = refer_points;
 			}
-			else{
+			else {
 				hike['reference_points'] = [];
 			}
 			fullHikes.push(hike)
@@ -32,16 +32,18 @@ exports.getHikes = async function () {
 
 exports.addHike = async function (req, res) {
 
-	console.log('inside addHike')
-	let startId= await dao.checkPresenceByAddress(req.body.newHike.startPoint)
-	let endId= await dao.checkPresenceByAddress(req.body.newHike.endPoint)
-	console.log(startId.idPoint , endId.idPoint)
+	//console.log('inside addHike')
+	let startId = await dao.checkPresenceByAddress(req.body.newHike.startPoint)
+	let endId = await dao.checkPresenceByAddress(req.body.newHike.endPoint)
+	console.log(startId.idPoint, endId.idPoint)
 
-	let hike= {title: req.body.newHike.title, length: req.body.newHike.length, expected_time: req.body.newHike.expected_time, 
-				ascent: req.body.newHike.ascent, difficulty: req.body.newHike.difficulty, start_point: startId.idPoint, end_point: endId.idPoint, 
-				reference_points: req.body.newHike.reference_points, description: req.body.newHike.description, gpx_track: req.body.newHike.gpx_track}
-	console.log('before db call: ')
-	console.log(hike)
+	let hike = {
+		title: req.body.newHike.title, length: req.body.newHike.length, expected_time: req.body.newHike.expected_time,
+		ascent: req.body.newHike.ascent, difficulty: req.body.newHike.difficulty, start_point: startId.idPoint, end_point: endId.idPoint,
+		reference_points: req.body.newHike.reference_points, description: req.body.newHike.description, gpx_track: req.body.newHike.gpx_track
+	}
+	//console.log('before db call: ')
+	//console.log(hike)
 
 	dao.addHike(hike).then(
 		result => {
@@ -141,16 +143,16 @@ exports.getUser = async function (req, res) {
 //-if not present, it is added;
 //-if present, a positive feedback is sent anyway
 exports.addPoint = async function (req, res) {
-	
+
 	console.log('inside add point')
 
 	try {
 		const id = await dao.checkPresenceByAddress(req.body.point.address)
 		console.log(id)
-		if(id!==null){
+		if (id !== null) {
 			return res.status(200).json(id);
 
-		}else{
+		} else {
 			dao.addPoint(req.body.point).then(
 				result => {
 					return res.status(200).json(result);
@@ -164,5 +166,5 @@ exports.addPoint = async function (req, res) {
 	} catch (e) {
 		console.log(e);
 		throw e;
-	}	
+	}
 }
