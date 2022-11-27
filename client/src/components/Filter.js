@@ -36,10 +36,8 @@ const FilterForm = (props) => {
         let filteredHikes = ''
         const filter = {city: city, region: region, province:province, length: {min : minLength, max: maxLength}, expected_time: {min: etMin, max: etMax}, ascent: {min : ascentMin, max: ascentMax},
         difficulty: difficulty}
-        console.log(filter)
         props.setLoading(true)
         if(filter.city || filter.region || filter.province){
-            console.log('sono in filter city')
             let str = "https://nominatim.openstreetmap.org/search?format=json&limit=1&city="+filter.city +"&county="+filter.province+"&state="+filter.region
             $.getJSON(str
             , function(data) {
@@ -77,13 +75,10 @@ const FilterForm = (props) => {
                                     console.log(bool)
                                     if(filter.province && bool){
                                         bool = (hike.start_point_address.split(',').map((v)=>v.trim())).includes(filter.city ? values[1].trim() : values[0].trim())  || (hike.end_point_address.split(',').map((v)=>v.trim())).includes(filter.city ? values[1].trim() : values[0].trim())
-                                        console.log(hike.start_point_address.split(',').map((v)=>v.trim()))
                                     }
         
                                     if(filter.region && bool)
                                         bool = (hike.start_point_address.split(',').map((v)=>v.trim())).includes(filter.city ? values[2].trim() : filter.province ? values[1].trim() : values[0].trim())  || (hike.end_point_address.split(',').map((v)=>v.trim())).includes(filter.city ? values[2].trim() : filter.province ? values[1].trim() : values[0].trim())   
-                                    //some((v)=>{/*console.log(v.trim()); console.log(hike.start_point_address.split(',').map((v)=>v.trim()));*/
-                                    //    return (hike.start_point_address.split(',').map((v)=>v.trim())[3].includes(v.trim())) || (hike.end_point_address.split(',').map((v)=>v.trim()).includes(v.trim()))})
                                 }
                             }
     
@@ -91,7 +86,6 @@ const FilterForm = (props) => {
                             
                         }
                         )
-                        console.log(filteredHikes)
                         props.setFilteredHikes(filteredHikes)
                         props.setLoading(false)
 
@@ -106,35 +100,30 @@ const FilterForm = (props) => {
         else{
             filteredHikes = props.hikes.filter( (hike) =>{
                 
-                console.log('NON sono in filter city')
-                let bool = true
-                console.log(hike)
-                console.log(hike["length"],filter["length"] !== null,filter["length"].max,filter["length"].min,!(hike["length"] >= hike["length"] && hike["length"]<= filter["length"].max))
-                if( filter.length && filterLength){
-                    let key = 'length'
-                    console.log(hike[key])
-                    if(!(hike[key] >= filter[key].min && hike[key]<= filter[key].max) )
-                        bool = false;
-                }
-                if(filter.expected_time && filterET){
-                    let key = 'expected_time'
-                    if(!(hike[key] >= filter[key].min && hike[key]<= filter[key].max) )
-                        bool = false;
-                }
-                if(filter.ascent && filterAscent){
-                    let key = 'ascent'
-                    if(!(hike[key] >= filter[key].min && hike[key]<= filter[key].max) )
-                        bool = false;
-                }
-                if(filter.difficulty)
-                    if(hike['difficulty']!=filter['difficulty'])
-                        bool = false;
+            let bool = true
+            if( filter.length && filterLength){
+                let key = 'length'
+                if(!(hike[key] >= filter[key].min && hike[key]<= filter[key].max) )
+                    bool = false;
+            }
+            if(filter.expected_time && filterET){
+                let key = 'expected_time'
+                if(!(hike[key] >= filter[key].min && hike[key]<= filter[key].max) )
+                    bool = false;
+            }
+            if(filter.ascent && filterAscent){
+                let key = 'ascent'
+                if(!(hike[key] >= filter[key].min && hike[key]<= filter[key].max) )
+                    bool = false;
+            }
+            if(filter.difficulty)
+                if(hike['difficulty']!=filter['difficulty'])
+                    bool = false;
 
-                return bool
+            return bool
                 
             }
             )
-            console.log(filteredHikes)
             props.setFilteredHikes(filteredHikes)
             props.setLoading(false)  
 

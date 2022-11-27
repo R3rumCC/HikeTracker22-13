@@ -161,7 +161,7 @@ function GenericMap(props){ //Map to be inserted anywhere.
                 
             </>
         )    
-        }else if (props.currentHike<=0) {
+        }else {
             return(
                 <>
                     <MapContainer
@@ -170,8 +170,8 @@ function GenericMap(props){ //Map to be inserted anywhere.
                         zoom={9}
                     >
                         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                        <MapHandler></MapHandler> 
-                        <SelectedMarkers currentMarkers={props.currentMarkers}></SelectedMarkers>
+                        {!props.clicked ? <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></MapHandler> : ''} 
+                        <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>
                     </MapContainer>
                 </>
             )

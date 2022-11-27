@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Row, Col, Button, Container, Form, FormGroup, FormLabel, ButtonGroup , InputGroup, Alert} from 'react-bootstrap';
 import { MapContainer, Polyline, TileLayer, Map, Marker, Popup, useMapEvents, GeoJSON, useMap } from 'react-leaflet'
 import { GenericMap } from './hikePage';
@@ -35,8 +35,8 @@ function LocalGuide_Home(props){
         <InsertionOptions setHikeForm={selectHike} setParkingForm={selectParking} setHutForm={selectHut}></InsertionOptions>
         <Row>
             <div>{hikeForm ? <HikeForm CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike}/> : <></>}</div>
-            <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} /> : <></>}</div>
-            <div>{hutForm ? <HutForm CreateNewPoint={props.CreateNewPoint}/> : <></>}</div>
+            <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
+            <div>{hutForm ? <HutForm CreateNewPoint={props.CreateNewPoint} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}/> : <></>}</div>
         </Row>
     </Container>
     )
@@ -327,6 +327,7 @@ function HutForm(props){
     const [title, setTitle]= useState('')
     const [position,setPosition]= useState('')
     const [address, setAddress]= useState('')
+    const [clicked,setClicked] = useState(false)
     //const [refPoints, setRefPoints]= useState([])
     //const [map, setMap]= useState()
 
@@ -335,6 +336,23 @@ function HutForm(props){
     const changeTitle= (val)=>{setTitle(val);}
     const changePosition= (val)=>{setPosition(val)}
     const changeAddress= (val)=>{setAddress(val)}
+
+    useEffect(()=>{
+        props.setCurrentMarkers([]);
+    },[])
+    useEffect(() => {
+        if(props.currentMarkers.length != 0){
+            setPosition(props.currentMarkers[0].latlng.lat+ ","+ props.currentMarkers[0].latlng.lng)
+            setAddress(props.currentMarkers[0].address)
+            setTitle(props.currentMarkers[0].address.split(',')[0])
+            setClicked(true)
+        }
+        else{
+            setPosition('')
+            setAddress('')
+            setClicked(false)
+        }
+      }, [props.currentMarkers]);
 
     const submitHutForm= (event)=>{
         event.preventDefault();
@@ -378,12 +396,12 @@ function HutForm(props){
         <Form.Group>
             <Row>
                 <Form.Label>Position</Form.Label>
-                <Form.Control value={position} onChange={(ev) => changePosition(ev.target.value)}/>
+                <Form.Control disabled={clicked} value={position} onChange={(ev) => changePosition(ev.target.value)}/>
             </Row>
             <Form.Label>//TODO Map</Form.Label>
             <Row>
 			    <Form.Label>Address</Form.Label>
-			    <Form.Control value={address} onChange={(ev) => changeAddress(ev.target.value)}/>
+			    <Form.Control value={address} disabled={clicked} onChange={(ev) => changeAddress(ev.target.value)}/>
             </Row>
 		</Form.Group>
         <Form.Group>
@@ -392,6 +410,7 @@ function HutForm(props){
         <Button type='submit' style={{background:'red'}}>SAVE</Button>
         <Button style={{background:'red'}} onClick={reset}>Cancel</Button>
     </Form>
+    <GenericMap gpxFile = {''} currentHike ={[]} currentMarkers = {props.currentMarkers} setCurrentMarkers ={props.setCurrentMarkers} clicked ={clicked} />
     </>)
 }
 
@@ -403,12 +422,29 @@ function ParkingLotForm(props){
     const [title, setTitle]= useState('')
     const [position,setPosition]= useState('')
     const [address, setAddress]= useState('')
+    const [clicked,setClicked] = useState(false)
     const [type, setType]= useState('Parking Lot')
     //const [map, setMap]= useState()
 
     const [errorMsg, setErrorMsg] = useState("");
 
+    useEffect(()=>{
+        props.setCurrentMarkers([]);
+    },[])
 
+    useEffect(() => {
+        if(props.currentMarkers.length != 0){
+            setPosition(props.currentMarkers[0].latlng.lat+ ","+ props.currentMarkers[0].latlng.lng)
+            setAddress(props.currentMarkers[0].address)
+            setTitle(props.currentMarkers[0].address.split(',')[0])
+            setClicked(true)
+        }
+        else{
+            setPosition('')
+            setAddress('')
+            setClicked(false)
+        }
+      }, [props.currentMarkers]);
     const handleSubmit = (event) => {
         console.log(props.test);
 		event.preventDefault();
@@ -454,6 +490,7 @@ function ParkingLotForm(props){
                 <Form.Label>//TODO Map</Form.Label>
                 <Form.Control
                     value={position}
+                    disabled={clicked}
                     onChange={(ev) => setPosition(ev.target.value)} 
                 ></Form.Control>
             </Form.Group>
@@ -461,6 +498,7 @@ function ParkingLotForm(props){
                 <Form.Label>Address</Form.Label>
                 <Form.Control
                     value={address}
+                    disabled={clicked}
                     onChange={(ev) => setAddress(ev.target.value)}
                 ></Form.Control>
             </Form.Group>
@@ -468,6 +506,9 @@ function ParkingLotForm(props){
             {/* <Button onClick={props.test}>test</Button> */}
             <Button onClick={props.cancel}>Cancel</Button>
         </Form>
+        <GenericMap gpxFile = {''} currentHike ={[]} currentMarkers = {props.currentMarkers} setCurrentMarkers ={props.setCurrentMarkers} clicked ={clicked}/>
+
+
         
    </>     )
 }
