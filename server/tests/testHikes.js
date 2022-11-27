@@ -141,10 +141,10 @@ describe("Hike test", () => {
   addNewHike(400, 'Hike#1', 5.0, 5, 5.0, null, 1, 2, '2-3', 'First easy example hike', rocciamelone);
   addNewHike(400, 'Hike#1', 5.0, 5, 5.0, 'Tourist', null, 2, '2-3', 'First easy example hike', rocciamelone);
   addNewHike(400, 'Hike#1', 5.0, 5, 5.0, 'Tourist', 1, null, '2-3', 'First easy example hike', rocciamelone);
-  addNewHike(400, 'Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, null, 'First easy example hike', rocciamelone);
+  addNewHike(200, 'Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, null, 'First easy example hike', rocciamelone);
   addNewHike(400, 'Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', null, rocciamelone);
-  addNewHike(200, 'Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', null);
-  /*addTwoTimeNewHike(422, 'Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);*/
+  addNewHike(400, 'Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', null);
+  addTwoTimeNewHike(500, 'Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
   
 });
 
@@ -167,10 +167,16 @@ function addNewHike(expectedHTTPStatus, title, length, expected_time, ascent, di
   });
 }
 
-function addTwoTimeNewHike(expectedHTTPStatus, name, lastname, role, password, email, phoneNumber) {
+function addTwoTimeNewHike(expectedHTTPStatus,title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track) {
   it('add two times a new hike', async function () {
-    const hike = new HikeWithFormatNo_idPoint(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track);
-    reqBody = JSON.stringify({ hike });
+    await testDao.run('DELETE FROM HikePoint');
+    await testDao.run('DELETE FROM Hikes');
+    const newHike = new HikeWithFormatNo_idPoint(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track);
+    setStartPoint(newHike, "La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy",
+      "Hut#1", "45.177786,7.083372", "Hut");
+    setEndPoint(newHike, "Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy",
+      "Hut#2", "45.203531,7.07734", "Hut");
+    reqBody = JSON.stringify({ newHike });
     await agent.post('/api/newHike')
       .set('Content-Type', 'application/json')
       .send(reqBody);
