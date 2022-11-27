@@ -83,6 +83,20 @@ describe("Hike test", () => {
     this.gpx_track = gpx_track;
   }
 
+  //for inconsistency in db -> addHike and updateHike have the fields "start_point" and "end_point" while readHikes has "start_point_idPoint" and "end_point_idPoint"
+  function HikeWithFormatNo_idPoint(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track) {
+    this.title = title;
+    this.length = length;
+    this.expected_time = expected_time;
+    this.ascent = ascent;
+    this.difficulty = difficulty;
+    this.start_point = start_point;
+    this.end_point = end_point;
+    this.reference_points = reference_points;
+    this.description = description;
+    this.gpx_track = gpx_track;
+  }
+
   function setStartPoint(hike, address, location, coordinates, type) {
     hike.start_point_address = address;
     hike.start_point_nameLocation = location;
@@ -136,7 +150,7 @@ describe("Hike test", () => {
   test('test addHike', async () => {  
     await testDao.run('DELETE FROM HikePoint');             
     await testDao.run('DELETE FROM Hikes');
-    let hike = new Hike('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
+    let hike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
     const check = await dao.addHike(hike);
     expect(check).toBe(true);
     const data = await dao.readHikes();
@@ -163,7 +177,7 @@ describe("Hike test", () => {
   });
 
   test('test updateHike', async () => {               
-    let newHike = new Hike('Hike#5', 7.0, 5, 6.0, 'Tourist', 1, 2, '2-3-4', 'First easy example hike', rocciamelone);
+    let newHike = new HikeWithFormatNo_idPoint('Hike#5', 7.0, 5, 6.0, 'Tourist', 1, 2, '2-3-4', 'First easy example hike', rocciamelone);
     const check = await dao.updateHike('Hike#1', newHike);
     expect(check).toBe(true);
     const data = await dao.readHikes();
