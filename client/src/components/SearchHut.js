@@ -26,16 +26,33 @@ function filterCheck(arg, filter) {
   if (arg === null) {
     return true;
   }
+  else if(filter == ''){
+    return true;
+  }
   else if (arg.includes(filter)) {
     return true;
   }
   else return false;
 }
 
+function filterLatLng(arg, filter){
+  console.log(Math.floor(arg),Math.floor(filter))
+  if (arg === null) {
+    return true;
+  }
+  else if(filter == ''){
+    return true;
+  }
+  else if( Math.floor(arg) == Math.floor(filter) ){
+    return true
+  }
+  else return false;
+}
+
 function HutCard(props) {
   return (
-    <Card>
-      <Card.Header>{props.nameLocation}</Card.Header>
+    <Card style={{width: '20rem'}}>
+      <Card.Header>{props.name}</Card.Header>
       <Card.Body>
         <Card.Text>Address: {props.address}</Card.Text>
         <Row>
@@ -75,7 +92,7 @@ function SearchHut() {
 
   useEffect(() => {
     setFilteredHuts(huts.filter((h) => {
-      return filterCheck(h.name, nameFilter) && filterCheck(h.address, geoFilter) && filterCheck(h.latitude, latFilter) && filterCheck(h.longitude, longFilter)
+      return filterCheck(h.name, nameFilter) && filterCheck(h.address, geoFilter) && filterLatLng(h.latitude, latFilter) && filterLatLng(h.longitude, longFilter)
     }))
   }, [filters]);
 
@@ -114,7 +131,7 @@ function SearchHut() {
                   type="number" step="0.0000001"
                   min="-90.0000000" max="90.0000000"
                   placeholder='Enter the latitude'
-                  value={latFilter} onChange={(e) => { setLatFilter(e.target.value.toString()) }}
+                  value={latFilter} onChange={(e) => { setLatFilter(e.target.value) }}
                 />
               </Form.Group>
             </Col>
@@ -125,7 +142,7 @@ function SearchHut() {
                   type="number" step="0.0000001"
                   min="-180.0000000" max="180.0000000"
                   placeholder='Enter the longitude'
-                  value={longFilter} onChange={(e) => { setLongFilter(e.target.value.toString()) }}
+                  value={longFilter} onChange={(e) => { setLongFilter(e.target.value) }}
                 />
               </Form.Group>
             </Col>
