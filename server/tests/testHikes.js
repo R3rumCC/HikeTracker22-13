@@ -3,7 +3,6 @@ const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 chai.should();
 
-const dao = require('../DAO');
 const testDao = require('../test-dao');
 const rocciamelone = require('../unit_tests/maps/rocciamelone').rocciamelone;
 const carborant = require('../unit_tests/maps/Corborant-dal-buco-della-Marmotta').carborant;
@@ -73,7 +72,7 @@ describe("Hike test", () => {
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
   });
 
-  afterAll(async () => {
+  afterEach(async () => {                                 //better afterAll but I recived a "afterAll nt defined"
     await testDao.run('DELETE FROM HikePoint');
     await testDao.run('DELETE FROM Points');
     await testDao.run('DELETE FROM Hikes');
