@@ -162,6 +162,26 @@ describe("Hike test", () => {
     expect(data).toEqual([hike]);
   });
 
+  test('test addHike, double insert', async () => {     
+    await testDao.run('DELETE FROM HikePoint');             
+    await testDao.run('DELETE FROM Hikes');
+    const hike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
+    const check = await dao.addHike(hike);
+    expect(check).toBe(true);
+    const data = await dao.readHikes();
+    const hike_noRef = new HikeNoRefPoints('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, 'First easy example hike', rocciamelone);
+    setStartPoint(hike_noRef, "La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy",
+      "Hut#1", "45.177786,7.083372", "Hut");
+    setEndPoint(hike_noRef, "Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy",
+      "Hut#2", "45.203531,7.07734", "Hut");
+    expect(data).toEqual([hike_noRef]);
+    try {
+      await dao.addHike(hike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: UNIQUE constraint failed: Hikes.title");
+    }  
+  });
+
   test('test readListOfReferencesPoints', async () => {
     const hike = new Hike('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
     const ref = await dao.readListOfReferencePoints(hike.title);
@@ -182,6 +202,156 @@ describe("Hike test", () => {
     expect(check).toBe(true);
     const data = await dao.readHikes();
     newHike = new HikeNoRefPoints('Hike#5', 7.0, 5, 6.0, 'Tourist', 1, 2, 'First easy example hike', rocciamelone);
+    setStartPoint(newHike, "La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy",
+      "Hut#1", "45.177786,7.083372", "Hut");
+    setEndPoint(newHike, "Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy",
+      "Hut#2", "45.203531,7.07734", "Hut");
+    const hike2 = new HikeNoRefPoints('Hike#2', 10.0, 10, 10.0, 'Professional hiker', 3, 4, 'Second example hike, very difficult', carborant);
+    setStartPoint(hike2, "327, Lago di San Bernolfo - Collalunga, Vinadio, Cuneo, Piedmont, Italy",
+        "Happy Parking Lot", "44.259583,7.039722", "Parking Lot");
+    setEndPoint(hike2, "Vinadio, Cuneo, Piedmont, Italy",
+        "Sad Parking Lot", "44.249216,7.017648", "Parking Lot");
+    expect(data).toEqual([newHike,hike2]);
+  });
+
+  test('test updateHikeTitle', async () => {     
+    let newHike = new HikeWithFormatNo_idPoint('Hike#5', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
+    const check = await dao.updateHike('Hike#1', newHike);
+    expect(check).toBe(true);
+    const data = await dao.readHikes();
+    newHike = new HikeNoRefPoints('Hike#5', 5.0, 5, 5.0, 'Tourist', 1, 2, 'First easy example hike', rocciamelone);
+    setStartPoint(newHike, "La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy",
+      "Hut#1", "45.177786,7.083372", "Hut");
+    setEndPoint(newHike, "Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy",
+      "Hut#2", "45.203531,7.07734", "Hut");
+    const hike2 = new HikeNoRefPoints('Hike#2', 10.0, 10, 10.0, 'Professional hiker', 3, 4, 'Second example hike, very difficult', carborant);
+    setStartPoint(hike2, "327, Lago di San Bernolfo - Collalunga, Vinadio, Cuneo, Piedmont, Italy",
+        "Happy Parking Lot", "44.259583,7.039722", "Parking Lot");
+    setEndPoint(hike2, "Vinadio, Cuneo, Piedmont, Italy",
+        "Sad Parking Lot", "44.249216,7.017648", "Parking Lot");
+    expect(data).toEqual([newHike,hike2]);
+  });
+
+  test('test updateHikeLength', async () => {     
+    let newHike = new HikeWithFormatNo_idPoint('Hike#1', 9.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
+    const check = await dao.updateHike('Hike#1', newHike);
+    expect(check).toBe(true);
+    const data = await dao.readHikes();
+    newHike = new HikeNoRefPoints('Hike#1', 9.0, 5, 5.0, 'Tourist', 1, 2, 'First easy example hike', rocciamelone);
+    setStartPoint(newHike, "La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy",
+      "Hut#1", "45.177786,7.083372", "Hut");
+    setEndPoint(newHike, "Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy",
+      "Hut#2", "45.203531,7.07734", "Hut");
+    const hike2 = new HikeNoRefPoints('Hike#2', 10.0, 10, 10.0, 'Professional hiker', 3, 4, 'Second example hike, very difficult', carborant);
+    setStartPoint(hike2, "327, Lago di San Bernolfo - Collalunga, Vinadio, Cuneo, Piedmont, Italy",
+        "Happy Parking Lot", "44.259583,7.039722", "Parking Lot");
+    setEndPoint(hike2, "Vinadio, Cuneo, Piedmont, Italy",
+        "Sad Parking Lot", "44.249216,7.017648", "Parking Lot");
+    expect(data).toEqual([newHike,hike2]);
+  });
+
+  test('test updateHikeET', async () => {     
+    let newHike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 15, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
+    const check = await dao.updateHike('Hike#1', newHike);
+    expect(check).toBe(true);
+    const data = await dao.readHikes();
+    newHike = new HikeNoRefPoints('Hike#1', 5.0, 15, 5.0, 'Tourist', 1, 2, 'First easy example hike', rocciamelone);
+    setStartPoint(newHike, "La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy",
+      "Hut#1", "45.177786,7.083372", "Hut");
+    setEndPoint(newHike, "Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy",
+      "Hut#2", "45.203531,7.07734", "Hut");
+    const hike2 = new HikeNoRefPoints('Hike#2', 10.0, 10, 10.0, 'Professional hiker', 3, 4, 'Second example hike, very difficult', carborant);
+    setStartPoint(hike2, "327, Lago di San Bernolfo - Collalunga, Vinadio, Cuneo, Piedmont, Italy",
+        "Happy Parking Lot", "44.259583,7.039722", "Parking Lot");
+    setEndPoint(hike2, "Vinadio, Cuneo, Piedmont, Italy",
+        "Sad Parking Lot", "44.249216,7.017648", "Parking Lot");
+    expect(data).toEqual([newHike,hike2]);
+  });
+
+  test('test updateHikeAscent', async () => {     
+    let newHike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 7.8, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
+    const check = await dao.updateHike('Hike#1', newHike);
+    expect(check).toBe(true);
+    const data = await dao.readHikes();
+    newHike = new HikeNoRefPoints('Hike#1', 5.0, 5, 7.8, 'Tourist', 1, 2, 'First easy example hike', rocciamelone);
+    setStartPoint(newHike, "La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy",
+      "Hut#1", "45.177786,7.083372", "Hut");
+    setEndPoint(newHike, "Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy",
+      "Hut#2", "45.203531,7.07734", "Hut");
+    const hike2 = new HikeNoRefPoints('Hike#2', 10.0, 10, 10.0, 'Professional hiker', 3, 4, 'Second example hike, very difficult', carborant);
+    setStartPoint(hike2, "327, Lago di San Bernolfo - Collalunga, Vinadio, Cuneo, Piedmont, Italy",
+        "Happy Parking Lot", "44.259583,7.039722", "Parking Lot");
+    setEndPoint(hike2, "Vinadio, Cuneo, Piedmont, Italy",
+        "Sad Parking Lot", "44.249216,7.017648", "Parking Lot");
+    expect(data).toEqual([newHike,hike2]);
+  });
+
+  test('test updateHikeDifficulty', async () => {     
+    let newHike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 'Hiker', 1, 2, '2-3', 'First easy example hike', rocciamelone);
+    const check = await dao.updateHike('Hike#1', newHike);
+    expect(check).toBe(true);
+    const data = await dao.readHikes();
+    newHike = new HikeNoRefPoints('Hike#1', 5.0, 5, 5.0, 'Hiker', 1, 2, 'First easy example hike', rocciamelone);
+    setStartPoint(newHike, "La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy",
+      "Hut#1", "45.177786,7.083372", "Hut");
+    setEndPoint(newHike, "Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy",
+      "Hut#2", "45.203531,7.07734", "Hut");
+    const hike2 = new HikeNoRefPoints('Hike#2', 10.0, 10, 10.0, 'Professional hiker', 3, 4, 'Second example hike, very difficult', carborant);
+    setStartPoint(hike2, "327, Lago di San Bernolfo - Collalunga, Vinadio, Cuneo, Piedmont, Italy",
+        "Happy Parking Lot", "44.259583,7.039722", "Parking Lot");
+    setEndPoint(hike2, "Vinadio, Cuneo, Piedmont, Italy",
+        "Sad Parking Lot", "44.249216,7.017648", "Parking Lot");
+    expect(data).toEqual([newHike,hike2]);
+  });
+
+  test('test updateHikeStartPoint', async () => {     
+    let newHike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 'Tourist', 3, 2, '2-3', 'First easy example hike', rocciamelone);
+    const check = await dao.updateHike('Hike#1', newHike);
+    expect(check).toBe(true);
+    const data = await dao.readHikes();
+    newHike = new HikeNoRefPoints('Hike#1', 5.0, 5, 5.0, 'Tourist', 3, 2, 'First easy example hike', rocciamelone);
+    setStartPoint(newHike, "327, Lago di San Bernolfo - Collalunga, Vinadio, Cuneo, Piedmont, Italy",
+      "Happy Parking Lot", "44.259583,7.039722", "Parking Lot");
+    setEndPoint(newHike, "Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy",
+      "Hut#2", "45.203531,7.07734", "Hut");
+    const hike2 = new HikeNoRefPoints('Hike#2', 10.0, 10, 10.0, 'Professional hiker', 3, 4, 'Second example hike, very difficult', carborant);
+    setStartPoint(hike2, "327, Lago di San Bernolfo - Collalunga, Vinadio, Cuneo, Piedmont, Italy",
+        "Happy Parking Lot", "44.259583,7.039722", "Parking Lot");
+    setEndPoint(hike2, "Vinadio, Cuneo, Piedmont, Italy",
+        "Sad Parking Lot", "44.249216,7.017648", "Parking Lot");
+    expect(data).toEqual([newHike,hike2]);
+  });
+
+  test('test updateHikeEndPoint', async () => {         
+    let newHike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 4, '2-3', 'First easy example hike', rocciamelone);
+    const check = await dao.updateHike('Hike#1', newHike);
+    expect(check).toBe(true);
+    const data = await dao.readHikes();
+    newHike = new HikeNoRefPoints('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 4, 'First easy example hike', rocciamelone);
+    setStartPoint(newHike, "La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy",
+      "Hut#1", "45.177786,7.083372", "Hut");
+    setEndPoint(newHike, "Vinadio, Cuneo, Piedmont, Italy",
+      "Sad Parking Lot", "44.249216,7.017648", "Parking Lot");
+    const hike2 = new HikeNoRefPoints('Hike#2', 10.0, 10, 10.0, 'Professional hiker', 3, 4, 'Second example hike, very difficult', carborant);
+    setStartPoint(hike2, "327, Lago di San Bernolfo - Collalunga, Vinadio, Cuneo, Piedmont, Italy",
+        "Happy Parking Lot", "44.259583,7.039722", "Parking Lot");
+    setEndPoint(hike2, "Vinadio, Cuneo, Piedmont, Italy",
+        "Sad Parking Lot", "44.249216,7.017648", "Parking Lot");
+    expect(data).toEqual([newHike,hike2]);
+  });
+
+  test('test updateHikeRefPoints', async () => {     
+    let newHike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3-4', 'First easy example hike', rocciamelone);
+    const check = await dao.updateHike('Hike#1', newHike);
+    expect(check).toBe(true);
+  });
+
+  test('test updateHikeDescription', async () => {               
+    let newHike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'Second easy example hike', rocciamelone);
+    const check = await dao.updateHike('Hike#1', newHike);
+    expect(check).toBe(true);
+    const data = await dao.readHikes();
+    newHike = new HikeNoRefPoints('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, 'Second easy example hike', rocciamelone);
     setStartPoint(newHike, "La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy",
       "Hut#1", "45.177786,7.083372", "Hut");
     setEndPoint(newHike, "Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy",
