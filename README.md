@@ -40,6 +40,11 @@ The list of correlations between hikes and points
 - idPoint: The id of a point
 - titileHike: The title of a hike
 
+### Verification_Code
+The list of verification code for each email.
+- email: User's email 
+- code: Verification code for the email.
+
 ## Dao Documentation
 
 ### Users functions
