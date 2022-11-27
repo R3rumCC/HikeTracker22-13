@@ -182,6 +182,116 @@ describe("Hike test", () => {
     }  
   });
 
+  test('test addUser wrong number of fields', async () => {   //also valid for wrong gpx_track
+    await testDao.run('DELETE FROM HikePoint');             
+    await testDao.run('DELETE FROM Hikes');
+    const hike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 1, 2, '2-3', 'First easy example hike', rocciamelone);
+    try {
+      await dao.addHike(hike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Hikes.gpx_track");    //the last field is always gpx_track
+    }
+  });
+
+  test('test addUser wrong title', async () => {   
+    await testDao.run('DELETE FROM HikePoint');             
+    await testDao.run('DELETE FROM Hikes');
+    const hike = new HikeWithFormatNo_idPoint(null, 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
+    try {
+      await dao.addHike(hike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Hikes.title");
+    }
+  });
+
+  test('test addUser wrong length', async () => {   
+    await testDao.run('DELETE FROM HikePoint');             
+    await testDao.run('DELETE FROM Hikes');
+    const hike = new HikeWithFormatNo_idPoint('Hike#1', null, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
+    try {
+      await dao.addHike(hike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Hikes.length");
+    }
+  });
+
+  test('test addUser wrong expected_time', async () => {   
+    await testDao.run('DELETE FROM HikePoint');             
+    await testDao.run('DELETE FROM Hikes');
+    const hike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, null, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
+    try {
+      await dao.addHike(hike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Hikes.expected_time");
+    }
+  });
+
+  test('test addUser wrong ascent', async () => {   
+    await testDao.run('DELETE FROM HikePoint');             
+    await testDao.run('DELETE FROM Hikes');
+    const hike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, null, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
+    try {
+      await dao.addHike(hike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Hikes.ascent");
+    }
+  });
+
+  test('test addUser wrong difficulty', async () => {   
+    await testDao.run('DELETE FROM HikePoint');             
+    await testDao.run('DELETE FROM Hikes');
+    const hike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, null, 1, 2, '2-3', 'First easy example hike', rocciamelone);
+    try {
+      await dao.addHike(hike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Hikes.difficulty");
+    }
+  });
+
+  test('test addUser wrong start_point', async () => {   
+    await testDao.run('DELETE FROM HikePoint');             
+    await testDao.run('DELETE FROM Hikes');
+    const hike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 'Tourist', null, 2, '2-3', 'First easy example hike', rocciamelone);
+    try {
+      await dao.addHike(hike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Hikes.start_point");
+    }
+  });
+
+  test('test addUser wrong end_point', async () => {   
+    await testDao.run('DELETE FROM HikePoint');             
+    await testDao.run('DELETE FROM Hikes');
+    const hike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, null, '2-3', 'First easy example hike', rocciamelone);
+    try {
+      await dao.addHike(hike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Hikes.end_point");
+    }
+  });
+
+  test('test addUser wrong description', async () => {   
+    await testDao.run('DELETE FROM HikePoint');             
+    await testDao.run('DELETE FROM Hikes');
+    const hike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', null, rocciamelone);
+    try {
+      await dao.addHike(hike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Hikes.description");
+    }
+  });
+
+  test('test addUser wrong reference points', async () => {   
+    await testDao.run('DELETE FROM HikePoint');             
+    await testDao.run('DELETE FROM Hikes');
+    const hike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, null, 'First easy example hike', rocciamelone);
+    try {
+      await dao.addHike(hike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Hikes.reference_points");
+    }
+  });
+
   test('test readListOfReferencesPoints', async () => {
     const hike = new Hike('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
     const ref = await dao.readListOfReferencePoints(hike.title);
@@ -362,6 +472,96 @@ describe("Hike test", () => {
     setEndPoint(hike2, "Vinadio, Cuneo, Piedmont, Italy",
         "Sad Parking Lot", "44.249216,7.017648", "Parking Lot");
     expect(data).toEqual([newHike,hike2]);
+  });
+
+  test('test updateHike wrong number of fields', async () => {
+    const newHike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 'Tourist', 2, '2-3', 'First easy example hike', rocciamelone);
+    try {
+      await await dao.updateHike(1, newHike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Hikes.gpx_track");  
+    }
+  });
+
+  test('test updateHike wrong title', async () => {
+    const newHike = new HikeWithFormatNo_idPoint(null, 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
+    try {
+      await await dao.updateHike(1, newHike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Hikes.title");  
+    }
+  });
+
+  test('test updateHike wrong length', async () => {
+    const newHike = new HikeWithFormatNo_idPoint('Hike#1', null, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
+    try {
+      await await dao.updateHike(1, newHike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Hikes.length");  
+    }
+  });
+
+  test('test updateHike wrong expected_time', async () => {
+    const newHike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, null, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
+    try {
+      await await dao.updateHike(1, newHike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Hikes.expected_time");  
+    }
+  });
+
+  test('test updateHike wrong ascent', async () => {
+    const newHike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, null, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
+    try {
+      await await dao.updateHike(1, newHike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Hikes.ascent");  
+    }
+  });
+
+  test('test updateHike wrong difficulty', async () => {
+    const newHike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, null, 1, 2, '2-3', 'First easy example hike', rocciamelone);
+    try {
+      await await dao.updateHike(1, newHike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Hikes.difficulty");  
+    }
+  });
+
+  test('test updateHike wrong start_point', async () => {
+    const newHike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 'Tourist', null, 2, '2-3', 'First easy example hike', rocciamelone);
+    try {
+      await await dao.updateHike(1, newHike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Hikes.start_point");  
+    }
+  });
+
+  test('test updateHike wrong end_point', async () => {
+    const newHike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, null, '2-3', 'First easy example hike', rocciamelone);
+    try {
+      await await dao.updateHike(1, newHike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Hikes.end_point");  
+    }
+  });
+
+  test('test updateHike wrong description', async () => {
+    const newHike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', null, rocciamelone);
+    try {
+      await await dao.updateHike(1, newHike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Hikes.description");  
+    }
+  });
+
+  test('test updateHike wrong reference points', async () => {
+    const newHike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, null, 'First easy example hike', rocciamelone);
+    try {
+      await await dao.updateHike(1, newHike);
+    } catch (error) {
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Hikes.reference_points");  
+    }
   });
 
 });
