@@ -132,11 +132,9 @@ function readListOfReferencePoints(title) { // RP for a given hike
 
 function addHike(hike) {
   return new Promise((resolve, reject) => {
-    console.log('Inside addHike, DAO, server side');
     const sql = 'INSERT INTO HIKES (title, length, expected_time, ascent, difficulty, start_point, end_point, description, reference_points, gpx_track) VALUES(?,?,?,?,?,?,?,?,?,?)';
     db.run(sql, hike.title, hike.length, hike.expected_time, hike.ascent, hike.difficulty, hike.start_point, hike.end_point, hike.description, hike.reference_points, hike.gpx_track, (err, rows) => {
       if (err) {
-        console.log(err)
         reject(err);
       } else {
         resolve(true);
@@ -305,8 +303,9 @@ function checkPresenceByAddress(addr) {
     db.get(sql, addr, (err, id) => {
       if (err) {
         reject(err);
-      } if (id == undefined)
-      resolve(null);
+      } if (id == undefined) {
+        resolve(null);
+      }
       else {
         resolve(id);
       }
@@ -319,8 +318,10 @@ function addPoint(point) {
     const sql = 'INSERT INTO POINTS (address, nameLocation, gps_coordinates, type) VALUES(?,?,?,?)';
     db.run(sql, point.address, point.nameLocation, point.gps_coordinates, point.type, (err, rows) => {
       if (err) {
+        console.log("err")
         reject(err);
       } else {
+        console.log(this.lastId)
         resolve(this.lastId);
       }
     });

@@ -252,7 +252,7 @@ describe("Points test", () => {
     expect(point_check.type).not.toBe("Hut");
     expect(point_check.type).toBe("Parking Lot");
   });
-      //////////////////////
+      
   test('test updatePoint wrong number of fields', async () => {
     const newP1 = new Point(1, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
                         'Hut#5', '45.177786,7.083372');
