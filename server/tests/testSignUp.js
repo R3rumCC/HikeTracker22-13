@@ -17,7 +17,7 @@ function User(name, lastname, email, password, role, phoneNumber) {
   this.phoneNumber = phoneNumber;
 }
 
-/*describe('test user signup', () => {
+describe('test user signup', () => {
   beforeEach(async () => {
     await testDao.run('DELETE FROM Users');
   });
@@ -43,7 +43,7 @@ function User(name, lastname, email, password, role, phoneNumber) {
   registerNewUser(400, 'Fabio', 'Magico', 'LocalGuide', 'password', 'fabiomagicogmail.com', '+39 3401216784');
   registerTwoTimeNewUser(422, 'Paolo', 'Goglia', 'Hiker', 'password', 'paologoglia@gmail.com', '+39 3207549337');
 
-});*/
+});
 
 function registerNewUser(expectedHTTPStatus, name, lastname, role, password, email, phoneNumber) {
   it('registering a new user', async function () {

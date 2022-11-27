@@ -318,8 +318,10 @@ function addPoint(point) {
     const sql = 'INSERT INTO POINTS (address, nameLocation, gps_coordinates, type) VALUES(?,?,?,?)';
     db.run(sql, point.address, point.nameLocation, point.gps_coordinates, point.type, (err, rows) => {
       if (err) {
+        console.log("err")
         reject(err);
       } else {
+        console.log(this.lastId)
         resolve(this.lastId);
       }
     });

@@ -103,7 +103,26 @@ router.post('/newHike', [
 		});
 });
 
-router.post('/Point', c.addPoint);
+//router.post('/Point', c.addPoint);
+
+router.post('/Point', [
+	body('point.address').notEmpty().withMessage('Address cannot be empty!'),
+	body('point.gps_coordinates').notEmpty().withMessage('Gps coordinates cannot be empty!'),
+], (req, res) => {
+	const errors = validationResult(req)
+	if (!errors.isEmpty()) {
+		return res.status(400).json({
+			errors: errors.array()
+		})
+	}
+	c.addPoint(req, res)
+		.then((req, res) => {
+			if (req.error)
+				res.status(422).json(error).end();
+			else
+				res.status(200).json()
+		});
+});
 
 
 router.get('/getHuts', async (req, res) => {

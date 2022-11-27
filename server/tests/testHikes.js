@@ -10,32 +10,6 @@ const carborant = require('../unit_tests/maps/Corborant-dal-buco-della-Marmotta'
 const app = require('../index');
 let agent = chai.request.agent(app); //.agent() is needed for keep cookies from one reuqent
 
-
-function Hike(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track) {
-  this.title = title;
-  this.length = length;
-  this.expected_time = expected_time;
-  this.ascent = ascent;
-  this.difficulty = difficulty;
-  this.start_point_idPoint = start_point;
-  this.end_point_idPoint = end_point;
-  this.reference_points = reference_points;
-  this.description = description;
-  this.gpx_track = gpx_track;
-}
-
-function HikeNoRefPoints(title, length, expected_time, ascent, difficulty, start_point, end_point, description, gpx_track) {
-  this.title = title;
-  this.length = length;
-  this.expected_time = expected_time;
-  this.ascent = ascent;
-  this.difficulty = difficulty;
-  this.start_point_idPoint = start_point;
-  this.end_point_idPoint = end_point;
-  this.description = description;
-  this.gpx_track = gpx_track;
-}
-
 //for inconsistency in db -> addHike and updateHike have the fields "start_point" and "end_point" while readHikes has "start_point_idPoint" and "end_point_idPoint"
 function HikeWithFormatNo_idPoint(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track) {
   this.title = title;
@@ -49,21 +23,6 @@ function HikeWithFormatNo_idPoint(title, length, expected_time, ascent, difficul
   this.description = description;
   this.gpx_track = gpx_track;
 }
-
-/*
-//for inconsistency in db -> API addHike has the fields "startPoint" and "endPoint" 
-function HikeWithFormatCamel(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track) {
-  this.title = title;
-  this.length = length;
-  this.expected_time = expected_time;
-  this.ascent = ascent;
-  this.difficulty = difficulty;
-  this.startPoint = start_point;
-  this.endPoint = end_point;
-  this.reference_points = reference_points;
-  this.description = description;
-  this.gpx_track = gpx_track;
-}*/
 
 function setStartPoint(hike, address, location, coordinates, type) {
   hike.startPoint = address;
@@ -198,7 +157,7 @@ function obtainHikes(expectedHTTPStatus) {
   });
 };
 
-async function logout() {
+/*async function logout() {
   await agent.delete('/api/sessions/current')
 }
 
@@ -208,4 +167,4 @@ async function login() {
       .then(function (res) {
           res.should.have.status(200);
       });
-}
+}*/

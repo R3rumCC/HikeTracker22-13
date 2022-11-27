@@ -7,7 +7,7 @@ const app = require('../index');
 const { getUser } = require('../user-dao');
 let agent = chai.request.agent(app); //.agent() is needed for keep cookies from one reuqent
 
-/*describe('test login', () => {
+describe('test login', () => {
 
   loginUser(200, 'mario.rossi@gmail.com', 'hello12');     //correct email and password
   loginUser(401, 'mario.rossi@gmail.com', 'password');    //wrong password
@@ -16,7 +16,7 @@ let agent = chai.request.agent(app); //.agent() is needed for keep cookies from 
   obtainUserNotAuthenticated(401, 'mario.rossi@gmail.com', 'password');
   obtainUserAuthenticated(200, 'mario.rossi@gmail.com', 'hello12');
 
-});*/
+});
 
 function loginUser(expectedHTTPStatus, username, password) {
   it('login', async function () {

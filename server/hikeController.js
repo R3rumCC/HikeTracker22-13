@@ -141,17 +141,13 @@ exports.getUser = async function (req, res) {
 
 //It checks for the presence of the point in the db, then:
 //-if not present, it is added;
-//-if present, a positive feedback is sent anyway
+//-if present, a positive feedback is sent anyway       //Why a positive feedback? Return code to be changed, 200 would indicate that the addPoint succeeds while here it rightly fails because you already have a point with that address
 exports.addPoint = async function (req, res) {
-
-  console.log('inside add point')
 
   try {
     const id = await dao.checkPresenceByAddress(req.body.point.address)
-    console.log(id)
     if (id !== null) {
-      return res.status(200).json(id);
-
+      return res.status(200).json(id);      
     } else {
       dao.addPoint(req.body.point).then(
         result => {
