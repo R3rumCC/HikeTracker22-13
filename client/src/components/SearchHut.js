@@ -99,7 +99,9 @@ function SearchHut() {
   useEffect(() => {
     getHuts();
   }, []);
-
+  useEffect(() => {
+    setFilters(false)
+  }, [geoFilter,nameFilter,longFilter,latFilter]);
   return (
     <Col className="vh-100 justify-content-md-center">
       <Row>
