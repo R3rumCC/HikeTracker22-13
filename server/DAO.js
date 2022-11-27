@@ -303,8 +303,9 @@ function checkPresenceByAddress(addr) {
     db.get(sql, addr, (err, id) => {
       if (err) {
         reject(err);
-      } if (id == undefined)
-      resolve(null);
+      } if (id == undefined) {
+        resolve(null);
+      }
       else {
         resolve(id);
       }
@@ -317,8 +318,10 @@ function addPoint(point) {
     const sql = 'INSERT INTO POINTS (address, nameLocation, gps_coordinates, type) VALUES(?,?,?,?)';
     db.run(sql, point.address, point.nameLocation, point.gps_coordinates, point.type, (err, rows) => {
       if (err) {
+        console.log("err")
         reject(err);
       } else {
+        console.log(this.lastId)
         resolve(this.lastId);
       }
     });

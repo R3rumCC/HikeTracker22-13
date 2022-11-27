@@ -1,73 +1,83 @@
 import { Button, Form, Col, Row, Card } from 'react-bootstrap';
 import { useEffect, useState, useContext, React } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { UNSAFE_NavigationContext, useNavigate } from 'react-router-dom';
 import API from '../API';
 import MessageContext from '../messageCtx';
+
+function hutMapping(dbHuts) {
+  let newHuts = [];
+  newHuts = dbHuts.map((h) => {
+    return {name: h.nameLocation, address: h.address, latitude: h.gps_coordinates.split(',')[0], longitude: h.gps_coordinates.split(',')[1]}
+  });
+  console.log(newHuts);
+  return newHuts;
+}
 
 function HutContainer(props) {
   const huts = props.huts;
   return (
     <div className="d-flex justify-content-start flex-wrap">
-      {huts.length != 0 ? huts.map((hut) => { return (<HutCard nameLocation={hut.nameLocation} address={hut.address} gps_coordinates={hut.gps_coordinates} geoFilter={props.geoFilter} nameFilter={props.nameFilter} latFilter={props.latFilter} longFilter={props.longFilter}/>) }) : <h4>No result found</h4>}
+      {huts.length != 0 ? huts.map((hut) => { return (<HutCard key={hut.address} name={hut.name} address={hut.address} latitude={hut.latitude} longitude={hut.longitude} />) }) : <h4>No result found</h4>}
     </div>
   );
 }
 
-function Coordinates(props) {  
-  return (
-    <Row>
-      <Col>
-        <Card.Text>Latitude: {props.coordinates[0]}</Card.Text>
-      </Col>
-      <Col>
-        <Card.Text>Longitude: {props.coordinates[1]}</Card.Text>
-      </Col>
-    </Row>
-  );
-}
-
-function filterCheck(arg, filter){
-  if(arg.indexOf(filter) > -1){
+function filterCheck(arg, filter) {
+  if (arg === null) {
+    return true;
+  }
+  else if (arg.includes(filter)) {
     return true;
   }
   else return false;
 }
 
 function HutCard(props) {
-  const coordinates = props.gps_coordinates.split(',');
-  if(filterCheck(props.nameLocation, props.nameFilter) && filterCheck(props.address, props.geoFilter) && filterCheck(props.latitude, props.latFilter) && filterCheck(props.longitude, props.longFilter)){
-    return (
-      <Card>
-        <Card.Header>{props.nameLocation}</Card.Header>
-        <Card.Body>
-          <Card.Text>Address: {props.address}</Card.Text>
-          <Coordinates coordinates={coordinates}/>
-        </Card.Body>
-      </Card>
-    );
-  }    
+  return (
+    <Card>
+      <Card.Header>{props.nameLocation}</Card.Header>
+      <Card.Body>
+        <Card.Text>Address: {props.address}</Card.Text>
+        <Row>
+          <Col>
+            <Card.Text>Latitude: {props.latitude}</Card.Text>
+          </Col>
+          <Col>
+            <Card.Text>Longitude: {props.longitude}</Card.Text>
+          </Col>
+        </Row>
+      </Card.Body>
+    </Card>
+  );
 }
-
 
 //Called in PageLayout.SearchLayout and SearchLayout is called in App
 function SearchHut() {
 
   const { handleErrors } = useContext(MessageContext);
   const [huts, setHuts] = useState([]);
-  const [hutName, setHutName] = useState("");
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
-  const [geoArea, setGeoArea] = useState("");
+  const [filteredHuts, setFilteredHuts] = useState([]);
+  const [nameFilter, setNameFilter] = useState("");
+  const [latFilter, setLatFilter] = useState("");
+  const [longFilter, setLongFilter] = useState("");
+  const [geoFilter, setGeoFilter] = useState("");
+  const [filters, setFilters] = useState(false);
 
   async function getHuts() {
     try {
       const list = await API.getHuts();
-      console.log(list);
-      setHuts(list);
+      const newList = hutMapping(list);
+      setHuts(newList);
     } catch (e) {
       handleErrors(e);
     }
   }
+
+  useEffect(() => {
+    setFilteredHuts(huts.filter((h) => {
+      return filterCheck(h.name, nameFilter) && filterCheck(h.address, geoFilter) && filterCheck(h.latitude, latFilter) && filterCheck(h.longitude, longFilter)
+    }))
+  }, [filters]);
 
   useEffect(() => {
     getHuts();
@@ -85,7 +95,7 @@ function SearchHut() {
             <Form.Control
               type="text"
               placeholder="Enter the geographical area of the hut"
-              value={geoArea} onChange={(e) => {setGeoArea(e.target.value)}}
+              value={geoFilter} onChange={(e) => { setGeoFilter(e.target.value) }}
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="name">
@@ -93,7 +103,7 @@ function SearchHut() {
             <Form.Control
               type="text"
               placeholder="Enter the name of the hut"
-              value={hutName} onChange={(e) => {setHutName(e.target.value)}}
+              value={nameFilter} onChange={(e) => { setNameFilter(e.target.value) }}
             />
           </Form.Group>
           <Row>
@@ -104,7 +114,7 @@ function SearchHut() {
                   type="number" step="0.0000001"
                   min="-90.0000000" max="90.0000000"
                   placeholder='Enter the latitude'
-                  value={latitude} onChange={(e) => {setLatitude(e.target.value.toString())}}
+                  value={latFilter} onChange={(e) => { setLatFilter(e.target.value.toString()) }}
                 />
               </Form.Group>
             </Col>
@@ -115,24 +125,44 @@ function SearchHut() {
                   type="number" step="0.0000001"
                   min="-180.0000000" max="180.0000000"
                   placeholder='Enter the longitude'
-                  value={longitude} onChange={(e) => {setLongitude(e.target.value.toString())}}
+                  value={longFilter} onChange={(e) => { setLongFilter(e.target.value.toString()) }}
                 />
               </Form.Group>
             </Col>
           </Row>
-          <Button className="mt-3 me-3">Search</Button>
-          <Button className="mt-3" type='reset'>Reset Filters</Button>
+          <Button className="mt-3 me-3" onClick={() => { setFilters(true) }}>Search</Button>
+          <Button className="mt-3" type='reset' onClick={() => { setFilters(false) }}>Reset Filters</Button>
         </Form>
       </Row>
-      <br/>
+      <br />
       <Row>
-        <HutContainer huts={huts} geoFilter={geoArea} nameFilter={hutName} latFilter={latitude} longFilter={longitude}/>
+        {filters ? <HutContainer huts={filteredHuts} /> : <HutContainer huts={huts} />}
       </Row>
     </Col>
   )
 }
 
 function SearchHutButton(props) {
+
+  const useBackListener = (callback) => { // Handler for the back button
+    const navigator = useContext(UNSAFE_NavigationContext).navigator;
+    useEffect(() => {
+        const listener = ({ location, action }) => {
+            console.log("listener", { location, action });
+            if (action === "POP") {
+                callback({ location, action });
+            }
+        };
+        const unlisten = navigator.listen(listener);
+        return unlisten;
+    }, [callback, navigator]);
+};
+
+useBackListener(({ location }) =>{
+    console.log("Navigated Back", { location });
+    if(props.searchPage){ props.setSearchPage(false); }
+});
+
   const navigate = useNavigate();
   if (props.searchPage) {
     return (
