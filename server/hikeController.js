@@ -42,8 +42,6 @@ exports.addHike = async function (req, res) {
     ascent: req.body.newHike.ascent, difficulty: req.body.newHike.difficulty, start_point: startId.idPoint, end_point: endId.idPoint,
     reference_points: req.body.newHike.reference_points, description: req.body.newHike.description, gpx_track: req.body.newHike.gpx_track
   }
-  //console.log('before db call: ')
-  //console.log(hike)
 
   dao.addHike(hike).then(
     result => {
@@ -141,7 +139,7 @@ exports.getUser = async function (req, res) {
 
 //It checks for the presence of the point in the db, then:
 //-if not present, it is added;
-//-if present, a positive feedback is sent anyway       //Why a positive feedback? Return code to be changed, 200 would indicate that the addPoint succeeds while here it rightly fails because you already have a point with that address
+//-if present, a positive feedback is sent anyway   
 exports.addPoint = async function (req, res) {
 
   try {
