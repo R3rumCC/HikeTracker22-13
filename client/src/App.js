@@ -6,7 +6,7 @@ import React, { useState, useEffect, useContext, } from 'react';
 import { Container, Toast } from 'react-bootstrap/';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-import { DefaultLayout, LoginLayout, HikerLayout,RegisterLayout, FileUploadLayout, SearchLayout } from './components/PageLayout';
+import { DefaultLayout, LoginLayout, HikerLayout, RegisterLayout, FileUploadLayout, SearchLayout } from './components/PageLayout';
 
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -18,7 +18,7 @@ import MessageContext from './messageCtx';
 import API from './API';
 import { HikeForm } from './components/newHikeForm';
 import FileUploader from './components/UploadGpxForm';
-import { GenericMap, HikePage } from './components/hikePage';   
+import { GenericMap, HikePage } from './components/hikePage';
 
 
 function App() {
@@ -38,7 +38,7 @@ function App() {
           <Routes>
             <Route path="/*" element={<Main />/*<LocalGuide_Home/>*/} />
           </Routes>
-          {}
+          { }
           <Toast show={message !== ''} onClose={() => setMessage('')} delay={4000} autohide>
             <Toast.Body>{message}</Toast.Body>
           </Toast>
@@ -58,13 +58,13 @@ function Main() {
   //Remember to clear the current markers if the user leaves the page
   const [currentMarkers, setCurrentMarkers] = useState([]) //List of selected positions [[Lat, Lng], [Lat2, Lng2], ...] on a map.
   function handleError(err) {
-    
+
     toast.error(
       err.error,
       { position: "top-center" },
       { toastId: 12 }
     );
-    
+
   }
 
   //const { handleErrors } = useContext(MessageContext);
@@ -118,66 +118,67 @@ function Main() {
   //********HANDLE_REGISTER*******//
   const CreateNewAccount = async (user) => {
     //console.log(user);
-   
+
     await API.addUser(user);
-    
+
   };
 
   const checkUser = async (email) => {
     const u = await API.checkUser(email);
-      // console.log(u);
-      if(u.error) return true;
-      else return false;
+    // console.log(u);
+    if (u.error) return true;
+    else return false;
   };
   /*****************************************************/
 
   //********HANDLE_ADD_POINT*******//
   const CreateNewPoint = async (point) => {
-    console.log(point);
-   
-    await API.addPoint(point)
-    
+    try {
+      await API.addPoint(point)
+    } catch (err) {
+      handleError(err);
+    }
   };
 
   //********HANDLE_NEW_HIKE*******//
   const CreateNewHike = async (hike) => {
     console.log(hike)
-     await API.addNewHike(hike)    
+    await API.addNewHike(hike)
   };
 
-    //********HANDLE_VERIFICATION_CODE*******//
-    const sendEmail = async(email)=>{
+  //********HANDLE_VERIFICATION_CODE*******//
+  const sendEmail = async (email) => {
 
-      await API.sendEmail(email);  
-    }
+    await API.sendEmail(email);
+  }
 
-    const checkCode = async(email)=>{
+  const checkCode = async (email) => {
 
-      const c= await API.checkCode(email);  
-      return c.code;
+    const c = await API.checkCode(email);
+    return c.code;
 
-    }
+  }
 
 
 
-  
+
   /*****************************************************/
 
   return (
     <>
-      <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} setCurrentMarkers={setCurrentMarkers}/>
+      <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} setCurrentMarkers={setCurrentMarkers} />
       <Routes>
         <Route path="/" element={
-            loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHike={CreateNewHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers}/> :
-              <DefaultLayout role = {loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike} />  /*<FileUploadLayout></FileUploadLayout>*/
+          loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHike={CreateNewHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} /> :
+            <DefaultLayout role={loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike} />  /*<FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>
         {/* <Route path="/NewHike" element={<HikeForm/>} /> THIS WAS A TRY TO DO THE .GPX FILE UPLOAD.*/}
-        <Route path="/map" element={loggedIn && currentUser.role == 'Hiker' && currentHike.length != 0 ? <HikerLayout currentHike={currentHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers}/> : <Navigate replace to='/' />} />
+        <Route path="/map" element={loggedIn && currentUser.role == 'Hiker' && currentHike.length != 0 ? <HikerLayout currentHike={currentHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} /> : <Navigate replace to='/' />} />
         {/* <Route path="/genMap" element={<GenericMap currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers}/>} /> */}
-        <Route path="/register" element={!loggedIn ? <RegisterLayout CreateNewAccount={CreateNewAccount} checkUser={checkUser} checkCode={checkCode} sendEmail={sendEmail}/> : <Navigate replace to='/' />} />
+        <Route path="/register" element={!loggedIn ? <RegisterLayout CreateNewAccount={CreateNewAccount} checkUser={checkUser} checkCode={checkCode} sendEmail={sendEmail} /> : <Navigate replace to='/' />} />
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
-        <Route path="/searchHut" element={loggedIn && currentUser.role == 'Hiker' ? <SearchLayout/> : <Navigate replace to='/' />} />
+        <Route path="/searchHut" element={loggedIn && currentUser.role == 'Hiker' ? <SearchLayout /> : <Navigate replace to='/' />} />
       </Routes>
     </>
   );
