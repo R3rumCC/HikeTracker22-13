@@ -398,15 +398,11 @@ function HutForm(props){
                 <Form.Label>Position</Form.Label>
                 <Form.Control disabled={clicked} value={position} onChange={(ev) => changePosition(ev.target.value)}/>
             </Row>
-            <Form.Label>//TODO Map</Form.Label>
             <Row>
 			    <Form.Label>Address</Form.Label>
 			    <Form.Control value={address} disabled={clicked} onChange={(ev) => changeAddress(ev.target.value)}/>
             </Row>
 		</Form.Group>
-        <Form.Group>
-            <Form.Label>//TODO Add Reference Points</Form.Label>
-        </Form.Group>
         <Button type='submit' style={{background:'red'}}>SAVE</Button>
         <Button style={{background:'red'}} onClick={reset}>Cancel</Button>
     </Form>
@@ -487,7 +483,6 @@ function ParkingLotForm(props){
             </Form.Group>
             <Form.Group>
                 <Form.Label>position</Form.Label>
-                <Form.Label>//TODO Map</Form.Label>
                 <Form.Control
                     value={position}
                     disabled={clicked}
