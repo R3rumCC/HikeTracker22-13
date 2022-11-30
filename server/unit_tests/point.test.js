@@ -97,8 +97,7 @@ describe("Points test", () => {
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
     const p1 = new Point(1, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
                         'Hut#1', '45.177786,7.083372', 'Hut');
-    const check = await dao.addPoint(p1);
-    expect(check).toBe(true);
+    await dao.addPoint(p1);
     const data = await dao.readPoints();
     const points_check = [p1];
     expect(data).toEqual(points_check);
@@ -111,8 +110,7 @@ describe("Points test", () => {
                         'Hut#1', '45.177786,7.083372', 'Hut');
     const p2 = new Point(2, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
                         'Hut#1', '45.1234786,7.36457', 'Hut');
-    const check = await dao.addPoint(p1);
-    expect(check).toBe(true);
+    await dao.addPoint(p1);
     const data = await dao.readPoints();
     const points_check = [p1];
     expect(data).toEqual(points_check);
@@ -130,8 +128,7 @@ describe("Points test", () => {
                         'Hut#1', '45.177786,7.083372', 'Hut');
     const p2 = new Point(2, 'La Casa, GTA / 529 / SI, Ricortola, Mompantero, Milano, Piedmont, 10059, Italy',
                         'Hut#1', '45.177786,7.083372', 'Hut');
-    const check = await dao.addPoint(p1);
-    expect(check).toBe(true);
+    await dao.addPoint(p1);
     const data = await dao.readPoints();
     const points_check = [p1];
     expect(data).toEqual(points_check);
@@ -148,8 +145,7 @@ describe("Points test", () => {
     const p1 = new Point(1, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
                         'Hut#1', 'Hut');
     try {
-      const check = await dao.addPoint(p1);
-      expect(check).toBe(true);
+      await dao.addPoint(p1);
       const data = await dao.readPointById(1);
       expect(data.address).toBe('La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy');
 		  expect(data.nameLocation).toBe('Hut#1');

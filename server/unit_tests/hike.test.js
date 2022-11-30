@@ -12,9 +12,9 @@ describe("Hike test", () => {
     await testDao.run('DELETE FROM Hikes');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
     await testDao.run(`INSERT OR IGNORE INTO Hikes(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track)
-            VALUES ('Hike#1', '5.0', '5', '5.0', 'Tourist', '1', '2',
+            VALUES ('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2,
             '2-3', 'First easy example hike', ?), 
-            ('Hike#2', '10.0', '10', '10.0', 'Professional hiker', '3', '4',
+            ('Hike#2', 10.0, 10, 10.0, 'Professional hiker', 3, 4,
             '4', 'Second example hike, very difficult', ?)`,[rocciamelone, carborant]);
     await testDao.run(`INSERT OR IGNORE INTO Points(address, nameLocation, gps_coordinates, type)
                             VALUES ('La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
@@ -26,10 +26,10 @@ describe("Hike test", () => {
                             ('Vinadio, Cuneo, Piedmont, Italy',
                             'Sad Parking Lot', '44.249216,7.017648', 'Parking Lot')`);
     await testDao.run(`INSERT OR IGNORE INTO HikePoint(idPoint, titleHike)
-                                            VALUES ('4', 'Hike#1'), 
-                                            ('3', 'Hike#2'), 
-                                            ('1', 'Hike#2'), 
-                                            ('1', 'Hike#1')`);
+                                            VALUES (4, 'Hike#1'), 
+                                            (3, 'Hike#2'), 
+                                            (1, 'Hike#2'), 
+                                            (1, 'Hike#1')`);
   });
 
   afterAll(async () => {
@@ -38,9 +38,9 @@ describe("Hike test", () => {
     await testDao.run('DELETE FROM Hikes');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
     await testDao.run(`INSERT OR IGNORE INTO Hikes(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track)
-            VALUES ('Hike#1', '5.0', '5', '5.0', 'Tourist', '1', '2',
+            VALUES ('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2,
             '2-3', 'First easy example hike', ?), 
-            ('Hike#2', '10.0', '10', '10.0', 'Professional hiker', '3', '4',
+            ('Hike#2', 10.0, 10, 10.0, 'Professional hiker', 3, 4,
             '4', 'Second example hike, very difficult', ?)`,[rocciamelone, carborant]);
     await testDao.run(`INSERT OR IGNORE INTO Points(address, nameLocation, gps_coordinates, type)
                             VALUES ('La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
@@ -52,10 +52,10 @@ describe("Hike test", () => {
                             ('Vinadio, Cuneo, Piedmont, Italy',
                             'Sad Parking Lot', '44.249216,7.017648', 'Parking Lot')`);
     await testDao.run(`INSERT OR IGNORE INTO HikePoint(idPoint, titleHike)
-                                            VALUES ('4', 'Hike#1'), 
-                                            ('3', 'Hike#2'), 
-                                            ('1', 'Hike#2'), 
-                                            ('1', 'Hike#1')`);
+                                            VALUES (4, 'Hike#1'), 
+                                            (3, 'Hike#2'), 
+                                            (1, 'Hike#2'), 
+                                            (1, 'Hike#1')`);
   });
 
   function Hike(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track) {

@@ -54,8 +54,6 @@ describe("Points test", () => {
   addNewPoint(200, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy', 'Hut#1', '45.177786,7.083372', 'Hut');
   addNewPoint(400, null, 'Hut#1', '45.177786,7.083372', 'Hut');
   addNewPoint(400, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy', 'Hut#1', null, 'Hut');
-
-  //Return code to be changed, 200 would indicate that the addPoint succeeds while here it rightly fails because you already have a point with that address
   addTwoTimeNewPoint(200, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy', 'Hut#1', '45.177786,7.083372', 'Hut');
 
 });
