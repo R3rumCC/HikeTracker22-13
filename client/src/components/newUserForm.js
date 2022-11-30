@@ -107,6 +107,9 @@ function UserForm(props) {
 
 	const again = () =>{
 		props.sendEmail(email);
+		props.checkCode(email).then((result)=>{
+			setDBCode(result);
+		})
 		setState({
 		  btnDisable: true,
 		  btnContent: "Can't send again in 10 s",
@@ -123,7 +126,9 @@ function UserForm(props) {
 						setGroup1('none');
 						setGroup2('block');
 					 props.sendEmail(email);
-				
+					 props.checkCode(email).then((result)=>{
+						setDBCode(result);
+					})
 					alert('The verification code has been sent to your email');
 					}else{
 						setErrorMsg("This email has been registered.");
