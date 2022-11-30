@@ -76,10 +76,10 @@ router.post('/newHike', [
   body('newHike.difficulty').notEmpty().withMessage('Difficulty cannot be empty!')
     .isIn(["Tourist", "Hiker", "Professional hiker"]).withMessage('Incorrect format of diffiuclty!'),
   body('newHike.start_point').notEmpty().withMessage('Start point cannot be empty!')
-    .isNumeric().withMessage('Start point must be numeric!'),
-  body('newHike.end_point').notEmpty().withMessage('End point cannot be empty!')
-    .isNumeric().withMessage('End point must be numeric!'),
-  body('newHike.description').notEmpty().withMessage('Description cannot be empty!'),
+    //.isNumeric().withMessage('Start point must be numeric!'),
+  ,body('newHike.end_point').notEmpty().withMessage('End point cannot be empty!')
+    //.isNumeric().withMessage('End point must be numeric!'),
+  ,body('newHike.description').notEmpty().withMessage('Description cannot be empty!'),
   body('newHike.gpx_track').notEmpty().withMessage('Gpx track cannot be empty!'),
 ], (req, res) => {
   const errors = validationResult(req)

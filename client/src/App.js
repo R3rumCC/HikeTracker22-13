@@ -142,8 +142,12 @@ function Main() {
 
   //********HANDLE_NEW_HIKE*******//
   const CreateNewHike = async (hike) => {
-    console.log(hike)
-    await API.addNewHike(hike)
+    try {
+      await API.addNewHike(hike)
+    } catch (err) {
+      handleError(err);
+    }
+
   };
 
   //********HANDLE_VERIFICATION_CODE*******//

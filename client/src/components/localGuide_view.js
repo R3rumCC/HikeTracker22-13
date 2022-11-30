@@ -128,7 +128,7 @@ function HikeForm(props){
 
                         //check on user's role (?)
                         newHike={title: title, length: length, expected_time: expTime, ascent: ascent, difficulty: difficulty, 
-                                startPoint: startPoint, endPoint: endPoint, reference_points: reference_points,
+                                start_point: startPoint, end_point: endPoint, reference_points: reference_points,
                                 description: description, gpx_track: title
                                 //gpx_track: map --> request entity too large
                                 }
