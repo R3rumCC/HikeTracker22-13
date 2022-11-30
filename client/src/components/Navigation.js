@@ -7,7 +7,6 @@ import { SearchHutButton } from './SearchHut';
 import { LogoutButton, LoginButton } from './Auth';
 
 
-
 const Navigation = (props) => {
 
   const handleSubmit = (event) => {
@@ -20,7 +19,7 @@ const Navigation = (props) => {
 
   return (
     // 
-    <Navbar bg="primary" expand="lg" variant="dark" className="justify-content-between">
+    <Navbar  bg="primary" expand="lg" variant="dark" className="justify-content-between">
       <Link to="/" onClick={()=>{props.setCurrentMarkers([]); setSearchPage(false);}}>
         <Navbar.Brand>
         <i className="bi bi-compass icon-size m-2"/> Hike Tracker
@@ -48,5 +47,6 @@ const Navigation = (props) => {
     </Navbar>
   );
 }
+
 
 export { Navigation }; 
