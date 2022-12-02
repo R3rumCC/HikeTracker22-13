@@ -2,6 +2,13 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Row, Col, Button, Container, Form, FormGroup, FormLabel, ButtonGroup , InputGroup, Alert} from 'react-bootstrap';
 import { MapContainer, Polyline, TileLayer, Map, Marker, Popup, useMapEvents, GeoJSON, useMap } from 'react-leaflet'
 import { GenericMap } from './hikePage';
+import Input from '@mui/material/Input';
+import InputLabel from '@mui/material/InputLabel';
+import { OutlinedInput } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment';
+import FormControl from '@mui/material/FormControl';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
 import API from '../API';
 import axiosInstance from "../utils/axios"
 
@@ -50,12 +57,12 @@ function InsertionOptions(props){
             <FormLabel>Do you want to insert something new?</FormLabel>
             <Row>
                 <ButtonGroup > 
-                    <Button  style={{background: 'green', size: 'md'}} value='hike' onClick={()=>props.setHikeForm()}>
+                    <Button style={{background: 'green', size: 'md'}} value='hike' onClick={()=>props.setHikeForm()}>
                          New Hike Description
-                    </Button>
-                    <Button  style={{background: 'red', size: 'md'}} value= 'hut' onClick={()=>props.setHutForm()}>
+                    </Button>{' '}
+                    <Button style={{background: 'red', size: 'md'}} value= 'hut' onClick={()=>props.setHutForm()}>
                         New Hut Description
-                    </Button>
+                    </Button>{' '}
                     <Button  style={{background: 'blue', size: 'md'}} value='parking_lot' onClick={()=>props.setParkingForm()}>
                         New Parking Lot
                     </Button>
@@ -246,7 +253,8 @@ function HikeForm(props){
         
     <Form id='hikeForm' onSubmit={submitHikeForm} style={{fontSize:15, fontWeight:'bold'}}>
         <Form.Group>
-			<Form.Label>Title</Form.Label>
+            <i class="bi bi-textarea-t"></i>
+			<Form.Label style={{fontSize: 25}}>Title</Form.Label>
 			<Form.Control value={title} onChange={(ev) => changeTitle(ev.target.value)}/>
 		</Form.Group>
         <Form.Group>
@@ -326,7 +334,13 @@ function HutForm(props){
 
     const [title, setTitle]= useState('')
     const [position,setPosition]= useState('')
+    const [altitude, setAltitude]= useState('')
     const [address, setAddress]= useState('')
+    const [numBeds, setNumBeds]= useState(0)
+    const [phone, setPhone]= useState('')
+    const [email, setEmail]= useState('')
+    const [webSite, setWebSite]= useState('')
+    const [description, setDescription]= useState('')
     const [clicked,setClicked] = useState(false)
     //const [refPoints, setRefPoints]= useState([])
     //const [map, setMap]= useState()
@@ -335,7 +349,18 @@ function HutForm(props){
 
     const changeTitle= (val)=>{setTitle(val);}
     const changePosition= (val)=>{setPosition(val)}
+    const changeAltitude= (val)=>{setAltitude(val)}
     const changeAddress= (val)=>{setAddress(val)}
+    const changeDescription= (val)=>{setDescription(val)}
+
+    const resetState = ()=> {
+        setTitle('')
+        setPosition(''); setAltitude('');
+        setAddress(''); setNumBeds(0);
+        setPhone(''); setEmail('');
+        setWebSite(''); setDescription('');
+        setClicked(false)
+    }
 
     useEffect(()=>{
         props.setCurrentMarkers([]);
@@ -348,9 +373,7 @@ function HutForm(props){
             setClicked(true)
         }
         else{
-            setPosition('')
-            setAddress('')
-            setClicked(false)
+            resetState();
         }
       }, [props.currentMarkers]);
 
@@ -381,31 +404,118 @@ function HutForm(props){
         }
     }
 
-    const reset= ()=>{
-        setTitle(''); setPosition(''); setAddress('')
-    }
 
     return(<>
         {errorMsg ? (<Alert variant="danger" onClose={()=>{setErrorMsg("");}} dismissible> {errorMsg}</Alert>) : (false)}
 
     <Form id='hutForm' onSubmit={submitHutForm} style={{fontSize:15, fontWeight:'bold'}}>
+
+        <Row>
         <Form.Group>
-			<Form.Label>Title</Form.Label>
-			<Form.Control value={title} onChange={(ev) => changeTitle(ev.target.value)}/>
+			<Form.Label style={{fontSize: 25}}>Title</Form.Label>
+            <InputGroup  className="mb-2">
+                    <InputGroup.Text><i class="bi bi-textarea-t"></i></InputGroup.Text>
+                    <Form.Control value={title} onChange={(ev) => changeTitle(ev.target.value)}/>
+                </InputGroup> 
 		</Form.Group>
-        <Form.Group>
-            <Row>
-                <Form.Label>Position</Form.Label>
-                <Form.Control disabled={clicked} value={position} onChange={(ev) => changePosition(ev.target.value)}/>
-            </Row>
-            <Row>
+        </Row>
+
+        <Row>
+			<Form.Label style={{fontSize: 25}}>Geographical Information</Form.Label>
+        </Row>
+
+        <Row>
+            <Form.Group>
 			    <Form.Label>Address</Form.Label>
-			    <Form.Control value={address} disabled={clicked} onChange={(ev) => changeAddress(ev.target.value)}/>
-            </Row>
-		</Form.Group>
-        <Button type='submit' style={{background:'red'}}>SAVE</Button>
-        <Button style={{background:'red'}} onClick={reset}>Cancel</Button>
+                <InputGroup  className="mb-2">
+                    <InputGroup.Text><i class="bi bi-map"></i></InputGroup.Text>
+			        <Form.Control value={address} disabled={clicked} onChange={(ev) => changeAddress(ev.target.value)}/>
+                </InputGroup> 
+		    </Form.Group>
+        </Row>
+
+        <Row>
+        <Form.Group as={Col}>
+            <Form.Label>Position</Form.Label>
+            <InputGroup  className="mb-2">
+                <InputGroup.Text><i class="bi bi-geo-alt"></i></InputGroup.Text>
+                <Form.Control disabled={clicked} value={position} onChange={(ev) => changePosition(ev.target.value)}/>
+            </InputGroup> 
+        </Form.Group>
+        <Form.Group as={Col}>
+            <Form.Label>Altitude</Form.Label>
+            <InputGroup  className="mb-2">
+                <InputGroup.Text><i class="bi bi-geo-fill"></i></InputGroup.Text>
+                <Form.Control value={altitude} onChange={(ev) => changeAltitude(ev.target.value)}/>
+            </InputGroup>           
+        </Form.Group>
+
+            {/** 
+                <div>
+                    <TextField label="With normal TextField" id="outlined-start-adornment" sx={{ m: 1, width: '25ch' }} 
+                                InputProps={{startAdornment: <InputAdornment position="start">kg</InputAdornment>,}}/>
+                </div>
+        <Form.Group>
+            <FormControl fullWidth sx={{ m: 1 }}>
+                <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
+                <OutlinedInput id="outlined-adornment-amount" startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                                label="Amount" />
+             </FormControl>
+        </Form.Group>
+        */}
+        </Row>
+
+        <Row>
+			<Form.Label style={{fontSize: 25}}>Contacts</Form.Label>
+        </Row>
+
+        <Row>
+        <Form.Group as={Col}>
+            <Form.Label>Phone</Form.Label>
+            <InputGroup  className="mb-2">
+                <InputGroup.Text><i class="bi bi-telephone"></i></InputGroup.Text>
+                <Form.Control value={phone}  onChange={(ev) => setPhone(ev.target.value)}/>
+            </InputGroup>
+        </Form.Group>
+        <Form.Group as={Col}>
+            <Form.Label>Email</Form.Label>
+            <InputGroup  className="mb-2">
+                <InputGroup.Text><i class="bi bi-envelope"></i></InputGroup.Text>
+                <Form.Control value={email} onChange={(ev) => setEmail(ev.target.value)}/>
+            </InputGroup>
+        </Form.Group>
+        <Form.Group as={Col}>
+            <Form.Label>Web Site</Form.Label>
+            <InputGroup  className="mb-2">
+                <InputGroup.Text><i class="bi bi-mouse"></i></InputGroup.Text>
+                <Form.Control value={webSite} onChange={(ev) => setWebSite(ev.target.value)}/>
+            </InputGroup>
+        </Form.Group>
+        </Row>
+
+        <Row>
+			<Form.Label style={{fontSize: 25}}>Description</Form.Label>
+        </Row>
+
+        <Row>
+        <Form.Group>
+            <Form.Label>Number of beds</Form.Label>
+            <Form.Control value={numBeds} onChange={(ev) => setNumBeds(ev.target.value)}/>
+        </Form.Group>
+        </Row>
+        <Row>
+        <Form.Group>
+            <Form.Label>Description</Form.Label>
+            <Form.Control style={{ height: '100px' }} value={description} onChange={(ev) => changeDescription(ev.target.value)}/>
+        </Form.Group>
+        </Row>
+       
+        <div>
+            <Button type='submit' style={{background:'red'}}>SAVE</Button>{' '}
+            <Button style={{background:'red'}} onClick={resetState}>Cancel</Button>
+        </div>
     </Form>
+
     <GenericMap gpxFile = {''} currentHike ={[]} currentMarkers = {props.currentMarkers} setCurrentMarkers ={props.setCurrentMarkers} clicked ={clicked} />
     </>)
 }
