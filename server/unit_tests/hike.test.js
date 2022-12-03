@@ -182,7 +182,7 @@ describe("Hike test", () => {
     }  
   });
 
-  test('test addUser wrong number of fields', async () => {   //also valid for wrong gpx_track
+  test('test addHike wrong number of fields', async () => {   //also valid for wrong gpx_track
     await testDao.run('DELETE FROM HikePoint');             
     await testDao.run('DELETE FROM Hikes');
     const hike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 1, 2, '2-3', 'First easy example hike', rocciamelone);
@@ -193,7 +193,7 @@ describe("Hike test", () => {
     }
   });
 
-  test('test addUser wrong title', async () => {   
+  test('test addHike wrong title', async () => {   
     await testDao.run('DELETE FROM HikePoint');             
     await testDao.run('DELETE FROM Hikes');
     const hike = new HikeWithFormatNo_idPoint(null, 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
@@ -204,7 +204,7 @@ describe("Hike test", () => {
     }
   });
 
-  test('test addUser wrong length', async () => {   
+  test('test addHike wrong length', async () => {   
     await testDao.run('DELETE FROM HikePoint');             
     await testDao.run('DELETE FROM Hikes');
     const hike = new HikeWithFormatNo_idPoint('Hike#1', null, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
@@ -215,7 +215,7 @@ describe("Hike test", () => {
     }
   });
 
-  test('test addUser wrong expected_time', async () => {   
+  test('test addHike wrong expected_time', async () => {   
     await testDao.run('DELETE FROM HikePoint');             
     await testDao.run('DELETE FROM Hikes');
     const hike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, null, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
@@ -226,7 +226,7 @@ describe("Hike test", () => {
     }
   });
 
-  test('test addUser wrong ascent', async () => {   
+  test('test addHike wrong ascent', async () => {   
     await testDao.run('DELETE FROM HikePoint');             
     await testDao.run('DELETE FROM Hikes');
     const hike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, null, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
@@ -237,7 +237,7 @@ describe("Hike test", () => {
     }
   });
 
-  test('test addUser wrong difficulty', async () => {   
+  test('test addHike wrong difficulty', async () => {   
     await testDao.run('DELETE FROM HikePoint');             
     await testDao.run('DELETE FROM Hikes');
     const hike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, null, 1, 2, '2-3', 'First easy example hike', rocciamelone);
@@ -248,7 +248,7 @@ describe("Hike test", () => {
     }
   });
 
-  test('test addUser wrong start_point', async () => {   
+  test('test addHike wrong start_point', async () => {   
     await testDao.run('DELETE FROM HikePoint');             
     await testDao.run('DELETE FROM Hikes');
     const hike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 'Tourist', null, 2, '2-3', 'First easy example hike', rocciamelone);
@@ -259,7 +259,7 @@ describe("Hike test", () => {
     }
   });
 
-  test('test addUser wrong end_point', async () => {   
+  test('test addHike wrong end_point', async () => {   
     await testDao.run('DELETE FROM HikePoint');             
     await testDao.run('DELETE FROM Hikes');
     const hike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, null, '2-3', 'First easy example hike', rocciamelone);
@@ -270,7 +270,7 @@ describe("Hike test", () => {
     }
   });
 
-  test('test addUser wrong description', async () => {   
+  test('test addHike wrong description', async () => {   
     await testDao.run('DELETE FROM HikePoint');             
     await testDao.run('DELETE FROM Hikes');
     const hike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', null, rocciamelone);
@@ -281,7 +281,7 @@ describe("Hike test", () => {
     }
   });
 
-  test('test addUser wrong reference points', async () => {   
+  test('test addHike wrong reference points', async () => {   
     await testDao.run('DELETE FROM HikePoint');             
     await testDao.run('DELETE FROM Hikes');
     const hike = new HikeWithFormatNo_idPoint('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, null, 'First easy example hike', rocciamelone);

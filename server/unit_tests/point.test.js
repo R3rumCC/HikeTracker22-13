@@ -289,6 +289,21 @@ describe("Points test", () => {
     }
   });
 
+  test('test checkPresenceByAddress', async () => {
+    const data = await dao.checkPresenceByAddress('Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy');
+    const p2 = new Point(2, 'Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy',
+                        'Hut#2', '45.203531,7.07734', 'Hut');
+    expect(data.idPoint).toEqual(p2.idPoint);
+  });
+
+  test('test readPointById without match', async () => {
+    const data = await dao.readPointById(30);
+    const check = "NOT found";
+    expect(data.error).toEqual(check);
+  });
+
+  /**********************************/
+
   test('test readHuts', async () => {
     const data = await dao.readHuts();
     const p1 = new Point(1, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
