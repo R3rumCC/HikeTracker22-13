@@ -448,7 +448,6 @@ function deleteCode(email) {
       if (err) {
         reject(err);
       } else {
-
         resolve(true);
       }
     });
