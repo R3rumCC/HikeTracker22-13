@@ -2,14 +2,6 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Row, Col, Button, Container, Form, FormGroup, FormLabel, ButtonGroup, InputGroup, Alert } from 'react-bootstrap';
 import { MapContainer, Polyline, TileLayer, Map, Marker, Popup, useMapEvents, GeoJSON, useMap } from 'react-leaflet'
 import { GenericMap } from './hikePage';
-import Input from '@mui/material/Input';
-import InputLabel from '@mui/material/InputLabel';
-import { OutlinedInput } from '@mui/material';
-import InputAdornment from '@mui/material/InputAdornment';
-import FormControl from '@mui/material/FormControl';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import API from '../API';
 import axiosInstance from "../utils/axios"
 
 function LocalGuide_Home(props) {
@@ -147,16 +139,12 @@ function HikeForm(props) {
                                 //gpx_track: map --> request entity too large
                             }
                             props.CreateNewHike(newHike)
+                            console.log('newHike=' + newHike)
                             submitFile()
                             console.log('after CreateNewHike');
                             alert('New Hike correctly added!')
                             document.getElementById('hikeForm').hidden = true;
-                            setTitle('');
-                            setLength(''); setExpTime(''); setAscent('')
-                            setDifficulty(''); setDescription('')
-                            setStartPoint(''); setStartPointGps('');
-                            setEndPoint(''); setEndPointGps('');
-                            setErrorMsg(''); setMap(''); setGpxPos(null);
+                            reset()
                         }
                         else {
                             setErrorMsg("Enter a valid gpx file.");
@@ -259,60 +247,61 @@ function HikeForm(props) {
         {errorMsg ? (<Alert variant="danger" onClose={()=>{setErrorMsg("");}} dismissible> {errorMsg}</Alert>) : (false)}
         
     <Form id='hikeForm' onSubmit={submitHikeForm} style={{fontSize:15, fontWeight:'bold'}}>
-        <Form.Group>
-            <i class="bi bi-textarea-t"></i>
-			<Form.Label style={{fontSize: 25}}>Title</Form.Label>
-			<Form.Control value={title} onChange={(ev) => changeTitle(ev.target.value)}/>
-		</Form.Group>
-        <Form.Group>
-            <Row>
-                <Col>
-			        <Form.Label>Length</Form.Label>
-                    <InputGroup className="mb-3">
-                        <Form.Control value={length} onChange={(ev) => changeLength(ev.target.value)} placeholder="3.2"/>
-                        <InputGroup.Text id="basic-addon2">Km</InputGroup.Text>
-                    </InputGroup>
-                </Col>
-                <Col>
-                    <Form.Label>Expected Time</Form.Label>
-                    <InputGroup className="mb-3">
-			            <Form.Control value={expTime} onChange={(ev) => changeExpTime(ev.target.value)} placeholder="4"/>
-                        <InputGroup.Text id="basic-addon2">hours</InputGroup.Text>
-                    </InputGroup>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <Form.Label>Ascent</Form.Label>
-                    <InputGroup className="mb-3">
-			            <Form.Control value={ascent} onChange={(ev) => changeAscent(ev.target.value)} placeholder="670"/>
-                        <InputGroup.Text id="basic-addon2">m</InputGroup.Text>
-                    </InputGroup>
-                </Col>
-                <Col>
-                    <Form.Label>Difficulty</Form.Label>
-                    <Form.Select onChange={(ev) => changeDifficulty(ev.target.value)}>
-                        <option label=''></option>
-                        <option value='Tourist'  label="Tourist"/>
-                        <option value='Hiker' label="Hiker"/>
-                        <option value='Professional hiker' label="Professional Hiker"/>
-                    </Form.Select>
-                </Col>
-            </Row>
-		</Form.Group>
-        <Form.Group>
-            <Row>
-                <Col>
-                    <Form.Label>Start Point</Form.Label>
-                    <Form.Control value={startPoint} onChange={(ev) => changeStartP(ev.target.value)}/>
-                </Col>
-                <Col>
-                    <Form.Label>End Point</Form.Label>
-                    <Form.Control value={endPoint} onChange={(ev) => changeEndP(ev.target.value)}/>
-                </Col>
-            </Row>
-        </Form.Group>
 
+        <Form.Group>
+			<Form.Label style={{fontSize: 25}}>Title</Form.Label>
+            <InputGroup  className="mb-2">
+                <InputGroup.Text><i class="bi bi-textarea-t"></i></InputGroup.Text>
+                <Form.Control value={title} onChange={(ev) => changeTitle(ev.target.value)}/>
+            </InputGroup>
+		</Form.Group>
+
+        <Row>
+            <Form.Group as={Col}>
+                <Form.Label>Length</Form.Label>
+                <InputGroup className="mb-3">
+                    <Form.Control value={length} onChange={(ev) => changeLength(ev.target.value)} placeholder="3.2"/>
+                    <InputGroup.Text id="basic-addon2">Km</InputGroup.Text>
+                </InputGroup>
+            </Form.Group>
+            <Form.Group as={Col}>
+                <Form.Label>Expected Time</Form.Label>
+                <InputGroup className="mb-3">
+			        <Form.Control value={expTime} onChange={(ev) => changeExpTime(ev.target.value)} placeholder="4"/>
+                    <InputGroup.Text id="basic-addon2">hours</InputGroup.Text>
+                </InputGroup>
+            </Form.Group>
+        </Row>
+
+        <Row>
+            <Form.Group as={Col}>
+                <Form.Label>Ascent</Form.Label>
+                <InputGroup className="mb-3">
+			        <Form.Control value={ascent} onChange={(ev) => changeAscent(ev.target.value)} placeholder="670"/>
+                    <InputGroup.Text id="basic-addon2">m</InputGroup.Text>
+                </InputGroup>
+            </Form.Group>
+            <Form.Group as={Col}>
+                <Form.Label>Difficulty</Form.Label>
+                <Form.Select onChange={(ev) => changeDifficulty(ev.target.value)}>
+                    <option label=''></option>
+                    <option value='Tourist'  label="Tourist"/>
+                    <option value='Hiker' label="Hiker"/>
+                    <option value='Professional hiker' label="Professional Hiker"/>
+                </Form.Select>
+            </Form.Group>
+        </Row>
+
+        <Row>
+            <Form.Group as={Col}>
+                <Form.Label>Start Point</Form.Label>
+                <Form.Control value={startPoint} onChange={(ev) => changeStartP(ev.target.value)}/>
+            </Form.Group>
+            <Form.Group as={Col}>
+                <Form.Label>End Point</Form.Label>
+                <Form.Control value={endPoint} onChange={(ev) => changeEndP(ev.target.value)}/>
+            </Form.Group>
+        </Row>
 
             {/* This is the form used to import the gpx, on upload of the file it call the importGpx function passing the file object */}
             <Form.Group controlId="formFile" className="mt-5">
@@ -320,13 +309,16 @@ function HikeForm(props) {
                 <Form.Control type="file" onChange={(e) => importGpx(e.target.files[0])} />
             </Form.Group>
 
+        <Row>
             <Form.Group>
                 <Form.Label>Description</Form.Label>
                 <Form.Control value={description} onChange={(ev) => changeDescription(ev.target.value)} />
             </Form.Group>
-            <Button className='mt-y' type='submit' style={{ background: 'green' }}>Save</Button>
-            <Button style={{ background: 'green' }} onClick={reset} className='ms-2 my-2'>Cancel</Button>
-        </Form>
+        </Row>
+
+        <Button className='mt-y' type='submit' style={{ background: 'green' }}>Save</Button>
+        <Button style={{ background: 'green' }} onClick={reset} className='ms-2 my-2'>Cancel</Button>
+    </Form>
         {gpxPos != null ?
             <>
                 <GenericMap gpxFile={map} currentHike={[]} currentMarkers={[]} setCurrentMarkers={''} />
@@ -350,10 +342,8 @@ function HutForm(props) {
     const [webSite, setWebSite]= useState('')
     const [description, setDescription]= useState('')
     const [clicked,setClicked] = useState(false)
-    //const [refPoints, setRefPoints]= useState([])
-    //const [map, setMap]= useState()
 
-    const [errorMsg, setErrorMsg] = useState("");
+    //const [errorMsg, setErrorMsg] = useState("");
 
     const changeTitle= (val)=>{setTitle(val)}
     const changePosition= (val)=>{setPosition(val)}
@@ -388,32 +378,18 @@ function HutForm(props) {
     const submitHutForm = (event) => {
         event.preventDefault();
         let newHut;
-        if (title !== "") {
-            if (position !== '') {
-                if (address !== "") {
 
-                    newHut = { address: address, nameLocation: title, gps_coordinates: position, type: 'Hut' }
-                    console.log(newHut)
-                    //call to the API
-                    props.CreateNewPoint(newHut)
-                    alert('New Hut correctly added!')
-
-                    console.log(newHut)
-
-                } else {
-                    setErrorMsg("An address for the hut is required.");
-                }
-            } else {
-                setErrorMsg("A position for the hut is required.");
-            }
-        } else {
-            setErrorMsg("Enter a title before submit.");
-        }
+        newHut = { address: address, nameLocation: title, gps_coordinates: position, type: 'Hut',  capacity: numBeds, altitude: altitude,    
+                    hone: phone, email:email, web_site: webSite, description: description }
+        console.log(newHut)
+        //call to the API
+        props.CreateNewPoint(newHut)
+        alert('New Hut correctly added!')
     }
 
 
     return (<>
-        {errorMsg ? (<Alert variant="danger" onClose={() => { setErrorMsg(""); }} dismissible> {errorMsg}</Alert>) : (false)}
+        {/*errorMsg ? (<Alert variant="danger" onClose={() => { setErrorMsg(""); }} dismissible> {errorMsg}</Alert>) : (false)*/}
 
     <Form id='hutForm' onSubmit={submitHutForm} style={{fontSize:15, fontWeight:'bold'}}>
 
@@ -422,7 +398,7 @@ function HutForm(props) {
 			<Form.Label style={{fontSize: 25}}>Title</Form.Label>
             <InputGroup  className="mb-2">
                     <InputGroup.Text><i class="bi bi-textarea-t"></i></InputGroup.Text>
-                    <Form.Control value={title} onChange={(ev) => changeTitle(ev.target.value)}/>
+                    <Form.Control value={title} required={true} onChange={(ev) => changeTitle(ev.target.value)}/>
                 </InputGroup> 
 		</Form.Group>
         </Row>
@@ -436,7 +412,7 @@ function HutForm(props) {
 			    <Form.Label>Address</Form.Label>
                 <InputGroup  className="mb-2">
                     <InputGroup.Text><i class="bi bi-map"></i></InputGroup.Text>
-			        <Form.Control value={address} disabled={clicked} onChange={(ev) => changeAddress(ev.target.value)}/>
+			        <Form.Control value={address} required={true} disabled={clicked} onChange={(ev) => changeAddress(ev.target.value)}/>
                 </InputGroup> 
 		    </Form.Group>
         </Row>
@@ -446,30 +422,16 @@ function HutForm(props) {
             <Form.Label>Position</Form.Label>
             <InputGroup  className="mb-2">
                 <InputGroup.Text><i class="bi bi-geo-alt"></i></InputGroup.Text>
-                <Form.Control disabled={clicked} value={position} onChange={(ev) => changePosition(ev.target.value)}/>
+                <Form.Control disabled={clicked} value={position} required={true} onChange={(ev) => changePosition(ev.target.value)}/>
             </InputGroup> 
         </Form.Group>
         <Form.Group as={Col}>
             <Form.Label>Altitude</Form.Label>
             <InputGroup  className="mb-2">
                 <InputGroup.Text><i class="bi bi-geo-fill"></i></InputGroup.Text>
-                <Form.Control value={altitude} onChange={(ev) => changeAltitude(ev.target.value)}/>
+                <Form.Control value={altitude} required={true} onChange={(ev) => changeAltitude(ev.target.value)}/>
             </InputGroup>           
         </Form.Group>
-
-            {/** 
-                <div>
-                    <TextField label="With normal TextField" id="outlined-start-adornment" sx={{ m: 1, width: '25ch' }} 
-                                InputProps={{startAdornment: <InputAdornment position="start">kg</InputAdornment>,}}/>
-                </div>
-        <Form.Group>
-            <FormControl fullWidth sx={{ m: 1 }}>
-                <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
-                <OutlinedInput id="outlined-adornment-amount" startAdornment={<InputAdornment position="start">$</InputAdornment>}
-                                label="Amount" />
-             </FormControl>
-        </Form.Group>
-        */}
         </Row>
 
         <Row>
@@ -481,14 +443,14 @@ function HutForm(props) {
             <Form.Label>Phone</Form.Label>
             <InputGroup  className="mb-2">
                 <InputGroup.Text><i class="bi bi-telephone"></i></InputGroup.Text>
-                <Form.Control value={phone}  onChange={(ev) => setPhone(ev.target.value)}/>
+                <Form.Control value={phone} required={true} onChange={(ev) => setPhone(ev.target.value)}/>
             </InputGroup>
         </Form.Group>
         <Form.Group as={Col}>
             <Form.Label>Email</Form.Label>
             <InputGroup  className="mb-2">
                 <InputGroup.Text><i class="bi bi-envelope"></i></InputGroup.Text>
-                <Form.Control value={email} onChange={(ev) => setEmail(ev.target.value)}/>
+                <Form.Control value={email} required={true} onChange={(ev) => setEmail(ev.target.value)}/>
             </InputGroup>
         </Form.Group>
         <Form.Group as={Col}>
@@ -505,15 +467,15 @@ function HutForm(props) {
         </Row>
 
         <Row>
-        <Form.Group>
+        <Form.Group as={Col}>
             <Form.Label>Number of beds</Form.Label>
-            <Form.Control value={numBeds} type='number' min='0' onChange={(ev) => setNumBeds(ev.target.value)}/>
+            <Form.Control value={numBeds} required={true} type='number' min='0' onChange={(ev) => setNumBeds(ev.target.value)}/>
         </Form.Group>
         </Row>
         <Row>
         <Form.Group>
             <Form.Label>Description</Form.Label>
-            <Form.Control style={{ height: '100px' }} value={description} onChange={(ev) => changeDescription(ev.target.value)}/>
+            <Form.Control style={{ height: '100px' }} value={description} required={true} onChange={(ev) => changeDescription(ev.target.value)}/>
         </Form.Group>
         </Row>
        
