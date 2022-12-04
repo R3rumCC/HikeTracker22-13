@@ -315,7 +315,7 @@ function checkPresenceByAddress(addr) {
 
 function addPoint(point) {
   return new Promise((resolve, reject) => {
-    const sql = 'INSERT INTO POINTS (address, nameLocation, gps_coordinates, type, capacity, altitude) VALUES(?,?,?,?,?,?,?)';
+    const sql = 'INSERT INTO POINTS (address, nameLocation, gps_coordinates, type, capacity, altitude) VALUES(?,?,?,?,?,?)';
     db.run(sql, point.address, point.nameLocation, point.gps_coordinates, point.type, point.capacity, point.altitude,
       (err, rows) => {
       if (err) {
@@ -412,6 +412,22 @@ function readHuts() {
   });
 }
 
+/************* HUTS ************/
+function addHut(hut) {
+  return new Promise((resolve, reject) => {
+    const sql = 'INSERT INTO HUTS (nameHut, phone, email, web_site, description) VALUES(?,?,?,?,?)';
+    db.run(sql, hut.nameLocation, hut.phone, hut.email, hut.web_site, hut.description,
+      (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(this.lastId);
+      }
+    });
+  });
+}
+
+
 /*************Verification Code************/
 function addCode(email, code) {
   return new Promise((resolve, reject) => {
@@ -472,6 +488,6 @@ module.exports = {
   readHikes, addHike, deleteHike, updateHike, updateHikeTitle,
   updateHikeAscent, updateHikeLength, updateHikeDescription, updateHikeDifficulty,
   updateHikeET, updateHikeStartPoint, updateHikeEndPoint, updateHikeRefPoint, getUserByEmail,
-  readPoints, checkPresenceByAddress, addPoint, updatePoint, deletePoint, readHuts, addCode, deleteCode, getCode, updateCode,
+  readPoints, checkPresenceByAddress, addPoint, updatePoint, deletePoint, readHuts, addHut, addCode, deleteCode, getCode, updateCode,
   updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, readListOfReferencePoints, readPointById//readReferencePoints
 };

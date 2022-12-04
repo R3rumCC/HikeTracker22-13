@@ -162,3 +162,34 @@ exports.addPoint = async function (req, res) {
     throw e;
   }
 }
+
+//It checks for the presence of the point in the db, then:
+//-if not present, it is added;
+//-if present, a positive feedback is sent anyway   
+exports.addHut = async function (req, res) {
+
+  try {
+    const id = await dao.checkPresenceByAddress(req.body.hut.address)
+    if (id !== null) {
+      return res.status(200).json(id);      
+    }
+
+    const res1= dao.addHut(req.body.hut)
+    if(res1==false){
+      return res.status(500).send(error);
+    }
+
+    dao.addPoint(req.body.hut).then(
+        result => {
+          return res.status(200).json(result);
+        },
+        error => {
+          return res.status(500).send(error);
+        }
+      )
+
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+}
