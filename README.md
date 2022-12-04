@@ -148,6 +148,7 @@ Paulina Knight:
         "ascent": 400,
         "difficulty": "hiker",
 		    "description": "A journey through the unspoilt nature of Monte Rosa",
+        "gpx_track": "Form Pian Belota to la Vacca",
         "start_point_idPoint": 2,
         "start_point_address": "Corso Mediterraneo 40",
         "start_point_nameLocation": "Legnano",
@@ -167,6 +168,7 @@ Paulina Knight:
         "ascent": 600,
         "difficulty": "professional hiker",
 		    "description": "A hike in the Dolomites Nature Park",
+        "gpx_track": "Form Pian Belota to la Vacca",
         "start_point_idPoint": 10,
         "start_point_address": "Corso Mediterraneo 120",
         "start_point_nameLocation": "Brunascola",
@@ -182,6 +184,28 @@ Paulina Knight:
     ]
     ```
   - Error responses: `500 Internal Server Error` (database error)
+
+- POST `/api/newHike`
+  - Description: Add a new hike
+  - Request body: An object contains an hike
+    ``` json
+    {
+      "newHike": {
+        "title": "Hike7",
+        "length": 75,
+        "expected_time": 189,
+        "ascent": 600,
+        "difficulty": "professional hiker",
+        "start_point": 10,
+        "end_point": 3,
+        "description": "A hike in the Dolomites Nature Park",
+        "gpx_track": "Form Pian Belota to la Vacca"
+      }
+    }
+    ```
+  - Response: `200 OK` (success) 
+  - Response body: _None_
+  - Error responses: `500 Internal Server Error` (generic error), `400 Bad Request` (wrong fields)
 
 ## AUTHENTICATION API
 
@@ -234,7 +258,7 @@ Paulina Knight:
 
 ## FILE UPLOAD API
 
-- GET `/Maps/:name`
+- GET `/api/Maps/:name`
   - Description: Obtain the map as text
   - Request body: The name of the file contains the map
   - Response: `200 OK` (success) 
@@ -244,7 +268,115 @@ Paulina Knight:
         "filename": "Form Pian Belota to la Vacca",
       },
     ```
+  - Error responses: `500 Internal Server Error` (database error), `400 Bad Request` (file missing)
+
+## USER API
+
+- POST `/api/User`
+  - Description: Add a new user
+  - Request body: An object contains user
+    ``` json
+    {
+      "user": {
+        "email": "mario.rossi@gmail.com", 
+        "password": "hello12",
+        "role": "Hiker",
+        "name": "Mario",
+        "lastname": "Rossi",
+        "phone_number": "+39 3486289468"
+      }
+    }
+    ```
+  - Response: `200 OK` (success) 
+  - Response body: _None_
+  - Error responses: `500 Internal Server Error` (generic error), `400 Bad Request` (wrong fields), `422 Unprocessable Entity` (email already registered)
+
+- GET `/User/:email`
+  - Description: Obtain a user by a email 
+  - Request body:The email of a user
+  - Response: `200 OK` (success) 
+  - Response body: An user identified by the email
+    ``` json
+    {
+      "user": {
+        "email": "mario.rossi@gmail.com", 
+        "password": "hello12",
+        "role": "Hiker",
+        "name": "Mario",
+        "lastname": "Rossi",
+        "phone_number": "+39 3486289468"
+      }
+    }
+    ```
   - Error responses: `500 Internal Server Error` (database error)
 
-## ADMIN API
+## POINTS API
 
+- POST `/api/Point`
+  - Description: Add a new point
+  - Request body: An object contains a point
+    ``` json
+    {
+      "point": {
+        "address": "La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont 10059, Italy",
+        "nameLocation": "Hut#1",
+        "gps_coordinates": "45.177786,7.083372",
+        "type": "Hut",
+        "capacity": 20,
+        "altitude": 3320
+      }
+    }
+    ```
+  - Response: `200 OK` (success) 
+  - Response body: _None_
+  - Error responses: `500 Internal Server Error` (generic error), `400 Bad Request` (wrong fields), `422 Unprocessable Entity` (address or gps_coordinates already registered)
+
+## HUTS API
+
+- GET `/getHuts`
+  - Description: Obtain the entire list of huts 
+  - Request body: _None_
+  - Response: `200 OK` (success) 
+  - Response body: Array of objects, each describing an huts:
+    ``` json
+    [
+      {
+        "idHut": "Hut1",
+        "nameHut": "La Riposa",
+        "phone": "+39 3209087653",
+        "email": "riposa@gmail.com",
+		    "web_site": "www.lariposa.it",
+        "description": "A very beautiful hut",
+      },
+      ...
+      {
+        "idHut": "Hut2",
+        "nameHut": "Nostra Signora del Rocciamelone",
+        "phone": "+39 333 4588662",
+        "email": "rocciamelone@gmail.com",
+		    "web_site": "www.rocciamelone.com",
+        "description": "A small but cute hut",
+      },
+      ...
+    ]
+    ```
+  - Error responses: `500 Internal Server Error` (database error)
+
+- POST `/api/Huts`
+  - Description: Add a new hut
+  - Request body: An object contains a hut
+    ``` json
+    {
+      "hut": {
+        "idHut": "Hut1",
+        "nameHut": "La Riposa",
+        "phone": "+39 3209087653",
+        "email": "riposa@gmail.com",
+		    "web_site": "www.lariposa.it",
+        "description": "A very beautiful hut",
+      }
+    }
+    ```
+  - Response: `200 OK` (success) 
+  - Response body: _None_
+  - Error responses: `500 Internal Server Error` (generic error), `400 Bad Request` (wrong fields)
