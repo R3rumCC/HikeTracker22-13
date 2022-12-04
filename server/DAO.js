@@ -315,8 +315,9 @@ function checkPresenceByAddress(addr) {
 
 function addPoint(point) {
   return new Promise((resolve, reject) => {
-    const sql = 'INSERT INTO POINTS (address, nameLocation, gps_coordinates, type) VALUES(?,?,?,?)';
-    db.run(sql, point.address, point.nameLocation, point.gps_coordinates, point.type, (err, rows) => {
+    const sql = 'INSERT INTO POINTS (address, nameLocation, gps_coordinates, type, capacity, altitude) VALUES(?,?,?,?,?,?,?)';
+    db.run(sql, point.address, point.nameLocation, point.gps_coordinates, point.type, point.capacity, point.altitude,
+      (err, rows) => {
       if (err) {
         reject(err);
       } else {
