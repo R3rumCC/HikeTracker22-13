@@ -28,7 +28,7 @@ The list of the points
 - nameLocation: The name of the location of the point
 - gps_coordinates: A string contains the gps coordinates of the point
 - type: The type of the point. Two possible values: hut or parking lot
-- capacity:
+- capacity: An integer for Huts and Parking lots, in the first case is related to the number of beds and in the second case to the number of cars.
 - altitude:
 
 ### Users
@@ -65,6 +65,7 @@ The list of the huts
 ### Users functions
 
 - **readUsers()**, returns a list of every user with every field excepted the salt
+- **getUserByEmail(email)**, returns a specific user, with every field excepted the salt, associated with the argument *email*. If the *email* hasn't a match it returns a object with a field error: 'NOT found'
 - **addUser(name, lastname, email, password, salt, role, phone_number)**, inserts a user in the database, with the relative arguments. The password is already hashed
 - **updateUserRole(email, role)**, updates the user associated with the argument *email* with the argument *role*
 - **deleteUser(email)**, deletes the user associated with the argument *email*
@@ -84,18 +85,32 @@ The list of the huts
 - **updateHikeRefPoint(title, reference_points)**, updates the hike *title* with the new *references_point*
 - **updateHikeDescription(title, description)**, updates the hike *title* with the new *description*
 - **updateHike(oldHikeTitle, newHike)**, updates the entire hike *oldHikeTitle* with the new *newHike*
-- **deleteHike(title)**, deletes the hike *title*
+- **deleteHike(title)**, deletes the hike associated with the argument *title*
 
 ### Points functions
 
 - **readPoints()**, returns a list of every point with every field
-- **addPoint(point)**, inserts the point associated with the argument *point*
+- **readPointById(id)**, returns a specific point, with every field, associated with the argument *id*. If the *id* hasn't a match it returns a object with a field error: 'NOT found'
+- **checkPresenceByAddress(addr)**, returns an idPoint of the point associated with the argument *addr*. It the *addr* hasn't a mathc it returns *null*
+- **addPoint(point)**, inserts the point associated with the argument *point*, that is a point with all necessary fields
 - **updatePoint(oldIdPoint, newPoint)**, updates the entire point *oldIdPoint* with the new *newPoint*
 - **deletePoint(id)**, deletes the point with the specified *id*
 - **updatePointAddress(oldIdPoint, address)**, updates the point *oldIdPoint* with the new *address*
 - **updatePointLocation(oldIdPoint, location)**, updates the point *oldIdPoint* with the new *location*
 - **updatePointGpsCoordinates(oldIdPoint, gps_coordinates)**, updates the point *oldIdPoint* with the new *gps_coordinates*
 - **updatePointType(oldIdPoint, type)**, updates the point *oldIdPoint* with the new *type*
+
+### Verification Code functions
+
+- **addCode(email, code)**, inserts the pair (email,code) in the table
+- **getCode(email)**, returns a specific codeassociated with the argument *email*. If the *email* hasn't a match it returns a object with a field error: 'NOT found'
+- **deleteCode(email)**, deletes the row associated with the argument *email*
+- **updateCode(email, code)**, updates the code associated with the argument *email* with the new *code* passed from arguments
+
+### Huts functions
+
+- **readHuts()**, returns a list of every huts with every field
+
 
 ## Users
 
