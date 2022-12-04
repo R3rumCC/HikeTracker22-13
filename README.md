@@ -9,13 +9,17 @@ The tables present in the DB are the following:
 The list of the hikes
 - title: Primary key identifyng a hike
 - length: The length in kilometres of the hike
-- expected_time: The expected duration in minutes of the hike
+- expected_time: The expected duration in hours of the hike
 - ascent: The height difference of the ascent in metres
 - difficulty: The difficulty of the hike. Three possible values: tourist, hiker, professional hiker
 - start_point: The id of the starting point of the hike
 - end_point: The id of the ending point of the hike
 - reference_points: A string with the list reference points's id separeted by a "-"
 - description: The description of the hike
+- gpx_track: A string with the name of gpx file ?
+- hike_condition:
+- hike_condition_description:
+- local_guide:
 
 ### Points
 The list of the points
@@ -24,6 +28,8 @@ The list of the points
 - nameLocation: The name of the location of the point
 - gps_coordinates: A string contains the gps coordinates of the point
 - type: The type of the point. Two possible values: hut or parking lot
+- capacity:
+- altitude:
 
 ### Users
 The list of the users, their credentials and their roles
@@ -35,15 +41,24 @@ The list of the users, their credentials and their roles
 - phone_number: The phone number of the user
 - salt: The salt used in the encryption process
 
+### Verification_Code
+The list of verification code for each email.
+- email: User's email 
+- code: Verification code for the email.
+
 ### HikePoint
 The list of correlations between hikes and points
 - idPoint: The id of a point
 - titileHike: The title of a hike
 
-### Verification_Code
-The list of verification code for each email.
-- email: User's email 
-- code: Verification code for the email.
+### Huts
+The list of the huts
+- idHut: Primary key identifying a hut
+- nameHut: The name of the hut, references to the nameLocation of Points
+- phone: The phone number of the hut
+- email: The email of the hut
+- web_site: The URL of the website of the hut
+- description: The description of the hut
 
 ## Dao Documentation
 
