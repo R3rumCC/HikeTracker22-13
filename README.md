@@ -132,6 +132,8 @@ Paulina Knight:
 
 ## API
 
+## HIKES API
+
 - GET `/getHikes`
   - Description: Obtain the entire list of the hikes 
   - Request body: _None_
@@ -145,17 +147,17 @@ Paulina Knight:
         "expected_time": 75,
         "ascent": 400,
         "difficulty": "hiker",
-		"description": "A journey through the unspoilt nature of Monte Rosa",
+		    "description": "A journey through the unspoilt nature of Monte Rosa",
         "start_point_idPoint": 2,
-		"start_point_address": "Corso Mediterraneo 40",
-		"start_point_nameLocation": "Legnano",
-		"start_point_coordinates": "N 41° 53' 24″ - E 12° 29' 32″",
-		"start_point_type": "hut",
-		"end_point_idPoint": 4,
-		"end_point_address": "Corso Francia 10",
-		"start_point_nameLocation": "Fivizzano",
-		"start_point_coordinates": "N 45° 83' 29″ - E 52° 09' 72″",
-		"start_point_type": "parking lot",
+        "start_point_address": "Corso Mediterraneo 40",
+        "start_point_nameLocation": "Legnano",
+        "start_point_coordinates": "45.177786,7.083372",
+        "start_point_type": "hut",
+        "end_point_idPoint": 4,
+        "end_point_address": "Corso Francia 10",
+        "start_point_nameLocation": "Fivizzano",
+        "start_point_coordinates": "N 45° 83' 29″ - E 52° 09' 72″",
+        "start_point_type": "parking lot",
       },
       ...
       {
@@ -164,42 +166,44 @@ Paulina Knight:
         "expected_time": 189,
         "ascent": 600,
         "difficulty": "professional hiker",
-		"description": "A hike in the Dolomites Nature Park",
+		    "description": "A hike in the Dolomites Nature Park",
         "start_point_idPoint": 10,
-		"start_point_address": "Corso Mediterraneo 120",
-		"start_point_nameLocation": "Brunascola",
-		"start_point_coordinates": "N 11° 23' 74″ - E 18° 89' 44″",
-		"start_point_type": "parking lot",
-		"end_point_idPoint": 3,
-		"end_point_address": "Corso Francia 100",
-		"start_point_nameLocation": "Ricortola",
-		"start_point_coordinates": "N 55° 93' 21″ - E 32° 19' 70″",
-		"start_point_type": "parking lot",
+        "start_point_address": "Corso Mediterraneo 120",
+        "start_point_nameLocation": "Brunascola",
+        "start_point_coordinates": "47.156786,4.018970",
+        "start_point_type": "parking lot",
+        "end_point_idPoint": 3,
+        "end_point_address": "Corso Francia 100",
+        "start_point_nameLocation": "Ricortola",
+        "start_point_coordinates": "N 55° 93' 21″ - E 32° 19' 70″",
+        "start_point_type": "parking lot",
       },
       ...
     ]
     ```
   - Error responses: `500 Internal Server Error` (database error)
 
+## AUTHENTICATION API
+
 - POST `/api/v0/sessions`
   - Description: Authentication of the user trying to login
   - Request body: An object contains the credentials of the user
     ``` json
     {
-    "email": "u1@p.it",
-    "password": "password"
+      "email": "mario.rossi@gmail.com",
+      "password": "hello12"
     }
     ```
   - Response: `200 OK` (success) 
   - Response body: authencticated user
     ``` json
     {
-    "email": "u1@p.it", 
-	"password": "password",
-	"role": "local guide",
-    "name": "utente1",
-	"lastname": "goglia",
-	"phone_number": "utente1"
+      "email": "mario.rossi@gmail.com", 
+	    "password": "hello12",
+	    "role": "Hiker",
+      "name": "Mario",
+      "lastname": "Rossi",
+      "phone_number": "+39 3486289468"
     }
     ```
   - Error responses: `500 Internal Server Error` (generic error), `401 Unauthorized User` (login failed)
@@ -211,12 +215,12 @@ Paulina Knight:
   - Response body: authenticated user
     ``` json
     {
-    "email": "u1@p.it", 
-	"password": "password",
-	"role": "local guide",
-    "name": "utente1",
-	"lastname": "goglia",
-	"phone_number": "utente1"
+      "email": "mario.rossi@gmail.com", 
+	    "password": "hello12",
+	    "role": "Hiker",
+      "name": "Mario",
+      "lastname": "Rossi",
+      "phone_number": "+39 3486289468"
     }
     ```
   - Error responses: `500 Internal Server Error` (generic error), `401 Unauthorized User` (login failed)
@@ -227,3 +231,20 @@ Paulina Knight:
   - Response: `200 OK` (success) 
   - Response body: _None_
   - Error responses: `500 Internal Server Error` (generic error), `401 Unauthorized User` (login failed)
+
+## FILE UPLOAD API
+
+- GET `/Maps/:name`
+  - Description: Obtain the map as text
+  - Request body: The name of the file contains the map
+  - Response: `200 OK` (success) 
+  - Response body: A string with the filename
+    ``` json
+      {
+        "filename": "Form Pian Belota to la Vacca",
+      },
+    ```
+  - Error responses: `500 Internal Server Error` (database error)
+
+## ADMIN API
+

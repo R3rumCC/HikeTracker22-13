@@ -1,4 +1,4 @@
-const rocciamelone = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+const rocciamelone = "eoiiipo"/*`<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <gpx xmlns="http://www.topografix.com/GPX/1/1" creator="Maps 3D" version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
    <trk>
       <name>rocciamelone vero</name>
@@ -1179,6 +1179,6 @@ const rocciamelone = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
          </trkpt>
       </trkseg>
    </trk>
-</gpx>`;
+</gpx>`;*/
 
 module.exports = {rocciamelone};

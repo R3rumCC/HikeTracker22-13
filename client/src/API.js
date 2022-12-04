@@ -74,6 +74,7 @@ async function getMap(name) {
 
 /*************************ADMIN API**********************/
 
+//necessary?
 async function getAllUsers() {
   return new Promise((resolve, reject) => {
     fetch(URL + '/User')
@@ -97,6 +98,7 @@ async function getAllUsers() {
   });
 };
 
+//necessary?
 function deleteUser(user) {
   return new Promise((resolve, reject) => {
     fetch(URL + '/User/' + user.id, {
