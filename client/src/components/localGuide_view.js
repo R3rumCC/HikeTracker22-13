@@ -62,20 +62,13 @@ function InsertionOptions(props) {
         <FormGroup id='insertion_options' style={{ paddingTop: 15 }}>
             <FormLabel>Do you want to insert something new?</FormLabel>
             <Row>
-                <ButtonGroup >
-                    <Button style={{ background: 'green', size: 'md' }} value='hike' onClick={() => props.setHikeForm()}>
-                        New Hike Description
-                    </Button>
-                    <Button style={{ background: 'red', size: 'md' }} value='hut' onClick={() => props.setHutForm()}>
                 <ButtonGroup > 
                     <Button style={{background: 'green', size: 'md'}} value='hike' onClick={()=>props.setHikeForm()}>
                          New Hike Description
-                    </Button>{' '}
+                    </Button>
                     <Button style={{background: 'red', size: 'md'}} value= 'hut' onClick={()=>props.setHutForm()}>
                         New Hut Description
                     </Button>
-                    <Button style={{ background: 'blue', size: 'md' }} value='parking_lot' onClick={() => props.setParkingForm()}>
-                    </Button>{' '}
                     <Button  style={{background: 'blue', size: 'md'}} value='parking_lot' onClick={()=>props.setParkingForm()}>
                         New Parking Lot
                     </Button>
@@ -320,59 +313,6 @@ function HikeForm(props) {
             </Row>
         </Form.Group>
 
-        <Form id='hikeForm' onSubmit={submitHikeForm} style={{ fontSize: 15, fontWeight: 'bold' }}>
-            <Form.Group>
-                <Form.Label>Title</Form.Label>
-                <Form.Control value={title} onChange={(ev) => changeTitle(ev.target.value)} />
-            </Form.Group>
-            <Form.Group>
-                <Row>
-                    <Col>
-                        <Form.Label>Length</Form.Label>
-                        <InputGroup className="mb-3">
-                            <Form.Control value={length} onChange={(ev) => changeLength(ev.target.value)} placeholder="3.2" />
-                            <InputGroup.Text id="basic-addon2">Km</InputGroup.Text>
-                        </InputGroup>
-                    </Col>
-                    <Col>
-                        <Form.Label>Expected Time</Form.Label>
-                        <InputGroup className="mb-3">
-                            <Form.Control value={expTime} onChange={(ev) => changeExpTime(ev.target.value)} placeholder="4" />
-                            <InputGroup.Text id="basic-addon2">hours</InputGroup.Text>
-                        </InputGroup>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Form.Label>Ascent</Form.Label>
-                        <InputGroup className="mb-3">
-                            <Form.Control value={ascent} onChange={(ev) => changeAscent(ev.target.value)} placeholder="670" />
-                            <InputGroup.Text id="basic-addon2">m</InputGroup.Text>
-                        </InputGroup>
-                    </Col>
-                    <Col>
-                        <Form.Label>Difficulty</Form.Label>
-                        <Form.Select onChange={(ev) => changeDifficulty(ev.target.value)}>
-                            <option label=''></option>
-                            <option value='Tourist' label="Tourist" />
-                            <option value='Hiker' label="Hiker" />
-                            <option value='Professional hiker' label="Professional Hiker" />
-                        </Form.Select>
-                    </Col>
-                </Row>
-            </Form.Group>
-            <Form.Group>
-                <Row>
-                    <Col>
-                        <Form.Label>Start Point</Form.Label>
-                        <Form.Control value={startPoint} onChange={(ev) => changeStartP(ev.target.value)} />
-                    </Col>
-                    <Col>
-                        <Form.Label>End Point</Form.Label>
-                        <Form.Control value={endPoint} onChange={(ev) => changeEndP(ev.target.value)} />
-                    </Col>
-                </Row>
-            </Form.Group>
 
             {/* This is the form used to import the gpx, on upload of the file it call the importGpx function passing the file object */}
             <Form.Group controlId="formFile" className="mt-5">
@@ -567,7 +507,7 @@ function HutForm(props) {
         <Row>
         <Form.Group>
             <Form.Label>Number of beds</Form.Label>
-            <Form.Control value={numBeds} onChange={(ev) => setNumBeds(ev.target.value)}/>
+            <Form.Control value={numBeds} type='number' min='0' onChange={(ev) => setNumBeds(ev.target.value)}/>
         </Form.Group>
         </Row>
         <Row>
@@ -578,8 +518,8 @@ function HutForm(props) {
         </Row>
        
         <div>
-            <Button type='submit' style={{background:'red'}}>SAVE</Button>{' '}
-            <Button style={{background:'red'}} onClick={resetState}>Cancel</Button>
+            <Button className='mt-y' type='submit' style={{ background: 'red' }}>Save</Button>
+            <Button style={{ background: 'red' }} onClick={resetState} className='ms-2 my-2'>Cancel</Button>
         </div>
     </Form>
 
@@ -688,8 +628,7 @@ function ParkingLotForm(props) {
                     ></Form.Control>
                 </Form.Group>
                 <Button className='mt-y' type='submit'>Save</Button>
-                {/* <Button onClick={props.test}>test</Button> */}
-                <Button className='ms-2 my-2' onClick={props.cancel}>Cancel</Button>
+                <Button onClick={props.cancel} className='ms-2 my-2'>Cancel</Button>
             </Form>
             <GenericMap gpxFile={''} currentHike={[]} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} clicked={clicked} />
 
