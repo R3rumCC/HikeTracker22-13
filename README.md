@@ -9,13 +9,17 @@ The tables present in the DB are the following:
 The list of the hikes
 - title: Primary key identifyng a hike
 - length: The length in kilometres of the hike
-- expected_time: The expected duration in minutes of the hike
+- expected_time: The expected duration in hours of the hike
 - ascent: The height difference of the ascent in metres
 - difficulty: The difficulty of the hike. Three possible values: tourist, hiker, professional hiker
 - start_point: The id of the starting point of the hike
 - end_point: The id of the ending point of the hike
 - reference_points: A string with the list reference points's id separeted by a "-"
 - description: The description of the hike
+- gpx_track: A string with the name of gpx file (?)
+- hike_condition: The condition of the hike. Four possible values: open, closed, partly blocked, requires special gear
+- hike_condition_description: A description of the causes of the condition
+- local_guide: The email of the local guide who added the hike
 
 ### Points
 The list of the points
@@ -24,6 +28,8 @@ The list of the points
 - nameLocation: The name of the location of the point
 - gps_coordinates: A string contains the gps coordinates of the point
 - type: The type of the point. Two possible values: hut or parking lot
+- capacity: An integer for Huts and Parking lots, in the first case is related to the number of beds and in the second case to the number of cars.
+- altitude: The altitude in kilometres of the point
 
 ### Users
 The list of the users, their credentials and their roles
@@ -35,21 +41,31 @@ The list of the users, their credentials and their roles
 - phone_number: The phone number of the user
 - salt: The salt used in the encryption process
 
+### Verification_Code
+The list of verification code for each email.
+- email: User's email 
+- code: Verification code for the email.
+
 ### HikePoint
 The list of correlations between hikes and points
 - idPoint: The id of a point
 - titileHike: The title of a hike
 
-### Verification_Code
-The list of verification code for each email.
-- email: User's email 
-- code: Verification code for the email.
+### Huts
+The list of the huts
+- idHut: Primary key identifying a hut
+- nameHut: The name of the hut, references to the nameLocation of Points
+- phone: The phone number of the hut
+- email: The email of the hut
+- web_site: The URL of the website of the hut
+- description: The description of the hut
 
 ## Dao Documentation
 
 ### Users functions
 
 - **readUsers()**, returns a list of every user with every field excepted the salt
+- **getUserByEmail(email)**, returns a specific user, with every field excepted the salt, associated with the argument *email*. If the *email* hasn't a match it returns a object with a field error: 'NOT found'
 - **addUser(name, lastname, email, password, salt, role, phone_number)**, inserts a user in the database, with the relative arguments. The password is already hashed
 - **updateUserRole(email, role)**, updates the user associated with the argument *email* with the argument *role*
 - **deleteUser(email)**, deletes the user associated with the argument *email*
@@ -69,12 +85,14 @@ The list of verification code for each email.
 - **updateHikeRefPoint(title, reference_points)**, updates the hike *title* with the new *references_point*
 - **updateHikeDescription(title, description)**, updates the hike *title* with the new *description*
 - **updateHike(oldHikeTitle, newHike)**, updates the entire hike *oldHikeTitle* with the new *newHike*
-- **deleteHike(title)**, deletes the hike *title*
+- **deleteHike(title)**, deletes the hike associated with the argument *title*
 
 ### Points functions
 
 - **readPoints()**, returns a list of every point with every field
-- **addPoint(point)**, inserts the point associated with the argument *point*
+- **readPointById(id)**, returns a specific point, with every field, associated with the argument *id*. If the *id* hasn't a match it returns a object with a field error: 'NOT found'
+- **checkPresenceByAddress(addr)**, returns an idPoint of the point associated with the argument *addr*. It the *addr* hasn't a mathc it returns *null*
+- **addPoint(point)**, inserts the point associated with the argument *point*, that is a point with all necessary fields
 - **updatePoint(oldIdPoint, newPoint)**, updates the entire point *oldIdPoint* with the new *newPoint*
 - **deletePoint(id)**, deletes the point with the specified *id*
 - **updatePointAddress(oldIdPoint, address)**, updates the point *oldIdPoint* with the new *address*
@@ -82,17 +100,35 @@ The list of verification code for each email.
 - **updatePointGpsCoordinates(oldIdPoint, gps_coordinates)**, updates the point *oldIdPoint* with the new *gps_coordinates*
 - **updatePointType(oldIdPoint, type)**, updates the point *oldIdPoint* with the new *type*
 
+### Verification Code functions
+
+- **addCode(email, code)**, inserts the pair (email,code) in the table
+- **getCode(email)**, returns a specific codeassociated with the argument *email*. If the *email* hasn't a match it returns a object with a field error: 'NOT found'
+- **deleteCode(email)**, deletes the row associated with the argument *email*
+- **updateCode(email, code)**, updates the code associated with the argument *email* with the new *code* passed from arguments
+
+### Huts functions
+
+- **readHuts()**, returns a list of every huts with every field
+
+
 ## Users
 
 Mario Rossi:
 - email: mario.rossi@gmail.com
 - password: hello12
 - role: Hiker
+- name: Mario
+- lastname: Rossi
+- phone_number: +39 3486289468
 
 Paulina Knight:
 - email: paulina.knight@gmail.com
 - password: hello13
 - role: LocalGuide
+- name: Paulina
+- lastname: Knight
+- phone_number: +39 3276958421
 
 ## API
 
