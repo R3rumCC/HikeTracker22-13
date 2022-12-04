@@ -16,10 +16,10 @@ The list of the hikes
 - end_point: The id of the ending point of the hike
 - reference_points: A string with the list reference points's id separeted by a "-"
 - description: The description of the hike
-- gpx_track: A string with the name of gpx file ?
-- hike_condition:
-- hike_condition_description:
-- local_guide:
+- gpx_track: A string with the name of gpx file (?)
+- hike_condition: The condition of the hike. Four possible values: open, closed, partly blocked, requires special gear
+- hike_condition_description: A description of the causes of the condition
+- local_guide: The email of the local guide who added the hike
 
 ### Points
 The list of the points
@@ -29,7 +29,7 @@ The list of the points
 - gps_coordinates: A string contains the gps coordinates of the point
 - type: The type of the point. Two possible values: hut or parking lot
 - capacity: An integer for Huts and Parking lots, in the first case is related to the number of beds and in the second case to the number of cars.
-- altitude:
+- altitude: The altitude in kilometres of the point
 
 ### Users
 The list of the users, their credentials and their roles
@@ -118,11 +118,17 @@ Mario Rossi:
 - email: mario.rossi@gmail.com
 - password: hello12
 - role: Hiker
+- name: Mario
+- lastname: Rossi
+- phone_number: +39 3486289468
 
 Paulina Knight:
 - email: paulina.knight@gmail.com
 - password: hello13
 - role: LocalGuide
+- name: Paulina
+- lastname: Knight
+- phone_number: +39 3276958421
 
 ## API
 
