@@ -41,7 +41,7 @@ function LocalGuide_Home(props) {
         <Row>
             <div>{hikeForm ? <HikeForm CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike} /> : <></>}</div>
             <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
-            <div>{hutForm ? <HutForm CreateNewPoint={props.CreateNewPoint} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
+            <div>{hutForm ? <HutForm CreateNewHut={props.CreateNewHut} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
         </Row>
     </Container>
     )
@@ -345,12 +345,6 @@ function HutForm(props) {
 
     //const [errorMsg, setErrorMsg] = useState("");
 
-    const changeTitle= (val)=>{setTitle(val)}
-    const changePosition= (val)=>{setPosition(val)}
-    const changeAltitude= (val)=>{setAltitude(val)}
-    const changeAddress= (val)=>{setAddress(val)}
-    const changeDescription= (val)=>{setDescription(val)}
-
     const resetState = ()=> {
         setTitle('')
         setPosition(''); setAltitude('');
@@ -371,7 +365,7 @@ function HutForm(props) {
             setClicked(true)
         }
         else{
-            resetState();
+            resetState()
         }
     }, [props.currentMarkers]);
 
@@ -380,10 +374,10 @@ function HutForm(props) {
         let newHut;
 
         newHut = { address: address, nameLocation: title, gps_coordinates: position, type: 'Hut',  capacity: numBeds, altitude: altitude,    
-                    hone: phone, email:email, web_site: webSite, description: description }
+                    phone: phone, email:email, web_site: webSite, description: description }
         console.log(newHut)
         //call to the API
-        props.CreateNewPoint(newHut)
+        props.CreateNewHut(newHut)
         alert('New Hut correctly added!')
     }
 
@@ -398,7 +392,7 @@ function HutForm(props) {
 			<Form.Label style={{fontSize: 25}}>Title</Form.Label>
             <InputGroup  className="mb-2">
                     <InputGroup.Text><i class="bi bi-textarea-t"></i></InputGroup.Text>
-                    <Form.Control value={title} required={true} onChange={(ev) => changeTitle(ev.target.value)}/>
+                    <Form.Control value={title} required={true} onChange={(ev) => setTitle(ev.target.value)}/>
                 </InputGroup> 
 		</Form.Group>
         </Row>
@@ -412,7 +406,7 @@ function HutForm(props) {
 			    <Form.Label>Address</Form.Label>
                 <InputGroup  className="mb-2">
                     <InputGroup.Text><i class="bi bi-map"></i></InputGroup.Text>
-			        <Form.Control value={address} required={true} disabled={clicked} onChange={(ev) => changeAddress(ev.target.value)}/>
+			        <Form.Control value={address} required={true} disabled={clicked} onChange={(ev) => setAddress(ev.target.value)}/>
                 </InputGroup> 
 		    </Form.Group>
         </Row>
@@ -422,14 +416,14 @@ function HutForm(props) {
             <Form.Label>Position</Form.Label>
             <InputGroup  className="mb-2">
                 <InputGroup.Text><i class="bi bi-geo-alt"></i></InputGroup.Text>
-                <Form.Control disabled={clicked} value={position} required={true} onChange={(ev) => changePosition(ev.target.value)}/>
+                <Form.Control disabled={clicked} value={position} required={true} onChange={(ev) => setPosition(ev.target.value)}/>
             </InputGroup> 
         </Form.Group>
         <Form.Group as={Col}>
             <Form.Label>Altitude</Form.Label>
             <InputGroup  className="mb-2">
                 <InputGroup.Text><i class="bi bi-geo-fill"></i></InputGroup.Text>
-                <Form.Control value={altitude} required={true} onChange={(ev) => changeAltitude(ev.target.value)}/>
+                <Form.Control value={altitude} required={true} onChange={(ev) => setAltitude(ev.target.value)}/>
             </InputGroup>           
         </Form.Group>
         </Row>
@@ -475,7 +469,7 @@ function HutForm(props) {
         <Row>
         <Form.Group>
             <Form.Label>Description</Form.Label>
-            <Form.Control style={{ height: '100px' }} value={description} required={true} onChange={(ev) => changeDescription(ev.target.value)}/>
+            <Form.Control style={{ height: '100px' }} value={description} required={true} onChange={(ev) => setDescription(ev.target.value)}/>
         </Form.Group>
         </Row>
        
@@ -499,13 +493,10 @@ function ParkingLotForm(props) {
     const [address, setAddress] = useState('')
     const [capacity, setCapacity] = useState('')
     const [clicked, setClicked] = useState(false)
-    //const [map, setMap]= useState()
 
     const [errorMsg, setErrorMsg] = useState("");
 
-    useEffect(() => {
-        props.setCurrentMarkers([]);
-    }, [])
+    useEffect(() => {props.setCurrentMarkers([]);}, [])
 
     useEffect(() => {
         if (props.currentMarkers.length != 0) {
@@ -520,7 +511,10 @@ function ParkingLotForm(props) {
             setClicked(false)
         }
     }, [props.currentMarkers]);
+
+
     const handleSubmit = (event) => {
+
         console.log(props.test);
         event.preventDefault();
         // validation
@@ -541,53 +535,44 @@ function ParkingLotForm(props) {
         }
     };
 
-    return (
+    return ( <>
+            {errorMsg ? (<Alert variant="danger" onClose={() => setErrorMsg("")} dismissible> {errorMsg} </Alert>) : ( false )}
 
+    <Form onSubmit={handleSubmit} style={{ fontSize: 15, fontWeight: 'bold' }} >
+        
+        <Row>
+        <Form.Group>
+			<Form.Label style={{fontSize: 25}}>Title</Form.Label>
+            <InputGroup  className="mb-2">
+                    <InputGroup.Text><i class="bi bi-textarea-t"></i></InputGroup.Text>
+                    <Form.Control value={title} required={true} onChange={(ev) => setTitle(ev.target.value)}/>
+                </InputGroup> 
+		</Form.Group>
+        </Row>
 
-        <>
-            {errorMsg ? (
-                <Alert variant="danger" onClose={() => setErrorMsg("")} dismissible>
-                    {errorMsg}
-                </Alert>
-            ) : (
-                false
-            )}
-            <Form onSubmit={handleSubmit} style={{ fontSize: 15, fontWeight: 'bold' }} >
-                <Form.Group>
-                    <Form.Label>Title</Form.Label>
-                    <Form.Control
-                        value={title}
-                        onChange={(ev) => setTitle(ev.target.value)}
-                    ></Form.Control>
-                </Form.Group>
+        <Row>
+        <Form.Group>
+			<Form.Label>Position</Form.Label>
+            <InputGroup  className="mb-2">
+                <InputGroup.Text><i class="bi bi-geo-alt"></i></InputGroup.Text>
+                <Form.Control value={position} disabled={clicked} onChange={(ev) => setPosition(ev.target.value)}></Form.Control>
+            </InputGroup> 
+		</Form.Group>
+        </Row>
+
                 <Form.Group>
                     <Row>
-                        <Col>
-                            <Form.Label>Position</Form.Label>
-                            <Form.Control
-                                value={position}
-                                disabled={clicked}
-                                onChange={(ev) => setPosition(ev.target.value)}
-                            ></Form.Control>
-                        </Col>
+                       
                         <Col>
                             <Form.Label>Capacity</Form.Label>
-                            <Form.Control
-                                value={capacity}
-                                disabled={clicked}
-                                onChange={(ev) => setCapacity(ev.target.value)}
-                            ></Form.Control>
+                            <Form.Control  value={capacity} disabled={clicked} onChange={(ev) => setCapacity(ev.target.value)}></Form.Control>
                         </Col>
                     </Row>
 
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Address</Form.Label>
-                    <Form.Control
-                        value={address}
-                        disabled={clicked}
-                        onChange={(ev) => setAddress(ev.target.value)}
-                    ></Form.Control>
+                    <Form.Control value={address} disabled={clicked} onChange={(ev) => setAddress(ev.target.value)}></Form.Control>
                 </Form.Group>
                 <Button className='mt-y' type='submit'>Save</Button>
                 <Button onClick={props.cancel} className='ms-2 my-2'>Cancel</Button>

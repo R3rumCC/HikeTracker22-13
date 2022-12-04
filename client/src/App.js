@@ -140,6 +140,15 @@ function Main() {
     }
   };
 
+ //********HANDLE_ADD_HUT*******//
+ const CreateNewHut = async (hut) => {
+  try {
+    await API.addHut(hut)
+  } catch (err) {
+    handleError(err);
+  }
+};
+
   //********HANDLE_NEW_HIKE*******//
   const CreateNewHike = async (hike) => {
     try {
@@ -173,7 +182,7 @@ function Main() {
       <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} setCurrentMarkers={setCurrentMarkers} />
       <Routes>
         <Route path="/" element={
-          loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHike={CreateNewHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} /> :
+          loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHut={CreateNewHut} CreateNewHike={CreateNewHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} /> :
             <DefaultLayout role={loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike} />  /*<FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>
