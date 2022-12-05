@@ -97,9 +97,7 @@ function HikeForm(props) {
     const changeDifficulty = (val) => { setDifficulty(val); }
     const changeDescription = (val) => { setDescription(val) }
     const changeStartP = (val) => { setStartPoint(val) }
-    const changeStartPGps = (val) => { setStartPointGps(val) }
     const changeEndP = (val) => { setEndPoint(val) }
-    const changeEndPGps = (val) => { setEndPointGps(val) }
 
 
     const submitFile = () => {
@@ -123,7 +121,7 @@ function HikeForm(props) {
         //Checks on needed fields
         if (title !== "") {
             if (length !== "" && difficulty !== "") {
-                if (startPoint !== 0 && endPoint !== 0) {
+                if (startPoint !== '' && endPoint !== '') {
                     if (description !== "") {
                         if (map !== '') {
                             let start = { address: startPoint, gps_coordinates: startPointGps }
@@ -201,9 +199,9 @@ function HikeForm(props) {
 
                 //storing lat and lon inside the status of start/end point
                 let gps_start = `${positions[0][0]}, ${positions[0][1]}`
-                changeStartPGps(gps_start);
+                setStartPointGps(gps_start);
                 let gps_end = `${positions[positions.length - 1][0]}, ${positions[positions.length - 1][1]}`
-                changeEndPGps(gps_end);
+                setEndPointGps(gps_end);
                 console.log('gps_start=' + gps_start + ', STATE startP= ' + startPointGps)
                 console.log('gps_end= ' + gps_end + ', STATE endP= ' + endPointGps)
 
@@ -248,27 +246,45 @@ function HikeForm(props) {
         
     <Form id='hikeForm' onSubmit={submitHikeForm} style={{fontSize:15, fontWeight:'bold'}}>
 
+        <Row>
         <Form.Group>
 			<Form.Label style={{fontSize: 25}}>Title</Form.Label>
             <InputGroup  className="mb-2">
                 <InputGroup.Text><i class="bi bi-textarea-t"></i></InputGroup.Text>
-                <Form.Control value={title} onChange={(ev) => changeTitle(ev.target.value)}/>
+                <Form.Control value={title} required={true} onChange={(ev) => changeTitle(ev.target.value)}/>
             </InputGroup>
 		</Form.Group>
+        </Row>
+
+        <Row>
+            <Form.Group>
+                <Form.Label style={{fontSize: 25}}>Description</Form.Label>
+                <InputGroup  className="mb-2">
+                    <InputGroup.Text><i class="bi bi-textarea-t"></i></InputGroup.Text>
+                    <Form.Control as="textarea" required={true} rows={3} value={description} onChange={(ev) => changeDescription(ev.target.value)} />
+                </InputGroup>
+            </Form.Group>
+        </Row>
+
+        <Row>
+            <Form.Label style={{fontSize: 25}}>Hike's Details</Form.Label>
+        </Row>
 
         <Row>
             <Form.Group as={Col}>
                 <Form.Label>Length</Form.Label>
                 <InputGroup className="mb-3">
-                    <Form.Control value={length} onChange={(ev) => changeLength(ev.target.value)} placeholder="3.2"/>
-                    <InputGroup.Text id="basic-addon2">Km</InputGroup.Text>
+                    <InputGroup.Text><i class="bi bi-map"></i></InputGroup.Text>
+                    <Form.Control value={length} required={true} onChange={(ev) => changeLength(ev.target.value)} placeholder="3.2"/>
+                    <InputGroup.Text>Km</InputGroup.Text>
                 </InputGroup>
             </Form.Group>
             <Form.Group as={Col}>
                 <Form.Label>Expected Time</Form.Label>
                 <InputGroup className="mb-3">
-			        <Form.Control value={expTime} onChange={(ev) => changeExpTime(ev.target.value)} placeholder="4"/>
-                    <InputGroup.Text id="basic-addon2">hours</InputGroup.Text>
+                    <InputGroup.Text><i class="bi bi-stopwatch"></i></InputGroup.Text>
+			        <Form.Control value={expTime} required={true} onChange={(ev) => changeExpTime(ev.target.value)} placeholder="4"/>
+                    <InputGroup.Text>hours</InputGroup.Text>
                 </InputGroup>
             </Form.Group>
         </Row>
@@ -277,53 +293,63 @@ function HikeForm(props) {
             <Form.Group as={Col}>
                 <Form.Label>Ascent</Form.Label>
                 <InputGroup className="mb-3">
-			        <Form.Control value={ascent} onChange={(ev) => changeAscent(ev.target.value)} placeholder="670"/>
-                    <InputGroup.Text id="basic-addon2">m</InputGroup.Text>
+                    <InputGroup.Text><i class="bi bi-geo-fill"></i></InputGroup.Text>
+			        <Form.Control value={ascent} required={true} onChange={(ev) => changeAscent(ev.target.value)} placeholder="670"/>
+                    <InputGroup.Text>m</InputGroup.Text>
                 </InputGroup>
             </Form.Group>
             <Form.Group as={Col}>
                 <Form.Label>Difficulty</Form.Label>
-                <Form.Select onChange={(ev) => changeDifficulty(ev.target.value)}>
-                    <option label=''></option>
-                    <option value='Tourist'  label="Tourist"/>
-                    <option value='Hiker' label="Hiker"/>
-                    <option value='Professional hiker' label="Professional Hiker"/>
-                </Form.Select>
+                <InputGroup>
+                    <InputGroup.Text><i class="bi bi-graph-up-arrow"></i></InputGroup.Text>
+                    <Form.Select required={true} onChange={(ev) => changeDifficulty(ev.target.value)}>
+                        <option label=''></option>
+                        < option value='Tourist'  label="Tourist"/>
+                        <option value='Hiker' label="Hiker"/>
+                        <option value='Professional hiker' label="Professional Hiker"/>
+                    </Form.Select>
+                </InputGroup>
             </Form.Group>
         </Row>
 
         <Row>
             <Form.Group as={Col}>
                 <Form.Label>Start Point</Form.Label>
-                <Form.Control value={startPoint} onChange={(ev) => changeStartP(ev.target.value)}/>
+                <InputGroup className="mb-3">
+                    <InputGroup.Text><i class="bi bi-compass"></i></InputGroup.Text>
+                    <Form.Control value={startPoint} required={true} onChange={(ev) => changeStartP(ev.target.value)}/>
+                    <InputGroup.Text>m</InputGroup.Text>
+                </InputGroup>
             </Form.Group>
             <Form.Group as={Col}>
                 <Form.Label>End Point</Form.Label>
-                <Form.Control value={endPoint} onChange={(ev) => changeEndP(ev.target.value)}/>
+                <InputGroup className="mb-3">
+                    <InputGroup.Text><i class="bi bi-compass"></i></InputGroup.Text>
+                    <Form.Control value={endPoint} required={true} onChange={(ev) => changeEndP(ev.target.value)}/>
+                    <InputGroup.Text>m</InputGroup.Text>
+                </InputGroup>
             </Form.Group>
         </Row>
+
+        <Form.Group className='mt-3'>
+        {gpxPos != null ?
+            <>
+                <GenericMap gpxFile={map} currentHike={[]} currentMarkers={[]} setCurrentMarkers={''}/>
+            </>
+            : null}
+        </Form.Group>
 
             {/* This is the form used to import the gpx, on upload of the file it call the importGpx function passing the file object */}
-            <Form.Group controlId="formFile" className="mt-5">
-                <Form.Label>Upload the GPX track</Form.Label>
-                <Form.Control type="file" onChange={(e) => importGpx(e.target.files[0])} />
+            <Form.Group controlId="formFile" className="mt-3">
+                <Form.Label style={{fontSize: 25}}>Upload the GPX track</Form.Label>
+                <Form.Control type="file" required={true} onChange={(e) => importGpx(e.target.files[0])} />
             </Form.Group>
-
-        <Row>
-            <Form.Group>
-                <Form.Label>Description</Form.Label>
-                <Form.Control value={description} onChange={(ev) => changeDescription(ev.target.value)} />
-            </Form.Group>
-        </Row>
 
         <Button className='mt-y' type='submit' style={{ background: 'green' }}>Save</Button>
         <Button style={{ background: 'green' }} onClick={reset} className='ms-2 my-2'>Cancel</Button>
+
     </Form>
-        {gpxPos != null ?
-            <>
-                <GenericMap gpxFile={map} currentHike={[]} currentMarkers={[]} setCurrentMarkers={''} />
-            </>
-            : null}
+        
     </>)
 }
 
@@ -405,7 +431,7 @@ function HutForm(props) {
             <Form.Group>
 			    <Form.Label>Address</Form.Label>
                 <InputGroup  className="mb-2">
-                    <InputGroup.Text><i class="bi bi-map"></i></InputGroup.Text>
+                    <InputGroup.Text><i class="bi bi-signpost"></i></InputGroup.Text>
 			        <Form.Control value={address} required={true} disabled={clicked} onChange={(ev) => setAddress(ev.target.value)}/>
                 </InputGroup> 
 		    </Form.Group>
@@ -416,7 +442,7 @@ function HutForm(props) {
             <Form.Label>Position</Form.Label>
             <InputGroup  className="mb-2">
                 <InputGroup.Text><i class="bi bi-geo-alt"></i></InputGroup.Text>
-                <Form.Control disabled={clicked} value={position} required={true} onChange={(ev) => setPosition(ev.target.value)}/>
+                <Form.Control value={position} required={true} disabled={clicked} onChange={(ev) => setPosition(ev.target.value)}/>
             </InputGroup> 
         </Form.Group>
         <Form.Group as={Col}>
@@ -463,13 +489,16 @@ function HutForm(props) {
         <Row>
         <Form.Group as={Col}>
             <Form.Label>Number of beds</Form.Label>
-            <Form.Control value={numBeds} required={true} type='number' min='0' onChange={(ev) => setNumBeds(ev.target.value)}/>
+            <InputGroup  className="mb-2">
+                <InputGroup.Text> <i class="bi bi-person-plus"></i></InputGroup.Text>
+                <Form.Control value={numBeds} required={true} type='number' min='0' onChange={(ev) => setNumBeds(ev.target.value)}/>
+            </InputGroup>
         </Form.Group>
         </Row>
         <Row>
         <Form.Group>
             <Form.Label>Description</Form.Label>
-            <Form.Control style={{ height: '100px' }} value={description} required={true} onChange={(ev) => setDescription(ev.target.value)}/>
+            <Form.Control as="textarea" rows={3} value={description} required={true} onChange={(ev) => setDescription(ev.target.value)}/>
         </Form.Group>
         </Row>
        
@@ -491,7 +520,7 @@ function ParkingLotForm(props) {
     const [title, setTitle] = useState('')
     const [position, setPosition] = useState('')
     const [address, setAddress] = useState('')
-    const [capacity, setCapacity] = useState('')
+    const [capacity, setCapacity] = useState(0)
     const [clicked, setClicked] = useState(false)
 
     const [errorMsg, setErrorMsg] = useState("");
@@ -506,11 +535,16 @@ function ParkingLotForm(props) {
             setClicked(true)
         }
         else {
-            setPosition('')
-            setAddress('')
-            setClicked(false)
+            reset()
         }
     }, [props.currentMarkers]);
+
+    const reset = ()=> {
+        setPosition('')
+        setAddress('')
+        setCapacity(0)
+        setClicked(false)
+    }
 
 
     const handleSubmit = (event) => {
@@ -551,37 +585,45 @@ function ParkingLotForm(props) {
         </Row>
 
         <Row>
+            <Form.Label style={{fontSize: 25}}>Informations</Form.Label>
+        </Row>
+
+        <Row>
         <Form.Group>
 			<Form.Label>Position</Form.Label>
             <InputGroup  className="mb-2">
                 <InputGroup.Text><i class="bi bi-geo-alt"></i></InputGroup.Text>
-                <Form.Control value={position} disabled={clicked} onChange={(ev) => setPosition(ev.target.value)}></Form.Control>
+                <Form.Control value={position} required={true} disabled={clicked} onChange={(ev) => setPosition(ev.target.value)}></Form.Control>
+            </InputGroup> 
+		</Form.Group>
+        </Row>
+        <Row>
+        <Form.Group>
+			<Form.Label>Address</Form.Label>
+            <InputGroup  className="mb-2">
+                <InputGroup.Text><i class="bi bi-signpost"></i></InputGroup.Text>
+                <Form.Control value={address} required={true} disabled={clicked} onChange={(ev) => setAddress(ev.target.value)}></Form.Control>
             </InputGroup> 
 		</Form.Group>
         </Row>
 
-                <Form.Group>
-                    <Row>
-                       
-                        <Col>
-                            <Form.Label>Capacity</Form.Label>
-                            <Form.Control  value={capacity} disabled={clicked} onChange={(ev) => setCapacity(ev.target.value)}></Form.Control>
-                        </Col>
-                    </Row>
+        <Row>
+        <Form.Group>
+			<Form.Label>Capacity</Form.Label>
+            <InputGroup  className="mb-2">
+                <InputGroup.Text><i class="bi bi-car-front"></i></InputGroup.Text>
+                <Form.Control  value={capacity} required={true} type='number' min='0' onChange={(ev) => setCapacity(ev.target.value)}></Form.Control>
+            </InputGroup> 
+		</Form.Group>
+        </Row>
 
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label>Address</Form.Label>
-                    <Form.Control value={address} disabled={clicked} onChange={(ev) => setAddress(ev.target.value)}></Form.Control>
-                </Form.Group>
-                <Button className='mt-y' type='submit'>Save</Button>
-                <Button onClick={props.cancel} className='ms-2 my-2'>Cancel</Button>
-            </Form>
-            <GenericMap gpxFile={''} currentHike={[]} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} clicked={clicked} />
+        <Button className='mt-y' type='submit'>Save</Button>
+        <Button onClick={()=>{reset()}} className='ms-2 my-2'>Cancel</Button>
 
+    </Form>
+    <GenericMap gpxFile={''} currentHike={[]} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} clicked={clicked} />
 
-
-        </>)
+    </>)
 }
 
 export { LocalGuide_Home }
