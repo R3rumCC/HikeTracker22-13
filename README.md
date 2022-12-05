@@ -91,7 +91,7 @@ The list of the huts
 
 - **readPoints()**, returns a list of every point with every field
 - **readPointById(id)**, returns a specific point, with every field, associated with the argument *id*. If the *id* hasn't a match it returns a object with a field error: 'NOT found'
-- **checkPresenceByAddress(addr)**, returns an idPoint of the point associated with the argument *addr*. It the *addr* hasn't a mathc it returns *null*
+- **checkPresenceByAddress(addr)**, returns an idPoint of the point associated with the argument *addr*. If the *addr* hasn't a match it returns *null*
 - **addPoint(point)**, inserts the point associated with the argument *point*, that is a point with all necessary fields
 - **updatePoint(oldIdPoint, newPoint)**, updates the entire point *oldIdPoint* with the new *newPoint*
 - **deletePoint(id)**, deletes the point with the specified *id*
@@ -110,6 +110,7 @@ The list of the huts
 ### Huts functions
 
 - **readHuts()**, returns a list of every huts with every field
+- **addHut()**, inserts an instance of hut linked to the respective point 
 
 
 ## Users
