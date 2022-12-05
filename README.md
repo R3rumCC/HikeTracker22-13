@@ -99,6 +99,8 @@ The list of the huts
 - **updatePointLocation(oldIdPoint, location)**, updates the point *oldIdPoint* with the new *location*
 - **updatePointGpsCoordinates(oldIdPoint, gps_coordinates)**, updates the point *oldIdPoint* with the new *gps_coordinates*
 - **updatePointType(oldIdPoint, type)**, updates the point *oldIdPoint* with the new *type*
+- **updatePointCapacity(oldIdPoint, capacity)**, updates the point *oldIdPoint* with the new *capacity*
+- **updatePointAltitude(oldIdPoint, altitude)**, updates the point *oldIdPoint* with the new *altitude*
 
 ### Verification Code functions
 
