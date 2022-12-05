@@ -50,7 +50,7 @@ const Navigation = (props) => {
               {props.loggedIn && props.user.role == "LocalGuide" ? <PersonCircle
                 className="m-2"
                 fill="white"
-                fontSize={20}
+                fontSize={32}
                 onClick={props.goToProfile}
                 opacity={opacity}
                 onMouseOver={() => setOpacity(OPACITY_WHEN_MOUSE_INTERACT)}
