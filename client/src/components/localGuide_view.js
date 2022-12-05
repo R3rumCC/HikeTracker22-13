@@ -551,28 +551,18 @@ function ParkingLotForm(props) {
         setClicked(false)
     }
 
-
 	const handleSubmit = (event) => {
 
-		console.log(props.test);
 		event.preventDefault();
 		// validation
-		if (title.trim().length !== 0) {
-			let newPoint;
-			if (address.trim().length !== 0) {
-				newPoint = { nameLocation: title, address: address, gps_coordinates: position, type: 'Parking Lot' };
-			} else {
-				setErrorMsg("Error: Enter a valid address.");
-				return;
-			}
-			props.CreateNewPoint(newPoint);
-			alert('New parking lot added.');
-			console.log(newPoint);
-		}
-		else {
-			setErrorMsg("Error: Enter a valid title.");
-		}
-	};
+		let newPoint;
+		newPoint = { nameLocation: title, address: address, gps_coordinates: position, type: 'Parking Lot', capacity: capacity };
+			
+		props.CreateNewPoint(newPoint);
+		alert('New parking lot added.');
+		console.log(newPoint);
+	}
+		
 
 	return (<>
 		{errorMsg ? (<Alert variant="danger" onClose={() => setErrorMsg("")} dismissible> {errorMsg} </Alert>) : (false)}
