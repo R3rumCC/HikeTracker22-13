@@ -1,4 +1,4 @@
-import { Button, Form, Col, Row, Card } from 'react-bootstrap';
+import { Button, Form, Col, Row, Card, InputGroup } from 'react-bootstrap';
 import { useEffect, useState, useContext, React } from 'react';
 import { UNSAFE_NavigationContext, useNavigate } from 'react-router-dom';
 import API from '../API';
@@ -96,7 +96,7 @@ function HutCard(props) {
         <hr />
         <Card.Text><h5>Description</h5></Card.Text>
         <Card.Text>{props.description}</Card.Text>
-        <Card.Text>Number of beds: {props.capacity}</Card.Text>
+        <Card.Text>{props.capacity} Beds</Card.Text>
       </Card.Body>
     </Card>
   );
@@ -145,73 +145,95 @@ function SearchHut() {
   return (
     <Col className="vh-100 justify-content-md-center">
       <Row>
-        <h1>Search Hut</h1>
-      </Row>
-      <Row>
-        <Form id="searchForm">
-          <Form.Group className="mb-3" controlId="geo">
-            <Form.Label>Geographical Area</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter the geographical area of the hut"
-              value={geoFilter} onChange={(e) => { setGeoFilter(e.target.value) }}
-            />
-          </Form.Group>
+        <Form style={{fontSize:15, fontWeight:'bold'}}>
           <Row>
-            <Col>
-              <Form.Group className="mb-3" controlId="name">
-                <Form.Label>Name</Form.Label>
+              <Form.Label style={{fontSize: 25}}>Geographical Informations</Form.Label>
+          </Row>
+          <Form.Group controlId="geo">
+            <Form.Label>Address</Form.Label>
+              <InputGroup className='mb-2'>
+                <InputGroup.Text><i class="bi bi-signpost"></i></InputGroup.Text>
                 <Form.Control
                   type="text"
-                  placeholder="Enter the name of the hut"
-                  value={nameFilter} onChange={(e) => { setNameFilter(e.target.value) }}
+                  placeholder="Enter the address of the hut"
+                  value={geoFilter} onChange={(e) => { setGeoFilter(e.target.value) }}
                 />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
-                <Form.Label>Number of beds</Form.Label>
-                <Form.Control
-                  type="number"
-                  min="0" max="30"
-                  placeholder='Enter the numeber of beds'
-                  value={capacityFilter} onChange={(e) => { setCapacityFilter(e.target.value) }}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
+              </InputGroup>
+          </Form.Group>
           <Row>
             <Col>
               <Form.Group>
                 <Form.Label>Latitude</Form.Label>
-                <Form.Control
-                  type="number" step="0.0000001"
-                  min="-90.0000000" max="90.0000000"
-                  placeholder='Enter the latitude'
-                  value={latFilter} onChange={(e) => { setLatFilter(e.target.value) }}
-                />
+                <InputGroup className='mb-2'>
+                  <InputGroup.Text><i class="bi bi-compass"></i></InputGroup.Text>
+                  <Form.Control
+                    type="number" step="0.0000001"
+                    min="-90.0000000" max="90.0000000"
+                    placeholder='Enter the latitude'
+                    value={latFilter} onChange={(e) => { setLatFilter(e.target.value) }}
+                  />
+                </InputGroup>
               </Form.Group>
             </Col>
             <Col>
               <Form.Group>
                 <Form.Label>Longitude</Form.Label>
-                <Form.Control
-                  type="number" step="0.0000001"
-                  min="-180.0000000" max="180.0000000"
-                  placeholder='Enter the longitude'
-                  value={longFilter} onChange={(e) => { setLongFilter(e.target.value) }}
-                />
+                <InputGroup className='mb-2'>
+                  <InputGroup.Text><i class="bi bi-compass"></i></InputGroup.Text>
+                  <Form.Control
+                    type="number" step="0.0000001"
+                    min="-180.0000000" max="180.0000000"
+                    placeholder='Enter the longitude'
+                    value={longFilter} onChange={(e) => { setLongFilter(e.target.value) }}
+                  />
+                </InputGroup>
               </Form.Group>
             </Col>
             <Col>
               <Form.Group>
                 <Form.Label>Altitude</Form.Label>
-                <Form.Control
-                  type="number"
-                  min="0" max="4000"
-                  placeholder='Enter the altitude'
-                  value={altFilter} onChange={(e) => { setAltFilter(e.target.value) }}
-                />
+                <InputGroup className='mb-2'>
+                  <InputGroup.Text><i class="bi bi-geo-fill"></i></InputGroup.Text>
+                  <Form.Control
+                    type="number"
+                    min="0" max="4000"
+                    placeholder='Enter the altitude'
+                    value={altFilter} onChange={(e) => { setAltFilter(e.target.value) }}
+                  />
+                  <InputGroup.Text>m</InputGroup.Text>
+                </InputGroup>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+              <Form.Label style={{fontSize: 25}}>Hut's Details</Form.Label>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Group className="mb-3" controlId="name">
+                <Form.Label>Name</Form.Label>
+                <InputGroup className='mb-2'>
+                  <InputGroup.Text><i class="bi bi-house"></i></InputGroup.Text>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter the name of the hut"
+                    value={nameFilter} onChange={(e) => { setNameFilter(e.target.value) }}
+                  />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group>
+                <Form.Label>Number of beds</Form.Label>
+                <InputGroup className='mb-2'>
+                  <InputGroup.Text><i class="bi bi-person-plus"></i></InputGroup.Text>
+                  <Form.Control
+                    type="number"
+                    min="0" max="30"
+                    placeholder='Enter the numeber of beds'
+                    value={capacityFilter} onChange={(e) => { setCapacityFilter(e.target.value) }}
+                  />
+                </InputGroup>
               </Form.Group>
             </Col>
           </Row>
