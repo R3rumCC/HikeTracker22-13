@@ -199,8 +199,8 @@ Paulina Knight:
         "expected_time": 189,
         "ascent": 600,
         "difficulty": "professional hiker",
-        "start_point": 10,
-        "end_point": 3,
+        "start_point": "Chamolé, 16, Comboé Superiore, Charvensod, Aosta Valley, 21000, Italy",
+        "end_point": "Colle Betta, Strada Regionale 43 di Staffal, Anderbatt, Gressoney-La-Trinité, Aosta Valley, Italy",
         "description": "A hike in the Dolomites Nature Park",
         "gpx_track": "Form Pian Belota to la Vacca"
       }
