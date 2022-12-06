@@ -32,6 +32,7 @@ exports.getHikes = async function () {
 
 exports.addHike = async function (req, res) {
 
+  console.log('Inside addHike server side')
   //better rename these two fields in start_point_address and end_point_address because they are address, not idPoint
   const startId = await dao.checkPresenceByAddress(req.body.newHike.start_point)
   const endId = await dao.checkPresenceByAddress(req.body.newHike.end_point)
@@ -40,8 +41,11 @@ exports.addHike = async function (req, res) {
   let hike = {
     title: req.body.newHike.title, length: req.body.newHike.length, expected_time: req.body.newHike.expected_time,
     ascent: req.body.newHike.ascent, difficulty: req.body.newHike.difficulty, start_point: startId.idPoint, end_point: endId.idPoint,
-    reference_points: req.body.newHike.reference_points, description: req.body.newHike.description, gpx_track: req.body.newHike.gpx_track
+    reference_points: req.body.newHike.reference_points, description: req.body.newHike.description, gpx_track: req.body.newHike.gpx_track,
+    local_guide: req.body.newHike.local_guide, hike_condition: req.body.newHike.hike_condition
   }
+  console.log('Before dao call')
+
 
   dao.addHike(hike).then(
     result => {
