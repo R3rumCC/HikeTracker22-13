@@ -427,7 +427,7 @@ function updatePointAltitude(oldIdPoint, altitude) {
 
 function readHuts() {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM POINTS where type = ?';
+    const sql = 'SELECT * FROM POINTS P, HUTS H where type = ? and P.nameLocation = H.nameHut';
     db.all(sql, "Hut", (err, rows) => {
       if (err) {
         reject(err);
