@@ -320,19 +320,19 @@ function addPoint(point) {
     const sql = 'INSERT INTO POINTS (address, nameLocation, gps_coordinates, type, capacity, altitude) VALUES(?,?,?,?,?,?)';
     db.run(sql, point.address, point.nameLocation, point.gps_coordinates, point.type, point.capacity, point.altitude,
       (err, rows) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(this.lastId);
-      }
-    });
+        if (err) {
+          reject(err);
+        } else {
+          resolve(this.lastId);
+        }
+      });
   });
 }
 
 function updatePoint(oldIdPoint, newPoint) {
   return new Promise((resolve, reject) => {
-    const sql = 'UPDATE POINTS SET address = ?, nameLocation = ?, gps_coordinates = ?, type = ? where idPoint = ?';
-    db.run(sql, newPoint.address, newPoint.nameLocation, newPoint.gps_coordinates, newPoint.type, oldIdPoint, (err) => {
+    const sql = 'UPDATE POINTS SET address = ?, nameLocation = ?, gps_coordinates = ?, type = ?, capacity = ?, altitude = ? where idPoint = ?';
+    db.run(sql, newPoint.address, newPoint.nameLocation, newPoint.gps_coordinates, newPoint.type, newPoint.capacity, newPoint.altitude, oldIdPoint, (err) => {
       if (err)
         reject(err);
       else
@@ -401,6 +401,32 @@ function updatePointType(oldIdPoint, type) {
   });
 }
 
+function updatePointCapacity(oldIdPoint, capacity) {
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE POINTS SET capacity = ? where idPoint = ?';
+    db.run(sql, capacity, oldIdPoint, (err) => {
+      if (err)
+        reject(err);
+      else
+        resolve(true);
+    });
+  });
+}
+
+function updatePointAltitude(oldIdPoint, altitude) {
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE POINTS SET altitude = ? where idPoint = ?';
+    db.run(sql, altitude, oldIdPoint, (err) => {
+      if (err)
+        reject(err);
+      else
+        resolve(true);
+    });
+  });
+}
+
+/************* HUTS ************/
+
 function readHuts() {
   return new Promise((resolve, reject) => {
     const sql = 'SELECT * FROM POINTS where type = ?';
@@ -414,18 +440,17 @@ function readHuts() {
   });
 }
 
-/************* HUTS ************/
 function addHut(hut) {
   return new Promise((resolve, reject) => {
     const sql = 'INSERT INTO HUTS (nameHut, phone, email, web_site, description) VALUES(?,?,?,?,?)';
     db.run(sql, hut.nameLocation, hut.phone, hut.email, hut.web_site, hut.description,
       (err, rows) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(this.lastId);
-      }
-    });
+        if (err) {
+          reject(err);
+        } else {
+          resolve(this.lastId);
+        }
+      });
   });
 }
 
@@ -491,5 +516,6 @@ module.exports = {
   updateHikeAscent, updateHikeLength, updateHikeDescription, updateHikeDifficulty,
   updateHikeET, updateHikeStartPoint, updateHikeEndPoint, updateHikeRefPoint, getUserByEmail,
   readPoints, checkPresenceByAddress, addPoint, updatePoint, deletePoint, readHuts, addHut, addCode, deleteCode, getCode, updateCode,
-  updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, readListOfReferencePoints, readPointById//readReferencePoints
+  updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, updatePointCapacity, updatePointAltitude,
+  readListOfReferencePoints, readPointById
 };
