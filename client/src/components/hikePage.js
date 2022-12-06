@@ -31,8 +31,31 @@ import { UNSAFE_NavigationContext, useNavigate } from "react-router-dom";
 
 const $ = require( "jquery" );
 
+// I took it from here: https://stackoverflow.com/a/27943/12249045
+function deg2rad(deg) {
+    return deg * (Math.PI/180)
+}
 
+function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) { //Calc distance between two points
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2-lat1);  // deg2rad below
+    var dLon = deg2rad(lon2-lon1); 
+    var a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2)
+    ; 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var d = R * c; // Distance in km
+    return d;
+}
 
+function calcMinDistance(latlng, positions){ //Get the min distance to from a point to a set of points
+    var distances = positions.map(p => {
+        return getDistanceFromLatLonInKm(latlng.lat, latlng.lng, p[0], p[1])
+    })
+    return Math.min(...distances)
+}
 
 function HikePage(props) {
 
@@ -40,7 +63,7 @@ function HikePage(props) {
         const navigator = useContext(UNSAFE_NavigationContext).navigator;
         useEffect(() => {
             const listener = ({ location, action }) => {
-                console.log("listener", { location, action });
+                // console.log("listener", { location, action });
                 if (action === "POP") {
                     callback({ location, action });
                 }
@@ -51,7 +74,7 @@ function HikePage(props) {
     };
 
     useBackListener(({ location }) =>{
-        console.log("Navigated Back", { location });
+        // console.log("Navigated Back", { location });
         props.setCurrentMarkers([])
     });
     
@@ -152,7 +175,7 @@ function GenericMap(props){ //Map to be inserted anywhere.
                             {endPoint}
                         </Popup>
                     </Marker>
-                    <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></MapHandler>
+                    <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} positions={positions}></MapHandler>
                     <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>
                     <MyComponent gpxPos = {positions}></MyComponent>
                     {<GeoJSON data={geoJSON}></GeoJSON>}
@@ -170,7 +193,7 @@ function GenericMap(props){ //Map to be inserted anywhere.
                         zoom={9}
                     >
                         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                        {!props.clicked ? <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></MapHandler> : ''} 
+                        {!props.clicked ? <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} positions={positions}></MapHandler> : ''} 
                         <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>
                     </MapContainer>
                 </>
@@ -184,7 +207,8 @@ function MapHandler(props) { //Handles just the clicks on the map
         click: (e) => {
             // console.log(e.latlng)
             $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+e.latlng.lat+'&lon='+e.latlng.lng+'&format=json&limit=1', function(data) {
-                var newSelectedMarker = {latlng: e.latlng , address: data.display_name}
+                var minDistance = calcMinDistance(e.latlng, props.positions)
+                var newSelectedMarker = {latlng: e.latlng , address: data.display_name, minDistance: minDistance}
                 if(!props.currentMarkers.find(p=>p.address==newSelectedMarker.address)){
                     var newSelectedMarkers = [...props.currentMarkers,newSelectedMarker]
                     props.setCurrentMarkers(newSelectedMarkers)    
@@ -230,4 +254,4 @@ function  SelectedMarkers(props){
 }
 
 
-export { HikePage, GenericMap };
+export { HikePage, GenericMap, calcMinDistance };
