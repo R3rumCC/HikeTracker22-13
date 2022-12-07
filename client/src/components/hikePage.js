@@ -173,7 +173,7 @@ function GenericMap(props){ //Map to be inserted anywhere.
             console.log(currentMarkersMod)
             props.setCurrentMarkers(currentMarkersMod)
         }
-    }, [props.currentMarkers])  
+    }, [props.currentMarkers, mapList.current])  
     if(map != ''){
     // The commented stuff is only required if we are not passing a GeoJSON
     let gpxParser = require('gpxparser');
@@ -231,7 +231,7 @@ function GenericMap(props){ //Map to be inserted anywhere.
                     zoom={9}
                 >
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                    {!props.clicked ? <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} filter = {props.filter}></MapHandler> : ''} 
+                    {!props.clicked ? <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} generic = {props.generic}></MapHandler> : ''} 
                     <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>
                 </MapContainer>
             </>
@@ -246,7 +246,7 @@ function MapHandler(props) { //Handles just the clicks on the map
             // console.log(e.latlng)
             $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+e.latlng.lat+'&lon='+e.latlng.lng+'&format=json&limit=1', function(data) {
                 let newSelectedMarker = {}
-                if(!props.filter){
+                if(!props.generic){
                     let minDistance = calcMinDistance(e.latlng, props.positions)
                     newSelectedMarker = {latlng: e.latlng , address: data.display_name, minDistance: minDistance}
                 }
