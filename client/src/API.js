@@ -74,6 +74,7 @@ async function getMap(name) {
 
 /*************************ADMIN API**********************/
 
+//necessary?
 async function getAllUsers() {
   return new Promise((resolve, reject) => {
     fetch(URL + '/User')
@@ -97,6 +98,7 @@ async function getAllUsers() {
   });
 };
 
+//necessary?
 function deleteUser(user) {
   return new Promise((resolve, reject) => {
     fetch(URL + '/User/' + user.id, {
@@ -273,6 +275,26 @@ function addPoint(point) {
   });
 }
 
+function addHut(hut) {
+  return new Promise((resolve, reject) => {
+    fetch(URL + '/Huts', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ hut }),
+    }).then((response) => {
+      if (response.ok) {
+        resolve(null);
+      } else {
+        response.json()
+          .then((obj) => { reject(obj); })
+          .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+      }
+    }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+  });
+}
 
 /*************************Email Verification**********************/
 
@@ -308,6 +330,6 @@ async function checkCode(email) {
 
 //EXPORT FUNCTIONS------------------------------
 const API = {
-  logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, addNewHike, getHikes, addPoint, getHuts, checkUser, sendEmail, checkCode, getMap
+  logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, addNewHike, getHikes, addPoint, addHut, getHuts, checkUser, sendEmail, checkCode, getMap
 }
 export default API;

@@ -106,7 +106,6 @@ router.post('/Point', [
   c.addPoint(req, res)
 });
 
-
 router.get('/getHuts', async (req, res) => {
   try {
     const huts = await c.getHuts();
@@ -115,6 +114,19 @@ router.get('/getHuts', async (req, res) => {
   } catch (e) {
     res.status(500).json(e).end();
   }
+});
+
+router.post('/Huts', [
+  body('hut.address').notEmpty().withMessage('Address cannot be empty!'),
+  body('hut.gps_coordinates').notEmpty().withMessage('Gps coordinates cannot be empty!'),
+], (req, res) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array()
+    })
+  }
+  c.addHut(req, res)
 });
 
 module.exports = router

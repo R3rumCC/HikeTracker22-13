@@ -35,6 +35,10 @@ exports.addHike = async function (req, res) {
   //better rename these two fields in start_point_address and end_point_address because they are address, not idPoint
   const startId = await dao.checkPresenceByAddress(req.body.newHike.start_point)
   const endId = await dao.checkPresenceByAddress(req.body.newHike.end_point)
+
+  if (startId==null || endId==null) {
+    return res.status(400)
+  }
   //console.log(startId.idPoint, endId.idPoint)
 
   let hike = {
@@ -42,8 +46,6 @@ exports.addHike = async function (req, res) {
     ascent: req.body.newHike.ascent, difficulty: req.body.newHike.difficulty, start_point: startId.idPoint, end_point: endId.idPoint,
     reference_points: req.body.newHike.reference_points, description: req.body.newHike.description, gpx_track: req.body.newHike.gpx_track
   }
-  //console.log('before db call: ')
-  //console.log(hike)
 
   dao.addHike(hike).then(
     result => {
@@ -141,11 +143,13 @@ exports.getUser = async function (req, res) {
 
 //It checks for the presence of the point in the db, then:
 //-if not present, it is added;
-//-if present, a positive feedback is sent anyway       //Why a positive feedback? Return code to be changed, 200 would indicate that the addPoint succeeds while here it rightly fails because you already have a point with that address
+//-if present, a positive feedback is sent anyway   
 exports.addPoint = async function (req, res) {
 
   try {
     const id = await dao.checkPresenceByAddress(req.body.point.address)
+    console.log("Inside addPoint server side")
+    console.log(req.body.point)
     if (id !== null) {
       return res.status(200).json(id);      
     } else {
@@ -158,6 +162,43 @@ exports.addPoint = async function (req, res) {
         }
       )
     }
+
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+}
+
+//It checks for the presence of the point in the db, then:
+//-if not present, it is added;
+//-if present, a positive feedback is sent anyway   
+exports.addHut = async function (req, res) {
+
+  console.log("Inside addHut server side")
+  console.log(req.body.hut)
+  try {
+    const id = await dao.checkPresenceByAddress(req.body.hut.address)
+    if (id !== null) {
+      return res.status(200).json(id);      
+    }
+
+    const res1= dao.addHut(req.body.hut).then(
+        result => {
+
+          dao.addPoint(req.body.hut).then(
+            result => {
+              return res.status(200).json(result);
+            },
+            error => {
+              return res.status(500).send(error);
+            }
+          )
+        },
+        error => {
+          return res.status(500).send(error);
+        }
+
+    )
 
   } catch (e) {
     console.log(e);

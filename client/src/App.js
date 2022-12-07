@@ -4,7 +4,7 @@ import "./App.css";
 
 import React, { useState, useEffect, useContext, } from 'react';
 import { Container, Toast } from 'react-bootstrap/';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 
 import { DefaultLayout, LoginLayout, HikerLayout, RegisterLayout, FileUploadLayout, SearchLayout } from './components/PageLayout';
 
@@ -16,6 +16,7 @@ import { LocalGuide_Home } from './components/localGuide_view';
 
 import MessageContext from './messageCtx';
 import API from './API';
+import Profile from "./components/profile";
 import { HikeForm } from './components/newHikeForm';
 import FileUploader from './components/UploadGpxForm';
 import { GenericMap, HikePage } from './components/hikePage';
@@ -51,6 +52,7 @@ function App() {
 function Main() {
   /************AUTHENTICATION VARIABLES*****************/
 
+  const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
   const [currentHike, setCurrentHike] = useState([]);
@@ -140,6 +142,15 @@ function Main() {
     }
   };
 
+ //********HANDLE_ADD_HUT*******//
+ const CreateNewHut = async (hut) => {
+  try {
+    await API.addHut(hut)
+  } catch (err) {
+    handleError(err);
+  }
+};
+
   //********HANDLE_NEW_HIKE*******//
   const CreateNewHike = async (hike) => {
     try {
@@ -163,17 +174,23 @@ function Main() {
 
   }
 
+  function goToProfile(){
+    navigate('/profile');
+  } 
 
+  function returnToHome(){
+    navigate('/');
+  } 
 
 
   /*****************************************************/
 
   return (
     <>
-      <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} setCurrentMarkers={setCurrentMarkers} />
+      <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} setCurrentMarkers={setCurrentMarkers} goToProfile={goToProfile} />
       <Routes>
         <Route path="/" element={
-          loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHike={CreateNewHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} /> :
+          loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHut={CreateNewHut} CreateNewHike={CreateNewHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} /> :
             <DefaultLayout role={loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike} />  /*<FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>
@@ -183,6 +200,7 @@ function Main() {
         <Route path="/register" element={!loggedIn ? <RegisterLayout CreateNewAccount={CreateNewAccount} checkUser={checkUser} checkCode={checkCode} sendEmail={sendEmail} /> : <Navigate replace to='/' />} />
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
         <Route path="/searchHut" element={loggedIn && currentUser.role == 'Hiker' ? <SearchLayout /> : <Navigate replace to='/' />} />
+        <Route path="/profile" element={loggedIn && currentUser.role == 'LocalGuide' ? <Profile user={currentUser} returnToHome={returnToHome} /> : <Navigate replace to='/' />} />
       </Routes>
     </>
   );

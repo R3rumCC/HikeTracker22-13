@@ -5,10 +5,14 @@ import { Navbar, Nav, Form, Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { SearchHutButton } from './SearchHut';
 import { LogoutButton, LoginButton } from './Auth';
-
+import { PersonCircle } from "react-bootstrap-icons";
 
 
 const Navigation = (props) => {
+
+  const OPACITY_WHEN_MOUSE_INTERACT = 0.6;
+  const NORMAL_OPACITY = 0.85;
+  const [opacity, setOpacity] = useState(NORMAL_OPACITY);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -21,9 +25,9 @@ const Navigation = (props) => {
   return (
     // 
     <Navbar bg="primary" expand="lg" variant="dark" className="justify-content-between">
-      <Link to="/" onClick={()=>{props.setCurrentMarkers([]); setSearchPage(false);}}>
+      <Link to="/" onClick={() => { props.setCurrentMarkers([]); setSearchPage(false); }}>
         <Navbar.Brand>
-        <i className="bi bi-compass icon-size m-2"/> Hike Tracker
+          <i className="bi bi-compass icon-size m-2" /> Hike Tracker
         </Navbar.Brand>
       </Link>
       <Nav>
@@ -31,16 +35,29 @@ const Navigation = (props) => {
           <Row>
             {props.loggedIn ? <Col >
               <Navbar.Text >
-                { `Welcome, ${props.user.role} ${props.user.name }!`}
+                {`Welcome, ${props.user.role} ${props.user.name}!`}
               </Navbar.Text>
             </Col> : null}
             <Col>
               <Form>
-                  {props.loggedIn && props.user.role == "Hiker" ? <SearchHutButton searchPage={searchPage} setSearchPage={setSearchPage} /> : <></>}
+                {props.loggedIn && props.user.role == "Hiker" ? <SearchHutButton searchPage={searchPage} setSearchPage={setSearchPage} /> : <></>}
               </Form>
             </Col>
             <Col >
-              {props.loggedIn ? <LogoutButton logout={props.logout} /> :  <LoginButton />}
+              {props.loggedIn ? <LogoutButton logout={props.logout} /> : <LoginButton />}
+            </Col>
+            <Col>
+              {props.loggedIn && props.user.role == "LocalGuide" ? <PersonCircle
+                className="m-2"
+                fill="white"
+                fontSize={32}
+                onClick={props.goToProfile}
+                opacity={opacity}
+                onMouseOver={() => setOpacity(OPACITY_WHEN_MOUSE_INTERACT)}
+                onMouseLeave={() => setOpacity(NORMAL_OPACITY)}
+                onMouseDown={() => setOpacity(1)}
+                onMouseUp={() => setOpacity(OPACITY_WHEN_MOUSE_INTERACT)}
+              /> : <></>}
             </Col>
           </Row>
         </Container>
@@ -48,5 +65,6 @@ const Navigation = (props) => {
     </Navbar>
   );
 }
+
 
 export { Navigation }; 
