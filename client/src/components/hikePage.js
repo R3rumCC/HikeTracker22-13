@@ -59,7 +59,7 @@ function calcMinDistance(latlng, positions){ //Get the min distance to from a po
 
 function distanceRespectHikes(latlng, list){
     return [...list].map((x) =>{
-        return {hike: x.hike, positions: x.positions, minDist : calcMinDistance(latlng,x.positions)}
+        return {hike: x.hike, minDist : calcMinDistance(latlng,x.positions)}
     })
 
 }
