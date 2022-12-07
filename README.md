@@ -315,6 +315,35 @@ Paulina Knight:
 
 ## POINTS API
 
+- GET `/api/getPoints`
+  - Description: Obtain the entire list of points 
+  - Request body: _None_
+  - Response: `200 OK` (success) 
+  - Response body: Array of objects, each describing a points:
+    ``` json
+    [
+      {
+        "idPoint": 1,
+        "address": "La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy",
+        "nameLocation": "La Riposa",
+        "gps_coordinates": "45.177786,7.083372",
+        "type": "Hut",
+        "capacity": null,
+        "altitude": null
+      },
+      {
+        "idPoint": 2,
+        "address": "Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy",
+        "nameLocation": "Nostra Signora del Rocciamelone",
+        "gps_coordinates": "45.203531,7.07734",
+        "type": "Hut",
+        "capacity": null,
+        "altitude": null
+      }
+    ]
+    ```
+  - Error responses: `500 Internal Server Error` (database error)
+
 - POST `/api/Point`
   - Description: Add a new point
   - Request body: An object contains a point

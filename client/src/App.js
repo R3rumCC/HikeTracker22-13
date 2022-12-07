@@ -6,7 +6,7 @@ import React, { useState, useEffect, useContext, } from 'react';
 import { Container, Toast } from 'react-bootstrap/';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 
-import { DefaultLayout, LoginLayout, HikerLayout, RegisterLayout, FileUploadLayout, SearchLayout } from './components/PageLayout';
+import { DefaultLayout, LoginLayout, HikerLayout, RegisterLayout, FileUploadLayout, SearchLayout, PointsLayout } from './components/PageLayout';
 
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -20,6 +20,7 @@ import Profile from "./components/profile";
 import { HikeForm } from './components/newHikeForm';
 import FileUploader from './components/UploadGpxForm';
 import { GenericMap, HikePage } from './components/hikePage';
+import { PointsContainer } from './components/pointsCards';
 
 
 function App() {
@@ -56,9 +57,10 @@ function Main() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
   const [currentHike, setCurrentHike] = useState([]);
+  const [points, setPoints] = useState([]);
   const [isLoading, setLoading] = useState(false);
   //Remember to clear the current markers if the user leaves the page
-  const [currentMarkers, setCurrentMarkers] = useState([]) //List of selected positions [[Lat, Lng], [Lat2, Lng2], ...] on a map.
+  const [currentMarkers, setCurrentMarkers] = useState([])
   function handleError(err) {
 
     toast.error(
@@ -69,7 +71,19 @@ function Main() {
 
   }
 
-  //const { handleErrors } = useContext(MessageContext);
+  const { handleErrors } = useContext(MessageContext);
+
+  useEffect(() => {
+    async function fetchInitialValues() {
+      try {
+        const fetchedPoints = await API.getPoints();
+        setPoints(fetchedPoints);
+      } catch (error) {
+        handleErrors(error);
+      }
+    }
+    fetchInitialValues();
+  }, []);
 
   //*******CHECK_AUTH*******//
   useEffect(() => {
@@ -196,7 +210,7 @@ function Main() {
         </Route>
         {/* <Route path="/NewHike" element={<HikeForm/>} /> THIS WAS A TRY TO DO THE .GPX FILE UPLOAD.*/}
         <Route path="/map" element={loggedIn && currentUser.role == 'Hiker' && currentHike.length != 0 ? <HikerLayout currentHike={currentHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} /> : <Navigate replace to='/' />} />
-        {/* <Route path="/genMap" element={<GenericMap currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers}/>} /> */}
+        <Route path="/points" element={<PointsContainer points={points}></PointsContainer>} />
         <Route path="/register" element={!loggedIn ? <RegisterLayout CreateNewAccount={CreateNewAccount} checkUser={checkUser} checkCode={checkCode} sendEmail={sendEmail} /> : <Navigate replace to='/' />} />
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
         <Route path="/searchHut" element={loggedIn && currentUser.role == 'Hiker' ? <SearchLayout /> : <Navigate replace to='/' />} />
