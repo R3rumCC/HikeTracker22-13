@@ -1,7 +1,7 @@
 import { Col, Row } from 'react-bootstrap';
 import { HikesContainer } from './hikesCards';
 import { MapContainer, Polyline, TileLayer, Map, Marker, Popup, useMapEvents, GeoJSON, useMap } from 'react-leaflet'
-import React, { Component, useState, useEffect, useContext }  from 'react';
+import React, { Component, useState, useEffect, useContext, useRef }  from 'react';
 import axiosInstance from "../utils/axios"
 import API from '../API';
 import { UNSAFE_NavigationContext, useNavigate } from "react-router-dom";
@@ -57,6 +57,13 @@ function calcMinDistance(latlng, positions){ //Get the min distance to from a po
     return Math.min(...distances)
 }
 
+function distanceRespectHikes(latlng, list){
+    return [...list].map((x) =>{
+        return {hike: x.hike, positions: x.positions, minDist : calcMinDistance(latlng,x.positions)}
+    })
+
+}
+
 function HikePage(props) {
 
     const useBackListener = (callback) => { // Handler for the back button
@@ -107,9 +114,9 @@ function GenericMap(props){ //Map to be inserted anywhere.
     */
 
     const [map,setMap] = useState('')
+    const mapList = useRef([])
     const [startPoint, setStartPoint]= useState('')
     const [endPoint, setEndPoint]= useState('')
-
     function MyComponent({gpxPos}) {
         const map = useMap()
 
@@ -119,10 +126,22 @@ function GenericMap(props){ //Map to be inserted anywhere.
       }
 
 
-    async function gpxmap(name) {
+    async function gpxmap(name, hike = null) {
         try {
             const map = await API.getMap(name);
-            setMap(map);
+            if(props.currentHike.length > 0){
+                setMap(map);
+            }else{
+                let gpxParser = require('gpxparser');
+                var gpx = new gpxParser()
+                gpx.parse(map)
+                let geoJSON = gpx.toGeoJSON()
+                var positions = geoJSON.features[0].geometry.coordinates.map(p => [p[1], p[0],p[2]]).filter((p)=> p[2]!=null)
+
+               if(mapList.current.filter((x) => x.hike == hike ? true : false).length == 0 || mapList.length == 0){
+                    mapList.current.push({hike: hike, positions: positions})
+                }
+            }
             } catch (error) {
             throw error
             }
@@ -131,74 +150,93 @@ function GenericMap(props){ //Map to be inserted anywhere.
         if(props.currentHike.length > 0){
             gpxmap(props.currentHike[0].gpx_track.replace(/\s/g, ''))
             }
-        else{
+        else if(props.gpxFile){
             setMap(props.gpxFile)
+        }else if(props.hikes){
+            props.hikes.forEach((h) =>{
+                gpxmap(h.gpx_track.replace(/\s/g, ''), h)
+            })
         }
-      }, [props.gpxFile]);
-
-        if(map != ''){
-        // The commented stuff is only required if we are not passing a GeoJSON
-        let gpxParser = require('gpxparser');
-        var gpx = new gpxParser()
-        gpx.parse(map)
-        let geoJSON = gpx.toGeoJSON()
-        //let geoJSON = JSON.parse(props.currentHike[0].gpx_track) //Get the object from a string
-        // console.log(JSON.stringify(geoJSON))
-        //var positions = gpx.tracks[0].points.map(p => [p.lat, p.lon,p.ele]).filter((p)=> p[2]!=null)
-        var positions = geoJSON.features[0].geometry.coordinates.map(p => [p[1], p[0],p[2]]).filter((p)=> p[2]!=null)
-        $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+positions[0][0]+'&lon='+positions[0][1]+'&format=json&limit=1&q=', function(data) {
-            setStartPoint(data.display_name);    
+      }, [props.gpxFile,props.hikes]);
+    useEffect (() =>{
+        if(props.currentMarkers.length!=0 && props.currentMarkers.some((x)=>!x.distHikes)){
+            console.log(props.currentMarkers)
+            let currentMarkersMod = [...props.currentMarkers].map((x) =>{
+                if(!x.distHikes){
+                    let dist = distanceRespectHikes(x.latlng, mapList.current)
+                    console.log(dist)
+                    return {latlng: x.latlng, address: x.address, distHikes: dist }
+                }
+                else
+                    return {latlng: x.latlng, address: x.address, distHikes: x.distHikes }
             })
-        $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+positions[positions.length-1][0]+'&lon='+positions[positions.length-1][1]+'&format=json&limit=1&q=', function(data) {
-            setEndPoint(data.display_name);           
-            })
+            console.log(currentMarkersMod)
+            props.setCurrentMarkers(currentMarkersMod)
+        }
+    }, [props.currentMarkers])  
+    if(map != ''){
+    // The commented stuff is only required if we are not passing a GeoJSON
+    let gpxParser = require('gpxparser');
+    var gpx = new gpxParser()
+    gpx.parse(map)
+    let geoJSON = gpx.toGeoJSON()
+    //let geoJSON = JSON.parse(props.currentHike[0].gpx_track) //Get the object from a string
+    // console.log(JSON.stringify(geoJSON))
+    //var positions = gpx.tracks[0].points.map(p => [p.lat, p.lon,p.ele]).filter((p)=> p[2]!=null)
+    var positions = geoJSON.features[0].geometry.coordinates.map(p => [p[1], p[0],p[2]]).filter((p)=> p[2]!=null)
+    $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+positions[0][0]+'&lon='+positions[0][1]+'&format=json&limit=1&q=', function(data) {
+        setStartPoint(data.display_name);    
+        })
+    $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+positions[positions.length-1][0]+'&lon='+positions[positions.length-1][1]+'&format=json&limit=1&q=', function(data) {
+        setEndPoint(data.display_name);           
+        })
+    return(
+        <>{ map != '' ? 
+            <MapContainer
+                center={positions[Math.round(positions.length/2)]}
+                zoom={positions.length/100 > 1 ? 13 : 15}
+                scrollWheelZoom={false}
+            >
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                {/* This object below is needed if we are passing the path line as a parsed XML, not as a GeoJSON */}
+                    <Polyline
+                    pathOptions={{ fillColor: 'red', color: 'blue' }}
+                    positions={positions}
+                /> 
+                <Marker position={positions[0]}> 
+                    <Popup>
+                        {startPoint}
+                    </Popup>
+                </Marker>
+                <Marker position={positions[positions.length -1]}> 
+                    <Popup>
+                        {endPoint}
+                    </Popup>
+                </Marker>
+                <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} positions={positions}></MapHandler>
+                <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>
+                <MyComponent gpxPos = {positions}></MyComponent>
+                {<GeoJSON data={geoJSON}></GeoJSON>}
+            </MapContainer>
+            : null}
+            
+        </>
+    )    
+    }else {
         return(
-            <>{ map != '' ? 
-                <MapContainer
-                    center={positions[Math.round(positions.length/2)]}
-                    zoom={positions.length/100 > 1 ? 13 : 15}
-                    scrollWheelZoom={false}
+            <>
+                 <MapContainer
+                    className="leaflet-container"
+                    center={[42.715, 12.437]} //Center somewhere random as default
+                    zoom={9}
                 >
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                    {/* This object below is needed if we are passing the path line as a parsed XML, not as a GeoJSON */}
-                     <Polyline
-                        pathOptions={{ fillColor: 'red', color: 'blue' }}
-                        positions={positions}
-                    /> 
-                    <Marker position={positions[0]}> 
-                        <Popup>
-                            {startPoint}
-                        </Popup>
-                    </Marker>
-                    <Marker position={positions[positions.length -1]}> 
-                        <Popup>
-                            {endPoint}
-                        </Popup>
-                    </Marker>
-                    <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} positions={positions}></MapHandler>
+                    {!props.clicked ? <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} filter = {props.filter}></MapHandler> : ''} 
                     <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>
-                    <MyComponent gpxPos = {positions}></MyComponent>
-                    {<GeoJSON data={geoJSON}></GeoJSON>}
                 </MapContainer>
-                : null}
-                
             </>
-        )    
-        }else {
-            return(
-                <>
-                    <MapContainer
-                        className="leaflet-container"
-                        center={[42.715, 12.437]} //Center somewhere random as default
-                        zoom={9}
-                    >
-                        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                        {!props.clicked ? <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} positions={positions}></MapHandler> : ''} 
-                        <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>
-                    </MapContainer>
-                </>
-            )
-        }
+        )
+    }
 
 }
 
@@ -207,8 +245,14 @@ function MapHandler(props) { //Handles just the clicks on the map
         click: (e) => {
             // console.log(e.latlng)
             $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+e.latlng.lat+'&lon='+e.latlng.lng+'&format=json&limit=1', function(data) {
-                var minDistance = calcMinDistance(e.latlng, props.positions)
-                var newSelectedMarker = {latlng: e.latlng , address: data.display_name, minDistance: minDistance}
+                let newSelectedMarker = {}
+                if(!props.filter){
+                    let minDistance = calcMinDistance(e.latlng, props.positions)
+                    newSelectedMarker = {latlng: e.latlng , address: data.display_name, minDistance: minDistance}
+                }
+                else{
+                    newSelectedMarker = {latlng: e.latlng , address: data.display_name}
+                }
                 if(!props.currentMarkers.find(p=>p.address==newSelectedMarker.address)){
                     var newSelectedMarkers = [...props.currentMarkers,newSelectedMarker]
                     props.setCurrentMarkers(newSelectedMarkers)    

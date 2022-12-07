@@ -1,8 +1,9 @@
 import { end } from "@popperjs/core";
-import { useState, React } from "react";
+import { useState, React, useEffect } from "react";
 import { Form, Button, Row, Col, Container} from "react-bootstrap";
 import MultiRangeSlider, {ChangeResult} from "multi-range-slider-react";
 import '../App.css';
+import { GenericMap } from "./hikePage";
 const FilterForm = (props) => {
 
     const [minLength, setminLength] = useState(0)
@@ -15,10 +16,22 @@ const FilterForm = (props) => {
     const [city, setCity] = useState('')
     const [province, setProvince] = useState('')
     const [region, setRegion] = useState('')
+    const [distanceMin, setDistanceMin] = useState(0)
+    const [distanceMax, setDistanceMax] = useState(5)
     const [filterLength,setFilterLength] = useState(false)
     const [filterET,setFilterET] = useState(false)
     const [filterAscent,setFilterAscent] = useState(false)
-
+    const [filterDistance,setFilterDistance] = useState(false)
+    const [point, setPoint] = useState([])
+    const [clicked, setClicked] = useState(false)
+    useEffect(() => {
+		if (point.length != 0) {
+			setClicked(true)
+		}
+		else {
+			setClicked(false)
+		}
+	}, [point]);
     function reset(){
         setminLength(0); setmaxLength(20);
         setETmin(0); setETmax(5); 
@@ -35,7 +48,7 @@ const FilterForm = (props) => {
         const $ = require( "jquery" );
         let filteredHikes = ''
         const filter = {city: city, region: region, province:province, length: {min : minLength, max: maxLength}, expected_time: {min: etMin, max: etMax}, ascent: {min : ascentMin, max: ascentMax},
-        difficulty: difficulty}
+        difficulty: difficulty, distance: {point: point, min: distanceMin, max: distanceMax}}
         props.setLoading(true)
         if(filter.city || filter.region || filter.province){
             let str = "https://nominatim.openstreetmap.org/search?format=json&limit=1&city="+filter.city +"&county="+filter.province+"&state="+filter.region
@@ -64,7 +77,11 @@ const FilterForm = (props) => {
                             if(filter.difficulty)
                                 if(hike['difficulty']!=filter['difficulty'])
                                     bool = false;
-                            
+                            if(filterDistance && filter.distance.point.length != 0){
+                                let found = filter.distance.point[0].distHikes.find(x=> x.hike == hike)
+                                if(found != undefined && !(found.minDist >= filter.distance.min && found.minDist <= filter.distance.max))
+                                    bool = false
+                            }
                             if(bool){
                                 if(filter.city||filter.province||filter.region){
 
@@ -119,7 +136,11 @@ const FilterForm = (props) => {
             if(filter.difficulty)
                 if(hike['difficulty']!=filter['difficulty'])
                     bool = false;
-
+            if(filterDistance && filter.distance.point.length != 0){
+                let found = filter.distance.point[0].distHikes.find(x=> x.hike == hike)
+                if(found != undefined && !(found.minDist >= filter.distance.min && found.minDist <= filter.distance.max))
+                    bool = false
+            }
             return bool
                 
             }
@@ -177,6 +198,11 @@ const FilterForm = (props) => {
                 <Row>
                     <Form.Group className="my-2 ">
                         <Form.Check type="checkbox" label="Filter by Ascent" onChange={()=>setFilterAscent(!filterAscent)}/>
+                    </Form.Group>
+                </Row>
+                <Row>
+                    <Form.Group className="my-2 ">
+                        <Form.Check type="checkbox" label="Filter by Distance" onChange={()=>setFilterDistance(!filterDistance)}/>
                     </Form.Group>
                 </Row>
             </Col>
@@ -293,6 +319,45 @@ const FilterForm = (props) => {
                             </Form.Group>  
                         </Col>
                     </Row>
+                </Form.Group>
+            : null}
+            {filterDistance ?
+                <Form.Group className="my-2">
+                    <Form.Label>Range Distance</Form.Label>
+                    <Row className="mx-2">
+                        <MultiRangeSlider
+                            min={0}
+                            max={30}
+                            step={1}
+                            ruler ={false}
+                            label = {true}
+                            barInnerColor ={'#0091ea'}
+                            style = {{border: 'none', boxShadow: 'none'}}
+                            minValue={distanceMin}
+                            maxValue={distanceMax}
+                            minCaption = {distanceMin}
+                            maxCaption = {distanceMax}
+                            onInput={(e) => {
+                                setDistanceMin(e.minValue)
+                                setDistanceMax(e.maxValue)
+                            }}
+                        />
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Form.Group className="mb-3">
+                                <Form.Label>From</Form.Label>
+                                <Form.Control type="number" required={false} value={distanceMin} placeholder = {distanceMin} onChange={event => setDistanceMin(event.target.value)}/>
+                            </Form.Group>  
+                        </Col>
+                        <Col>
+                            <Form.Group className="mb-3">
+                                <Form.Label>to</Form.Label>
+                                <Form.Control type="number" required={false} value={distanceMax} placeholder = {distanceMax} onChange={event => setDistanceMax(event.target.value)}/>
+                            </Form.Group>  
+                        </Col>
+                    </Row>
+                    <GenericMap gpxFile={''} currentHike={[]} currentMarkers = {point} setCurrentMarkers = {setPoint} clicked={clicked} filter={true} hikes ={props.hikes} ></GenericMap>
                 </Form.Group>
             : null}
             </Row>     
