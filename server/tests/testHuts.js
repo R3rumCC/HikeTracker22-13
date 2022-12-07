@@ -1,0 +1,149 @@
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+chai.use(chaiHttp);
+chai.should();
+
+const testDao = require('../test-dao');
+
+const app = require('../index');
+let agent = chai.request.agent(app); //.agent() is needed for keep cookies from one reuqent
+
+function Point(idPoint, address, nameLocation, gps_coordinates, type, capacity, altitude) {
+	this.idPoint = idPoint;
+	this.address = address;
+	this.nameLocation = nameLocation;
+	this.gps_coordinates = gps_coordinates;
+	this.type = type;
+	this.capacity = capacity;
+	this.altitude = altitude;
+}
+
+function HutNameLocation(idHut, nameHut, phone, email, web_site, description) {
+	this.idHut = idHut;
+	this.nameLocation = nameHut;
+	this.phone = phone;
+	this.email = email;
+	this.web_site = web_site;
+	this.description = description;
+}
+
+function HutNameHut(idHut, nameHut, phone, email, web_site, description) {
+	this.idHut = idHut;
+	this.nameHut = nameHut;
+	this.phone = phone;
+	this.email = email;
+	this.web_site = web_site;
+	this.description = description;
+}
+
+describe("Huts test", () => {
+	beforeEach(async () => {
+		await testDao.run('DELETE FROM HikePoint');
+		await testDao.run('DELETE FROM Huts');
+		await testDao.run('DELETE FROM Points');
+		await testDao.run('DELETE FROM SQLITE_SEQUENCE');
+		await testDao.run("INSERT OR IGNORE INTO Points(address, nameLocation, gps_coordinates, type, capacity, altitude)\
+                        VALUES ('La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',\
+                        'Hut#1', '45.177786,7.083372', 'Hut', null, null), \
+                        ('Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy',\
+                        'Hut#2', '45.203531,7.07734', 'Hut', null, null), \
+                        ('327, Lago di San Bernolfo - Collalunga, Vinadio, Cuneo, Piedmont, Italy',\
+                        'Happy Parking Lot', '44.259583,7.039722', 'Parking Lot', null, null), \
+                        ('Vinadio, Cuneo, Piedmont, Italy',\
+                        'Sad Parking Lot', '44.249216,7.017648', 'Parking Lot', null, null)");
+		await testDao.run(`INSERT OR IGNORE INTO Huts(idHut, nameHut, phone, email, web_site, description)
+                        VALUES (1, "Strada Provinciale 53 di Val d'Orcia",
+                        '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena')`);
+	});
+
+	afterEach(async () => {
+		await testDao.run('DELETE FROM HikePoint');
+		await testDao.run('DELETE FROM Huts');
+		await testDao.run('DELETE FROM Points');
+		await testDao.run('DELETE FROM SQLITE_SEQUENCE');
+		await testDao.run("INSERT OR IGNORE INTO Points(address, nameLocation, gps_coordinates, type, capacity, altitude)\
+                        VALUES ('La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',\
+                        'Hut#1', '45.177786,7.083372', 'Hut', null, null), \
+                        ('Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy',\
+                        'Hut#2', '45.203531,7.07734', 'Hut', null, null), \
+                        ('327, Lago di San Bernolfo - Collalunga, Vinadio, Cuneo, Piedmont, Italy',\
+                        'Happy Parking Lot', '44.259583,7.039722', 'Parking Lot', null, null), \
+                        ('Vinadio, Cuneo, Piedmont, Italy',\
+                        'Sad Parking Lot', '44.249216,7.017648', 'Parking Lot', null, null)");
+		await testDao.run(`INSERT OR IGNORE INTO Huts(idHut, nameHut, phone, email, web_site, description)
+                        VALUES (1, "Strada Provinciale 53 di Val d'Orcia",
+                        '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena')`);
+		await testDao.run("INSERT OR IGNORE INTO HikePoint(idPoint, titleHike)\
+                        VALUES ('4', 'Hike#1'), \
+                        ('3', 'Hike#2'), \
+                        ('1', 'Hike#2'), \
+                        ('1', 'Hike#1')");
+	});
+
+	obtainHuts(200);
+	/*addNewHut(200, 1, "Strada Provinciale 53 di Val d'Orcia", '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena');
+  addNewHut(400, 1, "Strada Provinciale 53 di Val d'Orcia", '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena');
+	addNewHut(400, 1, "Strada Provinciale 53 di Val d'Orcia", '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena');
+	addNewHut(400, 1, "Strada Provinciale 53 di Val d'Orcia", '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena');
+	addNewHut(400, 1, "Strada Provinciale 53 di Val d'Orcia", '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena');
+	addNewHut(400, 1, "Strada Provinciale 53 di Val d'Orcia", '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena');*/
+	
+});
+
+function addNewHut(expectedHTTPStatus, idHut, nameHut, phone, email, web_site, description) {
+	it('add a new hut', async function () {
+		await testDao.run('DELETE FROM HikePoint');
+		await testDao.run('DELETE FROM Huts');
+		await testDao.run('DELETE FROM Points');
+		await testDao.run('DELETE FROM SQLITE_SEQUENCE');
+		const newHut = new HutNameLocation(idHut, nameHut, phone, email, web_site, description);
+		reqBody = JSON.stringify({ newHut });
+		return agent.post('/api/Huts')
+			.set('Content-Type', 'application/json')
+			.send(reqBody)
+			.then(function (res) {
+				res.should.have.status(expectedHTTPStatus);
+			})
+	});
+}
+
+function addTwoTimeNewHut(expectedHTTPStatus, idHut, nameHut, phone, email, web_site, description) {
+	it('add two times a new hut', async function () {
+		await testDao.run('DELETE FROM HikePoint');
+		await testDao.run('DELETE FROM Huts');
+		await testDao.run('DELETE FROM Points');
+		await testDao.run('DELETE FROM SQLITE_SEQUENCE');
+		const newHut = new HutNameLocation(idHut, nameHut, phone, email, web_site, description);
+		reqBody = JSON.stringify({ newHut });
+		await agent.post('/api/Huts')
+			.set('Content-Type', 'application/json')
+			.send(reqBody);
+		return agent.post('/api/Huts')
+			.set('Content-Type', 'application/json')
+			.send(reqBody)
+			.then(function (res) {
+				res.should.have.status(expectedHTTPStatus);
+			});
+	});
+}
+
+function obtainHuts(expectedHTTPStatus) {
+	it('get list of huts', async function () {
+		return agent.get('/api/getHuts')
+			.then(function (res) {
+				res.should.have.status(expectedHTTPStatus);
+			})
+	});
+};
+
+/*async function logout() {
+	await agent.delete('/api/sessions/current')
+}
+
+async function login() {
+	await agent.post('/api/sessions')
+			.send(userCredentials)
+			.then(function (res) {
+					res.should.have.status(200);
+			});
+}*/
