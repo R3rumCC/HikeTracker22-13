@@ -357,7 +357,7 @@ const FilterForm = (props) => {
                             </Form.Group>  
                         </Col>
                     </Row>
-                    <GenericMap gpxFile={''} currentHike={[]} currentMarkers = {point} setCurrentMarkers = {setPoint} clicked={clicked} generic={true} hikes ={props.hikes} ></GenericMap>
+                    <GenericMap gpxFile={''} currentHike={[]} currentMarkers = {point} setCurrentMarkers = {setPoint} clicked={clicked} generic={true} hikes = {props.hikes} radiusMin = {distanceMin} radiusMax ={distanceMax}></GenericMap>
                 </Form.Group>
             : null}
             </Row>     

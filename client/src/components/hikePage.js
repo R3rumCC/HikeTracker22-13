@@ -1,6 +1,7 @@
 import { Col, Row } from 'react-bootstrap';
 import { HikesContainer } from './hikesCards';
-import { MapContainer, Polyline, TileLayer, Map, Marker, Popup, useMapEvents, GeoJSON, useMap } from 'react-leaflet'
+import { MapContainer, Polyline, TileLayer, Map, Marker, Popup, useMapEvents, GeoJSON, useMap, Circle, LayerGroup,  } from 'react-leaflet'
+import * as L from "leaflet";
 import React, { Component, useState, useEffect, useContext, useRef }  from 'react';
 import axiosInstance from "../utils/axios"
 import API from '../API';
@@ -103,6 +104,17 @@ function HikePage(props) {
     )
     
 };
+const LeafIcon = L.Icon.extend({
+    options: {}
+  });
+const blueIcon = new LeafIcon({
+iconUrl:
+    "https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|abcdef&chf=a,s,ee00FFFF"
+}),
+greenIcon = new LeafIcon({
+iconUrl:
+    "https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|2ecc71&chf=a,s,ee00FFFF"
+});
 
 function GenericMap(props){ //Map to be inserted anywhere. 
     /*
@@ -124,7 +136,6 @@ function GenericMap(props){ //Map to be inserted anywhere.
 
         return null
       }
-
 
     async function gpxmap(name, hike = null) {
         try {
@@ -223,16 +234,29 @@ function GenericMap(props){ //Map to be inserted anywhere.
         </>
     )    
     }else {
+    
         return(
             <>
                  <MapContainer
                     className="leaflet-container"
                     center={[42.715, 12.437]} //Center somewhere random as default
-                    zoom={9}
+                    zoom={5}
                 >
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                    {props.generic ? props.hikes.map( p => {
+
+                            return(
+                                <Marker icon={greenIcon} key={Math.random()} position={{lat: p.start_point_coordinates.split(',')[0], lng: p.start_point_coordinates.split(',')[1]}}>
+                                    <Popup >
+                                        {p.start_point_address}
+                                    </Popup>
+                                </Marker> 
+                            )
+                            })
+                    : ''}
                     {!props.clicked ? <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} generic = {props.generic}></MapHandler> : ''} 
-                    <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>
+                    {props.radiusMax || props.radiusMin ? <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} radiusMin={props.radiusMin} radiusMax={props.radiusMax}></SelectedMarkers> :
+                    <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>}
                 </MapContainer>
             </>
         )
@@ -271,23 +295,31 @@ function  SelectedMarkers(props){
             {props.currentMarkers.length>0 ? props.currentMarkers.map( p => {
 
                 return(
-                    
-                    <Marker key={Math.random()} position={p.latlng}
-                        eventHandlers={{
-                            click: (e) => {
-                                console.log("CLICKERD")
-                                let newSelectedMarkers = props.currentMarkers.filter(m=>m.address!=p.address);
-                                props.setCurrentMarkers(newSelectedMarkers);
-                                console.log(props.currentMarkers)   
+                    <LayerGroup>
+                        <Marker key={Math.random()} position={p.latlng}
+                            eventHandlers={{
+                                click: (e) => {
+                                    console.log("CLICKERD")
+                                    let newSelectedMarkers = props.currentMarkers.filter(m=>m.address!=p.address);
+                                    props.setCurrentMarkers(newSelectedMarkers);
+                                    console.log(props.currentMarkers)   
+                                }
+                            }}
+                        >
+                            {  
+                                <Popup>
+                                    {p.address}
+                                </Popup>
                             }
-                        }}
-                    >
-                        {  
-                            <Popup>
-                                {p.address}
-                            </Popup>
-                        }
-                    </Marker>
+                        </Marker>
+                        {props.radiusMax || props.radiusMin ? 
+                            <>
+                                <Circle key={'RadiusMax'} center={p.latlng} fillColor="green" radius={props.radiusMax*1000}/>
+                                <Circle key={'RadiusMin'} center={p.latlng} fillColor="red" radius={props.radiusMin*1000}/>
+                            </> 
+                            : null}
+
+                    </LayerGroup>
                     
                 )
             })
