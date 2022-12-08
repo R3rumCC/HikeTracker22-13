@@ -91,7 +91,15 @@ router.post('/newHike', [
   c.addHike(req, res)
 });
 
-//router.post('/Point', c.addPoint);
+router.get('/getPoints', async (req, res) => {
+  try {
+    const points = await c.getPoints();
+    console.log(points);
+    res.status(200).json(points).end();
+  } catch (e) {
+    res.status(500).json(e).end();
+  }
+});
 
 router.post('/Point', [
   body('point.address').notEmpty().withMessage('Address cannot be empty!'),

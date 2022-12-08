@@ -140,6 +140,15 @@ exports.getUser = async function (req, res) {
   )
 }
 
+exports.getPoints = async function () {
+  try {
+    const points = await dao.readPoints();
+    return points;
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+}
 
 //It checks for the presence of the point in the db, then:
 //-if not present, it is added;
