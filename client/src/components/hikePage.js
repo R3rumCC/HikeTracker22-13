@@ -60,7 +60,7 @@ function calcMinDistance(latlng, positions){ //Get the min distance to from a po
 
 function distanceRespectHikes(latlng, list){
     return [...list].map((x) =>{
-        return {hike: x.hike, minDist : calcMinDistance(latlng,x.positions)}
+        return {hike: x.hike, minDist : getDistanceFromLatLonInKm(latlng.lat,latlng.lng,x.start.split(',')[0],x.start.split(',')[1])}
     })
 
 }
@@ -140,19 +140,7 @@ function GenericMap(props){ //Map to be inserted anywhere.
     async function gpxmap(name, hike = null) {
         try {
             const map = await API.getMap(name);
-            if(props.currentHike.length > 0){
-                setMap(map);
-            }else{
-                let gpxParser = require('gpxparser');
-                var gpx = new gpxParser()
-                gpx.parse(map)
-                let geoJSON = gpx.toGeoJSON()
-                var positions = geoJSON.features[0].geometry.coordinates.map(p => [p[1], p[0],p[2]]).filter((p)=> p[2]!=null)
-
-               if(mapList.current.filter((x) => x.hike == hike ? true : false).length == 0 || mapList.length == 0){
-                    mapList.current.push({hike: hike, positions: positions})
-                }
-            }
+            setMap(map);
             } catch (error) {
             throw error
             }
@@ -165,7 +153,9 @@ function GenericMap(props){ //Map to be inserted anywhere.
             setMap(props.gpxFile)
         }else if(props.hikes){
             props.hikes.forEach((h) =>{
-                gpxmap(h.gpx_track.replace(/\s/g, ''), h)
+                if(mapList.current.filter((x) => x.hike == h ? true : false).length == 0 || mapList.length == 0){
+                    mapList.current.push({hike: h, start: h.start_point_coordinates})
+                }
             })
         }
       }, [props.gpxFile,props.hikes]);
