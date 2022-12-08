@@ -337,7 +337,7 @@ function HikeForm(props) {
         <Form.Group className='mt-3'>
         {gpxPos != null ?
             <>
-                <GenericMap gpxFile={map} currentHike={[]} currentMarkers={[]} setCurrentMarkers={''}/>
+                <GenericMap gpxFile={map} currentHike={[]} currentMarkers={[]} setCurrentMarkers={''} />
             </>
             : null}
         </Form.Group>
@@ -513,7 +513,7 @@ function HutForm(props) {
         </div>
     </Form>
 
-		<GenericMap gpxFile={''} currentHike={[]} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} clicked={clicked} />
+		<GenericMap gpxFile={''} currentHike={[]} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} clicked={clicked} generic={true}/>
 	</>)
 }
 
@@ -616,7 +616,7 @@ function ParkingLotForm(props) {
         <Button onClick={()=>{reset()}} className='ms-2 my-2'>Cancel</Button>
 
     </Form>
-    <GenericMap gpxFile={''} currentHike={[]} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} clicked={clicked} />
+    <GenericMap gpxFile={''} currentHike={[]} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} clicked={clicked} generic={true}/>
 
     </>)
 }

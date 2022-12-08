@@ -243,7 +243,7 @@ function GenericMap(props){ //Map to be inserted anywhere.
                     zoom={5}
                 >
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                    {props.generic ? props.hikes.map( p => {
+                    {props.filter  ? props.hikes.map( p => {
 
                             return(
                                 <Marker icon={greenIcon} key={Math.random()} position={{lat: p.start_point_coordinates.split(',')[0], lng: p.start_point_coordinates.split(',')[1]}}>
@@ -255,7 +255,7 @@ function GenericMap(props){ //Map to be inserted anywhere.
                             })
                     : ''}
                     {!props.clicked ? <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} generic = {props.generic}></MapHandler> : ''} 
-                    {props.radiusMax || props.radiusMin ? <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} radiusMin={props.radiusMin} radiusMax={props.radiusMax}></SelectedMarkers> :
+                    {props.filter ? <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} radiusMin={props.radiusMin} radiusMax={props.radiusMax}></SelectedMarkers> :
                     <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>}
                 </MapContainer>
             </>
