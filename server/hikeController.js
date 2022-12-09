@@ -183,8 +183,8 @@ exports.addPoint = async function (req, res) {
 //-if present, a positive feedback is sent anyway   
 exports.addHut = async function (req, res) {
 
-  console.log("Inside addHut server side")
-  console.log(req.body.hut)
+  //console.log("Inside addHut server side")
+ // console.log(req.body.hut)
   try {
     const id = await dao.checkPresenceByAddress(req.body.hut.address)
     if (id !== null) {

@@ -127,6 +127,9 @@ router.get('/getHuts', async (req, res) => {
 router.post('/Huts', [
   body('hut.address').notEmpty().withMessage('Address cannot be empty!'),
   body('hut.gps_coordinates').notEmpty().withMessage('Gps coordinates cannot be empty!'),
+  body('hut.phone').notEmpty().withMessage('Phone cannot be empty!'),
+  body('hut.email').notEmpty().withMessage('Email cannot be empty!'),
+  body('hut.description').notEmpty().withMessage('Description cannot be empty!'),
 ], (req, res) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {

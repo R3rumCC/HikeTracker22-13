@@ -4,9 +4,9 @@ const dao = require('../DAO');
 const testDao = require('../test-dao');
 
 describe("Huts test", () => {
-	beforeEach(async () => {
-		await testDao.run('DELETE FROM HikePoint');
-		await testDao.run('DELETE FROM Huts');
+  beforeEach(async () => {
+    await testDao.run('DELETE FROM HikePoint');
+    await testDao.run('DELETE FROM Huts');
     await testDao.run('DELETE FROM Points');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
     await testDao.run("INSERT OR IGNORE INTO Points(address, nameLocation, gps_coordinates, type, capacity, altitude)\
@@ -18,14 +18,16 @@ describe("Huts test", () => {
                     'Happy Parking Lot', '44.259583,7.039722', 'Parking Lot', null, null), \
                     ('Vinadio, Cuneo, Piedmont, Italy',\
                     'Sad Parking Lot', '44.249216,7.017648', 'Parking Lot', null, null)");
-		await testDao.run(`INSERT OR IGNORE INTO Huts(idHut, nameHut, phone, email, web_site, description)
+    await testDao.run(`INSERT OR IGNORE INTO Huts(idHut, nameHut, phone, email, web_site, description)
                     VALUES (1, "Strada Provinciale 53 di Val d'Orcia",
-                    '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena')`);
-	});
+                    '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena'),
+                    (2, "Hut#1",
+                    '3209987875', 'test@gmail.com', 'www.test.com', 'Testing hut')`);
+  });
 
-	afterAll(async () => {
-		await testDao.run('DELETE FROM HikePoint');
-		await testDao.run('DELETE FROM Huts');
+  afterAll(async () => {
+    await testDao.run('DELETE FROM HikePoint');
+    await testDao.run('DELETE FROM Huts');
     await testDao.run('DELETE FROM Points');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
     await testDao.run("INSERT OR IGNORE INTO Points(address, nameLocation, gps_coordinates, type, capacity, altitude)\
@@ -37,15 +39,17 @@ describe("Huts test", () => {
                     'Happy Parking Lot', '44.259583,7.039722', 'Parking Lot', null, null), \
                     ('Vinadio, Cuneo, Piedmont, Italy',\
                     'Sad Parking Lot', '44.249216,7.017648', 'Parking Lot', null, null)");
-		await testDao.run(`INSERT OR IGNORE INTO Huts(idHut, nameHut, phone, email, web_site, description)
+    await testDao.run(`INSERT OR IGNORE INTO Huts(idHut, nameHut, phone, email, web_site, description)
                     VALUES (1, "Strada Provinciale 53 di Val d'Orcia",
-                    '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena')`);
-		await testDao.run("INSERT OR IGNORE INTO HikePoint(idPoint, titleHike)\
+                    '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena'),
+                    (2, "Hut#1",
+                    '3209987875', 'test@gmail.com', 'www.test.com', 'Testing hut')`);
+    await testDao.run("INSERT OR IGNORE INTO HikePoint(idPoint, titleHike)\
                     VALUES ('4', 'Hike#1'), \
                     ('3', 'Hike#2'), \
                     ('1', 'Hike#2'), \
-                    ('1', 'Hike#1')");					
-	});
+                    ('1', 'Hike#1')");
+  });
 
   function Point(idPoint, address, nameLocation, gps_coordinates, type, capacity, altitude) {
     this.idPoint = idPoint;
@@ -57,48 +61,62 @@ describe("Huts test", () => {
     this.altitude = altitude;
   }
 
-	function HutNameLocation(idHut, nameHut, phone, email, web_site, description) {
-		this.idHut = idHut;
-		this.nameLocation = nameHut;
-		this.phone = phone;
-		this.email = email;
-		this.web_site = web_site;
-		this.description = description;
-	}
+  function HutNameLocation(idHut, nameHut, phone, email, web_site, description) {
+    this.idHut = idHut;
+    this.nameLocation = nameHut;
+    this.phone = phone;
+    this.email = email;
+    this.web_site = web_site;
+    this.description = description;
+  }
 
-	function HutNameHut(idHut, nameHut, phone, email, web_site, description) {
-		this.idHut = idHut;
-		this.nameHut = nameHut;
-		this.phone = phone;
-		this.email = email;
-		this.web_site = web_site;
-		this.description = description;
-	}
+  function HutNameHut(idHut, nameHut, phone, email, web_site, description) {
+    this.idHut = idHut;
+    this.nameHut = nameHut;
+    this.phone = phone;
+    this.email = email;
+    this.web_site = web_site;
+    this.description = description;
+  }
 
-	// need to change, for now in db there is inconsistency between the huts in Points table and huts in Huts table
-	test('test readHuts', async () => {
-		const data = await dao.readHuts();
-		const p1 = new Point(1, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
-			'Hut#1', '45.177786,7.083372', 'Hut', null, null);
-		const p2 = new Point(2, 'Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy',
-			'Hut#2', '45.203531,7.07734', 'Hut', null, null);
-		const points_check = [p1, p2];
-		expect(data).toEqual(points_check);
-	});
+  function HutPoint(idPoint, address, nameLocation, gps_coordinates, type, capacity, altitude, idHut, nameHut, phone, email, web_site, description) {
+    this.idPoint = idPoint;
+    this.address = address;
+    this.nameLocation = nameLocation;
+    this.gps_coordinates = gps_coordinates;
+    this.type = type;
+    this.capacity = capacity;
+    this.altitude = altitude;
+    this.idHut = idHut;
+    this.nameHut = nameHut;
+    this.phone = phone;
+    this.email = email;
+    this.web_site = web_site;
+    this.description = description;
+  }
 
-	// need to change, for now in db there is inconsistency between the huts in Points table and huts in Huts table
-	test('test addHut', async () => {
+  // need to change, for now in db there is inconsistency between the huts in Points table and huts in Huts table
+  test('test readHuts', async () => {
+    const data = await dao.readHuts();
+    const p1 = new HutPoint(1, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
+      'Hut#1', '45.177786,7.083372', 'Hut', null, null, 2, 'Hut#1', '3209987875', 'test@gmail.com', 'www.test.com', 'Testing hut');
+    const points_check = [p1];
+    expect(data).toEqual(points_check);
+  });
+
+  // need to change, for now in db there is inconsistency between the huts in Points table and huts in Huts table
+  test('test addHut', async () => {
     await testDao.run('DELETE FROM Points');
-		await testDao.run('DELETE FROM Huts');
+    await testDao.run('DELETE FROM Huts');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
     const hut = new HutNameLocation(1, "Strada Provinciale 53 di Val d'Orcia", '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena');
     const check = await dao.addHut(hut);
     expect(check).toBe(undefined);	//this.lastid
   });
 
-  test('test addHut, double insert', async () => {     
+  test('test addHut, double insert', async () => {
     await testDao.run('DELETE FROM Points');
-		await testDao.run('DELETE FROM Huts');
+    await testDao.run('DELETE FROM Huts');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
     const hut = new HutNameLocation(1, "Strada Provinciale 53 di Val d'Orcia", '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena');
     const check = await dao.addHut(hut);
@@ -107,10 +125,10 @@ describe("Huts test", () => {
       await dao.addHut(hut);
     } catch (error) {
       expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: UNIQUE constraint failed: Huts.nameHut");
-    }  
+    }
   });
 
-  test('test addPoint wrong number of fields', async () => {   
+  test('test addPoint wrong number of fields', async () => {
     await testDao.run('DELETE FROM Points');
     await testDao.run('DELETE FROM Huts');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
@@ -118,11 +136,11 @@ describe("Huts test", () => {
     try {
       await dao.addHut(hut);
     } catch (error) {
-      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Huts.description");    
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Huts.description");
     }
   });
 
-  test('test addPoint wrong id', async () => {   
+  test('test addPoint wrong id', async () => {
     await testDao.run('DELETE FROM Points');
     await testDao.run('DELETE FROM Huts');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
@@ -130,11 +148,11 @@ describe("Huts test", () => {
     try {
       await dao.addHut(hut);
     } catch (error) {
-      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Huts.idHut");    
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Huts.idHut");
     }
   });
 
-	test('test addPoint wrong nameHut', async () => {   
+  test('test addPoint wrong nameHut', async () => {
     await testDao.run('DELETE FROM Points');
     await testDao.run('DELETE FROM Huts');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
@@ -142,11 +160,11 @@ describe("Huts test", () => {
     try {
       await dao.addHut(hut);
     } catch (error) {
-      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Huts.nameHut");    
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Huts.nameHut");
     }
   });
 
-	test('test addPoint wrong phone', async () => {   
+  test('test addPoint wrong phone', async () => {
     await testDao.run('DELETE FROM Points');
     await testDao.run('DELETE FROM Huts');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
@@ -154,11 +172,11 @@ describe("Huts test", () => {
     try {
       await dao.addHut(hut);
     } catch (error) {
-      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Huts.phone");    
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Huts.phone");
     }
   });
 
-	test('test addPoint wrong email', async () => {   
+  test('test addPoint wrong email', async () => {
     await testDao.run('DELETE FROM Points');
     await testDao.run('DELETE FROM Huts');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
@@ -166,7 +184,7 @@ describe("Huts test", () => {
     try {
       await dao.addHut(hut);
     } catch (error) {
-      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Huts.email");    
+      expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: NOT NULL constraint failed: Huts.email");
     }
   });
 
