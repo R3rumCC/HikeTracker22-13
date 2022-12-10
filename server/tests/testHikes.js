@@ -11,7 +11,7 @@ const app = require('../index');
 let agent = chai.request.agent(app); //.agent() is needed for keep cookies from one reuqent
 
 //for inconsistency in db -> addHike and updateHike have the fields "start_point" and "end_point" while readHikes has "start_point_idPoint" and "end_point_idPoint"
-function HikeWithFormatNo_idPoint(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track) {
+function HikeWithFormatNo_idPoint(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track, hike_condition, hike_condition_description, local_guide) {
   this.title = title;
   this.length = length;
   this.expected_time = expected_time;
@@ -22,6 +22,9 @@ function HikeWithFormatNo_idPoint(title, length, expected_time, ascent, difficul
   this.reference_points = reference_points;
   this.description = description;
   this.gpx_track = gpx_track;
+  this.hike_condition = hike_condition;
+  this.hike_condition_description = hike_condition_description;
+  this.local_guide = local_guide;
 }
 
 function setStartPoint(hike, address, location, coordinates, type) {
@@ -44,11 +47,11 @@ describe("Hike test", () => {
     await testDao.run('DELETE FROM Points');
     await testDao.run('DELETE FROM Hikes');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
-    await testDao.run(`INSERT OR IGNORE INTO Hikes(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track)
-            VALUES ('Hike#1', '5.0', '5', '5.0', 'Tourist', '1', '2',
-            '2-3', 'First easy example hike', ?), 
-            ('Hike#2', '10.0', '10', '10.0', 'Professional hiker', '3', '4',
-            '4', 'Second example hike, very difficult', ?)`, [rocciamelone, carborant]);
+    await testDao.run(`INSERT OR IGNORE INTO Hikes(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track, hike_condition, hike_condition_description, local_guide)
+            VALUES ('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2,
+            '2-3', 'First easy example hike', ?, null, null, 'paulina.knight@gmail.com'), 
+            ('Hike#2', 10.0, 10, 10.0, 'Professional hiker', 3, 4,
+            '4', 'Second example hike, very difficult', ?, null, null, 'mario.rossi@gmail.com')`,[rocciamelone, carborant]);
     await testDao.run(`INSERT OR IGNORE INTO Points(address, nameLocation, gps_coordinates, type)
                             VALUES ('La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
                             'Hut#1', '45.177786,7.083372', 'Hut'), 
@@ -70,11 +73,11 @@ describe("Hike test", () => {
     await testDao.run('DELETE FROM Points');
     await testDao.run('DELETE FROM Hikes');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
-    await testDao.run(`INSERT OR IGNORE INTO Hikes(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track)
-            VALUES ('Hike#1', '5.0', '5', '5.0', 'Tourist', '1', '2',
-            '2-3', 'First easy example hike', ?), 
-            ('Hike#2', '10.0', '10', '10.0', 'Professional hiker', '3', '4',
-            '4', 'Second example hike, very difficult', ?)`, [rocciamelone, carborant]);
+    await testDao.run(`INSERT OR IGNORE INTO Hikes(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track, hike_condition, hike_condition_description, local_guide)
+            VALUES ('Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2,
+            '2-3', 'First easy example hike', ?, null, null, 'paulina.knight@gmail.com'), 
+            ('Hike#2', 10.0, 10, 10.0, 'Professional hiker', 3, 4,
+            '4', 'Second example hike, very difficult', ?, null, null, 'mario.rossi@gmail.com')`,[rocciamelone, carborant]);
     await testDao.run(`INSERT OR IGNORE INTO Points(address, nameLocation, gps_coordinates, type)
                             VALUES ('La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
                             'Hut#1', '45.177786,7.083372', 'Hut'), 
@@ -92,29 +95,29 @@ describe("Hike test", () => {
   });
 
   obtainHikes(200);
-  addNewHike(200, 'Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
-  addNewHike(400, null, 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
-  addNewHike(400, 'Hike#1', null, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
-  addNewHike(400, 'Hike#1', 5.0, null, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
-  addNewHike(400, 'Hike#1', 5.0, 5, null, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
-  addNewHike(400, 'Hike#1', 5.0, 5, 5.0, null, 1, 2, '2-3', 'First easy example hike', rocciamelone);
+  addNewHike(200, 'Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone, null, null, 'paulina.knight@gmail.com');
+  addNewHike(400, null, 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone, null, null, 'paulina.knight@gmail.com');
+  addNewHike(400, 'Hike#1', null, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone, null, null, 'paulina.knight@gmail.com');
+  addNewHike(400, 'Hike#1', 5.0, null, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone, null, null, 'paulina.knight@gmail.com');
+  addNewHike(400, 'Hike#1', 5.0, 5, null, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone, null, null, 'paulina.knight@gmail.com');
+  addNewHike(400, 'Hike#1', 5.0, 5, 5.0, null, 1, 2, '2-3', 'First easy example hike', rocciamelone, null, null, 'paulina.knight@gmail.com');
 
   // this 2 two fails because for now in HikeRouter we check the address in start_point and end_point and the we retrive the id from db
-  /*addNewHike(400, 'Hike#1', 5.0, 5, 5.0, 'Tourist', null, 2, '2-3', 'First easy example hike', rocciamelone);
-  addNewHike(400, 'Hike#1', 5.0, 5, 5.0, 'Tourist', 1, null, '2-3', 'First easy example hike', rocciamelone);*/
+  /*addNewHike(400, 'Hike#1', 5.0, 5, 5.0, 'Tourist', null, 2, '2-3', 'First easy example hike', rocciamelone, null, null, 'paulina.knight@gmail.com');
+  addNewHike(400, 'Hike#1', 5.0, 5, 5.0, 'Tourist', 1, null, '2-3', 'First easy example hike', rocciamelone, null, null, 'paulina.knight@gmail.com');*/
 
-  addNewHike(200, 'Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, null, 'First easy example hike', rocciamelone);
-  addNewHike(400, 'Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', null, rocciamelone);
-  addNewHike(400, 'Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', null);
-  addTwoTimeNewHike(500, 'Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone);
+  addNewHike(200, 'Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, null, 'First easy example hike', rocciamelone, null, null, 'paulina.knight@gmail.com');
+  addNewHike(400, 'Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', null, rocciamelone, null, null, 'paulina.knight@gmail.com');
+  addNewHike(400, 'Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', null, null, null, 'paulina.knight@gmail.com');
+  addTwoTimeNewHike(500, 'Hike#1', 5.0, 5, 5.0, 'Tourist', 1, 2, '2-3', 'First easy example hike', rocciamelone, null, null, 'paulina.knight@gmail.com');
   
 });
 
-function addNewHike(expectedHTTPStatus, title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track) {
+function addNewHike(expectedHTTPStatus, title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track, hike_condition, hike_condition_description, local_guide) {
   it('add a new hike', async function () {
     await testDao.run('DELETE FROM HikePoint');
     await testDao.run('DELETE FROM Hikes');
-    const newHike = new HikeWithFormatNo_idPoint(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track);
+    const newHike = new HikeWithFormatNo_idPoint(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track, hike_condition, hike_condition_description, local_guide);
     setStartPoint(newHike, "La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy",
       "Hut#1", "45.177786,7.083372", "Hut");
     setEndPoint(newHike, "Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy",
@@ -129,11 +132,11 @@ function addNewHike(expectedHTTPStatus, title, length, expected_time, ascent, di
   });
 }
 
-function addTwoTimeNewHike(expectedHTTPStatus,title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track) {
+function addTwoTimeNewHike(expectedHTTPStatus,title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track, hike_condition, hike_condition_description, local_guide) {
   it('add two times a new hike', async function () {
     await testDao.run('DELETE FROM HikePoint');
     await testDao.run('DELETE FROM Hikes');
-    const newHike = new HikeWithFormatNo_idPoint(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track);
+    const newHike = new HikeWithFormatNo_idPoint(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track, hike_condition, hike_condition_description, local_guide);
     setStartPoint(newHike, "La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy",
       "Hut#1", "45.177786,7.083372", "Hut");
     setEndPoint(newHike, "Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy",

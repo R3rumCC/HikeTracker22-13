@@ -126,7 +126,7 @@ function LocalGuide_Home_Content(props) {
 		</div>
 		<InsertionOptions setHikeForm={selectHike} setParkingForm={selectParking} setHutForm={selectHut} setSeeHikes={selectSeeHikes}></InsertionOptions>
 		<Row>
-			<div>{hikeForm ? <HikeForm CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike} /> : <></>}</div>
+			<div>{hikeForm ? <HikeForm CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike} currentUser={props.currentUser} /> : <></>}</div>
 			<div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
 			<div>{hutForm ? <HutForm CreateNewHut={props.CreateNewHut} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
 			<div>{seeHikes ? <HikeList hikes={props.hikes} currentUser={props.currentUser} /> : <></>}</div>
@@ -158,9 +158,11 @@ function InsertionOptions(props) {
 		<FormGroup id='seeHikes' style={{ paddingTop: 15 }}>
 			<FormLabel>Do you want to see the hikes you created?</FormLabel>
 			<Row>
-				<Button style={{ background: 'blueviolet', size: 'md' }} value='seeHikes' onClick={() => props.setSeeHikes()}>
-					Hikes you created
-				</Button>
+				<ButtonGroup>
+					<Button style={{ background: 'blueviolet', size: 'md' }} value='seeHikes' onClick={() => props.setSeeHikes()}>
+						Hikes you created
+					</Button>
+				</ButtonGroup>
 			</Row>
 		</FormGroup>
 	</>)
@@ -176,6 +178,8 @@ function HikeForm(props) {
 	const [ascent, setAscent] = useState('')
 	const [difficulty, setDifficulty] = useState('')
 	const [description, setDescription] = useState('')
+	const [condition, setCondition] = useState('')
+	const [conditionDescription, setConditionDescription] = useState('')
 
 	const [startPoint, setStartPoint] = useState('')
 	const [startPointGps, setStartPointGps] = useState('')
@@ -192,6 +196,8 @@ function HikeForm(props) {
 	const changeAscent = (val) => { setAscent(val) }
 	const changeDifficulty = (val) => { setDifficulty(val); }
 	const changeDescription = (val) => { setDescription(val) }
+	const changeCondition = (val) => { setCondition(val) }
+	const changeConditionDescription = (val) => { setConditionDescription(val) }
 	const changeStartP = (val) => { setStartPoint(val) }
 	const changeStartPGps = (val) => { setStartPointGps(val) }
 	const changeEndP = (val) => { setEndPoint(val) }
@@ -231,7 +237,8 @@ function HikeForm(props) {
 							newHike = {
 								title: title, length: length, expected_time: expTime, ascent: ascent, difficulty: difficulty,
 								start_point: startPoint, end_point: endPoint, reference_points: reference_points,
-								description: description, gpx_track: title
+								description: description, gpx_track: title, hike_condition: condition,
+								hike_condition_description: conditionDescription, local_guide: props.currentUser.username
 								//gpx_track: map --> request entity too large
 							}
 							props.CreateNewHike(newHike)
@@ -262,7 +269,8 @@ function HikeForm(props) {
 	const reset = () => {
 		setTitle('');
 		setLength(''); setExpTime(''); setAscent('')
-		setDifficulty(''); setDescription('')
+		setDifficulty(''); setDescription('');
+		setCondition(''); setConditionDescription('');
 		setStartPoint(''); setStartPointGps('');
 		setEndPoint(''); setEndPointGps('');
 		setErrorMsg(''); setMap(''); setGpxPos(null);
@@ -276,7 +284,8 @@ function HikeForm(props) {
 		var gpx = new gpxParser()
 		setTitle('');
 		setLength(''); setExpTime(''); setAscent('')
-		setDifficulty(''); setDescription('')
+		setDifficulty(''); setDescription('');
+		setCondition(''); setConditionDescription('');
 		setStartPoint(''); setStartPointGps('');
 		setEndPoint(''); setEndPointGps('');
 		setErrorMsg('');
@@ -402,12 +411,31 @@ function HikeForm(props) {
 						<InputGroup.Text><i class="bi bi-graph-up-arrow"></i></InputGroup.Text>
 						<Form.Select required={true} onChange={(ev) => changeDifficulty(ev.target.value)}>
 							<option label=''></option>
-							< option value='Tourist' label="Tourist" />
+							<option value='Tourist' label="Tourist" />
 							<option value='Hiker' label="Hiker" />
 							<option value='Professional hiker' label="Professional Hiker" />
 						</Form.Select>
 					</InputGroup>
-
+				</Form.Group>
+				<Form.Group as={Col}>
+					<Form.Label>Condition</Form.Label>
+					<InputGroup>
+						<InputGroup.Text><i class="bi bi-graph-up-arrow"></i></InputGroup.Text>
+						<Form.Select required={true} onChange={(ev) => changeCondition(ev.target.value)}>
+							<option label=''></option>
+							<option value='Open' label="Open" />
+							<option value='Closed' label="Closed" />
+							<option value='Party Blocked' label="Party Blocked"/>
+							<option value='Requires Special Gear' label="PRequires Special Gear"/>
+						</Form.Select>
+					</InputGroup>
+				</Form.Group>
+				<Form.Group as={Col}>
+					<Form.Label>Condition Description</Form.Label>
+					<InputGroup className="mb-2">
+						<InputGroup.Text><i class="bi bi-textarea-t"></i></InputGroup.Text>
+						<Form.Control as="textarea" value={conditionDescription} onChange={(ev) => changeConditionDescription(ev.target.value)} />
+					</InputGroup>
 				</Form.Group>
 			</Row>
 
