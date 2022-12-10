@@ -647,8 +647,9 @@ function HikeList(props) {
 	function calculateMyHikes(hikes, email) {
 		const result = [];
 		for (const h of hikes) {
-			if (h.local_guide == email)
+			if (h.local_guide == email) {
 				result.push(h);
+			}
 		}
 		return result;
 	};
@@ -656,7 +657,7 @@ function HikeList(props) {
 	const [myHikes, setMyHikes] = useState([]);
 
 	useEffect(() => {
-		calculateMyHikes(props.hikes, props.currentUser.email);
+		setMyHikes(calculateMyHikes(props.hikes, props.currentUser.username));
 	}, []);
 
 	return (
