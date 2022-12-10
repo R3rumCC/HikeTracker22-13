@@ -135,8 +135,8 @@ function readListOfReferencePoints(title) { // RP for a given hike
 
 function addHike(hike) {
   return new Promise((resolve, reject) => {
-    const sql = 'INSERT INTO HIKES (title, length, expected_time, ascent, difficulty, start_point, end_point, description, reference_points, gpx_track) VALUES(?,?,?,?,?,?,?,?,?,?)';
-    db.run(sql, hike.title, hike.length, hike.expected_time, hike.ascent, hike.difficulty, hike.start_point, hike.end_point, hike.description, hike.reference_points, hike.gpx_track, (err, rows) => {
+    const sql = 'INSERT INTO HIKES (title, length, expected_time, ascent, difficulty, start_point, end_point, description, reference_points, gpx_track, hike_condition, hike_condition_description, local_guide) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)';
+    db.run(sql, hike.title, hike.length, hike.expected_time, hike.ascent, hike.difficulty, hike.start_point, hike.end_point, hike.description, hike.reference_points, hike.gpx_track, hike.hike_codition, hike.hike_condition_description, hike.local_guide, (err, rows) => {
       if (err) {
         reject(err);
       } else {
@@ -248,8 +248,8 @@ function updateHikeDescription(title, description) {
 }
 function updateHike(oldHikeTitle, newHike) {
   return new Promise((resolve, reject) => {
-    const sql = 'UPDATE HIKES SET title = ?, length = ?, expected_time = ?, ascent = ?, difficulty = ?, start_point = ?, end_point = ?, reference_points = ?, description = ? where title = ?';
-    db.run(sql, newHike.title, newHike.length, newHike.expected_time, newHike.ascent, newHike.difficulty, newHike.start_point, newHike.end_point, newHike.reference_points, newHike.description, oldHikeTitle, (err) => {
+    const sql = 'UPDATE HIKES SET title = ?, length = ?, expected_time = ?, ascent = ?, difficulty = ?, start_point = ?, end_point = ?, reference_points = ?, description = ?, hike_condition =?, hike_condition_description = ?, local_guide = ? where title = ?';
+    db.run(sql, newHike.title, newHike.length, newHike.expected_time, newHike.ascent, newHike.difficulty, newHike.start_point, newHike.end_point, newHike.reference_points, newHike.description, newHike.hike_codition, newHike.hike_condition_description, newHike.local_guide, oldHikeTitle, (err) => {
       if (err)
         reject(err);
       else
