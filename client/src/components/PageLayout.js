@@ -23,7 +23,7 @@ function DefaultLayout(props) {
 
   
   const { handleErrors } = useContext(MessageContext);
-  const [hikes, setHikes] = useState([]);
+  //const [hikes, setHikes] = useState([]);                 //move to App.js to use it also in localGuideHome
   const [hidden, setHidden] = useState(true);
   const [filteredHikes, setFilteredHikes] = useState([])
   const [filtered, setFiltered] = useState(false)
@@ -31,7 +31,7 @@ function DefaultLayout(props) {
 
   
 
-  useEffect(() => {
+  /*useEffect(() => {
     async function fetchHikes() {
       try {
         const fetchedHikes = await API.getHikes();
@@ -41,7 +41,7 @@ function DefaultLayout(props) {
       }
     }
     fetchHikes();
-  }, []);
+  }, []);*/
   
   return (
 
@@ -61,12 +61,12 @@ function DefaultLayout(props) {
 
             </Row>
             <Row>
-              {!hidden ? <FilterForm isLoading={props.isLoading} setLoading={props.setLoading} hikes={hikes} setFiltered = {setFiltered} setFilteredHikes={setFilteredHikes} setHidden={setHidden} ></FilterForm> : null}
+              {!hidden ? <FilterForm isLoading={props.isLoading} setLoading={props.setLoading} hikes={props.hikes} setFiltered = {setFiltered} setFilteredHikes={setFilteredHikes} setHidden={setHidden} ></FilterForm> : null}
             </Row>
 
           </Row>
           <Row>
-            {hidden ? <HikesContainer role= {props.role} name ={props.name} hikes={!filtered ? hikes : filteredHikes} setCurrentHike={props.setCurrentHike}/> : null}
+            {hidden ? <HikesContainer role= {props.role} name ={props.name} hikes={!filtered ? props.hikes : filteredHikes} setCurrentHike={props.setCurrentHike}/> : null}
           </Row>
         </Container>
         )

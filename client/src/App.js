@@ -12,7 +12,8 @@ import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 import { Navigation } from './components/Navigation';
-import { LocalGuide_Home } from './components/localGuide_view';
+//import { LocalGuide_Home } from './components/localGuide_view';
+import { LocalGuide_Home } from './components/localGuideHome';
 
 import MessageContext from './messageCtx';
 import API from './API';
@@ -60,7 +61,10 @@ function Main() {
   const [points, setPoints] = useState([]);
   const [isLoading, setLoading] = useState(false);
   //Remember to clear the current markers if the user leaves the page
-  const [currentMarkers, setCurrentMarkers] = useState([])
+  const [currentMarkers, setCurrentMarkers] = useState([]);
+
+  const [hikes, setHikes] = useState([]);
+
   function handleError(err) {
 
     toast.error(
@@ -81,8 +85,17 @@ function Main() {
       } catch (error) {
         handleErrors(error);
       }
-    }
+    };
+    async function fetchHikes() {
+      try {
+        const fetchedHikes = await API.getHikes();
+        setHikes(fetchedHikes);
+      } catch (error) {
+        handleErrors(error);
+      }
+    };
     fetchInitialValues();
+    fetchHikes();
   }, []);
 
   //*******CHECK_AUTH*******//
@@ -204,8 +217,8 @@ function Main() {
       <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} setCurrentMarkers={setCurrentMarkers} goToProfile={goToProfile} />
       <Routes>
         <Route path="/" element={
-          loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHut={CreateNewHut} CreateNewHike={CreateNewHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} /> :
-            <DefaultLayout role={loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike} />  /*<FileUploadLayout></FileUploadLayout>*/
+          loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHut={CreateNewHut} CreateNewHike={CreateNewHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} hikes={hikes} currentUser={currentUser} /> :
+            <DefaultLayout role={loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike} hikes={hikes}/>  /*<FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>
         {/* <Route path="/NewHike" element={<HikeForm/>} /> THIS WAS A TRY TO DO THE .GPX FILE UPLOAD.*/}
