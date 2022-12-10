@@ -46,7 +46,7 @@ const Navigation = (props) => {
             <Col >
               {props.loggedIn ? <LogoutButton logout={props.logout} /> : <LoginButton />}
             </Col>
-            <Col>
+            {/*<Col>
               {props.loggedIn && props.user.role == "LocalGuide" ? <PersonCircle
                 className="m-2"
                 fill="white"
@@ -58,7 +58,7 @@ const Navigation = (props) => {
                 onMouseDown={() => setOpacity(1)}
                 onMouseUp={() => setOpacity(OPACITY_WHEN_MOUSE_INTERACT)}
               /> : <></>}
-            </Col>
+            </Col>*/}
           </Row>
         </Container>
       </Nav>

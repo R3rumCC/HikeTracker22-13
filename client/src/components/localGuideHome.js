@@ -1,10 +1,85 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Button, Container, Form, FormGroup, FormLabel, ButtonGroup, InputGroup, Alert } from 'react-bootstrap';
+import { Row, Col, Button, Container, Form, FormGroup, FormLabel, ButtonGroup, InputGroup, Alert, Nav } from 'react-bootstrap';
 import { GenericMap } from './hikePage';
 import { HikesContainer } from './hikesCards';
+import Profile from './profile';
 import axiosInstance from "../utils/axios"
+import "./sidebar.css";
 
 function LocalGuide_Home(props) {
+	const [hikeForm, setHikeForm] = useState(false);
+	const [parkingLotForm, setParkingLotForm] = useState(false);
+	const [hutForm, setHutForm] = useState(false);
+	const [seeHikes, setSeeHikes] = useState(false);
+	const [profile, setProfile] = useState(true);
+
+	//handlers for the onClick events on buttons
+	const selectProfile = () => {
+
+		setHikeForm(false); setParkingLotForm(false); setHutForm(false); setSeeHikes(false); setProfile(true);
+
+	};
+
+	const selectHike = () => {
+		setHikeForm(true); setParkingLotForm(false); setHutForm(false); setSeeHikes(false); setProfile(false);
+
+	};
+
+	const selectParking = () => {
+		setParkingLotForm(true); setHikeForm(false); setHutForm(false); setSeeHikes(false); setProfile(false);
+
+	};
+
+	const selectHut = () => {
+		setHutForm(true); setHikeForm(false); setParkingLotForm(false); setSeeHikes(false); setProfile(false);
+
+	};
+
+	const selectSeeHikes = () => {
+		setSeeHikes(true); setHutForm(false); setHikeForm(false); setParkingLotForm(false); setProfile(false);
+
+	};
+
+	return (
+		<Row>
+			<Col xs={2}>
+				<LocalGuide_Home_Sidebar setHikeForm={selectHike} setParkingForm={selectParking} setHutForm={selectHut} setSeeHikes={selectSeeHikes} setProfile={selectProfile} />
+			</Col>
+			<Col xs={10}>
+				<div>{profile ? <Profile user={props.currentUser} /> : <></>}</div>
+				<div>{hikeForm ? <HikeForm CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike} /> : <></>}</div>
+				<div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
+				<div>{hutForm ? <HutForm CreateNewHut={props.CreateNewHut} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
+				<div>{seeHikes ? <HikeList hikes={props.hikes} currentUser={props.currentUser} /> : <></>}</div>
+			</Col>
+		</Row>
+	)
+}
+
+function LocalGuide_Home_Sidebar(props) {
+	return (
+		<Nav className="col-md-12 d-none d-md-block sidebar">
+			<div className="sidebar-sticky"></div>
+			<Nav.Item>
+				<Nav.Link onClick={() => props.setProfile()}>Profile</Nav.Link>
+			</Nav.Item>
+			<Nav.Item>
+				<Nav.Link onClick={() => props.setHikeForm()}>Insert a new hike</Nav.Link>
+			</Nav.Item>
+			<Nav.Item>
+				<Nav.Link onClick={() => props.setHutForm()}>Insert a new hut</Nav.Link>
+			</Nav.Item>
+			<Nav.Item>
+				<Nav.Link onClick={() => props.setParkingForm()}>Insert a new parking lot</Nav.Link>
+			</Nav.Item>
+			<Nav.Item>
+				<Nav.Link onClick={() => props.setSeeHikes()}>Your hikes</Nav.Link>
+			</Nav.Item>
+		</Nav>
+	)
+}
+
+function LocalGuide_Home_Content(props) {
 	//states to select the form from buttons
 	const [hikeForm, setHikeForm] = useState(false);
 	const [parkingLotForm, setParkingLotForm] = useState(false);
