@@ -1,8 +1,8 @@
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row, Button, ToggleButton, ButtonGroup } from 'react-bootstrap';
 import { HikesContainer } from './hikesCards';
-import { MapContainer, Polyline, TileLayer, Map, Marker, Popup, useMapEvents, GeoJSON, useMap, Circle, LayerGroup,  } from 'react-leaflet'
+import { MapContainer, Polyline, TileLayer, Map, Marker, Popup, useMapEvents, GeoJSON, useMap, Circle, LayerGroup, } from 'react-leaflet'
 import * as L from "leaflet";
-import React, { Component, useState, useEffect, useContext, useRef }  from 'react';
+import React, { Component, useState, useEffect, useContext, useRef } from 'react';
 import axiosInstance from "../utils/axios"
 import API from '../API';
 import { UNSAFE_NavigationContext, useNavigate } from "react-router-dom";
@@ -30,37 +30,37 @@ import { UNSAFE_NavigationContext, useNavigate } from "react-router-dom";
 
 
 
-const $ = require( "jquery" );
+const $ = require("jquery");
 
 // I took it from here: https://stackoverflow.com/a/27943/12249045
 function deg2rad(deg) {
-    return deg * (Math.PI/180)
+    return deg * (Math.PI / 180)
 }
 
-function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) { //Calc distance between two points
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) { //Calc distance between two points
     var R = 6371; // Radius of the earth in km
-    var dLat = deg2rad(lat2-lat1);  // deg2rad below
-    var dLon = deg2rad(lon2-lon1); 
-    var a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2)
-    ; 
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var dLat = deg2rad(lat2 - lat1);  // deg2rad below
+    var dLon = deg2rad(lon2 - lon1);
+    var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2)
+        ;
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var d = R * c; // Distance in km
     return d;
 }
 
-function calcMinDistance(latlng, positions){ //Get the min distance to from a point to a set of points
+function calcMinDistance(latlng, positions) { //Get the min distance to from a point to a set of points
     var distances = positions.map(p => {
         return getDistanceFromLatLonInKm(latlng.lat, latlng.lng, p[0], p[1])
     })
     return Math.min(...distances)
 }
 
-function distanceRespectHikes(latlng, list){
-    return [...list].map((x) =>{
-        return {hike: x.hike, minDist : getDistanceFromLatLonInKm(latlng.lat,latlng.lng,x.start.split(',')[0],x.start.split(',')[1])}
+function distanceRespectHikes(latlng, list) {
+    return [...list].map((x) => {
+        return { hike: x.hike, minDist: getDistanceFromLatLonInKm(latlng.lat, latlng.lng, x.start.split(',')[0], x.start.split(',')[1]) }
     })
 
 }
@@ -81,18 +81,18 @@ function HikePage(props) {
         }, [callback, navigator]);
     };
 
-    useBackListener(({ location }) =>{
+    useBackListener(({ location }) => {
         // console.log("Navigated Back", { location });
         props.setCurrentMarkers([])
     });
-    
+
     // console.log(positions[0]," ",positions[positions.length-1])
     return (
         <Col className="vh-100 justify-content-md-center">
             <Row className='my-3'>
                 <Col sm={4}>
-                    {props.currentHike.length > 0 ? 
-                        <HikesContainer hikes={props.currentHike}></HikesContainer> : 
+                    {props.currentHike.length > 0 ?
+                        <HikesContainer hikes={props.currentHike}></HikesContainer> :
                         <div>No map has been selected selected</div>
                     }
                 </Col>
@@ -102,21 +102,21 @@ function HikePage(props) {
             </Row>
         </Col>
     )
-    
+
 };
 const LeafIcon = L.Icon.extend({
     options: {}
-  });
-const blueIcon = new LeafIcon({
-iconUrl:
-    "https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|abcdef&chf=a,s,ee00FFFF"
-}),
-greenIcon = new LeafIcon({
-iconUrl:
-    "https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|2ecc71&chf=a,s,ee00FFFF"
 });
+const blueIcon = new LeafIcon({
+    iconUrl:
+        "https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|abcdef&chf=a,s,ee00FFFF"
+}),
+    greenIcon = new LeafIcon({
+        iconUrl:
+            "https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|2ecc71&chf=a,s,ee00FFFF"
+    });
 
-function GenericMap(props){ //Map to be inserted anywhere. 
+function GenericMap(props) { //Map to be inserted anywhere. 
     /*
     REQUIRES THE FOLLOWING PROPS:
         -'currentMarkers':An array of the markers to draw on the map (Can be empty)
@@ -125,128 +125,178 @@ function GenericMap(props){ //Map to be inserted anywhere.
         -'currentHike': A hike to be ploted. Can be skiped. Must be a GeoJSON to be plotted.
     */
 
-    const [map,setMap] = useState('')
+    const [map, setMap] = useState('')
     const mapList = useRef([])
-    const [startPoint, setStartPoint]= useState('')
-    const [endPoint, setEndPoint]= useState('')
-    function MyComponent({gpxPos}) {
+    const [startPoint, setStartPoint] = useState('')
+    const [endPoint, setEndPoint] = useState('')
+    const [startCheck, setStartCheck] = useState('');
+    const [endCheck, setEndCheck] = useState('');
+
+    function MyComponent({ gpxPos }) {
         const map = useMap()
 
-        map.flyTo(gpxPos[Math.round(gpxPos.length/2)],gpxPos.length/100 > 1 ? 13 : 15)
+        map.flyTo(gpxPos[Math.round(gpxPos.length / 2)], gpxPos.length / 100 > 1 ? 13 : 15)
 
         return null
-      }
+    }
+    const radios = [
+        { name: 'Start Point', value: '1' },
+        { name: 'End Point', value: '2' }
 
+    ]
     async function gpxmap(name, hike = null) {
         try {
             const map = await API.getMap(name);
             setMap(map);
-            } catch (error) {
+        } catch (error) {
             throw error
-            }
+        }
     }
-    useEffect(() =>{
-        if(props.currentHike.length > 0){
+    useEffect(() => {
+        if (props.currentHike.length > 0) {
             gpxmap(props.currentHike[0].gpx_track.replace(/\s/g, ''))
-            }
-        else if(props.gpxFile){
+        }
+        else if (props.gpxFile) {
             setMap(props.gpxFile)
-        }else if(props.hikes){
-            props.hikes.forEach((h) =>{
-                if(mapList.current.filter((x) => x.hike == h ? true : false).length == 0 || mapList.length == 0){
-                    mapList.current.push({hike: h, start: h.start_point_coordinates})
+        } else if (props.hikes) {
+            props.hikes.forEach((h) => {
+                if (mapList.current.filter((x) => x.hike == h ? true : false).length == 0 || mapList.length == 0) {
+                    mapList.current.push({ hike: h, start: h.start_point_coordinates })
                 }
             })
         }
-      }, [props.gpxFile,props.hikes]);
-    useEffect (() =>{
-        if(props.currentMarkers.length!=0 && props.currentMarkers.some((x)=>!x.distHikes)){
+    }, [props.gpxFile, props.hikes]);
+    useEffect(() => {
+        if (props.currentMarkers.length != 0 && props.currentMarkers.some((x) => !x.distHikes)) {
             console.log(props.currentMarkers)
-            let currentMarkersMod = [...props.currentMarkers].map((x) =>{
-                if(!x.distHikes){
+            let currentMarkersMod = [...props.currentMarkers].map((x) => {
+                if (!x.distHikes) {
                     let dist = distanceRespectHikes(x.latlng, mapList.current)
                     console.log(dist)
-                    return {latlng: x.latlng, address: x.address, distHikes: dist }
+                    return { latlng: x.latlng, address: x.address, distHikes: dist }
                 }
                 else
-                    return {latlng: x.latlng, address: x.address, distHikes: x.distHikes }
+                    return { latlng: x.latlng, address: x.address, distHikes: x.distHikes }
             })
             console.log(currentMarkersMod)
             props.setCurrentMarkers(currentMarkersMod)
         }
-    }, [props.currentMarkers, mapList.current])  
-    if(map != ''){
-    // The commented stuff is only required if we are not passing a GeoJSON
-    let gpxParser = require('gpxparser');
-    var gpx = new gpxParser()
-    gpx.parse(map)
-    let geoJSON = gpx.toGeoJSON()
-    //let geoJSON = JSON.parse(props.currentHike[0].gpx_track) //Get the object from a string
-    // console.log(JSON.stringify(geoJSON))
-    //var positions = gpx.tracks[0].points.map(p => [p.lat, p.lon,p.ele]).filter((p)=> p[2]!=null)
-    var positions = geoJSON.features[0].geometry.coordinates.map(p => [p[1], p[0],p[2]]).filter((p)=> p[2]!=null)
-    $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+positions[0][0]+'&lon='+positions[0][1]+'&format=json&limit=1&q=', function(data) {
-        setStartPoint(data.display_name);    
+    }, [props.currentMarkers, mapList.current])
+    if (map != '') {
+        // The commented stuff is only required if we are not passing a GeoJSON
+        let gpxParser = require('gpxparser');
+        var gpx = new gpxParser()
+        gpx.parse(map)
+        let geoJSON = gpx.toGeoJSON()
+        //let geoJSON = JSON.parse(props.currentHike[0].gpx_track) //Get the object from a string
+        // console.log(JSON.stringify(geoJSON))
+        //var positions = gpx.tracks[0].points.map(p => [p.lat, p.lon,p.ele]).filter((p)=> p[2]!=null)
+        var positions = geoJSON.features[0].geometry.coordinates.map(p => [p[1], p[0], p[2]]).filter((p) => p[2] != null)
+        $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[0][0] + '&lon=' + positions[0][1] + '&format=json&limit=1&q=', function (data) {
+            setStartPoint(data.display_name);
         })
-    $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+positions[positions.length-1][0]+'&lon='+positions[positions.length-1][1]+'&format=json&limit=1&q=', function(data) {
-        setEndPoint(data.display_name);           
+        $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[positions.length - 1][0] + '&lon=' + positions[positions.length - 1][1] + '&format=json&limit=1&q=', function (data) {
+            setEndPoint(data.display_name);
         })
-    return(
-        <>{ map != '' ? 
-            <MapContainer
-                center={positions[Math.round(positions.length/2)]}
-                zoom={positions.length/100 > 1 ? 13 : 15}
-                scrollWheelZoom={false}
-            >
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                {/* This object below is needed if we are passing the path line as a parsed XML, not as a GeoJSON */}
+        return (
+            <>{map != '' ?
+                <MapContainer
+                    center={positions[Math.round(positions.length / 2)]}
+                    zoom={positions.length / 100 > 1 ? 13 : 15}
+                    scrollWheelZoom={false}
+                >
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                    {/* This object below is needed if we are passing the path line as a parsed XML, not as a GeoJSON */}
                     <Polyline
-                    pathOptions={{ fillColor: 'red', color: 'blue' }}
-                    positions={positions}
-                /> 
-                <Marker position={positions[0]}> 
-                    <Popup>
-                        {startPoint}
-                    </Popup>
-                </Marker>
-                <Marker position={positions[positions.length -1]}> 
-                    <Popup>
-                        {endPoint}
-                    </Popup>
-                </Marker>
-                <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} positions={positions}></MapHandler>
-                <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>
-                <MyComponent gpxPos = {positions}></MyComponent>
-                {<GeoJSON data={geoJSON}></GeoJSON>}
-            </MapContainer>
-            : null}
-            
-        </>
-    )    
-    }else {
-    
-        return(
+                        pathOptions={{ fillColor: 'red', color: 'blue' }}
+                        positions={positions}
+                    />
+                    <Marker position={positions[0]}>
+                        <Popup>
+                            {startPoint}
+                            <hr></hr>
+                            {'Start Point'}
+                        </Popup>
+                    </Marker>
+                    <Marker position={positions[positions.length - 1]}>
+                        <Popup>
+                            {endPoint}
+                            <hr></hr>
+                            {'End Point'}
+                        </Popup>
+                    </Marker>
+                    {props.points ? [...props.points].filter((x) => { return calcMinDistance({ lat: x.gps_coordinates.split(',')[0], lng: x.gps_coordinates.split(',')[1] }, positions) <= 5 }).map((p) => {
+                        return (
+                            <Marker icon={greenIcon} key={Math.random()} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
+
+                                <Popup >
+                                    {p.nameLocation}
+                                    <hr></hr>
+                                    {p.address}
+                                    <hr></hr>
+                                    {p.type}
+                                    <hr></hr>
+
+                                    <ButtonGroup>
+
+                                        <ToggleButton
+                                            className="mb-2"
+                                            id="toggle-start"
+                                            type="checkbox"
+                                            variant="outline-success"
+                                            checked={p.address == startCheck}
+                                            onChange={(e) => {setStartCheck(p.address); props.setStartPoint(p.address); props.setStartPointGps(p.gps_coordinates)}}
+                                        >
+                                            Start Point
+                                        </ToggleButton>
+                                        <ToggleButton
+                                            className="mb-2"
+                                            id="toggle-end"
+                                            type="checkbox"
+                                            variant="outline-danger"
+                                            checked={p.address == endCheck}
+                                            onChange={(e) => {setEndCheck(p.address); props.setEndPoint(p.address); props.setEndPointGps(p.gps_coordinates)}}
+                                        >
+                                            End Point
+                                        </ToggleButton>
+                                    </ButtonGroup>
+                                </Popup>
+                            </Marker>
+                        )
+                    }) : null}
+                    <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} positions={positions}></MapHandler>
+                    <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>
+                    <MyComponent gpxPos={positions}></MyComponent>
+                    {<GeoJSON data={geoJSON}></GeoJSON>}
+                </MapContainer>
+                : null}
+
+            </>
+        )
+    } else {
+
+        return (
             <>
-                 <MapContainer
+                <MapContainer
                     className="leaflet-container"
                     center={[42.715, 12.437]} //Center somewhere random as default
                     zoom={5}
                 >
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                    {props.filter  ? props.hikes.map( p => {
+                    {props.filter ? props.hikes.map(p => {
 
-                            return(
-                                <Marker icon={greenIcon} key={Math.random()} position={{lat: p.start_point_coordinates.split(',')[0], lng: p.start_point_coordinates.split(',')[1]}}>
-                                    <Popup >
-                                        {p.start_point_address}
-                                    </Popup>
-                                </Marker> 
-                            )
-                            })
-                    : ''}
-                    {!props.clicked ? <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} generic = {props.generic}></MapHandler> : ''} 
+                        return (
+                            <Marker icon={greenIcon} key={Math.random()} position={{ lat: p.start_point_coordinates.split(',')[0], lng: p.start_point_coordinates.split(',')[1] }}>
+                                <Popup >
+                                    {p.start_point_address}
+                                </Popup>
+                            </Marker>
+                        )
+                    })
+                        : ''}
+                    {!props.clicked ? <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} generic={props.generic}></MapHandler> : ''}
                     {props.filter ? <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} radiusMin={props.radiusMin} radiusMax={props.radiusMax}></SelectedMarkers> :
-                    <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>}
+                        <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>}
                 </MapContainer>
             </>
         )
@@ -258,19 +308,19 @@ function MapHandler(props) { //Handles just the clicks on the map
     const map = useMapEvents({
         click: (e) => {
             // console.log(e.latlng)
-            $.getJSON('https://nominatim.openstreetmap.org/reverse?lat='+e.latlng.lat+'&lon='+e.latlng.lng+'&format=json&limit=1', function(data) {
+            $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + e.latlng.lat + '&lon=' + e.latlng.lng + '&format=json&limit=1', function (data) {
                 let newSelectedMarker = {}
-                if(!props.generic){
+                if (!props.generic) {
                     let minDistance = calcMinDistance(e.latlng, props.positions)
-                    newSelectedMarker = {latlng: e.latlng , address: data.display_name, minDistance: minDistance}
+                    newSelectedMarker = { latlng: e.latlng, address: data.display_name, minDistance: minDistance }
                 }
-                else{
-                    newSelectedMarker = {latlng: e.latlng , address: data.display_name}
+                else {
+                    newSelectedMarker = { latlng: e.latlng, address: data.display_name }
                 }
-                if(!props.currentMarkers.find(p=>p.address==newSelectedMarker.address)){
-                    var newSelectedMarkers = [...props.currentMarkers,newSelectedMarker]
-                    props.setCurrentMarkers(newSelectedMarkers)    
-                }else{  
+                if (!props.currentMarkers.find(p => p.address == newSelectedMarker.address)) {
+                    var newSelectedMarkers = [...props.currentMarkers, newSelectedMarker]
+                    props.setCurrentMarkers(newSelectedMarkers)
+                } else {
                     console.log("Location already selected")
                 }
             })
@@ -278,42 +328,42 @@ function MapHandler(props) { //Handles just the clicks on the map
     })
     return null
 }
-function  SelectedMarkers(props){
-    return(
+function SelectedMarkers(props) {
+    return (
         <>
             {/* {console.log(props.currentMarkers)} */}
-            {props.currentMarkers.length>0 ? props.currentMarkers.map( p => {
+            {props.currentMarkers.length > 0 ? props.currentMarkers.map(p => {
 
-                return(
+                return (
                     <LayerGroup>
                         <Marker key={Math.random()} position={p.latlng}
                             eventHandlers={{
                                 click: (e) => {
                                     console.log("CLICKERD")
-                                    let newSelectedMarkers = props.currentMarkers.filter(m=>m.address!=p.address);
+                                    let newSelectedMarkers = props.currentMarkers.filter(m => m.address != p.address);
                                     props.setCurrentMarkers(newSelectedMarkers);
-                                    console.log(props.currentMarkers)   
+                                    console.log(props.currentMarkers)
                                 }
                             }}
                         >
-                            {  
+                            {
                                 <Popup>
                                     {p.address}
                                 </Popup>
                             }
                         </Marker>
-                        {props.radiusMax || props.radiusMin ? 
+                        {props.radiusMax || props.radiusMin ?
                             <>
-                                <Circle key={'RadiusMax'} center={p.latlng} fillColor="green" radius={props.radiusMax*1000}/>
-                                <Circle key={'RadiusMin'} center={p.latlng} fillColor="red" radius={props.radiusMin*1000}/>
-                            </> 
+                                <Circle key={'RadiusMax'} center={p.latlng} fillColor="green" radius={props.radiusMax * 1000} />
+                                <Circle key={'RadiusMin'} center={p.latlng} fillColor="red" radius={props.radiusMin * 1000} />
+                            </>
                             : null}
 
                     </LayerGroup>
-                    
+
                 )
             })
-            : ''}
+                : ''}
         </>
     );
 

@@ -4,6 +4,7 @@ import { GenericMap } from './hikePage';
 import { HikesContainer } from './hikesCards';
 import Profile from './profile';
 import axiosInstance from "../utils/axios"
+import { PointsContainer } from './pointsCards';
 import "./sidebar.css";
 
 function LocalGuide_Home(props) {
@@ -47,7 +48,7 @@ function LocalGuide_Home(props) {
       </Col>
       <Col xs={10}>
         <div>{profile ? <Profile user={props.currentUser} /> : <></>}</div>
-        <div>{hikeForm ? <HikeForm CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike} /> : <></>}</div>
+        <div>{hikeForm ? <HikeForm CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike} points = {props.points}/> : <></>}</div>
         <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
         <div>{hutForm ? <HutForm CreateNewHut={props.CreateNewHut} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
         <div>{seeHikes ? <HikeList hikes={props.hikes} currentUser={props.currentUser} setCurrentHike={props.setCurrentHike} /> : <></>}</div>
@@ -78,96 +79,6 @@ function LocalGuide_Home_Sidebar(props) {
     </Nav>
   )
 }
-
-/*function LocalGuide_Home_Content(props) {
-  //states to select the form from buttons
-  const [hikeForm, setHikeForm] = useState(false);
-  const [parkingLotForm, setParkingLotForm] = useState(false);
-  const [hutForm, setHutForm] = useState(false);
-  const [seeHikes, setSeeHikes] = useState(false);
-
-  //handlers for the onClick events on buttons
-  const selectHike = () => {
-    if (hikeForm) {
-      setHikeForm(false);
-    } else {
-      setHikeForm(true); setParkingLotForm(false); setHutForm(false); setSeeHikes(false);
-    }
-  };
-
-  const selectParking = () => {
-    if (parkingLotForm) {
-      setParkingLotForm(false)
-    } else {
-      setParkingLotForm(true); setHikeForm(false); setHutForm(false); setSeeHikes(false);
-    }
-  };
-
-  const selectHut = () => {
-    if (hutForm) {
-      setHutForm(false)
-    } else {
-      setHutForm(true); setHikeForm(false); setParkingLotForm(false); setSeeHikes(false);
-    }
-  };
-
-  const selectSeeHikes = () => {
-    if (seeHikes) {
-      setSeeHikes(false)
-    } else {
-      setSeeHikes(true); setHutForm(false); setHikeForm(false); setParkingLotForm(false);
-    }
-  };
-
-  //The container                    
-  return (<Container>
-    <div style={{ color: 'green', fontSize: 30, fontWeight: 'bold', textAlign: 'center' }}>
-      HELLO LOCAL GUIDE
-    </div>
-    <InsertionOptions setHikeForm={selectHike} setParkingForm={selectParking} setHutForm={selectHut} setSeeHikes={selectSeeHikes}></InsertionOptions>
-    <Row>
-      <div>{hikeForm ? <HikeForm CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike} currentUser={props.currentUser} /> : <></>}</div>
-      <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
-      <div>{hutForm ? <HutForm CreateNewHut={props.CreateNewHut} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
-      <div>{seeHikes ? <HikeList hikes={props.hikes} currentUser={props.currentUser} /> : <></>}</div>
-    </Row>
-  </Container>
-  )
-}*/
-
-//Button group which allows the Local Guide to select the correct form for the new point of interest he wants to insert
-
-/*function InsertionOptions(props) {
-
-  return (<>
-    <FormGroup id='insertion_options' style={{ paddingTop: 15 }}>
-      <FormLabel>Do you want to insert something new?</FormLabel>
-      <Row>
-        <ButtonGroup >
-          <Button style={{ background: 'green', size: 'md' }} value='hike' onClick={() => props.setHikeForm()}>
-            New Hike Description
-          </Button>
-          <Button style={{ background: 'red', size: 'md' }} value='hut' onClick={() => props.setHutForm()}>
-            New Hut Description
-          </Button>
-          <Button style={{ background: 'blue', size: 'md' }} value='parking_lot' onClick={() => props.setParkingForm()}>
-            New Parking Lot
-          </Button>
-        </ButtonGroup>
-      </Row>
-    </FormGroup>
-    <FormGroup id='seeHikes' style={{ paddingTop: 15 }}>
-      <FormLabel>Do you want to see the hikes you created?</FormLabel>
-      <Row>
-        <ButtonGroup>
-          <Button style={{ background: 'blueviolet', size: 'md' }} value='seeHikes' onClick={() => props.setSeeHikes()}>
-            Hikes you created
-          </Button>
-        </ButtonGroup>
-      </Row>
-    </FormGroup>
-  </>)
-}*/
 
 /**HIKE FORM */
 
@@ -462,7 +373,8 @@ function HikeForm(props) {
       <Form.Group className='mt-3'>
         {gpxPos != null ?
           <>
-            <GenericMap gpxFile={map} currentHike={[]} currentMarkers={[]} setCurrentMarkers={''} />
+            <GenericMap gpxFile={map} currentHike={[]} currentMarkers={[]} setCurrentMarkers={''} points={[...props.points].filter((x)=> x.type!=null)} 
+            setStartPoint={setStartPoint} setStartPointGps ={setStartPointGps} setEndPoint={setEndPoint} setEndPointGps={setEndPointGps}/>
           </>
           : null}
       </Form.Group>
@@ -472,7 +384,6 @@ function HikeForm(props) {
         <Form.Label style={{ fontSize: 25 }}>Upload the GPX track</Form.Label>
         <Form.Control type="file" required={true} onChange={(e) => importGpx(e.target.files[0])} />
       </Form.Group>
-
       <Button className='mt-y' type='submit' style={{ background: 'green' }}>Save</Button>
       <Button style={{ background: 'green' }} onClick={reset} className='ms-2 my-2'>Cancel</Button>
 
