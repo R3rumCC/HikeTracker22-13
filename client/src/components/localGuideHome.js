@@ -50,7 +50,7 @@ function LocalGuide_Home(props) {
         <div>{hikeForm ? <HikeForm CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike} /> : <></>}</div>
         <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
         <div>{hutForm ? <HutForm CreateNewHut={props.CreateNewHut} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
-        <div>{seeHikes ? <HikeList hikes={props.hikes} currentUser={props.currentUser} /> : <></>}</div>
+        <div>{seeHikes ? <HikeList hikes={props.hikes} currentUser={props.currentUser} setCurrentHike={props.setCurrentHike} /> : <></>}</div>
       </Col>
     </Row>
   )
@@ -427,7 +427,7 @@ function HikeForm(props) {
               <option value='Open' label="Open" />
               <option value='Closed' label="Closed" />
               <option value='Party Blocked' label="Party Blocked" />
-              <option value='Requires Special Gear' label="PRequires Special Gear" />
+              <option value='Requires Special Gear' label="Requires Special Gear" />
             </Form.Select>
           </InputGroup>
         </Form.Group>
@@ -766,7 +766,7 @@ function HikeList(props) {
 
   return (
     <>
-      <HikesContainer role={props.currentUser.role} hikes={myHikes} />
+      <HikesContainer role={props.currentUser.role} hikes={myHikes} setCurrentHike={props.setCurrentHike} />
     </>
   )
 }

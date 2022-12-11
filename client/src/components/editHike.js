@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Button, Form, FormGroup, FormLabel, ButtonGroup, InputGroup, Alert } from 'react-bootstrap';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { GenericMap } from './hikePage';
@@ -9,7 +9,7 @@ function EditHike(props) {
   return (
     <>
       <Row>
-        <EditHikeForm updateHike={props.updateHike} oldHikeTitle={props.currentHike.title}></EditHikeForm>
+        <EditHikeForm updateHike={props.updateHike} oldHike={props.currentHike}></EditHikeForm>
       </Row>
       <div className="d-flex flex-row">
         <Button style={{ marginRight: 5, width: "8%" }} onClick={props.returnToHome}>Home</Button>
@@ -22,15 +22,15 @@ function EditHikeForm(props) {
 
   const navigate = useNavigate(); 
 
-  const [title, setTitle] = useState('')
-  const [length, setLength] = useState('')
-  const [expTime, setExpTime] = useState('')
-  const [ascent, setAscent] = useState('')
-  const [difficulty, setDifficulty] = useState('')
-  const [description, setDescription] = useState('')
-  const [condition, setCondition] = useState('')
-  const [conditionDescription, setConditionDescription] = useState('')
-  const [reference_points, setReferencePoints] = useState([]);
+  const [title, setTitle] = useState(props.oldHike.title)
+  const [length, setLength] = useState(props.oldHike.length)
+  const [expTime, setExpTime] = useState(props.oldHike.expected_time)
+  const [ascent, setAscent] = useState(props.oldHike.ascent)
+  const [difficulty, setDifficulty] = useState(props.oldHike.difficulty)
+  const [description, setDescription] = useState(props.oldHike.description)
+  const [condition, setCondition] = useState(props.oldHike.hike_condition)
+  const [conditionDescription, setConditionDescription] = useState(props.oldHike.hike_condition_description)
+  const [reference_points, setReferencePoints] = useState(props.oldHike.reference_points);
   const [errorMsg, setErrorMsg] = useState("");
 
   const changeTitle = (val) => { setTitle(val) }
@@ -58,7 +58,7 @@ function EditHikeForm(props) {
             hike_condition_description: conditionDescription
           }
 
-          props.updateHike(props.oldHikeTitle, updateHike);
+          props.updateHike(props.oldHike.title, updateHike);
           alert('Hike correctly update!')
           //document.getElementById('EditHikeForm').hidden = true;
           reset();
@@ -75,11 +75,16 @@ function EditHikeForm(props) {
   }
 
   const reset = () => {
-    setTitle('');
-    setLength(''); setExpTime(''); setAscent('')
-    setDifficulty(''); setDescription('');
-    setCondition(''); setConditionDescription('');
-    changeReferencePoints([]); setErrorMsg('');
+    setTitle(props.oldHike.title);
+    setLength(props.oldHike.length);
+    setExpTime(props.oldHike.expected_time);
+    setAscent(props.oldHike.ascent);
+    setDifficulty(props.oldHike.difficulty);
+    setDescription(props.oldHike.description);
+    setCondition(props.oldHike.hike_condition);
+    setConditionDescription(props.oldHike.hike_condition_description);
+    setReferencePoints(props.oldHike.reference_points);
+    setErrorMsg('');
   }
 
   return (<>
@@ -160,7 +165,7 @@ function EditHikeForm(props) {
               <option value='Open' label="Open" />
               <option value='Closed' label="Closed" />
               <option value='Party Blocked' label="Party Blocked" />
-              <option value='Requires Special Gear' label="PRequires Special Gear" />
+              <option value='Requires Special Gear' label="Requires Special Gear" />
             </Form.Select>
           </InputGroup>
         </Form.Group>
