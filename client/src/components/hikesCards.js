@@ -30,6 +30,7 @@ function HikeCard(props) {
                 {props.hike.reference_points.length > 0 ? <ListGroup><strong>Reference Points:</strong><br></br>  {props.hike.reference_points.map((point)=>{return(<ListGroup.Item key={point.idPoint}>{point.nameLocation}</ListGroup.Item>)})}</ListGroup>: null}
                 <Card.Text><strong>Description:</strong><br></br> {props.hike.description}</Card.Text>
                 {props.role=='Hiker' ? <Link to='/Map'><Button onClick={()=>{props.setCurrentHike([props.hike])}}>See on map</Button></Link>: null}
+                {props.role=='LocalGuide' ? <Link to='/editHike'><Button onClick={()=>{props.setCurrentHike([props.hike])}}>Edit hike</Button></Link>: null}
             </Card.Body>
         </Card>
     );
