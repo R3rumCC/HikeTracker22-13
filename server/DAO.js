@@ -334,6 +334,23 @@ function checkPresenceByAddress(addr) {
   });
 }
 
+//It checks if the gps_coordiantes exists
+function checkPresenceByCoordinates(coord) {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT idPoint FROM POINTS WHERE gps_coordinates = ?';
+    db.get(sql, coord, (err, id) => {
+      if (err) {
+        reject(err);
+      } if (id == undefined) {
+        resolve(null);
+      }
+      else {
+        resolve(id);
+      }
+    });
+  });
+}
+
 function addPoint(point) {
   return new Promise((resolve, reject) => {
     const sql = 'INSERT INTO POINTS (address, nameLocation, gps_coordinates, type, capacity, altitude) VALUES(?,?,?,?,?,?)';
@@ -534,7 +551,7 @@ module.exports = {
   readHikes, addHike, deleteHike, updateHike, updateHikeTitle, getHikeByTitle,
   updateHikeAscent, updateHikeLength, updateHikeDescription, updateHikeDifficulty,
   updateHikeET, updateHikeStartPoint, updateHikeEndPoint, updateHikeRefPoint, getUserByEmail,
-  readPoints, checkPresenceByAddress, addPoint, updatePoint, deletePoint, readHuts, addHut, addCode, deleteCode, getCode, updateCode,
+  readPoints, checkPresenceByAddress, checkPresenceByCoordinates, addPoint, updatePoint, deletePoint, readHuts, addHut, addCode, deleteCode, getCode, updateCode,
   updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, updatePointCapacity, updatePointAltitude,
   readListOfReferencePoints, readPointById
 };

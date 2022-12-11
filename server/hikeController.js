@@ -176,11 +176,8 @@ exports.getPoints = async function () {
 //-if not present, it is added;
 //-if present, a positive feedback is sent anyway   
 exports.addPoint = async function (req, res) {
-
   try {
-    const id = await dao.checkPresenceByAddress(req.body.point.address)
-    console.log("Inside addPoint server side")
-    console.log(req.body.point)
+    const id = await dao.checkPresenceByCoordinates(req.body.point.gps_coordinates)
     if (id !== null) {
       return res.status(200).json(id);
     } else {
@@ -193,7 +190,6 @@ exports.addPoint = async function (req, res) {
         }
       )
     }
-
   } catch (e) {
     console.log(e);
     throw e;
@@ -208,7 +204,7 @@ exports.addHut = async function (req, res) {
   //console.log("Inside addHut server side")
   // console.log(req.body.hut)
   try {
-    const id = await dao.checkPresenceByAddress(req.body.hut.address)
+    const id = await dao.checkPresenceByCoordinates(req.body.hut.address)
     if (id !== null) {
       return res.status(200).json(id);
     }
