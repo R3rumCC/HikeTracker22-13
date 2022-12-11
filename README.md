@@ -362,7 +362,7 @@ Paulina Knight:
     ```
   - Response: `200 OK` (success) 
   - Response body: _None_
-  - Error responses: `500 Internal Server Error` (generic error), `400 Bad Request` (wrong fields), `422 Unprocessable Entity` (address or gps_coordinates already registered)
+  - Error responses: `500 Internal Server Error` (generic error), `400 Bad Request` (wrong fields), `422 Unprocessable Entity` (gps_coordinates already registered)
 
 ## HUTS API
 
