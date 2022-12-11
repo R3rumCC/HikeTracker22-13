@@ -58,6 +58,27 @@ exports.addHike = async function (req, res) {
   )
 }
 
+exports.updateHike = async function (req, res) {
+
+  const oldHike = await dao.getHikeByTitle(req.body.oldHikeTitle);
+
+  const updateHike = {
+    title: req.body.hike.title, length: req.body.hike.length, expected_time: req.body.hike.expected_time,
+    ascent: req.body.hike.ascent, difficulty: req.body.hike.difficulty, start_point: oldHike.start_point, end_point: oldHike.end_point,
+    reference_points: req.body.hike.reference_points, description: req.body.hike.description, gpx_track: oldHike.gpx_track,
+    hike_condition: req.body.hike.hike_condition, hike_condition_description: req.body.hike.hike_condition_description, local_guide: oldHike.local_guide
+  }
+
+  dao.updateHike(req.body.oldHikeTitle ,updateHike).then(
+    result => {
+      return res.status(200).json();
+    },
+    error => {
+      return res.status(500).send(error);
+    }
+  )
+}
+
 exports.getHuts = async function () {
   try {
     const huts = await dao.readHuts();

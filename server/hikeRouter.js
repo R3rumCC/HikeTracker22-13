@@ -91,6 +91,28 @@ router.post('/newHike', [
   c.addHike(req, res)
 });
 
+router.put('/Hike', [
+  body('oldHikeTitle').notEmpty().withMessage('Old title cannot be empty!'),
+  body('hike.title').notEmpty().withMessage('Title cannot be empty!'),
+  body('hike.length').notEmpty().withMessage('Length cannot be empty!')
+    .isNumeric().withMessage('Length must be numeric!'),
+  body('hike.expected_time').notEmpty().withMessage('Expected time cannot be empty!')
+    .isNumeric().withMessage('Expected time must be numeric!'),
+  body('hike.ascent').notEmpty().withMessage('Ascent cannot be empty!')
+    .isNumeric().withMessage('Ascent must be numeric!'),
+  body('hike.difficulty').notEmpty().withMessage('Difficulty cannot be empty!')
+    .isIn(["Tourist", "Hiker", "Professional hiker"]).withMessage('Incorrect format of diffiuclty!'),
+  body('hike.description').notEmpty().withMessage('Description cannot be empty!'),
+], (req, res) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array()
+    })
+  }
+  c.updateHike(req, res);
+});
+
 router.get('/getPoints', async (req, res) => {
   try {
     const points = await c.getPoints();

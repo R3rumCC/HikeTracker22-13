@@ -135,6 +135,15 @@ describe("Hike test", () => {
     const hikes_checks = [hike1, hike2];
     expect(data).toEqual(hikes_checks);
   });
+
+  test('test getHikeByTitle', async () => {
+    const data = await dao.getHikeByTitle('Hike#1');
+    const hike1 = {title: 'Hike#1', length: 5.0, expected_time: 5, ascent: 5.0, difficulty: 'Tourist',
+      start_point: 1, end_point: 2, reference_points: '2-3', description: 'First easy example hike',
+      gpx_track: rocciamelone, hike_condition: null, hike_condition_description: null,
+      local_guide: 'paulina.knight@gmail.com'}
+    expect(data).toEqual(hike1);
+  });
   
   test('test deleteHike', async () => {
     let data = await dao.readHikes();

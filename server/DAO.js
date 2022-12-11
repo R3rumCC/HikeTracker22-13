@@ -117,6 +117,24 @@ function readHikes() {
   });
 }
 
+function getHikeByTitle(title) {
+  return new Promise((resolve, reject) => {
+    const sql = `
+      SELECT *
+      FROM Hikes
+      WHERE title = ?
+      ;
+    `;
+    db.get(sql, title, (err, hike) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(hike)
+      }
+    });
+  });
+}
+
 function readListOfReferencePoints(title) { // RP for a given hike
   return new Promise((resolve, reject) => {
     const sql = `SELECT reference_points
@@ -513,7 +531,7 @@ function updateCode(email, code) {
 
 module.exports = {
   readUsers, addUser, deleteUser, updateUserRole,
-  readHikes, addHike, deleteHike, updateHike, updateHikeTitle,
+  readHikes, addHike, deleteHike, updateHike, updateHikeTitle, getHikeByTitle,
   updateHikeAscent, updateHikeLength, updateHikeDescription, updateHikeDifficulty,
   updateHikeET, updateHikeStartPoint, updateHikeEndPoint, updateHikeRefPoint, getUserByEmail,
   readPoints, checkPresenceByAddress, addPoint, updatePoint, deletePoint, readHuts, addHut, addCode, deleteCode, getCode, updateCode,

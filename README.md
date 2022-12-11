@@ -73,6 +73,7 @@ The list of the huts
 ### Hikes functions
 
 - **readHikes()**, returns a list of every hike with every field excepted the reference points. This function returns also the fields of the starting and ending points
+- **getHikeByTitle(title)** return the entire hike associated with the argument *title*
 - **readReferencePoints(title)**, returns a list of the fields of the reference points of the hike associated with the argument *title*
 - **addHike(hike)**, inserts the object hike to the database. The argument *hike*, is an object with the every fields of an hike
 - **updateHikeTitle(oldName, newName)**, updates the hike identified by *oldName* with the *newName*
