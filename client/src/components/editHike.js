@@ -148,7 +148,7 @@ function EditHikeForm(props) {
           <Form.Label>Difficulty</Form.Label>
           <InputGroup>
             <InputGroup.Text><i class="bi bi-graph-up-arrow"></i></InputGroup.Text>
-            <Form.Select required={true} onChange={(ev) => changeDifficulty(ev.target.value)}>
+            <Form.Select required={true} value={difficulty} onChange={(ev) => changeDifficulty(ev.target.value)}>
               <option label=''></option>
               <option value='Tourist' label="Tourist" />
               <option value='Hiker' label="Hiker" />
@@ -160,7 +160,7 @@ function EditHikeForm(props) {
           <Form.Label>Condition</Form.Label>
           <InputGroup>
             <InputGroup.Text><i class="bi bi-graph-up-arrow"></i></InputGroup.Text>
-            <Form.Select required={true} onChange={(ev) => changeCondition(ev.target.value)}>
+            <Form.Select onChange={(ev) => changeCondition(ev.target.value)}>
               <option label=''></option>
               <option value='Open' label="Open" />
               <option value='Closed' label="Closed" />
@@ -183,7 +183,7 @@ function EditHikeForm(props) {
           <Form.Label>Reference Points</Form.Label>
           <InputGroup className="mb-3">
             <InputGroup.Text><i class="bi bi-compass"></i></InputGroup.Text>
-            <Form.Control value={reference_points} required={true} onChange={(ev) => changeReferencePoints(ev.target.value)} />
+            <Form.Control value={reference_points} onChange={(ev) => changeReferencePoints(ev.target.value)} />
             <InputGroup.Text>m</InputGroup.Text>
           </InputGroup>
         </Form.Group>

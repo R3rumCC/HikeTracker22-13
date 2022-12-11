@@ -91,7 +91,7 @@ router.post('/newHike', [
   c.addHike(req, res)
 });
 
-router.put('/Hike', [
+router.put('/updateHike', [
   body('oldHikeTitle').notEmpty().withMessage('Old title cannot be empty!'),
   body('hike.title').notEmpty().withMessage('Title cannot be empty!'),
   body('hike.length').notEmpty().withMessage('Length cannot be empty!')

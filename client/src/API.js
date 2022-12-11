@@ -282,13 +282,13 @@ function addNewHike(newHike) {
 
 function updateHike(oldHikeTitle, hike) {
   return new Promise((resolve, reject) => {
-    fetch(URL + '/Hike', {
+    fetch(URL + '/updateHike', {
       method: 'PUT',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(oldHikeTitle, { hike }),
+      body: JSON.stringify({ oldHikeTitle, hike }),
     }).then((response) => {
       if (response.ok) {
         resolve(null);

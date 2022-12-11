@@ -10,7 +10,6 @@ const hikeRouter = require('./hikeRouter');
 const email = require('./Email');
 const cors = require('cors');
 const morgan = require('morgan'); // logging middleware
-const { validationResult, body, param } = require('express-validator');
 const PREFIX = '/api';
 
 //1 STEP PASSPORT-->Passport-related imports

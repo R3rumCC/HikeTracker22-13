@@ -410,7 +410,7 @@ function HikeForm(props) {
           <Form.Label>Difficulty</Form.Label>
           <InputGroup>
             <InputGroup.Text><i class="bi bi-graph-up-arrow"></i></InputGroup.Text>
-            <Form.Select required={true} onChange={(ev) => changeDifficulty(ev.target.value)}>
+            <Form.Select required={true} value={difficulty} onChange={(ev) => changeDifficulty(ev.target.value)}>
               <option label=''></option>
               <option value='Tourist' label="Tourist" />
               <option value='Hiker' label="Hiker" />
@@ -422,7 +422,7 @@ function HikeForm(props) {
           <Form.Label>Condition</Form.Label>
           <InputGroup>
             <InputGroup.Text><i class="bi bi-graph-up-arrow"></i></InputGroup.Text>
-            <Form.Select required={true} onChange={(ev) => changeCondition(ev.target.value)}>
+            <Form.Select onChange={(ev) => changeCondition(ev.target.value)}>
               <option label=''></option>
               <option value='Open' label="Open" />
               <option value='Closed' label="Closed" />

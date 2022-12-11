@@ -189,9 +189,9 @@ function Main() {
     }
   };
 
-  const updateHike = async (hike) => {
+  const updateHike = async (oldHikeTitle, hike) => {
     try {
-      await API.updateHike(hike)
+      await API.updateHike(oldHikeTitle, hike)
     } catch (err) {
       handleError(err);
     }
