@@ -216,6 +216,17 @@ function GenericMap(props) { //Map to be inserted anywhere.
                             {startPoint}
                             <hr></hr>
                             {'Start Point'}
+                            <hr></hr>
+                            <ToggleButton
+                                className="mb-2"
+                                id="toggle-start"
+                                type="checkbox"
+                                variant="outline-success"
+                                checked={startPoint == startCheck}
+                                onChange={(e) => { setStartCheck(startPoint); props.setStartPoint(startPoint); props.setStartPointGps(positions[0].lat+','+positions[0].lng)}}
+                            >
+                                Start Point
+                            </ToggleButton>
                         </Popup>
                     </Marker>
                     <Marker position={positions[positions.length - 1]}>
@@ -223,6 +234,17 @@ function GenericMap(props) { //Map to be inserted anywhere.
                             {endPoint}
                             <hr></hr>
                             {'End Point'}
+                            <hr></hr>
+                            <ToggleButton
+                                className="mb-2"
+                                id="toggle-end"
+                                type="checkbox"
+                                variant="outline-danger"
+                                checked={endPoint == endCheck}
+                                onChange={(e) => { setEndCheck(endPoint); props.setEndPoint(endPoint); props.setEndPointGps(positions[positions.length - 1].lat+','+positions[positions.length - 1].lng) }}
+                            >
+                                End Point
+                            </ToggleButton>
                         </Popup>
                     </Marker>
                     {props.points ? [...props.points].filter((x) => { return calcMinDistance({ lat: x.gps_coordinates.split(',')[0], lng: x.gps_coordinates.split(',')[1] }, positions) <= 5 }).map((p) => {
@@ -245,7 +267,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                             type="checkbox"
                                             variant="outline-success"
                                             checked={p.address == startCheck}
-                                            onChange={(e) => {setStartCheck(p.address); props.setStartPoint(p.address); props.setStartPointGps(p.gps_coordinates)}}
+                                            onChange={(e) => { setStartCheck(p.address); props.setStartPoint(p.address); props.setStartPointGps(p.gps_coordinates) }}
                                         >
                                             Start Point
                                         </ToggleButton>
@@ -255,7 +277,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                             type="checkbox"
                                             variant="outline-danger"
                                             checked={p.address == endCheck}
-                                            onChange={(e) => {setEndCheck(p.address); props.setEndPoint(p.address); props.setEndPointGps(p.gps_coordinates)}}
+                                            onChange={(e) => { setEndCheck(p.address); props.setEndPoint(p.address); props.setEndPointGps(p.gps_coordinates) }}
                                         >
                                             End Point
                                         </ToggleButton>
@@ -264,8 +286,12 @@ function GenericMap(props) { //Map to be inserted anywhere.
                             </Marker>
                         )
                     }) : null}
-                    <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} positions={positions}></MapHandler>
-                    <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>
+                    {!props.points ?
+                        <>
+                            <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} positions={positions}></MapHandler>
+                            <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>
+                        </>
+                        : null}
                     <MyComponent gpxPos={positions}></MyComponent>
                     {<GeoJSON data={geoJSON}></GeoJSON>}
                 </MapContainer>

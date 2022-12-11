@@ -47,11 +47,13 @@ function LocalGuide_Home(props) {
         <LocalGuide_Home_Sidebar setHikeForm={selectHike} setParkingForm={selectParking} setHutForm={selectHut} setSeeHikes={selectSeeHikes} setProfile={selectProfile} />
       </Col>
       <Col xs={10}>
-        <div>{profile ? <Profile user={props.currentUser} /> : <></>}</div>
-        <div>{hikeForm ? <HikeForm CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike} points = {props.points}/> : <></>}</div>
-        <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
-        <div>{hutForm ? <HutForm CreateNewHut={props.CreateNewHut} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
-        <div>{seeHikes ? <HikeList hikes={props.hikes} currentUser={props.currentUser} setCurrentHike={props.setCurrentHike} /> : <></>}</div>
+        <div class='mx-3 my-3'>
+          <div>{profile ? <Profile user={props.currentUser} /> : <></>}</div>
+          <div>{hikeForm ? <HikeForm CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike} points = {props.points}/> : <></>}</div>
+          <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
+          <div>{hutForm ? <HutForm CreateNewHut={props.CreateNewHut} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
+          <div>{seeHikes ? <HikeList hikes={props.hikes} currentUser={props.currentUser} setCurrentHike={props.setCurrentHike} /> : <></>}</div>
+        </div>
       </Col>
     </Row>
   )
@@ -357,7 +359,6 @@ function HikeForm(props) {
           <InputGroup className="mb-3">
             <InputGroup.Text><i class="bi bi-compass"></i></InputGroup.Text>
             <Form.Control value={startPoint} required={true} onChange={(ev) => changeStartP(ev.target.value)} />
-            <InputGroup.Text>m</InputGroup.Text>
           </InputGroup>
         </Form.Group>
         <Form.Group as={Col}>
@@ -365,7 +366,6 @@ function HikeForm(props) {
           <InputGroup className="mb-3">
             <InputGroup.Text><i class="bi bi-compass"></i></InputGroup.Text>
             <Form.Control value={endPoint} required={true} onChange={(ev) => changeEndP(ev.target.value)} />
-            <InputGroup.Text>m</InputGroup.Text>
           </InputGroup>
         </Form.Group>
       </Row>
