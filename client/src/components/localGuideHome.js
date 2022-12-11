@@ -47,9 +47,9 @@ function LocalGuide_Home(props) {
         <LocalGuide_Home_Sidebar setHikeForm={selectHike} setParkingForm={selectParking} setHutForm={selectHut} setSeeHikes={selectSeeHikes} setProfile={selectProfile} />
       </Col>
       <Col xs={10}>
-        <div class='mx-3 my-3'>
+        <div className='mx-3 my-3'>
           <div>{profile ? <Profile user={props.currentUser} /> : <></>}</div>
-          <div>{hikeForm ? <HikeForm CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike} points = {props.points}/> : <></>}</div>
+          <div>{hikeForm ? <HikeForm hikes={props.hikes} currentUser={props.currentUser} CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike} points = {props.points}/> : <></>}</div>
           <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
           <div>{hutForm ? <HutForm CreateNewHut={props.CreateNewHut} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
           <div>{seeHikes ? <HikeList hikes={props.hikes} currentUser={props.currentUser} setCurrentHike={props.setCurrentHike} /> : <></>}</div>
@@ -137,7 +137,8 @@ function HikeForm(props) {
     event.preventDefault();
     let newHike;
     //Checks on needed fields
-    if (title !== "") {
+    const match = props.hikes.find(h=>h.title==title);
+    if (title !== "" && match == null) {
       if (length !== "" && difficulty !== "") {
         if (startPoint !== '' && endPoint !== '') {
           if (description !== "") {
@@ -176,7 +177,7 @@ function HikeForm(props) {
         setErrorMsg("A length and a difficulty are required.")
       }
     } else {
-      setErrorMsg("Enter a title before submit.");
+      setErrorMsg("Enter a valid or unused title before submit.");
     }
   }
 
