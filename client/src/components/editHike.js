@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Button, Form, FormGroup, FormLabel, ButtonGroup, InputGroup, Alert } from 'react-bootstrap';
+import { Row, Col, Button, Form, FormGroup, FormLabel, ButtonGroup, InputGroup, Alert, Container } from 'react-bootstrap';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { GenericMap } from './hikePage';
 import axiosInstance from "../utils/axios"
@@ -9,7 +9,7 @@ function EditHike(props) {
   return (
     <>
       <Row>
-        <EditHikeForm updateHike={props.updateHike} oldHike={props.currentHike}></EditHikeForm>
+        <EditHikeForm updateHike={props.updateHike} oldHike={props.currentHike} setCurrentMarkers ={props.setCurrentMarkers} currentMarkers = {props.currentMarkers} ></EditHikeForm>
       </Row>
       <div className="d-flex flex-row">
         <Button style={{ marginRight: 5, width: "8%" }} onClick={props.returnToHome}>Home</Button>
@@ -32,7 +32,6 @@ function EditHikeForm(props) {
   const [conditionDescription, setConditionDescription] = useState(props.oldHike.hike_condition_description)
   const [reference_points, setReferencePoints] = useState(props.oldHike.reference_points);
   const [errorMsg, setErrorMsg] = useState("");
-
   const changeTitle = (val) => { setTitle(val) }
   const changeLength = (val) => { setLength(val) }
   const changeExpTime = (val) => { setExpTime(val) }
@@ -177,18 +176,49 @@ function EditHikeForm(props) {
           </InputGroup>
         </Form.Group>
       </Row>
-
-      <Row>
-        <Form.Group as={Col}>
-          <Form.Label>Reference Points</Form.Label>
-          <InputGroup className="mb-3">
-            <InputGroup.Text><i class="bi bi-compass"></i></InputGroup.Text>
-            <Form.Control value={reference_points} onChange={(ev) => changeReferencePoints(ev.target.value)} />
-            <InputGroup.Text>m</InputGroup.Text>
-          </InputGroup>
-        </Form.Group>
-      </Row>
-
+        { 
+          reference_points ? [...reference_points].map( (x, index) =>{
+          return (
+                <>
+                <Row>
+                  <Form.Label style={{ fontSize: 25 }}> Reference Point #{index+1}</Form.Label>
+                  <Form.Group as={Col}>
+                    <Form.Label>Title</Form.Label>
+                    <InputGroup className="mb-3">
+                      <InputGroup.Text><i class="bi bi-compass"></i></InputGroup.Text>
+                      <Form.Control value={x.address.split(',')[0]} onChange={(ev) => { let temp = [...reference_points]; temp[index].nameLocation = ev.target.value; console.log(temp); changeReferencePoints(temp)}} />
+                    </InputGroup>
+                  </Form.Group>
+                  <Form.Group as={Row}>
+                    <Form.Label>Address</Form.Label>
+                    <InputGroup className="mb-3">
+                      <InputGroup.Text><i class="bi bi-compass"></i></InputGroup.Text>
+                      <Form.Control disabled value={x.address} onChange={(ev) => { let temp = [...reference_points]; temp[index].address = ev.target.value; console.log(temp); changeReferencePoints(temp)}} />
+                    </InputGroup>
+                  </Form.Group>
+                  <Form.Group as={Col}>
+                    <Form.Label>Coordinates</Form.Label>
+                    <InputGroup className="mb-3">
+                      <InputGroup.Text><i class="bi bi-compass"></i></InputGroup.Text>
+                      <Form.Control disabled value={x.latlng.lat+','+x.latlng.lng} onChange={(ev) => { let temp = [...reference_points]; temp[index].latlng = {lat: ev.target.value.split(',')[0], lng:ev.target.value.split(',')[1]}; console.log(temp); changeReferencePoints(temp)}} />
+                    </InputGroup>
+                  </Form.Group>
+                  <Form.Group as={Col}>
+                    <Form.Label>Altitude</Form.Label>
+                    <InputGroup className="mb-3">
+                      <InputGroup.Text><i class="bi bi-compass"></i></InputGroup.Text>
+                      <Form.Control disabled value={x.altitude} onChange={(ev) => { let temp = [...reference_points]; temp[index].altitude = ev.target.value; console.log(temp); changeReferencePoints(temp)}} />
+                    </InputGroup>
+                  </Form.Group>
+                </Row>
+                </>)
+        }
+        ) 
+        : null}
+      {console.log(reference_points)}
+      <Form.Group as={Col}>
+          <GenericMap currentHike={[props.oldHike]} setCurrentMarkers ={setReferencePoints} currentMarkers = {reference_points}></GenericMap>
+      </Form.Group>
       <Button className='mt-y' type='submit' style={{ background: 'green' }}>Save</Button>
       <Button style={{ background: 'green' }} onClick={reset} className='ms-2 my-2'>Cancel</Button>
 

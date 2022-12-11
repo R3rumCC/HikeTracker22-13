@@ -1,4 +1,4 @@
-import { Col, Row, Button, ToggleButton, ButtonGroup } from 'react-bootstrap';
+import { Col, Row, Button, ToggleButton, ButtonGroup, Alert } from 'react-bootstrap';
 import { HikesContainer } from './hikesCards';
 import { MapContainer, Polyline, TileLayer, Map, Marker, Popup, useMapEvents, GeoJSON, useMap, Circle, LayerGroup, } from 'react-leaflet'
 import * as L from "leaflet";
@@ -56,6 +56,18 @@ function calcMinDistance(latlng, positions) { //Get the min distance to from a p
         return getDistanceFromLatLonInKm(latlng.lat, latlng.lng, p[0], p[1])
     })
     return Math.min(...distances)
+}
+function refDistance(latlng, positions) { //Get the min distance to from a point to a set of points
+    let min = 0.5
+    let point = {}
+    positions.forEach(p => {
+        let x = getDistanceFromLatLonInKm(latlng.lat, latlng.lng, p[0], p[1])
+        if (x <= min) {
+            point = p;
+            min = x
+        }
+    })
+    return {lat: point[0], lng: point[1], alt: point[2]}
 }
 
 function distanceRespectHikes(latlng, list) {
@@ -216,17 +228,21 @@ function GenericMap(props) { //Map to be inserted anywhere.
                             {startPoint}
                             <hr></hr>
                             {'Start Point'}
-                            <hr></hr>
-                            <ToggleButton
-                                className="mb-2"
-                                id="toggle-start"
-                                type="checkbox"
-                                variant="outline-success"
-                                checked={startPoint == startCheck}
-                                onChange={(e) => { setStartCheck(startPoint); props.setStartPoint(startPoint); props.setStartPointGps(positions[0].lat+','+positions[0].lng)}}
-                            >
-                                Start Point
-                            </ToggleButton>
+                            {props.points ?
+                                <>
+                                    <hr></hr>
+                                    <ToggleButton
+                                        className="mb-2"
+                                        id="toggle-start"
+                                        type="checkbox"
+                                        variant="outline-success"
+                                        checked={startPoint == startCheck}
+                                        onChange={(e) => { setStartCheck(startPoint); props.setStartPoint(startPoint); props.setStartPointGps(positions[0].lat + ',' + positions[0].lng) }}
+                                    >
+                                        Start Point
+                                    </ToggleButton>
+                                </>
+                                : null}
                         </Popup>
                     </Marker>
                     <Marker position={positions[positions.length - 1]}>
@@ -234,17 +250,23 @@ function GenericMap(props) { //Map to be inserted anywhere.
                             {endPoint}
                             <hr></hr>
                             {'End Point'}
-                            <hr></hr>
-                            <ToggleButton
-                                className="mb-2"
-                                id="toggle-end"
-                                type="checkbox"
-                                variant="outline-danger"
-                                checked={endPoint == endCheck}
-                                onChange={(e) => { setEndCheck(endPoint); props.setEndPoint(endPoint); props.setEndPointGps(positions[positions.length - 1].lat+','+positions[positions.length - 1].lng) }}
-                            >
-                                End Point
-                            </ToggleButton>
+
+                            {props.points ?
+                                <>
+                                    <hr></hr>
+                                    <ToggleButton
+                                        className="mb-2"
+                                        id="toggle-end"
+                                        type="checkbox"
+                                        variant="outline-danger"
+                                        checked={endPoint == endCheck}
+                                        onChange={(e) => { setEndCheck(endPoint); props.setEndPoint(endPoint); props.setEndPointGps(positions[positions.length - 1].lat + ',' + positions[positions.length - 1].lng) }}
+                                    >
+                                        End Point
+                                    </ToggleButton>
+                                </>
+                                : null}
+
                         </Popup>
                     </Marker>
                     {props.points ? [...props.points].filter((x) => { return calcMinDistance({ lat: x.gps_coordinates.split(',')[0], lng: x.gps_coordinates.split(',')[1] }, positions) <= 5 }).map((p) => {
@@ -292,7 +314,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                             <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>
                         </>
                         : null}
-                    <MyComponent gpxPos={positions}></MyComponent>
+                    {props.gpxFile ? <MyComponent gpxPos={positions}></MyComponent> : null}
                     {<GeoJSON data={geoJSON}></GeoJSON>}
                 </MapContainer>
                 : null}
@@ -337,13 +359,19 @@ function MapHandler(props) { //Handles just the clicks on the map
             $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + e.latlng.lat + '&lon=' + e.latlng.lng + '&format=json&limit=1', function (data) {
                 let newSelectedMarker = {}
                 if (!props.generic) {
-                    let minDistance = calcMinDistance(e.latlng, props.positions)
-                    newSelectedMarker = { latlng: e.latlng, address: data.display_name, minDistance: minDistance }
+                    let point = refDistance(e.latlng, props.positions)
+                    if(point.lat && point.lng)
+                        newSelectedMarker = { latlng: {lat: point.lat, lng:point.lng}, altitude: point.alt, address: data.display_name }
+                    else
+                        alert('The point is too far from the track')
                 }
                 else {
                     newSelectedMarker = { latlng: e.latlng, address: data.display_name }
                 }
-                if (!props.currentMarkers.find(p => p.address == newSelectedMarker.address)) {
+                if ( newSelectedMarker.latlng==null ){
+                    console.log("Invalid point")
+                }
+                else if (!props.currentMarkers.find(p => p.address == newSelectedMarker.address && p.latlng.lng == newSelectedMarker.latlng.lng && p.latlng.lat == newSelectedMarker.latlng.lat)) {
                     var newSelectedMarkers = [...props.currentMarkers, newSelectedMarker]
                     props.setCurrentMarkers(newSelectedMarkers)
                 } else {
@@ -366,7 +394,7 @@ function SelectedMarkers(props) {
                             eventHandlers={{
                                 click: (e) => {
                                     console.log("CLICKERD")
-                                    let newSelectedMarkers = props.currentMarkers.filter(m => m.address != p.address);
+                                    let newSelectedMarkers = props.currentMarkers.filter(m => m.address != p.address || (m.latlng.lat != p.latlng.lat && m.latlng.lng != p.latlng.lng));
                                     props.setCurrentMarkers(newSelectedMarkers);
                                     console.log(props.currentMarkers)
                                 }
