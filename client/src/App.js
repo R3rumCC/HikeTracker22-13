@@ -14,6 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Navigation } from './components/Navigation';
 //import { LocalGuide_Home } from './components/localGuide_view';
 import { LocalGuide_Home } from './components/localGuideHome';
+import { Hiker_Home } from './components/hikerHome';
 
 import MessageContext from './messageCtx';
 import API from './API';
@@ -60,6 +61,7 @@ function Main() {
   const [currentHike, setCurrentHike] = useState([]);
   const [points, setPoints] = useState([]);
   const [isLoading, setLoading] = useState(false);
+  const [profilePage, setProfilePage] = useState(false);
   //Remember to clear the current markers if the user leaves the page
   const [currentMarkers, setCurrentMarkers] = useState([]);
 
@@ -208,8 +210,11 @@ function Main() {
 
   }
 
-  function goToProfile(){
-    navigate('/profile');
+  function profilePageSwitch(){
+    if(profilePage)
+      navigate('/');
+    else
+      navigate('/profile');
   } 
 
   function returnToHome(){
@@ -221,7 +226,7 @@ function Main() {
 
   return (
     <>
-      <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} setCurrentMarkers={setCurrentMarkers} goToProfile={goToProfile} />
+      <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} setCurrentMarkers={setCurrentMarkers} profilePage={profilePageSwitch} />
       <Routes>
         <Route path="/" element={
           loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHut={CreateNewHut} CreateNewHike={CreateNewHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} hikes={hikes} currentUser={currentUser} /> :
@@ -234,8 +239,8 @@ function Main() {
         <Route path="/register" element={!loggedIn ? <RegisterLayout CreateNewAccount={CreateNewAccount} checkUser={checkUser} checkCode={checkCode} sendEmail={sendEmail} /> : <Navigate replace to='/' />} />
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
         <Route path="/searchHut" element={loggedIn && currentUser.role == 'Hiker' ? <SearchLayout /> : <Navigate replace to='/' />} />
-        <Route path="/profile" element={loggedIn && currentUser.role == 'LocalGuide' ? <Profile user={currentUser} returnToHome={returnToHome} /> : <Navigate replace to='/' />} />
-        <Route path="/editHike" element={loggedIn && currentUser.role == 'LocalGuide' ? <EditHike updateHike={updateHike} returnToHome={returnToHome} currentHike={currentHike} /> : <Navigate replace to='/' />} />
+        <Route path="/profile" element={loggedIn && currentUser.role == 'Hiker' ? <Hiker_Home currentUser={currentUser} /> : <Navigate replace to='/' />} />
+        <Route path="/editHike" element={loggedIn && currentUser.role == 'LocalGuide' ? <EditHike user={currentUser} returnToHome={returnToHome} /> : <Navigate replace to='/' />} />
       </Routes>
     </>
   );
