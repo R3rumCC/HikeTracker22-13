@@ -18,7 +18,7 @@ import { LocalGuide_Home } from './components/localGuideHome';
 import MessageContext from './messageCtx';
 import API from './API';
 import Profile from "./components/profile";
-import { HikeForm } from './components/newHikeForm';
+import { EditHike } from './components/editHike';
 import FileUploader from './components/UploadGpxForm';
 import { GenericMap, HikePage } from './components/hikePage';
 import { PointsContainer } from './components/pointsCards';
@@ -228,6 +228,7 @@ function Main() {
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
         <Route path="/searchHut" element={loggedIn && currentUser.role == 'Hiker' ? <SearchLayout /> : <Navigate replace to='/' />} />
         <Route path="/profile" element={loggedIn && currentUser.role == 'LocalGuide' ? <Profile user={currentUser} returnToHome={returnToHome} /> : <Navigate replace to='/' />} />
+        <Route path="/editHike" element={loggedIn && currentUser.role == 'LocalGuide' ? <EditHike user={currentUser} returnToHome={returnToHome} /> : <Navigate replace to='/' />} />
       </Routes>
     </>
   );
