@@ -272,7 +272,7 @@ function HikeForm(props) {
         <Form.Group>
           <Form.Label style={{ fontSize: 25 }}>Title</Form.Label>
           <InputGroup className="mb-2">
-            <InputGroup.Text><i class="bi bi-textarea-t"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-textarea-t"></i></InputGroup.Text>
             <Form.Control value={title} required={true} onChange={(ev) => changeTitle(ev.target.value)} />
           </InputGroup>
         </Form.Group>
@@ -282,7 +282,7 @@ function HikeForm(props) {
         <Form.Group>
           <Form.Label style={{ fontSize: 25 }}>Description</Form.Label>
           <InputGroup className="mb-2">
-            <InputGroup.Text><i class="bi bi-textarea-t"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-textarea-t"></i></InputGroup.Text>
             <Form.Control as="textarea" required={true} rows={3} value={description} onChange={(ev) => changeDescription(ev.target.value)} />
           </InputGroup>
         </Form.Group>
@@ -296,7 +296,7 @@ function HikeForm(props) {
         <Form.Group as={Col}>
           <Form.Label>Length</Form.Label>
           <InputGroup className="mb-3">
-            <InputGroup.Text><i class="bi bi-map"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-map"></i></InputGroup.Text>
             <Form.Control value={length} required={true} onChange={(ev) => changeLength(ev.target.value)} placeholder="3.2" />
             <InputGroup.Text>Km</InputGroup.Text>
           </InputGroup>
@@ -304,7 +304,7 @@ function HikeForm(props) {
         <Form.Group as={Col}>
           <Form.Label>Expected Time</Form.Label>
           <InputGroup className="mb-3">
-            <InputGroup.Text><i class="bi bi-stopwatch"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-stopwatch"></i></InputGroup.Text>
             <Form.Control value={expTime} required={true} onChange={(ev) => changeExpTime(ev.target.value)} placeholder="4" />
             <InputGroup.Text>hours</InputGroup.Text>
           </InputGroup>
@@ -315,7 +315,7 @@ function HikeForm(props) {
         <Form.Group as={Col}>
           <Form.Label>Ascent</Form.Label>
           <InputGroup className="mb-3">
-            <InputGroup.Text><i class="bi bi-geo-fill"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-geo-fill"></i></InputGroup.Text>
             <Form.Control value={ascent} required={true} onChange={(ev) => changeAscent(ev.target.value)} placeholder="670" />
             <InputGroup.Text>m</InputGroup.Text>
           </InputGroup>
@@ -323,7 +323,7 @@ function HikeForm(props) {
         <Form.Group as={Col}>
           <Form.Label>Difficulty</Form.Label>
           <InputGroup>
-            <InputGroup.Text><i class="bi bi-graph-up-arrow"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-graph-up-arrow"></i></InputGroup.Text>
             <Form.Select required={true} value={difficulty} onChange={(ev) => changeDifficulty(ev.target.value)}>
               <option label=''></option>
               <option value='Tourist' label="Tourist" />
@@ -335,7 +335,7 @@ function HikeForm(props) {
         <Form.Group as={Col}>
           <Form.Label>Condition</Form.Label>
           <InputGroup>
-            <InputGroup.Text><i class="bi bi-graph-up-arrow"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-graph-up-arrow"></i></InputGroup.Text>
             <Form.Select onChange={(ev) => changeCondition(ev.target.value)}>
               <option label=''></option>
               <option value='Open' label="Open" />
@@ -348,7 +348,7 @@ function HikeForm(props) {
         <Form.Group as={Col}>
           <Form.Label>Condition Description</Form.Label>
           <InputGroup className="mb-2">
-            <InputGroup.Text><i class="bi bi-textarea-t"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-textarea-t"></i></InputGroup.Text>
             <Form.Control as="textarea" value={conditionDescription} onChange={(ev) => changeConditionDescription(ev.target.value)} />
           </InputGroup>
         </Form.Group>
@@ -358,14 +358,14 @@ function HikeForm(props) {
         <Form.Group as={Col}>
           <Form.Label>Start Point</Form.Label>
           <InputGroup className="mb-3">
-            <InputGroup.Text><i class="bi bi-compass"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-compass"></i></InputGroup.Text>
             <Form.Control value={startPoint} required={true} onChange={(ev) => changeStartP(ev.target.value)} />
           </InputGroup>
         </Form.Group>
         <Form.Group as={Col}>
           <Form.Label>End Point</Form.Label>
           <InputGroup className="mb-3">
-            <InputGroup.Text><i class="bi bi-compass"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-compass"></i></InputGroup.Text>
             <Form.Control value={endPoint} required={true} onChange={(ev) => changeEndP(ev.target.value)} />
           </InputGroup>
         </Form.Group>
@@ -459,7 +459,7 @@ function HutForm(props) {
         <Form.Group>
           <Form.Label style={{ fontSize: 25 }}>Title</Form.Label>
           <InputGroup className="mb-2">
-            <InputGroup.Text><i class="bi bi-textarea-t"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-textarea-t"></i></InputGroup.Text>
             <Form.Control value={title} required={true} onChange={(ev) => setTitle(ev.target.value)} />
           </InputGroup>
         </Form.Group>
@@ -473,7 +473,7 @@ function HutForm(props) {
         <Form.Group>
           <Form.Label>Address</Form.Label>
           <InputGroup className="mb-2">
-            <InputGroup.Text><i class="bi bi-signpost"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-signpost"></i></InputGroup.Text>
             <Form.Control value={address} required={true} disabled={clicked} onChange={(ev) => setAddress(ev.target.value)} />
           </InputGroup>
         </Form.Group>
@@ -483,14 +483,14 @@ function HutForm(props) {
         <Form.Group as={Col}>
           <Form.Label>Position</Form.Label>
           <InputGroup className="mb-2">
-            <InputGroup.Text><i class="bi bi-geo-alt"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-geo-alt"></i></InputGroup.Text>
             <Form.Control value={position} required={true} disabled={clicked} onChange={(ev) => setPosition(ev.target.value)} />
           </InputGroup>
         </Form.Group>
         <Form.Group as={Col}>
           <Form.Label>Altitude</Form.Label>
           <InputGroup className="mb-2">
-            <InputGroup.Text><i class="bi bi-geo-fill"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-geo-fill"></i></InputGroup.Text>
             <Form.Control value={altitude} required={true} onChange={(ev) => setAltitude(ev.target.value)} />
           </InputGroup>
         </Form.Group>
@@ -504,21 +504,21 @@ function HutForm(props) {
         <Form.Group as={Col}>
           <Form.Label>Phone</Form.Label>
           <InputGroup className="mb-2">
-            <InputGroup.Text><i class="bi bi-telephone"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-telephone"></i></InputGroup.Text>
             <Form.Control value={phone} required={true} onChange={(ev) => setPhone(ev.target.value)} />
           </InputGroup>
         </Form.Group>
         <Form.Group as={Col}>
           <Form.Label>Email</Form.Label>
           <InputGroup className="mb-2">
-            <InputGroup.Text><i class="bi bi-envelope"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-envelope"></i></InputGroup.Text>
             <Form.Control value={email} required={true} onChange={(ev) => setEmail(ev.target.value)} />
           </InputGroup>
         </Form.Group>
         <Form.Group as={Col}>
           <Form.Label>Web Site</Form.Label>
           <InputGroup className="mb-2">
-            <InputGroup.Text><i class="bi bi-mouse"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-mouse"></i></InputGroup.Text>
             <Form.Control value={webSite} onChange={(ev) => setWebSite(ev.target.value)} />
           </InputGroup>
         </Form.Group>
@@ -532,7 +532,7 @@ function HutForm(props) {
         <Form.Group as={Col}>
           <Form.Label>Number of beds</Form.Label>
           <InputGroup className="mb-2">
-            <InputGroup.Text> <i class="bi bi-person-plus"></i></InputGroup.Text>
+            <InputGroup.Text> <i className="bi bi-person-plus"></i></InputGroup.Text>
             <Form.Control value={numBeds} required={true} type='number' min='0' onChange={(ev) => setNumBeds(ev.target.value)} />
           </InputGroup>
         </Form.Group>
@@ -610,7 +610,7 @@ function ParkingLotForm(props) {
         <Form.Group>
           <Form.Label style={{ fontSize: 25 }}>Title</Form.Label>
           <InputGroup className="mb-2">
-            <InputGroup.Text><i class="bi bi-textarea-t"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-textarea-t"></i></InputGroup.Text>
             <Form.Control value={title} required={true} onChange={(ev) => setTitle(ev.target.value)} />
           </InputGroup>
         </Form.Group>
@@ -624,7 +624,7 @@ function ParkingLotForm(props) {
         <Form.Group>
           <Form.Label>Position</Form.Label>
           <InputGroup className="mb-2">
-            <InputGroup.Text><i class="bi bi-geo-alt"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-geo-alt"></i></InputGroup.Text>
             <Form.Control value={position} required={true} disabled={clicked} onChange={(ev) => setPosition(ev.target.value)}></Form.Control>
           </InputGroup>
         </Form.Group>
@@ -633,7 +633,7 @@ function ParkingLotForm(props) {
         <Form.Group>
           <Form.Label>Address</Form.Label>
           <InputGroup className="mb-2">
-            <InputGroup.Text><i class="bi bi-signpost"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-signpost"></i></InputGroup.Text>
             <Form.Control value={address} required={true} disabled={clicked} onChange={(ev) => setAddress(ev.target.value)}></Form.Control>
           </InputGroup>
         </Form.Group>
@@ -643,7 +643,7 @@ function ParkingLotForm(props) {
         <Form.Group>
           <Form.Label>Capacity</Form.Label>
           <InputGroup className="mb-2">
-            <InputGroup.Text><i class="bi bi-car-front"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-car-front"></i></InputGroup.Text>
             <Form.Control value={capacity} required={true} type='number' min='0' onChange={(ev) => setCapacity(ev.target.value)}></Form.Control>
           </InputGroup>
         </Form.Group>
