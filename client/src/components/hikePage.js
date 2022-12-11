@@ -361,7 +361,7 @@ function MapHandler(props) { //Handles just the clicks on the map
                 if (!props.generic) {
                     let point = refDistance(e.latlng, props.positions)
                     if(point.lat && point.lng)
-                        newSelectedMarker = { latlng: {lat: point.lat, lng:point.lng}, altitude: point.alt, address: data.display_name }
+                        newSelectedMarker = { nameLocation:data.display_name.split(',')[0], latlng: {lat: point.lat, lng:point.lng}, altitude: point.alt, address: data.display_name }
                     else
                         alert('The point is too far from the track')
                 }
