@@ -240,7 +240,7 @@ function Main() {
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
         <Route path="/searchHut" element={loggedIn && currentUser.role == 'Hiker' ? <SearchLayout /> : <Navigate replace to='/' />} />
         <Route path="/profile" element={loggedIn && currentUser.role == 'Hiker' ? <Hiker_Home currentUser={currentUser} /> : <Navigate replace to='/' />} />
-        <Route path="/editHike" element={loggedIn && currentUser.role == 'LocalGuide' ? <EditHike user={currentUser} returnToHome={returnToHome} /> : <Navigate replace to='/' />} />
+        <Route path="/editHike" element={loggedIn && currentUser.role == 'LocalGuide' ? <EditHike updateHike={updateHike} returnToHome={returnToHome} currentHike={currentHike} /> : <Navigate replace to='/' />} />
       </Routes>
     </>
   );
