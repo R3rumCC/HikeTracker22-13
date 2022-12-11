@@ -38,11 +38,6 @@ const Navigation = (props) => {
                 {`Welcome, ${props.user.role} ${props.user.name}!`}
               </Navbar.Text>
             </Col> : null}
-            {/*<Col>
-              <Form>
-                {props.loggedIn && props.user.role == "Hiker" ? <SearchHutButton searchPage={searchPage} setSearchPage={setSearchPage} /> : <></>}
-              </Form>
-            </Col>*/}
             <Col >
               {props.loggedIn ? <LogoutButton logout={props.logout} /> : <LoginButton />}
             </Col>
