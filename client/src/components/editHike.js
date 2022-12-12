@@ -187,11 +187,12 @@ function EditHikeForm(props) {
         </Form.Group>
       </Row>
       <Form.Label style={{ fontSize: 25 }}> Click on the map to add Reference Points </Form.Label>
+      <Row>
         { 
           reference_points ? [...reference_points].map( (x, index) =>{
           return (
                 <>
-                <Row>
+                <div className='col-md-4 col-sm-6'>
                   <Form.Label style={{ fontSize: 25 }}> Reference Point #{index+1}</Form.Label>
                   <Form.Group as={Col}>
                     <Form.Label>Title</Form.Label>
@@ -221,11 +222,12 @@ function EditHikeForm(props) {
                       <Form.Control disabled value={reference_points[index].altitude} onChange={(ev) => { let temp = [...reference_points]; temp[index].altitude = ev.target.value; console.log(temp); changeReferencePoints(temp)}} />
                     </InputGroup>
                   </Form.Group>
-                </Row>
+                </div>
               </>)
           }
           )
             : null}
+            </Row>
       {console.log(reference_points)}
       <Form.Group as={Col}>
         <GenericMap currentHike={[props.oldHike]} setCurrentMarkers={setReferencePoints} currentMarkers={reference_points}></GenericMap>
