@@ -136,7 +136,10 @@ function Main() {
   //********HANDLE_ADD_POINT*******//
   const CreateNewPoint = async (point) => {
     try {
-      await API.addPoint(point)
+      let point= await API.addPoint(point)
+      console.log('Inside CreateNewPoint in App, point= ')
+      console.log(point)
+      return point
     } catch (err) {
       handleError(err);
     }
@@ -190,7 +193,7 @@ function Main() {
       <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} setCurrentMarkers={setCurrentMarkers} goToProfile={goToProfile} />
       <Routes>
         <Route path="/" element={
-          loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHut={CreateNewHut} CreateNewHike={CreateNewHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} /> :
+          loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHut={CreateNewHut} CreateNewHike={CreateNewHike} currentUser={currentUser} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} /> :
             <DefaultLayout role={loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike} />  /*<FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>

@@ -234,6 +234,7 @@ async function getHuts() {
 /*************************LOCAL GUIDE API**********************/
 
 function addNewHike(newHike) {
+  
   return new Promise((resolve, reject) => {
     fetch(URL + '/newHike', {
       method: 'POST',
@@ -256,6 +257,7 @@ function addNewHike(newHike) {
 
 function addPoint(point) {
   return new Promise((resolve, reject) => {
+
     fetch(URL + '/Point', {
       method: 'POST',
       credentials: 'include',
@@ -265,7 +267,7 @@ function addPoint(point) {
       body: JSON.stringify({ point }),
     }).then((response) => {
       if (response.ok) {
-        resolve(null);
+        return(response);
       } else {
         response.json()
           .then((obj) => { reject(obj); })
