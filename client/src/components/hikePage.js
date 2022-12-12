@@ -151,11 +151,6 @@ function GenericMap(props) { //Map to be inserted anywhere.
 
         return null
     }
-    const radios = [
-        { name: 'Start Point', value: '1' },
-        { name: 'End Point', value: '2' }
-
-    ]
     async function gpxmap(name, hike = null) {
         try {
             const map = await API.getMap(name);
@@ -269,7 +264,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
 
                         </Popup>
                     </Marker>
-                    {props.points ? [...props.points].filter((x) => { return calcMinDistance({ lat: x.gps_coordinates.split(',')[0], lng: x.gps_coordinates.split(',')[1] }, positions) <= 5 }).map((p) => {
+                    {props.points ? [...props.points].filter((x) => { return getDistanceFromLatLonInKm(x.gps_coordinates.split(',')[0], x.gps_coordinates.split(',')[1], positions[0][0],positions[0][1]) <= 5 || getDistanceFromLatLonInKm(x.gps_coordinates.split(',')[0], x.gps_coordinates.split(',')[1], positions[positions.length -1][0],positions[positions.length -1][1]) <=5 }).map((p) => {
                         return (
                             <Marker icon={greenIcon} key={Math.random()} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
 

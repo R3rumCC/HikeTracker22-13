@@ -267,7 +267,7 @@ function updateHikeDescription(title, description) {
 function updateHike(oldHikeTitle, newHike) {
   return new Promise((resolve, reject) => {
     const sql = 'UPDATE HIKES SET title = ?, length = ?, expected_time = ?, ascent = ?, difficulty = ?, start_point = ?, end_point = ?, reference_points = ?, description = ?, hike_condition =?, hike_condition_description = ?, local_guide = ? where title = ?';
-    db.run(sql, newHike.title, newHike.length, newHike.expected_time, newHike.ascent, newHike.difficulty, newHike.start_point, newHike.end_point, newHike.reference_points, newHike.description, newHike.hike_codition, newHike.hike_condition_description, newHike.local_guide, oldHikeTitle, (err) => {
+    db.run(sql, newHike.title, newHike.length, newHike.expected_time, newHike.ascent, newHike.difficulty, newHike.start_point, newHike.end_point, newHike.reference_points, newHike.description, newHike.hike_condition, newHike.hike_condition_description, newHike.local_guide, oldHikeTitle, (err) => {
       if (err)
         reject(err);
       else

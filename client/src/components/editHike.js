@@ -162,7 +162,7 @@ function EditHikeForm(props) {
           <Form.Label>Condition</Form.Label>
           <InputGroup>
             <InputGroup.Text><i class="bi bi-graph-up-arrow"></i></InputGroup.Text>
-            <Form.Select onChange={(ev) => changeCondition(ev.target.value)}>
+            <Form.Select value={condition} onChange={(ev) => changeCondition(ev.target.value)}>
               <option label=''></option>
               <option value='Open' label="Open" />
               <option value='Closed' label="Closed" />
@@ -179,6 +179,7 @@ function EditHikeForm(props) {
           </InputGroup>
         </Form.Group>
       </Row>
+      <Form.Label style={{ fontSize: 25 }}> Click on the map to add Reference Points </Form.Label>
         { 
           reference_points ? [...reference_points].map( (x, index) =>{
           return (

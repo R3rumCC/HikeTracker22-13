@@ -149,6 +149,8 @@ function HikeForm(props) {
               let endId = props.CreateNewPoint(end);
 
               //check on user's role (?)
+              console.log(startPointGps,endPointGps)
+              console.log(startId, endId)
               newHike = {
                 title: title, length: length, expected_time: expTime, ascent: ascent, difficulty: difficulty,
                 start_point: startPoint, end_point: endPoint, reference_points: reference_points,
@@ -359,14 +361,14 @@ function HikeForm(props) {
           <Form.Label>Start Point</Form.Label>
           <InputGroup className="mb-3">
             <InputGroup.Text><i className="bi bi-compass"></i></InputGroup.Text>
-            <Form.Control value={startPoint} required={true} onChange={(ev) => changeStartP(ev.target.value)} />
+            <Form.Control disabled value={startPoint} required={true} onChange={(ev) => changeStartP(ev.target.value)} />
           </InputGroup>
         </Form.Group>
         <Form.Group as={Col}>
           <Form.Label>End Point</Form.Label>
           <InputGroup className="mb-3">
             <InputGroup.Text><i className="bi bi-compass"></i></InputGroup.Text>
-            <Form.Control value={endPoint} required={true} onChange={(ev) => changeEndP(ev.target.value)} />
+            <Form.Control disabled value={endPoint} required={true} onChange={(ev) => changeEndP(ev.target.value)} />
           </InputGroup>
         </Form.Group>
       </Row>
