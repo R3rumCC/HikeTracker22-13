@@ -98,20 +98,11 @@ describe("Huts test", () => {
 	});
 
 	obtainHuts(200);
-	addNewHut(200, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
-						'Hut#1', '45.177786,7.083372', 'Hut', null, null, '3209987875', 'test@gmail.com', 'www.test.com', 'Testing hut');
-	addNewHut(400, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
-						'Hut#1', '45.177786,7.083372', 'Hut', null, null, null, 'test@gmail.com', 'www.test.com', 'Testing hut');
-	addNewHut(400, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
-						'Hut#1', '45.177786,7.083372', 'Hut', null, null, '3209987875', null, 'www.test.com', 'Testing hut');
-	addNewHut(200, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
-						'Hut#1', '45.177786,7.083372', 'Hut', null, null, '3209987875', 'test@gmail.com', 'www.test.com', 'Testing hut');
-	addNewHut(400, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
-						'Hut#1', '45.177786,7.083372', 'Hut', null, null, '3209987875', 'test@gmail.com', 'www.test.com', null);
-
-	//MISS CHECK FOR DOUBLE INSERT, NO CHECKS IN hikeController.js
-	addTwoTimeNewHut(400, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
-						'Hut#1', '45.177786,7.083372', 'Hut', null, null, '3209987875', 'test@gmail.com', 'www.test.com', 'Testing hut');
+	addNewHut(200, 'address test', 'Hut#Test', 'test coordionates', 'Hut', 1, 2000, 'test phone', 'testing@gmail.com', 'www.test.com', 'Testing hut new');
+	addNewHut(400, 'address test', 'Hut#Test', 'test coordionates', 'Hut', 1, 2000, null, 'testing@gmail.com', 'www.test.com', 'Testing hut new');
+	addNewHut(400, 'address test', 'Hut#Test', 'test coordionates', 'Hut', 1, 2000, 'test phone', null, 'www.test.com', 'Testing hut new');
+	addNewHut(400, 'address test', 'Hut#Test', 'test coordionates', 'Hut', 1, 2000, 'test phone', 'testing@gmail.com', 'www.test.com', null);
+	addTwoTimeNewHut(500, 'address test', 'Hut#Test', 'test coordionates', 'Hut', 1, 2000, 'test phone', 'testing@gmail.com', 'www.test.com', 'Testing hut new');
 
 });
 
