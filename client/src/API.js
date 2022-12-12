@@ -60,7 +60,6 @@ async function getMap(name) {
       return map;
       }
       else {
-      //console.log(response.statusText);
       const text = await response.text();
       throw new TypeError(text);
       }
@@ -192,13 +191,11 @@ async function getHikes() {
       return list;
     }
     else {
-      //console.log(response.statusText);
       const text = await response.text();
       throw new TypeError(text);
     }
   }
   catch (e) {
-    //console.log(e);
     throw e;
   }
 }
@@ -220,7 +217,6 @@ async function getHuts() {
       return list;
     }
     else {
-      //console.log(response.statusText);
       const text = await response.text();
       throw new TypeError(text);
     }
@@ -246,7 +242,6 @@ async function getPoints() {
       return list;
     }
     else {
-      //console.log(response.statusText);
       const text = await response.text();
       throw new TypeError(text);
     }

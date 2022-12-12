@@ -6,22 +6,18 @@ import React, { useState, useEffect, useContext, } from 'react';
 import { Container, Toast } from 'react-bootstrap/';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 
-import { DefaultLayout, LoginLayout, HikerLayout, RegisterLayout, FileUploadLayout, SearchLayout, PointsLayout } from './components/PageLayout';
+import { DefaultLayout, LoginLayout, HikerLayout, RegisterLayout } from './components/PageLayout';
 
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 import { Navigation } from './components/Navigation';
-//import { LocalGuide_Home } from './components/localGuide_view';
 import { LocalGuide_Home } from './components/localGuideHome';
 import { Hiker_Home } from './components/hikerHome';
 
 import MessageContext from './messageCtx';
 import API from './API';
-import Profile from "./components/profile";
 import { EditHike } from './components/editHike';
-import FileUploader from './components/UploadGpxForm';
-import { GenericMap, HikePage } from './components/hikePage';
 import { PointsContainer } from './components/pointsCards';
 
 
@@ -124,7 +120,6 @@ function Main() {
       const user = await API.logIn(credentials);
       setLoggedIn(true);
       setCurrentUser(user);
-      //setUserFilter(false);
     } catch (err) {
       handleError(err);
     }
@@ -139,8 +134,6 @@ function Main() {
 
       //BEST PRACTISE after Logout-->Clean up everything!
       setCurrentUser({});
-      //setUserFilter(false);
-      //setMessage('');
     } catch (err) {
       handleError(err);
     }
@@ -149,7 +142,6 @@ function Main() {
 
   //********HANDLE_REGISTER*******//
   const CreateNewAccount = async (user) => {
-    //console.log(user);
 
     await API.addUser(user);
 
@@ -157,7 +149,6 @@ function Main() {
 
   const checkUser = async (email) => {
     const u = await API.checkUser(email);
-    // console.log(u);
     if (u.error) return true;
     else return false;
   };
