@@ -38,7 +38,7 @@ function deg2rad(deg) {
 }
 
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) { //Calc distance between two points
-    var R = 6371; // Radius of the earth in km
+    let R = 6371; // Radius of the earth in km
     var dLat = deg2rad(lat2 - lat1);  // deg2rad below
     var dLon = deg2rad(lon2 - lon1);
     var a =
