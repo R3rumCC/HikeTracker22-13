@@ -29,7 +29,8 @@ function getUserByEmail(email) {
     db.get(sql, [email], (err, rows) => {
       if (err) {
         reject(err);
-      } if (rows == undefined)
+      } 
+      if (rows == undefined)
         resolve({ error: 'NOT found' });
       else {
         resolve(rows);
@@ -308,7 +309,8 @@ function readPointById(id) {
     db.get(sql, id, (err, row) => {
       if (err) {
         reject(err);
-      } if (row == undefined)
+      } 
+      if (row == undefined)
         resolve({ error: 'NOT found' });
       else {
         resolve(row);
@@ -324,7 +326,8 @@ function checkPresenceByAddress(addr) {
     db.get(sql, addr, (err, id) => {
       if (err) {
         reject(err);
-      } if (id == undefined) {
+      } 
+      if (id == undefined) {
         resolve(null);
       }
       else {
@@ -341,7 +344,8 @@ function checkPresenceByCoordinates(coord) {
     db.get(sql, coord, (err, id) => {
       if (err) {
         reject(err);
-      } if (id == undefined) {
+      } 
+      if (id == undefined) {
         resolve(null);
       }
       else {
