@@ -49,7 +49,7 @@ function LocalGuide_Home(props) {
       <Col xs={10}>
         <div className='mx-3 my-3'>
           <div>{profile ? <Profile user={props.currentUser} /> : <></>}</div>
-          <div>{hikeForm ? <HikeForm hikes={props.hikes} currentUser={props.currentUser} CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike} points = {props.points}/> : <></>}</div>
+          <div>{hikeForm ? <HikeForm hikes={props.hikes} currentUser={props.currentUser} CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike} points={props.points} /> : <></>}</div>
           <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
           <div>{hutForm ? <HutForm CreateNewHut={props.CreateNewHut} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
           <div>{seeHikes ? <HikeList hikes={props.hikes} currentUser={props.currentUser} setCurrentHike={props.setCurrentHike} /> : <></>}</div>
@@ -137,49 +137,36 @@ function HikeForm(props) {
     event.preventDefault();
     let newHike;
     //Checks on needed fields
-    const match = props.hikes.find(h=>h.title==title);
-    if (title !== "" && match == null) {
-      if (length !== "" && difficulty !== "") {
-        if (startPoint !== '' && endPoint !== '') {
-          if (description !== "") {
-            if (map !== '') {
-              let start = { address: startPoint, gps_coordinates: startPointGps }
-              let startId = props.CreateNewPoint(start) //try to use startId and endId instead of performing again the search
-              let end = { address: endPoint, gps_coordinates: endPointGps }
-              let endId = props.CreateNewPoint(end);
+    const match = props.hikes.find(h => h.title == title);
+    if(match !== null){
+      setErrorMsg("The title entered has already been used.");
+    }
+    if (map !== '') {
+      let start = { address: startPoint, gps_coordinates: startPointGps }
+      let startId = props.CreateNewPoint(start) //try to use startId and endId instead of performing again the search
+      let end = { address: endPoint, gps_coordinates: endPointGps }
+      let endId = props.CreateNewPoint(end);
 
-              //check on user's role (?)
-              console.log(startPointGps,endPointGps)
-              console.log(startId, endId)
-              newHike = {
-                title: title, length: length, expected_time: expTime, ascent: ascent, difficulty: difficulty,
-                start_point: startPoint, end_point: endPoint, reference_points: reference_points,
-                description: description, gpx_track: title, hike_condition: condition,
-                hike_condition_description: conditionDescription, local_guide: props.currentUser.username
-                //gpx_track: map --> request entity too large
-              }
-              props.CreateNewHike(newHike)
-              console.log('newHike=' + newHike)
-              submitFile()
-              console.log('after CreateNewHike');
-              alert('New Hike correctly added!')
-              document.getElementById('hikeForm').hidden = true;
-              reset()
-            }
-            else {
-              setErrorMsg("Enter a valid gpx file.");
-            }
-          } else {
-            setErrorMsg("Enter a description before submit.");
-          }
-        } else {
-          setErrorMsg("A Start and End Point are required.")
-        }
-      } else {
-        setErrorMsg("A length and a difficulty are required.")
+      //check on user's role (?)
+      console.log(startPointGps, endPointGps)
+      console.log(startId, endId)
+      newHike = {
+        title: title, length: length, expected_time: expTime, ascent: ascent, difficulty: difficulty,
+        start_point: startPoint, end_point: endPoint, reference_points: reference_points,
+        description: description, gpx_track: title, hike_condition: condition,
+        hike_condition_description: conditionDescription, local_guide: props.currentUser.username
+        //gpx_track: map --> request entity too large
       }
-    } else {
-      setErrorMsg("Enter a valid or unused title before submit.");
+      props.CreateNewHike(newHike)
+      console.log('newHike=' + newHike)
+      submitFile()
+      console.log('after CreateNewHike');
+      alert('New Hike correctly added!')
+      document.getElementById('hikeForm').hidden = true;
+      reset()
+    }
+    else {
+      setErrorMsg("Enter a valid gpx file.");
     }
   }
 
@@ -376,8 +363,8 @@ function HikeForm(props) {
       <Form.Group className='mt-3'>
         {gpxPos != null ?
           <>
-            <GenericMap gpxFile={map} currentHike={[]} currentMarkers={[]} setCurrentMarkers={''} points={[...props.points].filter((x)=> x.type!=null)} 
-            setStartPoint={setStartPoint} setStartPointGps ={setStartPointGps} setEndPoint={setEndPoint} setEndPointGps={setEndPointGps}/>
+            <GenericMap gpxFile={map} currentHike={[]} currentMarkers={[]} setCurrentMarkers={''} points={[...props.points].filter((x) => x.type != null)}
+              setStartPoint={setStartPoint} setStartPointGps={setStartPointGps} setEndPoint={setEndPoint} setEndPointGps={setEndPointGps} />
           </>
           : null}
       </Form.Group>
