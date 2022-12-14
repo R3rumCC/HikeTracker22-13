@@ -37,6 +37,7 @@ function UserForm(props) {
 		})
 		props.checkUser(email).then((result) => {
 			console.log(dbcode);
+			let newUser;
 			// validation
 			if (!result) {
 				setErrorMsg("This email has already been used.");
@@ -54,7 +55,7 @@ function UserForm(props) {
 				setErrorMsg("Verification code is wrong.");
 				return;
 			}
-			
+
 			props.CreateNewAccount(newUser);
 			alert('New user registration succeeded');
 			navigate('/login');
