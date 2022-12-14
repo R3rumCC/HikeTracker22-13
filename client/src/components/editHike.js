@@ -68,7 +68,6 @@ function EditHikeForm(props) {
 
           props.updateHike(props.oldHike.title, updateHike);
           alert('Hike correctly updated!')
-          //document.getElementById('EditHikeForm').hidden = true;
           reset();
           navigate('/');
         } else {
