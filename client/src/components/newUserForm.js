@@ -29,9 +29,6 @@ function UserForm(props) {
 
 	};
 
-	function checkNotEmptyString(str) {
-		return str.trim().length > 0;
-	}
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
@@ -41,33 +38,26 @@ function UserForm(props) {
 		props.checkUser(email).then((result) => {
 			console.log(dbcode);
 			// validation
-			if (checkNotEmptyString(name) && checkNotEmptyString(lastname) && checkNotEmptyString(email)) {
-				if(result){
-
-				if (cPassword !== password) {
-					setErrorMsg("The password does not match.");
-					return;
-				}
-				if (checkNotEmptyString(code) && code == dbcode) {
-						newUser = { name: name, lastname: lastname, email: email, password: password, role: role, phoneNumber: phoneNumber };
-				}else {
-						setErrorMsg("Verification code is wrong.");
-						return;
-				}				
-			}
-			else {
-				setErrorMsg("Some of the fields are missing proper data.");
+			if (!result) {
+				setErrorMsg("This email has already been used.");
 				return;
 			}
 
+			if (cPassword !== password) {
+				setErrorMsg("The password does not match.");
+				return;
+			}
+
+			if (checkNotEmptyString(code) && code == dbcode) {
+				newUser = { name: name, lastname: lastname, email: email, password: password, role: role, phoneNumber: phoneNumber };
+			} else {
+				setErrorMsg("Verification code is wrong.");
+				return;
+			}
+			
 			props.CreateNewAccount(newUser);
 			alert('New user registration succeeded');
 			navigate('/login');
-		}else{
-			setErrorMsg("The email has already been used");
-			return;
-		}
-
 		});
 	};
 
