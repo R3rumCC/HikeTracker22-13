@@ -39,20 +39,20 @@ function deg2rad(deg) {
 
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) { //Calc distance between two points
     let R = 6371; // Radius of the earth in km
-    var dLat = deg2rad(lat2 - lat1);  // deg2rad below
-    var dLon = deg2rad(lon2 - lon1);
-    var a =
+    let dLat = deg2rad(lat2 - lat1);  // deg2rad below
+    let dLon = deg2rad(lon2 - lon1);
+    let a =
         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
         Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
         Math.sin(dLon / 2) * Math.sin(dLon / 2)
         ;
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c; // Distance in km
+    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    let d = R * c; // Distance in km
     return d;
 }
 
 function calcMinDistance(latlng, positions) { //Get the min distance to from a point to a set of points
-    var distances = positions.map(p => {
+    let distances = positions.map(p => {
         return getDistanceFromLatLonInKm(latlng.lat, latlng.lng, p[0], p[1])
     })
     return Math.min(...distances)
@@ -192,13 +192,13 @@ function GenericMap(props) { //Map to be inserted anywhere.
     if (map != '') {
         // The commented stuff is only required if we are not passing a GeoJSON
         let gpxParser = require('gpxparser');
-        var gpx = new gpxParser()
+        let gpx = new gpxParser()
         gpx.parse(map)
         let geoJSON = gpx.toGeoJSON()
         //let geoJSON = JSON.parse(props.currentHike[0].gpx_track) //Get the object from a string
         // console.log(JSON.stringify(geoJSON))
         //var positions = gpx.tracks[0].points.map(p => [p.lat, p.lon,p.ele]).filter((p)=> p[2]!=null)
-        var positions = geoJSON.features[0].geometry.coordinates.map(p => [p[1], p[0], p[2]]).filter((p) => p[2] != null)
+        let positions = geoJSON.features[0].geometry.coordinates.map(p => [p[1], p[0], p[2]]).filter((p) => p[2] != null)
         $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[0][0] + '&lon=' + positions[0][1] + '&format=json&limit=1&q=', function (data) {
             setStartPoint(data.display_name);
         })
@@ -367,7 +367,7 @@ function MapHandler(props) { //Handles just the clicks on the map
                     console.log("Invalid point")
                 }
                 else if (!props.currentMarkers.find(p => p.address == newSelectedMarker.address && p.latlng.lng == newSelectedMarker.latlng.lng && p.latlng.lat == newSelectedMarker.latlng.lat)) {
-                    var newSelectedMarkers = [...props.currentMarkers, newSelectedMarker]
+                    let newSelectedMarkers = [...props.currentMarkers, newSelectedMarker]
                     props.setCurrentMarkers(newSelectedMarkers)
                 } else {
                     console.log("Location already selected")

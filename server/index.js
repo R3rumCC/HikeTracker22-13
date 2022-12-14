@@ -151,7 +151,7 @@ app.post("/upload_file", upload.single("file"), function (req, res) {
 })
 app.get(PREFIX+'/Maps/:name', (req, res, next) => {
   const fileName = req.params.name;
-  var options = {
+  const options = {
     root: path.join(__dirname,'/uploads')
   };
   res.sendFile(fileName, options, (err) => {

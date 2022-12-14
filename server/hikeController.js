@@ -1,5 +1,5 @@
 const dao = require('./DAO');
-var crypto = require('crypto');
+const crypto = require('crypto');
 const { start } = require('repl');
 
 exports.getHikes = async function () {
@@ -108,7 +108,7 @@ exports.addUser = async function (req, res) {
     const _charStr = 'abacdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789';
     let min = 0, max = _charStr.length - 1, salt = '';
     let len = 32;
-    for (var i = 0, index; i < len; i++) {
+    for (let i = 0, index; i < len; i++) {
       index = RandomIndex(min, max, i, _charStr);
       salt += _charStr[index];
     }

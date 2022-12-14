@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const { validationResult, body, param } = require('express-validator');
-var c = require('./hikeController');
+const c = require('./hikeController');
 
 router.get('/getHikes', async (req, res) => {
   try {

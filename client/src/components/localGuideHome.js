@@ -119,7 +119,7 @@ function HikeForm(props) {
 
 
   const submitFile = () => {
-    var myBlob = new Blob(
+    let myBlob = new Blob(
       [map],
       { type: "text/plain" }
     )
@@ -198,7 +198,7 @@ function HikeForm(props) {
   const importGpx = (selectedFile) => {
     const $ = require("jquery");
     let gpxParser = require('gpxparser');
-    var gpx = new gpxParser()
+    let gpx = new gpxParser()
     setTitle('');
     setLength(''); setExpTime(''); setAscent('')
     setDifficulty(''); setDescription('');
@@ -236,12 +236,12 @@ function HikeForm(props) {
           let minPoint = Math.min(...trackPoints)
           console.log(maxPoint)
           console.log(minPoint)
-          var totalElevation = (Number(maxPoint - minPoint).toFixed(2));
+          let totalElevation = (Number(maxPoint - minPoint).toFixed(2));
           changeAscent(totalElevation);
 
         }
 
-        var totalDistance = (Number(gpx.tracks[0].distance.total / 1000).toFixed(2));
+        let totalDistance = (Number(gpx.tracks[0].distance.total / 1000).toFixed(2));
         changeLength(totalDistance);
         console.log(positions[0]);
         console.log(positions[positions.length - 1]);
