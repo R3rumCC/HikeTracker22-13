@@ -2,8 +2,9 @@ import { Col, Row, ToggleButton, ButtonGroup } from 'react-bootstrap';
 import { HikesContainer } from './hikesCards';
 import { MapContainer, Polyline, TileLayer, Marker, Popup, useMapEvents, GeoJSON, useMap, Circle, LayerGroup, } from 'react-leaflet'
 import * as L from "leaflet";
-import { React, useEffect, useContext, useRef } from 'react';
+import { React, useEffect, useContext, useRef, useState } from 'react';
 import { UNSAFE_NavigationContext, useNavigate } from "react-router-dom";
+import API from '../API';
 
 // THE GPX FILE MUST BE PASSED AS AN STRING. HERE I LEAVE AN EXAMPLE:
 // THIS PARTICULAR GPX HAS A SINGLE TRACK AND TWO SEGMENTS. THESE 
@@ -137,10 +138,10 @@ function GenericMap(props) { //Map to be inserted anywhere.
 
     const [map, setMap] = useState('')
     const mapList = useRef([])
-    const [startPoint, setStartPoint] = useState('')
-    const [endPoint, setEndPoint] = useState('')
-    const [startCheck, setStartCheck] = useState('');
-    const [endCheck, setEndCheck] = useState('');
+    const [startPoint, setStartPoint] = useState(props.startPoint ? props.startPoint : '')
+    const [endPoint, setEndPoint] = useState(props.endPoint ? props.endPoint : '')
+    const [startCheck, setStartCheck] = useState(props.startPoint ? props.startPoint : '');
+    const [endCheck, setEndCheck] = useState(props.endPoint ? props.endPoint : '');
 
     function MyComponent({ gpxPos }) {
         const map = useMap()

@@ -134,11 +134,12 @@ function HikeForm(props) {
   }
   const submitHikeForm = (event) => {
     event.preventDefault();
-    let newHike;
+    let newHike = undefined;
     //Checks on needed fields
     const match = props.hikes.find(h => h.title == title);
-    if(match !== null){
+    if(match !== null && props.hike != null){
       setErrorMsg("The title entered has already been used.");
+      return;
     }
     if (map !== '') {
       let start = { address: startPoint, gps_coordinates: startPointGps }
@@ -157,7 +158,7 @@ function HikeForm(props) {
         //gpx_track: map --> request entity too large
       }
       props.CreateNewHike(newHike)
-      console.log('newHike=' + newHike)
+      console.log(newHike)
       submitFile()
       console.log('after CreateNewHike');
       alert('New Hike correctly added!')
@@ -234,10 +235,12 @@ function HikeForm(props) {
         $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[0][0] + '&lon=' + positions[0][1] + '&format=json&limit=1&q=', function (data) {
 
           changeStartP(data.display_name);
+          changeStartPGps(positions[0][0]+','+positions[0][1]);
         });
         $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[positions.length - 1][0] + '&lon=' + positions[positions.length - 1][1] + '&format=json&limit=1&q=', function (data) {
 
           changeEndP(data.display_name);
+          changeEndPGps(positions[positions.length - 1][0]+','+positions[positions.length - 1][1])
         });
 
         setMap(reader.result)
@@ -363,7 +366,7 @@ function HikeForm(props) {
         {gpxPos != null ?
           <>
             <GenericMap gpxFile={map} currentHike={[]} currentMarkers={[]} setCurrentMarkers={''} points={[...props.points].filter((x) => x.type != null)}
-              setStartPoint={setStartPoint} setStartPointGps={setStartPointGps} setEndPoint={setEndPoint} setEndPointGps={setEndPointGps} />
+              setStartPoint={setStartPoint} setStartPointGps={setStartPointGps} setEndPoint={setEndPoint} setEndPointGps={setEndPointGps} endPoint={endPoint} startPoint={startPoint} />
           </>
           : null}
       </Form.Group>

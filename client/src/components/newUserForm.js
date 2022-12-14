@@ -37,7 +37,7 @@ function UserForm(props) {
 		})
 		props.checkUser(email).then((result) => {
 			console.log(dbcode);
-			let newUser;
+			let newUser = undefined;
 			// validation
 			if (!result) {
 				setErrorMsg("This email has already been used.");
@@ -49,7 +49,7 @@ function UserForm(props) {
 				return;
 			}
 
-			if (checkNotEmptyString(code) && code == dbcode) {
+			if (code != '' && code == dbcode) {
 				newUser = { name: name, lastname: lastname, email: email, password: password, role: role, phoneNumber: phoneNumber };
 			} else {
 				setErrorMsg("Verification code is wrong.");

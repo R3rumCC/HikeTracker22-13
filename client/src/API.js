@@ -255,6 +255,7 @@ async function getPoints() {
 /*************************LOCAL GUIDE API**********************/
 
 function addNewHike(newHike) {
+  console.log('addNewHike in API');
   return new Promise((resolve, reject) => {
     fetch(URL + '/newHike', {
       method: 'POST',
