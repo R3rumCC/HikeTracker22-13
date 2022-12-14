@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Button, Container, Form, FormGroup, FormLabel, ButtonGroup, InputGroup, Alert, Nav } from 'react-bootstrap';
+import { Row, Col, Button, Form, InputGroup, Alert, Nav } from 'react-bootstrap';
 import { GenericMap } from './hikePage';
 import { HikesContainer } from './hikesCards';
 import Profile from './profile';
 import axiosInstance from "../utils/axios"
-import { PointsContainer } from './pointsCards';
 import "./sidebar.css";
 
 function LocalGuide_Home(props) {

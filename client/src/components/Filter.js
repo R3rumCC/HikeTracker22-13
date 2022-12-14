@@ -1,7 +1,6 @@
-import { end } from "@popperjs/core";
 import { useState, React, useEffect } from "react";
-import { Form, Button, Row, Col, Container} from "react-bootstrap";
-import MultiRangeSlider, {ChangeResult} from "multi-range-slider-react";
+import { Form, Button, Row, Col} from "react-bootstrap";
+import MultiRangeSlider from "multi-range-slider-react";
 import '../App.css';
 import { GenericMap } from "./hikePage";
 const FilterForm = (props) => {

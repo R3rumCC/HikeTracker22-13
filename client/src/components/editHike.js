@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Row, Col, Button, Form, FormGroup, FormLabel, ButtonGroup, InputGroup, Alert, Container } from 'react-bootstrap';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { React } from 'react';
+import { Row, Col, Button, Form, InputGroup, Alert } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import { GenericMap } from './hikePage';
-import axiosInstance from "../utils/axios"
 
 function EditHike(props) {
 

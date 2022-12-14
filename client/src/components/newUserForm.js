@@ -115,13 +115,11 @@ function UserForm(props) {
 					alert('The verification code has been sent to your email');
 				} else {
 					setErrorMsg("This email has been registered.");
-					return;
 				}
 			})
 		}
 		else {
 			setErrorMsg("Email cannot be empty.");
-			return;
 		}
 
 	}

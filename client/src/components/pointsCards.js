@@ -1,6 +1,5 @@
 import { Card, Row, Col } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import React, { Component }  from 'react';
+import React from 'react';
 
 function PointCard(props) {
     return(

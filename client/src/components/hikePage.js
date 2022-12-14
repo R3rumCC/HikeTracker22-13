@@ -1,10 +1,8 @@
-import { Col, Row, Button, ToggleButton, ButtonGroup, Alert } from 'react-bootstrap';
+import { Col, Row, ToggleButton, ButtonGroup } from 'react-bootstrap';
 import { HikesContainer } from './hikesCards';
-import { MapContainer, Polyline, TileLayer, Map, Marker, Popup, useMapEvents, GeoJSON, useMap, Circle, LayerGroup, } from 'react-leaflet'
+import { MapContainer, Polyline, TileLayer, Marker, Popup, useMapEvents, GeoJSON, useMap, Circle, LayerGroup, } from 'react-leaflet'
 import * as L from "leaflet";
-import React, { Component, useState, useEffect, useContext, useRef } from 'react';
-import axiosInstance from "../utils/axios"
-import API from '../API';
+import { React, useEffect, useContext, useRef } from 'react';
 import { UNSAFE_NavigationContext, useNavigate } from "react-router-dom";
 
 // THE GPX FILE MUST BE PASSED AS AN STRING. HERE I LEAVE AN EXAMPLE:

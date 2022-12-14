@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { Row, Col, Button, Container } from 'react-bootstrap';
-import { Link, useParams, useLocation, Outlet } from 'react-router-dom';
 import { SearchHut } from './SearchHut';
 import { HikePage } from './hikePage';
 import { UserForm } from './newUserForm';
@@ -8,7 +7,6 @@ import { LoginForm } from './Auth';
 import { HikesContainer } from './hikesCards';
 import  FilterForm from './Filter';
 import MessageContext from '../messageCtx';
-import API from '../API';
 import FileUploader from './UploadGpxForm';
 import ClipLoader from 'react-spinners/ClipLoader';
 
