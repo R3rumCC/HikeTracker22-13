@@ -136,24 +136,41 @@ function GenericMap(props) { //Map to be inserted anywhere.
         -'currentHike': A hike to be ploted. Can be skiped. Must be a GeoJSON to be plotted.
     */
 
-    const [map, setMap] = useState('')
+    const [map,setMap] = useState('')
+    const [positions, setPositions] = useState([])
     const mapList = useRef([])
     const [startPoint, setStartPoint] = useState(props.startPoint ? props.startPoint : '')
     const [endPoint, setEndPoint] = useState(props.endPoint ? props.endPoint : '')
     const [startCheck, setStartCheck] = useState(props.startPoint ? props.startPoint : '');
     const [endCheck, setEndCheck] = useState(props.endPoint ? props.endPoint : '');
+    const travelOnce = useRef('');
 
-    function MyComponent({ gpxPos }) {
+    function MyComponent() {
         const map = useMap()
-
-        map.flyTo(gpxPos[Math.round(gpxPos.length / 2)], gpxPos.length / 100 > 1 ? 13 : 15)
+        if(travelOnce.current != positions){
+            travelOnce.current = positions
+            map.setView(positions[Math.round(positions.length / 2)], positions.length / 100 > 1 ? 13 : 15);
+            
+        }
 
         return null
+    }
+    function setupPos(map){
+        // The commented stuff is only required if we are not passing a GeoJSON
+        let gpxParser = require('gpxparser');
+        let gpx = new gpxParser()
+        gpx.parse(map)
+        let geoJSON = gpx.toGeoJSON()
+        //let geoJSON = JSON.parse(props.currentHike[0].gpx_track) //Get the object from a string
+        // console.log(JSON.stringify(geoJSON))
+        //var positions = gpx.tracks[0].points.map(p => [p.lat, p.lon,p.ele]).filter((p)=> p[2]!=null)
+        setMap(geoJSON);
+        setPositions(geoJSON.features[0].geometry.coordinates.map(p => [p[1], p[0], p[2]]).filter((p) => p[2] != null));
     }
     async function gpxmap(name, hike = null) {
         try {
             const map = await API.getMap(name);
-            setMap(map);
+            setupPos(map);
         } catch (error) {
             throw error
         }
@@ -163,7 +180,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
             gpxmap(props.currentHike[0].gpx_track.replace(/\s/g, ''))
         }
         else if (props.gpxFile) {
-            setMap(props.gpxFile)
+            setupPos(props.gpxFile)
         } else if (props.hikes) {
             props.hikes.forEach((h) => {
                 if (mapList.current.filter((x) => x.hike == h ? true : false).length == 0 || mapList.length == 0) {
@@ -188,16 +205,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
             props.setCurrentMarkers(currentMarkersMod)
         }
     }, [props.currentMarkers, mapList.current])
-    if (map != '') {
-        // The commented stuff is only required if we are not passing a GeoJSON
-        let gpxParser = require('gpxparser');
-        let gpx = new gpxParser()
-        gpx.parse(map)
-        let geoJSON = gpx.toGeoJSON()
-        //let geoJSON = JSON.parse(props.currentHike[0].gpx_track) //Get the object from a string
-        // console.log(JSON.stringify(geoJSON))
-        //var positions = gpx.tracks[0].points.map(p => [p.lat, p.lon,p.ele]).filter((p)=> p[2]!=null)
-        let positions = geoJSON.features[0].geometry.coordinates.map(p => [p[1], p[0], p[2]]).filter((p) => p[2] != null)
+    if (map != '' && positions.length != 0) {
         $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[0][0] + '&lon=' + positions[0][1] + '&format=json&limit=1&q=', function (data) {
             setStartPoint(data.display_name);
         })
@@ -308,8 +316,8 @@ function GenericMap(props) { //Map to be inserted anywhere.
                             <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>
                         </>
                         : null}
-                    {props.gpxFile ? <MyComponent gpxPos={positions}></MyComponent> : null}
-                    {<GeoJSON data={geoJSON}></GeoJSON>}
+                    <MyComponent></MyComponent>
+                    {<GeoJSON data={map}></GeoJSON>}
                 </MapContainer>
                 : null}
 

@@ -27,8 +27,8 @@ function EditHikeForm(props) {
   const [ascent, setAscent] = useState(props.oldHike.ascent)
   const [difficulty, setDifficulty] = useState(props.oldHike.difficulty)
   const [description, setDescription] = useState(props.oldHike.description)
-  const [condition, setCondition] = useState(props.oldHike.hike_condition)
-  const [conditionDescription, setConditionDescription] = useState(props.oldHike.hike_condition_description)
+  const [condition, setCondition] = useState(props.oldHike.hike_condition ? props.oldHike.hike_condition : '')
+  const [conditionDescription, setConditionDescription] = useState(props.oldHike.hike_condition_description ? props.oldHike.hike_condition_description : '')
   const [reference_points, setReferencePoints] = useState(props.oldHike.reference_points);
   const [errorMsg, setErrorMsg] = useState("");
   const changeTitle = (val) => { setTitle(val) }
