@@ -108,7 +108,7 @@ function HikePage(props) {
                     }
                 </Col>
                 <Col sm={8} className='map'>
-                    <GenericMap currentHike={props.currentHike} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></GenericMap>
+                    <GenericMap currentHike={props.currentHike} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} hiker={true} ></GenericMap>
                 </Col>
             </Row>
         </Col>
@@ -302,7 +302,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                             </Marker>
                         )
                     }) : null}
-                    {!props.points ?
+                    {!props.points  && !props.hiker ?
                         <>
                             <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} positions={positions}></MapHandler>
                             <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>
