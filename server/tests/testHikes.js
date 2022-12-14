@@ -122,7 +122,7 @@ function addNewHike(expectedHTTPStatus, title, length, expected_time, ascent, di
       "Hut#1", "45.177786,7.083372", "Hut");
     setEndPoint(newHike, "Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy",
       "Hut#2", "45.203531,7.07734", "Hut");
-    reqBody = JSON.stringify({ newHike });
+    let reqBody = JSON.stringify({ newHike });
     return agent.post('/api/newHike')
       .set('Content-Type', 'application/json')
       .send(reqBody)
@@ -141,7 +141,7 @@ function addTwoTimeNewHike(expectedHTTPStatus,title, length, expected_time, asce
       "Hut#1", "45.177786,7.083372", "Hut");
     setEndPoint(newHike, "Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy",
       "Hut#2", "45.203531,7.07734", "Hut");
-    reqBody = JSON.stringify({ newHike });
+    let reqBody = JSON.stringify({ newHike });
     await agent.post('/api/newHike')
       .set('Content-Type', 'application/json')
       .send(reqBody);

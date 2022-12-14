@@ -21,7 +21,7 @@ describe('test login', () => {
 function loginUser(expectedHTTPStatus, username, password) {
   it('login', async function () {
     const credentials = { username, password };
-    reqBody = JSON.stringify(credentials);
+    let reqBody = JSON.stringify(credentials);
     return agent.post('/api/sessions')
       .set('Content-Type', 'application/json')
       .send(reqBody)
@@ -34,7 +34,7 @@ function loginUser(expectedHTTPStatus, username, password) {
 function logout(expectedHTTPStatus, username, password) {
   it('logout', async function () {
     const credentials = { username, password };
-    reqBody = JSON.stringify(credentials);
+    let reqBody = JSON.stringify(credentials);
     await agent.post('/api/sessions')
       .set('Content-Type', 'application/json')
       .send(reqBody);
@@ -48,7 +48,7 @@ function logout(expectedHTTPStatus, username, password) {
 function obtainUserAuthenticated(expectedHTTPStatus, username, password) {
   it('get user', async function () {
     const credentials = { username, password };
-    reqBody = JSON.stringify(credentials);
+    let reqBody = JSON.stringify(credentials);
     await agent.post('/api/sessions')
       .set('Content-Type', 'application/json')
       .send(reqBody)
@@ -63,7 +63,7 @@ function obtainUserAuthenticated(expectedHTTPStatus, username, password) {
 function obtainUserNotAuthenticated(expectedHTTPStatus, username, password) {
   it('get user', async function () {
     const credentials = { username, password };
-    reqBody = JSON.stringify(credentials);
+    let reqBody = JSON.stringify(credentials);
     return agent.post('/api/sessions')
       .set('Content-Type', 'application/json')
       .send(reqBody)

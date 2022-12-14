@@ -110,7 +110,7 @@ function addNewHut(expectedHTTPStatus, address, nameLocation, gps_coordinates, t
 	it('add a new hut', async function () {
 		await testDao.run('DELETE FROM Huts');
 		const hut = new HutPoint(address, nameLocation, gps_coordinates, type, capacity, altitude, phone, email, web_site, description);
-		reqBody = JSON.stringify({ hut });
+		let reqBody = JSON.stringify({ hut });
 		return agent.post('/api/Huts')
 			.set('Content-Type', 'application/json')
 			.send(reqBody)
@@ -124,7 +124,7 @@ function addTwoTimeNewHut(expectedHTTPStatus, address, nameLocation, gps_coordin
 	it('add two times a new hut', async function () {
 		await testDao.run('DELETE FROM Huts');
 		const hut = new HutPoint(address, nameLocation, gps_coordinates, type, capacity, altitude, phone, email, web_site, description);
-		reqBody = JSON.stringify({ hut });
+		let reqBody = JSON.stringify({ hut });
 		await agent.post('/api/Huts')
 			.set('Content-Type', 'application/json')
 			.send(reqBody);
