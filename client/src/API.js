@@ -346,13 +346,12 @@ async function sendEmail(email) {
     credentials: 'include',
   });
 
-  const resJson = await response.json();
+
 
   if (response.ok) {
     return null;
   }
-  else
-    throw resJson;
+
 }
 
 async function checkCode(email) {

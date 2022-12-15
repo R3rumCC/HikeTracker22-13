@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
     secureConnection: true, // use SSL
     auth: {
         user: '736076274@qq.com', 
-        pass: 'cllzsmveiqlmbfae', 
+        pass: 'xbqaupxwxmbnbeae', 
     },
 });
 
@@ -45,7 +45,7 @@ email.get('/getCode/:email',async (req, res) => {
         }
     )
    
-    res.send('The verification code has been sent to your email');
+
 });
 
 module.exports = email;
