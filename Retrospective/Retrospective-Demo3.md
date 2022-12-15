@@ -65,13 +65,23 @@ sections:
 
 - What caused your errors in estimation (if any)?
 
+Updating the stories to be FAQ requirements took more time than expected and we could not use the entire time budget
+
 - What lessons did you learn (both positive and negative) in this sprint?
+
+STo be more weary of flase positives when using SonarCloud. 
 
 - Which improvement goals set in the previous retrospective were you able to achieve?
 - Which ones you were not able to achieve? Why?
 
+We were able to improve the documentation where needed, but we did not have enough time to perform an overhaul of the DB
+
 - Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)
+
+Appoint a member of team as responsible of the db and work on the API response
 
 > Propose one or two
 
 - One thing you are proud of as a Team!!
+
+Even though we did not finish all the stories we committed to, we managed to create a solid foundation for future development
