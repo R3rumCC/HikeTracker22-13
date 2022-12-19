@@ -48,7 +48,8 @@ function LocalGuide_Home(props) {
       <Col xs={10}>
         <div className='mx-3 my-3'>
           <div>{profile ? <Profile user={props.currentUser} /> : <></>}</div>
-          <div>{hikeForm ? <HikeForm hikes={props.hikes} currentUser={props.currentUser} CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike} points={props.points} /> : <></>}</div>
+          <div>{hikeForm ? <HikeForm hikes={props.hikes} currentUser={props.currentUser} CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike} points={props.points} 
+          setOnChangeHikes={props.setOnChangeHikes} setOnChangePoints={props.setOnChangePoints} /> : <></>}</div>
           <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
           <div>{hutForm ? <HutForm CreateNewHut={props.CreateNewHut} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
           <div>{seeHikes ? <HikeList hikes={props.hikes} currentUser={props.currentUser} setCurrentHike={props.setCurrentHike} /> : <></>}</div>
@@ -162,6 +163,8 @@ function HikeForm(props) {
       submitFile()
       console.log('after CreateNewHike');
       alert('New Hike correctly added!')
+      props.setOnChangeHikes(true)
+      props.setOnChangePoints(true)
       document.getElementById('hikeForm').hidden = true;
       reset()
     }

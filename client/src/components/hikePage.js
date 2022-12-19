@@ -205,12 +205,26 @@ function GenericMap(props) { //Map to be inserted anywhere.
             props.setCurrentMarkers(currentMarkersMod)
         }
     }, [props.currentMarkers, mapList.current])
+
     if (map != '' && positions.length != 0) {
         $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[0][0] + '&lon=' + positions[0][1] + '&format=json&limit=1&q=', function (data) {
-            setStartPoint(data.display_name);
+            
+            if(props.points){
+                props.setStartPoint(data.display_name);
+                props.setStartPointGps(`${positions[0][0]}, ${positions[0][1]}`)
+            }
+            setStartPoint(data.display_name)
+            setStartCheck(data.display_name)
+            
         })
         $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[positions.length - 1][0] + '&lon=' + positions[positions.length - 1][1] + '&format=json&limit=1&q=', function (data) {
-            setEndPoint(data.display_name);
+            
+            if(props.points){
+                props.setEndPoint(data.display_name);
+                props.setEndPointGps(positions[positions.length - 1][0]+','+positions[positions.length - 1][1])
+            }
+            setEndPoint(data.display_name)
+            setEndCheck(data.display_name)
         })
         return (
             <>{map != '' ?

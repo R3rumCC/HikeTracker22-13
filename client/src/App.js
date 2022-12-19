@@ -62,6 +62,8 @@ function Main() {
   const [currentMarkers, setCurrentMarkers] = useState([]);
 
   const [hikes, setHikes] = useState([]);
+  const [onChangeHikes, setOnChangeHikes] = useState(false)
+  const [onChangePoints,setOnChangePoints] = useState(false)
 
   function handleError(err) {
 
@@ -85,6 +87,13 @@ function Main() {
         handleErrors(error);
       }
     };
+    if(onChangePoints){
+      setOnChangePoints(false)
+      fetchInitialValues();
+    }
+  }, [onChangePoints]);
+  
+  useEffect(() => {
     async function fetchHikes() {
       try {
         const fetchedHikes = await API.getHikes();
@@ -93,9 +102,12 @@ function Main() {
         handleErrors(error);
       }
     };
-    fetchInitialValues();
-    fetchHikes();
-  }, []);
+    if(onChangeHikes){
+      setOnChangeHikes(false)
+      fetchHikes();
+    }
+
+  }, [onChangeHikes]);
 
   //*******CHECK_AUTH*******//
   useEffect(() => {
@@ -221,7 +233,9 @@ function Main() {
       <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} setCurrentMarkers={setCurrentMarkers} profilePage={profilePageSwitch} />
       <Routes>
         <Route path="/" element={
-          loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHut={CreateNewHut} CreateNewHike={CreateNewHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} hikes={hikes} currentUser={currentUser} setCurrentHike={setCurrentHike} points = {points} /> :
+          loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHut={CreateNewHut} CreateNewHike={CreateNewHike}
+           currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} hikes={hikes} currentUser={currentUser} setCurrentHike={setCurrentHike} points = {points} 
+           setOnChangeHikes={setOnChangeHikes} setOnChangePoints={setOnChangePoints}/> :
             <DefaultLayout role={loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike} hikes={hikes}/>  /*<FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>

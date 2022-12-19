@@ -134,6 +134,14 @@ Paulina Knight:
 - lastname: Knight
 - phone_number: +39 3276958421
 
+Richie Zuniga:
+- email: namiwak525@bitvoo.com
+- password: hello15
+- role: LocalGuide
+- name: Richie
+- lastname: Zuniga
+- phone_number: +39 3256789432
+
 ## API
 
 ## HIKES API
