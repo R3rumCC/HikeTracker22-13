@@ -50,8 +50,8 @@ function LocalGuide_Home(props) {
           <div>{profile ? <Profile user={props.currentUser} /> : <></>}</div>
           <div>{hikeForm ? <HikeForm hikes={props.hikes} currentUser={props.currentUser} CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike} points={props.points} 
           setOnChangeHikes={props.setOnChangeHikes} setOnChangePoints={props.setOnChangePoints} /> : <></>}</div>
-          <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
-          <div>{hutForm ? <HutForm CreateNewHut={props.CreateNewHut} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
+          <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} setOnChangePoints={props.setOnChangePoints}/> : <></>}</div>
+          <div>{hutForm ? <HutForm CreateNewHut={props.CreateNewHut} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} setOnChangePoints={props.setOnChangePoints} /> : <></>}</div>
           <div>{seeHikes ? <HikeList hikes={props.hikes} currentUser={props.currentUser} setCurrentHike={props.setCurrentHike} /> : <></>}</div>
         </div>
       </Col>
@@ -440,6 +440,7 @@ function HutForm(props) {
     console.log(newHut)
     //call to the API
     props.CreateNewHut(newHut)
+    props.setOnChangePoints(true)
     alert('New Hut correctly added!')
   }
 
@@ -590,6 +591,7 @@ function ParkingLotForm(props) {
     newPoint = { nameLocation: title, address: address, gps_coordinates: position, type: 'Parking Lot', capacity: capacity };
 
     props.CreateNewPoint(newPoint);
+    props.setOnChangePoints(true);
     alert('New parking lot added.');
     console.log(newPoint);
   }
