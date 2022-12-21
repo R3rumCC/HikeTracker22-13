@@ -62,8 +62,8 @@ function Main() {
   const [currentMarkers, setCurrentMarkers] = useState([]);
 
   const [hikes, setHikes] = useState([]);
-  const [onChangeHikes, setOnChangeHikes] = useState(false)
-  const [onChangePoints,setOnChangePoints] = useState(false)
+  const [onChangeHikes, setOnChangeHikes] = useState(true)
+  const [onChangePoints,setOnChangePoints] = useState(true)
 
   function handleError(err) {
 
