@@ -154,8 +154,7 @@ function HikeForm(props) {
       newHike = {
         title: title, length: length, expected_time: expTime, ascent: ascent, difficulty: difficulty,
         start_point: startPoint, end_point: endPoint, reference_points: reference_points,
-        description: description, gpx_track: title, hike_condition: condition,
-        hike_condition_description: conditionDescription, local_guide: props.currentUser.username
+        description: description, gpx_track: title, hike_condition: 'Open', local_guide: props.currentUser.username
         //gpx_track: map --> request entity too large
       }
       props.CreateNewHike(newHike)
@@ -291,7 +290,7 @@ function HikeForm(props) {
           <Form.Label>Length</Form.Label>
           <InputGroup className="mb-3">
             <InputGroup.Text><i className="bi bi-map"></i></InputGroup.Text>
-            <Form.Control value={length} required={true} onChange={(ev) => changeLength(ev.target.value)} placeholder="3.2" />
+            <Form.Control disabled value={length} required={true} onChange={(ev) => changeLength(ev.target.value)} placeholder="3.2" />
             <InputGroup.Text>Km</InputGroup.Text>
           </InputGroup>
         </Form.Group>
@@ -299,7 +298,10 @@ function HikeForm(props) {
           <Form.Label>Expected Time</Form.Label>
           <InputGroup className="mb-3">
             <InputGroup.Text><i className="bi bi-stopwatch"></i></InputGroup.Text>
-            <Form.Control value={expTime} required={true} onChange={(ev) => changeExpTime(ev.target.value)} placeholder="4" />
+            <Form.Control
+              type="number"
+              min="1" 
+              value={expTime} required={true} onChange={(ev) => changeExpTime(ev.target.value)} placeholder="4" />
             <InputGroup.Text>hours</InputGroup.Text>
           </InputGroup>
         </Form.Group>
@@ -310,7 +312,7 @@ function HikeForm(props) {
           <Form.Label>Ascent</Form.Label>
           <InputGroup className="mb-3">
             <InputGroup.Text><i className="bi bi-geo-fill"></i></InputGroup.Text>
-            <Form.Control value={ascent} required={true} onChange={(ev) => changeAscent(ev.target.value)} placeholder="670" />
+            <Form.Control disabled value={ascent} required={true} onChange={(ev) => changeAscent(ev.target.value)} placeholder="670" />
             <InputGroup.Text>m</InputGroup.Text>
           </InputGroup>
         </Form.Group>
@@ -324,26 +326,6 @@ function HikeForm(props) {
               <option value='Hiker' label="Hiker" />
               <option value='Professional hiker' label="Professional Hiker" />
             </Form.Select>
-          </InputGroup>
-        </Form.Group>
-        <Form.Group as={Col}>
-          <Form.Label>Condition</Form.Label>
-          <InputGroup>
-            <InputGroup.Text><i className="bi bi-graph-up-arrow"></i></InputGroup.Text>
-            <Form.Select onChange={(ev) => changeCondition(ev.target.value)}>
-              <option label=''></option>
-              <option value='Open' label="Open" />
-              <option value='Closed' label="Closed" />
-              <option value='Party Blocked' label="Party Blocked" />
-              <option value='Requires Special Gear' label="Requires Special Gear" />
-            </Form.Select>
-          </InputGroup>
-        </Form.Group>
-        <Form.Group as={Col}>
-          <Form.Label>Condition Description</Form.Label>
-          <InputGroup className="mb-2">
-            <InputGroup.Text><i className="bi bi-textarea-t"></i></InputGroup.Text>
-            <Form.Control as="textarea" value={conditionDescription} onChange={(ev) => changeConditionDescription(ev.target.value)} />
           </InputGroup>
         </Form.Group>
       </Row>
