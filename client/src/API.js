@@ -369,10 +369,119 @@ async function checkCode(email) {
     throw resJson;
 }
 
+/*************HikerHike API************/
+
+function startHike(hiker_email, hike_title, start_time) {
+  return new Promise((resolve, reject) => {
+    fetch(URL + '/startHike', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ hiker_email, hike_title, start_time }),
+    }).then((response) => {
+      if (response.ok) {
+        resolve(null);
+      } else {
+        response.json()
+          .then((obj) => { reject(obj); })
+          .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+      }
+    }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+  });
+}
+
+function updateEndTime(hiker_email, hike_title, end_time) {
+  return new Promise((resolve, reject) => {
+    fetch(URL + '/updateEndTime', {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ hiker_email, hike_title, end_time }),
+    }).then((response) => {
+      if (response.ok) {
+        resolve(null);
+      } else {
+        response.json()
+          .then((obj) => { reject(obj); })
+          .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+      }
+    }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+  });
+}
+
+async function getFinishedHikes() {
+  return new Promise((resolve, reject) => {
+    fetch(URL + '/getFinishedHikes')
+      .then((response) => {
+        if (response.ok) {
+          response.json()
+            .then(json => resolve(json.map((row) => ({
+              hiker: row.hiker,
+              hike: row.hike,
+              start_time: row.start_time,
+              end_time: row.end_time,
+            }))))
+            .catch(err => reject({ error: "Cannot parse server response" }))
+        } else {
+          response.json()
+            .then((obj) => { reject(obj); })
+            .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+        }
+      }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+  });
+};
+
+async function getDistinctFinishedHikes() {
+  return new Promise((resolve, reject) => {
+    fetch(URL + '/getDistinctFinishedHikes')
+      .then((response) => {
+        if (response.ok) {
+          response.json()
+            .then(json => resolve(json.map((row) => ({
+              hike: row.hike,
+            }))))
+            .catch(err => reject({ error: "Cannot parse server response" }))
+        } else {
+          response.json()
+            .then((obj) => { reject(obj); })
+            .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+        }
+      }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+  });
+};
+
+async function getFinishedHikesByHiker(hiker_email) {
+  return new Promise((resolve, reject) => {
+    fetch(URL + '/getFinishedHikesByHiker/'+hiker_email)
+      .then((response) => {
+        if (response.ok) {
+          response.json()
+            .then(json => resolve(json.map((row) => ({
+              hike: row.hike,
+              start_time: row.start_time,
+              end_time: row.end_time,
+            }))))
+            .catch(err => reject({ error: "Cannot parse server response" }))
+        } else {
+          response.json()
+            .then((obj) => { reject(obj); })
+            .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+        }
+      }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+  });
+};
 
 //EXPORT FUNCTIONS------------------------------
 const API = {
-  logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, addNewHike, updateHike, getHikes, addPoint, addHut, getHuts,
-  checkUser, sendEmail, checkCode, getMap, getPoints
+  logIn, getUserInfo, logOut,
+  getAllUsers, deleteUser, updateUserRole, addUser,
+  addNewHike, updateHike, getHikes, getMap,
+  addPoint, addHut, getHuts, getPoints,
+  checkUser, sendEmail, checkCode,
+  startHike, updateEndTime, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker
 }
 export default API;

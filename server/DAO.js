@@ -558,7 +558,7 @@ function updateCode(email, code) {
 function startHike(hiker_email, hike_title, start_time) {
   return new Promise((resolve, reject) => {
     const sql = 'INSERT INTO HikerHike (hiker_email, hike_title, start_time) VALUES(?,?,?)';
-    db.run(sql, email, code, (err, rows) => {
+    db.run(sql, hiker_email, hike_title, start_time, (err, rows) => {
       if (err) {
         reject(err);
       } else {

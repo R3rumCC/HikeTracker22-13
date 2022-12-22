@@ -162,4 +162,60 @@ router.post('/Huts', [
   c.addHut(req, res)
 });
 
+/*************HikerHike API************/
+
+router.post('/startHike', [
+  body('hiker_email').notEmpty().withMessage('The email of the hiker can not be empty!'),
+  body('hike_title').notEmpty.withMessage('The title of the hike can not be empty!'),
+  body('start_time').notEmpty().withMessage('The starting time can not be empty!'),
+], (req, res) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array()
+    })
+  }
+  c.startHike(req, res)
+});
+
+router.put('/updateEndTime', [
+  body('hiker_email').notEmpty().withMessage('The email of the hiker can not be empty!'),
+  body('hike_title').notEmpty.withMessage('The title of the hike can not be empty!'),
+], (req, res) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array()
+    })
+  }
+  c.updateEndTime(req, res)
+});
+
+router.get('/getFinishedHikes', async (req, res) => {
+  try {
+    const hikes = await c.getFinishedHikes();
+    res.status(200).json(hikes).end();
+  } catch (error) {
+    res.status(500).json(error).end();
+  }
+});
+
+router.get('/getDistinctFinishedHikes', async (req, res) => {
+  try {
+    const hikes = await c.getDistinctFinishedHikes();
+    res.status(200).json(hikes).end();
+  } catch (error) {
+    res.status(500).json(error).end();
+  }
+});
+
+router.get('/getFinishedHikesByHiker/:hiker', async (req, res) => {
+  try {
+    const hikes = await c.getFinishedHikesByHiker(req);
+    res.status(200).json(hikes).end();
+  } catch (error) {
+    res.status(500).json(error).end();
+  }
+});
+
 module.exports = router

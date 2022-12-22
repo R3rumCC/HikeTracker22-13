@@ -436,3 +436,100 @@ Richie Zuniga:
   - Response: `200 OK` (success) 
   - Response body: _None_
   - Error responses: `500 Internal Server Error` (generic error), `400 Bad Request` (wrong fields)
+
+## HikerHike API
+
+- POST `/api/startHike`
+  - Description: Starting an hike
+  - Request body: Three string: email of the hiker, title of the hike, starting time
+    ``` json
+    {
+      "hiker_email": "mario.rossi@gmail.com",
+      "hike_title": "Form Pian Belota to la Vacca",
+      "start_time": "15.00",
+    }
+    ```
+  - Response: `200 OK` (success) 
+  - Response body: _None_
+  - Error responses: `500 Internal Server Error` (generic error), `400 Bad Request` (wrong fields)
+
+- PUT `/api/updateEndTime`
+  - Description: Updating the ending time of an hike
+  - Request body: Three string: email of the hiker, title of the hike, ending time
+    ``` json
+    {
+      "hiker_email": "mario.rossi@gmail.com",
+      "hike_title": "Form Pian Belota to la Vacca",
+      "start_time": "18.00",
+    }
+    ```
+  - Response: `200 OK` (success) 
+  - Response body: _None_
+  - Error responses: `503 Service unavailable` (database error), `400 Bad Request` (wrong fields)
+
+- GET `/api/getFinishedHikes`
+  - Description: Obtain the entire list of finished hikes, also the duplicates
+  - Request body: _None_
+  - Response: `200 OK` (success) 
+  - Response body: Array of objects, each describing a row of HikerHike table of the DB:
+    ``` json
+    [
+      {
+        "hiker": "mario.rossi@gmail.com",
+        "hike": "Form Pian Belota to la Vacca",
+        "start_time": "15.00",
+        "end_time": "18.00",
+      },
+      ...
+      {
+        "hiker": "mario.rossi@gmail.com",
+        "hike": "Hike Monte Thabor",
+        "start_time": "12.00",
+        "end_time": "14.00",
+      },
+      ...
+    ]
+    ```
+  - Error responses: `500 Internal Server Error` (database error)
+
+- GET `/api/getDistinctFinishedHikes`
+  - Description: Obtain the entire list of finished hikes, removing the duplicates
+  - Request body: _None_
+  - Response: `200 OK` (success) 
+  - Response body: Array of object cointains the title of the hikes:
+    ``` json
+    [
+      {
+        "hike": "Form Pian Belota to la Vacca",
+      }
+      ...
+      {
+        "hike": "Hike Monte Thabor",
+      },
+      ...
+    ]
+    ```
+  - Error responses: `500 Internal Server Error` (database error)
+
+- GET `/api/getFinishedHikesByHiker/:hiker`
+  - Description: Obtain the entire list of finished hikes by a specific hiker
+  - Request body:Three email of the hiker
+  - Response: `200 OK` (success) 
+  - Response body: Array of objects, each describing a row of HikerHike table of the DB:
+    ``` json
+    [
+      {
+        "hike": "Form Pian Belota to la Vacca",
+        "start_time": "15.00",
+        "end_time": "18.00",
+      },
+      ...
+      {
+        "hike": "Hike Monte Thabor",
+        "start_time": "12.00",
+        "end_time": "14.00",
+      },
+      ...
+    ]
+    ```
+  - Error responses: `500 Internal Server Error` (database error)

@@ -233,3 +233,54 @@ exports.addHut = async function (req, res) {
     throw e;
   }
 }
+
+/*************HikerHike API************/
+
+exports.startHike = async function (req, res) {
+  dao.startHike(req.body.hiker_email, req.body.hike_title, req.body.start_time).then(
+    result => {
+      return res.status(200).json();
+    },
+    error => {
+      return res.status(500).send(error);
+    }
+  )
+}
+
+exports.updateEndTime = async function (req, res) {
+  dao.updateHikeEndTime(req.body.hiker_email, req.body.hike_title, req.body.end_time).then(
+    result => {
+      return res.status(200).json();
+    },
+    error => {
+      return res.status(500).send(error);
+    }
+  )
+}
+
+exports.getFinishedHikes = async function () {
+  try {
+    const hikes = await dao.getFinishedHikes();
+    return hikes;
+  } catch (error) {
+    throw error;
+  }
+}
+
+exports.getDistinctFinishedHikes = async function () {
+  try {
+    const hikes = await dao.getDistinctFinishedHikes();
+    return hikes;
+  } catch (error) {
+    throw error;
+  }
+}
+
+exports.getFinishedHikesByHiker = async function (req) {
+  try {
+    const hikes = await dao.getDistinctFinishedHikes(req.params.hiker_email);
+    return hikes;
+  } catch (error) {
+    throw error;
+  }
+}
