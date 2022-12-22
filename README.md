@@ -60,6 +60,13 @@ The list of the huts
 - web_site: The URL of the website of the hut
 - description: The description of the hut
 
+### HikerHike
+The list of correlations between hikes and hikers
+- hiker: The email of the hiker
+- hike: The title of the hike
+- start_time: The starting time of the hike
+- end_time: The ending time of the hike (it can be null, for hikes not yet completed)
+
 ## Dao Documentation
 
 ### Users functions
