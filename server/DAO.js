@@ -557,7 +557,7 @@ function updateCode(email, code) {
 //add the starting hike in the HikerHike table without end_time
 function startHike(hiker_email, hike_title, start_time) {
   return new Promise((resolve, reject) => {
-    const sql = 'INSERT INTO HikerHike (hiker_email, hike_title, start_time) VALUES(?,?,?)';
+    const sql = 'INSERT INTO HikerHike (hiker, hike, start_time) VALUES(?,?,?)';
     db.run(sql, hiker_email, hike_title, start_time, (err, rows) => {
       if (err) {
         reject(err);
@@ -568,10 +568,11 @@ function startHike(hiker_email, hike_title, start_time) {
   });
 }
 
-function updateHikeEndTime(hiker_email, hike_title, end_time) {
+//also start_time because the same hiker can do the same hike multiple times
+function updateHikeEndTime(hiker_email, hike_title, start_time, end_time) {
   return new Promise((resolve, reject) => {
-    const sql = 'UPDATE HikerHike SET end_time = ? WHERE hiker = ? and hike = ?';
-    db.run(sql, end_time, hiker_email, hike_title, (err) => {
+    const sql = 'UPDATE HikerHike SET end_time = ? WHERE hiker = ? and hike = ? and start_time = ?';
+    db.run(sql, end_time, hiker_email, hike_title, start_time, (err) => {
       if (err)
         reject(err);
       else

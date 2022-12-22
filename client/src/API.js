@@ -392,7 +392,7 @@ function startHike(hiker_email, hike_title, start_time) {
   });
 }
 
-function updateEndTime(hiker_email, hike_title, end_time) {
+function updateEndTime(hiker_email, hike_title, start_time, end_time) {
   return new Promise((resolve, reject) => {
     fetch(URL + '/updateEndTime', {
       method: 'PUT',
@@ -400,7 +400,7 @@ function updateEndTime(hiker_email, hike_title, end_time) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ hiker_email, hike_title, end_time }),
+      body: JSON.stringify({ hiker_email, hike_title, start_time, end_time }),
     }).then((response) => {
       if (response.ok) {
         resolve(null);

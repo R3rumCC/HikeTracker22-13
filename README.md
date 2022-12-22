@@ -125,7 +125,7 @@ The list of correlations between hikes and hikers
 ### HikerHike functions
 
 - **startHike(hiker_email, hike_title, start_time)**, inserts a row in the table for the starting hike, with every fields except for end_time
-- **updateHikeEndTime(hiker_email, hike_title, end_time)**, update the row associated with the arguments *hiker_email* and *hike_title* with the *end_time*
+- **updateHikeEndTime(hiker_email, hike_title, tart_time, end_time)**, update the row associated with the arguments *hiker_email*, *hike_title* and *start_time* with the *end_time*
 - **getFinischedHikes()**, returns all hikes that are finished, even duplicates if, for example, the same hike was completed by two or more different hikers or twice by the same one
 - **getDistinctFinishedHikes()**, returns all hikes that are finished, eliminating duplicates
 - **getFinishedHikesByHiker(hiker_email)**, returns all hikes that are finished by a specific hiker, also the duplicates
@@ -455,12 +455,13 @@ Richie Zuniga:
 
 - PUT `/api/updateEndTime`
   - Description: Updating the ending time of an hike
-  - Request body: Three string: email of the hiker, title of the hike, ending time
+  - Request body: Four string: email of the hiker, title of the hike, starting time, ending time
     ``` json
     {
       "hiker_email": "mario.rossi@gmail.com",
       "hike_title": "Form Pian Belota to la Vacca",
-      "start_time": "18.00",
+      "start_time": "15.00",
+      "end_time": "18.00",
     }
     ```
   - Response: `200 OK` (success) 

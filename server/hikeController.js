@@ -248,7 +248,7 @@ exports.startHike = async function (req, res) {
 }
 
 exports.updateEndTime = async function (req, res) {
-  dao.updateHikeEndTime(req.body.hiker_email, req.body.hike_title, req.body.end_time).then(
+  dao.updateHikeEndTime(req.body.hiker_email, req.body.hike_title, req.body.start_time, req.body.end_time).then(
     result => {
       return res.status(200).json();
     },
