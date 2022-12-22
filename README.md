@@ -122,6 +122,14 @@ The list of correlations between hikes and hikers
 - **readHuts()**, returns a list of every huts with every field
 - **addHut()**, inserts an instance of hut linked to the respective point 
 
+### HikerHike functions
+
+- **startHike(hiker_email, hike_title, start_time)**, inserts a row in the table for the starting hike, with every fields except for end_time
+- **updateHikeEndTime(hiker_email, hike_title, end_time)**, update the row associated with the arguments *hiker_email* and *hike_title* with the *end_time*
+- **getFinischedHikes()**, returns all hikes that are finished, even duplicates if, for example, the same hike was completed by two or more different hikers or twice by the same one
+- **getDistinctFinishedHikes()**, returns all hikes that are finished, eliminating duplicates
+- **getFinishedHikesByHiker(hiker_email)**, returns all hikes that are finished by a specific hiker, also the duplicates
+
 
 ## Users
 
