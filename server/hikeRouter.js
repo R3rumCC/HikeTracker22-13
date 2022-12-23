@@ -166,7 +166,7 @@ router.post('/Huts', [
 
 router.post('/startHike', [
   body('hiker_email').notEmpty().withMessage('The email of the hiker can not be empty!'),
-  body('hike_title').notEmpty.withMessage('The title of the hike can not be empty!'),
+  body('hike_title').notEmpty().withMessage('The title of the hike can not be empty!'),
   body('start_time').notEmpty().withMessage('The starting time can not be empty!'),
 ], (req, res) => {
   const errors = validationResult(req)
@@ -180,7 +180,7 @@ router.post('/startHike', [
 
 router.put('/updateEndTime', [
   body('hiker_email').notEmpty().withMessage('The email of the hiker can not be empty!'),
-  body('hike_title').notEmpty.withMessage('The title of the hike can not be empty!'),
+  body('hike_title').notEmpty().withMessage('The title of the hike can not be empty!'),
   body('start_time').notEmpty().withMessage('The starting time can not be empty!'),
 ], (req, res) => {
   const errors = validationResult(req)
