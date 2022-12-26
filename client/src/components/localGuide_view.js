@@ -119,7 +119,7 @@ function HikeForm(props) {
         event.preventDefault();
         let newHike;
         //Checks on needed fields
-        let start = { address: startPoint, gps_coordinates: startPointGps }
+6        let start = { address: startPoint, gps_coordinates: startPointGps }
         let startId = props.CreateNewPoint(start) //try to use startId and endId instead of performing again the search
         if(startId== null){
             console.log('StartId= null! Problems')

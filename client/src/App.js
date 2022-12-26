@@ -6,20 +6,19 @@ import React, { useState, useEffect, useContext, } from 'react';
 import { Container, Toast } from 'react-bootstrap/';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 
-import { DefaultLayout, LoginLayout, HikerLayout, RegisterLayout, FileUploadLayout, SearchLayout } from './components/PageLayout';
+import { DefaultLayout, LoginLayout, HikerLayout, RegisterLayout } from './components/PageLayout';
 
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 import { Navigation } from './components/Navigation';
-import { LocalGuide_Home } from './components/localGuide_view';
+import { LocalGuide_Home } from './components/localGuideHome';
+import { Hiker_Home } from './components/hikerHome';
 
 import MessageContext from './messageCtx';
 import API from './API';
-import Profile from "./components/profile";
-import { HikeForm } from './components/newHikeForm';
-import FileUploader from './components/UploadGpxForm';
-import { GenericMap, HikePage } from './components/hikePage';
+import { EditHike } from './components/editHike';
+import { PointsContainer } from './components/pointsCards';
 
 
 function App() {
@@ -56,9 +55,14 @@ function Main() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
   const [currentHike, setCurrentHike] = useState([]);
+  const [points, setPoints] = useState([]);
   const [isLoading, setLoading] = useState(false);
+  const [profilePage, setProfilePage] = useState(false);
   //Remember to clear the current markers if the user leaves the page
-  const [currentMarkers, setCurrentMarkers] = useState([]) //List of selected positions [[Lat, Lng], [Lat2, Lng2], ...] on a map.
+  const [currentMarkers, setCurrentMarkers] = useState([]);
+
+  const [hikes, setHikes] = useState([]);
+
   function handleError(err) {
 
     toast.error(
@@ -69,7 +73,29 @@ function Main() {
 
   }
 
-  //const { handleErrors } = useContext(MessageContext);
+  const { handleErrors } = useContext(MessageContext);
+
+  useEffect(() => {
+    async function fetchInitialValues() {
+      try {
+        const fetchedPoints = await API.getPoints();
+        setPoints(fetchedPoints);
+        console.log(fetchedPoints);
+      } catch (error) {
+        handleErrors(error);
+      }
+    };
+    async function fetchHikes() {
+      try {
+        const fetchedHikes = await API.getHikes();
+        setHikes(fetchedHikes);
+      } catch (error) {
+        handleErrors(error);
+      }
+    };
+    fetchInitialValues();
+    fetchHikes();
+  }, []);
 
   //*******CHECK_AUTH*******//
   useEffect(() => {
@@ -161,7 +187,14 @@ function Main() {
     } catch (err) {
       handleError(err);
     }
+  };
 
+  const updateHike = async (oldHikeTitle, hike) => {
+    try {
+      await API.updateHike(oldHikeTitle, hike)
+    } catch (err) {
+      handleError(err);
+    }
   };
 
   //********HANDLE_VERIFICATION_CODE*******//
@@ -177,8 +210,11 @@ function Main() {
 
   }
 
-  function goToProfile(){
-    navigate('/profile');
+  function profilePageSwitch(){
+    if(profilePage)
+      navigate('/');
+    else
+      navigate('/profile');
   } 
 
   function returnToHome(){
@@ -190,20 +226,20 @@ function Main() {
 
   return (
     <>
-      <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} setCurrentMarkers={setCurrentMarkers} goToProfile={goToProfile} />
+      <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} setCurrentMarkers={setCurrentMarkers} profilePage={profilePageSwitch} />
       <Routes>
         <Route path="/" element={
-          loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHut={CreateNewHut} CreateNewHike={CreateNewHike} currentUser={currentUser} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} /> :
-            <DefaultLayout role={loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike} />  /*<FileUploadLayout></FileUploadLayout>*/
+          loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHut={CreateNewHut} CreateNewHike={CreateNewHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} hikes={hikes} currentUser={currentUser} setCurrentHike={setCurrentHike} points = {points} /> :
+            <DefaultLayout role={loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike} hikes={hikes}/>  /*<FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>
         {/* <Route path="/NewHike" element={<HikeForm/>} /> THIS WAS A TRY TO DO THE .GPX FILE UPLOAD.*/}
         <Route path="/map" element={loggedIn && currentUser.role == 'Hiker' && currentHike.length != 0 ? <HikerLayout currentHike={currentHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} /> : <Navigate replace to='/' />} />
-        {/* <Route path="/genMap" element={<GenericMap currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers}/>} /> */}
+        <Route path="/points" element={<PointsContainer points={points}></PointsContainer>} />
         <Route path="/register" element={!loggedIn ? <RegisterLayout CreateNewAccount={CreateNewAccount} checkUser={checkUser} checkCode={checkCode} sendEmail={sendEmail} /> : <Navigate replace to='/' />} />
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
-        <Route path="/searchHut" element={loggedIn && currentUser.role == 'Hiker' ? <SearchLayout /> : <Navigate replace to='/' />} />
-        <Route path="/profile" element={loggedIn && currentUser.role == 'LocalGuide' ? <Profile user={currentUser} returnToHome={returnToHome} /> : <Navigate replace to='/' />} />
+        <Route path="/profile" element={loggedIn && currentUser.role == 'Hiker' ? <Hiker_Home currentUser={currentUser} /> : <Navigate replace to='/' />} />
+        <Route path="/editHike" element={loggedIn && currentUser.role == 'LocalGuide' ? <EditHike updateHike={updateHike} returnToHome={returnToHome} currentHike={currentHike} /> : <Navigate replace to='/' />} />
       </Routes>
     </>
   );

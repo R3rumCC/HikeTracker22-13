@@ -231,6 +231,32 @@ async function getHuts() {
   }
 }
 
+async function getPoints() {
+  const url = 'http://localhost:3001' + '/api/getPoints';
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    if (response.ok) {
+      const list = await response.json();
+      return list;
+    }
+    else {
+      //console.log(response.statusText);
+      const text = await response.text();
+      throw new TypeError(text);
+    }
+  }
+  catch (e) {
+    console.log(e);
+    throw e;
+  }
+}
+
 /*************************LOCAL GUIDE API**********************/
 
 function addNewHike(newHike) {
@@ -243,6 +269,27 @@ function addNewHike(newHike) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ newHike }),
+    }).then((response) => {
+      if (response.ok) {
+        resolve(null);
+      } else {
+        response.json()
+          .then((obj) => { reject(obj); })
+          .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+      }
+    }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+  });
+}
+
+function updateHike(oldHikeTitle, hike) {
+  return new Promise((resolve, reject) => {
+    fetch(URL + '/updateHike', {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ oldHikeTitle, hike }),
     }).then((response) => {
       if (response.ok) {
         resolve(null);
@@ -332,6 +379,7 @@ async function checkCode(email) {
 
 //EXPORT FUNCTIONS------------------------------
 const API = {
-  logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, addNewHike, getHikes, addPoint, addHut, getHuts, checkUser, sendEmail, checkCode, getMap
+  logIn, getUserInfo, logOut, getAllUsers, deleteUser, updateUserRole, addUser, addNewHike, updateHike, getHikes, addPoint, addHut, getHuts,
+  checkUser, sendEmail, checkCode, getMap, getPoints
 }
 export default API;

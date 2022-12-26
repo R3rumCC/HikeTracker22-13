@@ -87,6 +87,9 @@ function readHikes() {
         difficulty,
         description,
         gpx_track,
+        hike_condition,
+        hike_condition_description,
+        local_guide,
         SP.idPoint AS start_point_idPoint,
         SP.address AS start_point_address,
         SP.nameLocation AS start_point_nameLocation,
@@ -114,6 +117,24 @@ function readHikes() {
   });
 }
 
+function getHikeByTitle(title) {
+  return new Promise((resolve, reject) => {
+    const sql = `
+      SELECT *
+      FROM Hikes
+      WHERE title = ?
+      ;
+    `;
+    db.get(sql, title, (err, hike) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(hike)
+      }
+    });
+  });
+}
+
 function readListOfReferencePoints(title) { // RP for a given hike
   return new Promise((resolve, reject) => {
     const sql = `SELECT reference_points
@@ -132,10 +153,8 @@ function readListOfReferencePoints(title) { // RP for a given hike
 
 function addHike(hike) {
   return new Promise((resolve, reject) => {
-    const sql = 'INSERT INTO HIKES (title, length, expected_time, ascent, difficulty, start_point, end_point, description, reference_points, gpx_track, local_guide, hike_condition) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)';
-    db.run(sql, hike.title, hike.length, hike.expected_time, hike.ascent, hike.difficulty, hike.start_point, hike.end_point, hike.description, hike.reference_points, hike.gpx_track,
-              hike.local_guide, hike.hike_condition, 
-      (err, rows) => {
+    const sql = 'INSERT INTO HIKES (title, length, expected_time, ascent, difficulty, start_point, end_point, description, reference_points, gpx_track, hike_condition, hike_condition_description, local_guide) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)';
+    db.run(sql, hike.title, hike.length, hike.expected_time, hike.ascent, hike.difficulty, hike.start_point, hike.end_point, hike.description, hike.reference_points, hike.gpx_track, hike.hike_codition, hike.hike_condition_description, hike.local_guide, (err, rows) => {
       if (err) {
         reject(err);
       } else {
@@ -247,8 +266,8 @@ function updateHikeDescription(title, description) {
 }
 function updateHike(oldHikeTitle, newHike) {
   return new Promise((resolve, reject) => {
-    const sql = 'UPDATE HIKES SET title = ?, length = ?, expected_time = ?, ascent = ?, difficulty = ?, start_point = ?, end_point = ?, reference_points = ?, description = ? where title = ?';
-    db.run(sql, newHike.title, newHike.length, newHike.expected_time, newHike.ascent, newHike.difficulty, newHike.start_point, newHike.end_point, newHike.reference_points, newHike.description, oldHikeTitle, (err) => {
+    const sql = 'UPDATE HIKES SET title = ?, length = ?, expected_time = ?, ascent = ?, difficulty = ?, start_point = ?, end_point = ?, reference_points = ?, description = ?, hike_condition =?, hike_condition_description = ?, local_guide = ? where title = ?';
+    db.run(sql, newHike.title, newHike.length, newHike.expected_time, newHike.ascent, newHike.difficulty, newHike.start_point, newHike.end_point, newHike.reference_points, newHike.description, newHike.hike_condition, newHike.hike_condition_description, newHike.local_guide, oldHikeTitle, (err) => {
       if (err)
         reject(err);
       else
@@ -303,6 +322,23 @@ function checkPresenceByAddress(addr) {
   return new Promise((resolve, reject) => {
     const sql = 'SELECT idPoint FROM POINTS WHERE address = ?';
     db.get(sql, addr, (err, id) => {
+      if (err) {
+        reject(err);
+      } if (id == undefined) {
+        resolve(null);
+      }
+      else {
+        resolve(id);
+      }
+    });
+  });
+}
+
+//It checks if the gps_coordiantes exists
+function checkPresenceByCoordinates(coord) {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT idPoint FROM POINTS WHERE gps_coordinates = ?';
+    db.get(sql, coord, (err, id) => {
       if (err) {
         reject(err);
       } if (id == undefined) {
@@ -429,7 +465,7 @@ function updatePointAltitude(oldIdPoint, altitude) {
 
 function readHuts() {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM POINTS where type = ?';
+    const sql = 'SELECT * FROM POINTS P, HUTS H where type = ? and P.nameLocation = H.nameHut';
     db.all(sql, "Hut", (err, rows) => {
       if (err) {
         reject(err);
@@ -512,10 +548,10 @@ function updateCode(email, code) {
 
 module.exports = {
   readUsers, addUser, deleteUser, updateUserRole,
-  readHikes, addHike, deleteHike, updateHike, updateHikeTitle,
+  readHikes, addHike, deleteHike, updateHike, updateHikeTitle, getHikeByTitle,
   updateHikeAscent, updateHikeLength, updateHikeDescription, updateHikeDifficulty,
   updateHikeET, updateHikeStartPoint, updateHikeEndPoint, updateHikeRefPoint, getUserByEmail,
-  readPoints, checkPresenceByAddress, addPoint, updatePoint, deletePoint, readHuts, addHut, addCode, deleteCode, getCode, updateCode,
+  readPoints, checkPresenceByAddress, checkPresenceByCoordinates, addPoint, updatePoint, deletePoint, readHuts, addHut, addCode, deleteCode, getCode, updateCode,
   updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, updatePointCapacity, updatePointAltitude,
   readListOfReferencePoints, readPointById
 };

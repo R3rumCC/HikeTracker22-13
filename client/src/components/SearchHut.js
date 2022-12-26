@@ -1,4 +1,4 @@
-import { Button, Form, Col, Row, Card } from 'react-bootstrap';
+import { Button, Form, Col, Row, Card, InputGroup } from 'react-bootstrap';
 import { useEffect, useState, useContext, React } from 'react';
 import { UNSAFE_NavigationContext, useNavigate } from 'react-router-dom';
 import API from '../API';
@@ -7,7 +7,10 @@ import MessageContext from '../messageCtx';
 function hutMapping(dbHuts) {
   let newHuts = [];
   newHuts = dbHuts.map((h) => {
-    return {name: h.nameLocation, address: h.address, latitude: h.gps_coordinates.split(',')[0], longitude: h.gps_coordinates.split(',')[1]}
+    return {
+      name: h.nameLocation, address: h.address, latitude: h.gps_coordinates.split(',')[0], longitude: h.gps_coordinates.split(',')[1],
+      altitude: h.altitude, capacity: h.capacity, phone: h.phone, email: h.email, web_site: h.web_site, description: h.description
+    }
   });
   console.log(newHuts);
   return newHuts;
@@ -17,7 +20,7 @@ function HutContainer(props) {
   const huts = props.huts;
   return (
     <div className="d-flex justify-content-start flex-wrap">
-      {huts.length != 0 ? huts.map((hut) => { return (<HutCard key={hut.address} name={hut.name} address={hut.address} latitude={hut.latitude} longitude={hut.longitude} />) }) : <h4>No result found</h4>}
+      {huts.length != 0 ? huts.map((hut) => { return (<HutCard key={hut.address} name={hut.name} address={hut.address} latitude={hut.latitude} longitude={hut.longitude} altitude={hut.altitude} capacity={hut.capacity} phone={hut.phone} email={hut.email} web_site={hut.web_site} description={hut.description} />) }) : <h4>No result found</h4>}
     </div>
   );
 }
@@ -26,24 +29,37 @@ function filterCheck(arg, filter) {
   if (arg === null) {
     return true;
   }
-  else if(filter == ''){
+  else if (filter == '') {
     return true;
   }
-  else if (arg.includes(filter)) {
+  else if (arg.toLowerCase().includes(filter.toLowerCase())) {
     return true;
   }
   else return false;
 }
 
-function filterLatLng(arg, filter){
-  console.log(Math.floor(arg),Math.floor(filter))
+function filterInt(arg, filter) {
+  if (arg == null) {
+    return true;
+  }
+  else if (filter == 0) {
+    return true;
+  }
+  else if (arg == filter) {
+    return true;
+  }
+  else { return false; }
+}
+
+function filterDouble(arg, filter) {
+  console.log(Math.floor(arg), Math.floor(filter))
   if (arg === null) {
     return true;
   }
-  else if(filter == ''){
+  else if (filter == '') {
     return true;
   }
-  else if( Math.floor(arg) == Math.floor(filter) ){
+  else if (Math.floor(arg) == Math.floor(filter)) {
     return true
   }
   else return false;
@@ -51,7 +67,7 @@ function filterLatLng(arg, filter){
 
 function HutCard(props) {
   return (
-    <Card style={{width: '20rem'}}>
+    <Card style={{ width: '20rem' }}>
       <Card.Header>{props.name}</Card.Header>
       <Card.Body>
         <Card.Text>Address: {props.address}</Card.Text>
@@ -62,7 +78,25 @@ function HutCard(props) {
           <Col>
             <Card.Text>Longitude: {props.longitude}</Card.Text>
           </Col>
+          <Col>
+            <Card.Text>Altitude: {props.altitude} m</Card.Text>
+          </Col>
         </Row>
+        <hr />
+        <Card.Text><h5>Contacts</h5></Card.Text>
+        <Row>
+          <Col>
+            <Card.Text>Phone: {props.phone}</Card.Text>
+          </Col>
+          <Col>
+            <Card.Text>Email: {props.email}</Card.Text>
+          </Col>
+        </Row>
+        {props.web_site != '' ? <Card.Text>Web site: {props.web_site}</Card.Text> : <></>}
+        <hr />
+        <Card.Text><h5>Description</h5></Card.Text>
+        <Card.Text>{props.description}</Card.Text>
+        <Card.Text>{props.capacity} Beds</Card.Text>
       </Card.Body>
     </Card>
   );
@@ -78,6 +112,8 @@ function SearchHut() {
   const [latFilter, setLatFilter] = useState("");
   const [longFilter, setLongFilter] = useState("");
   const [geoFilter, setGeoFilter] = useState("");
+  const [altFilter, setAltFilter] = useState(0);
+  const [capacityFilter, setCapacityFilter] = useState(0);
   const [filters, setFilters] = useState(false);
 
   async function getHuts() {
@@ -92,60 +128,112 @@ function SearchHut() {
 
   useEffect(() => {
     setFilteredHuts(huts.filter((h) => {
-      return filterCheck(h.name, nameFilter) && filterCheck(h.address, geoFilter) && filterLatLng(h.latitude, latFilter) && filterLatLng(h.longitude, longFilter)
+      return filterCheck(h.name, nameFilter) && filterCheck(h.address, geoFilter) &&
+        filterDouble(h.latitude, latFilter) && filterDouble(h.longitude, longFilter) &&
+        filterInt(h.altitude, altFilter) && filterInt(h.capacity, capacityFilter)
     }))
   }, [filters]);
 
   useEffect(() => {
     getHuts();
   }, []);
+
   useEffect(() => {
     setFilters(false)
-  }, [geoFilter,nameFilter,longFilter,latFilter]);
+  }, [geoFilter, nameFilter, longFilter, latFilter, altFilter, capacityFilter]);
+
   return (
     <Col className="vh-100 justify-content-md-center">
       <Row>
-        <h1>Search Hut</h1>
-      </Row>
-      <Row>
-        <Form>
-          <Form.Group className="mb-3" controlId="geo">
-            <Form.Label>Geographical Area</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter the geographical area of the hut"
-              value={geoFilter} onChange={(e) => { setGeoFilter(e.target.value) }}
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="name">
-            <Form.Label>Name</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter the name of the hut"
-              value={nameFilter} onChange={(e) => { setNameFilter(e.target.value) }}
-            />
+        <Form style={{fontSize:15, fontWeight:'bold'}}>
+          <Row>
+              <Form.Label style={{fontSize: 25}}>Geographical Informations</Form.Label>
+          </Row>
+          <Form.Group controlId="geo">
+            <Form.Label>Address</Form.Label>
+              <InputGroup className='mb-2'>
+                <InputGroup.Text><i class="bi bi-signpost"></i></InputGroup.Text>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter the address of the hut"
+                  value={geoFilter} onChange={(e) => { setGeoFilter(e.target.value) }}
+                />
+              </InputGroup>
           </Form.Group>
           <Row>
             <Col>
               <Form.Group>
                 <Form.Label>Latitude</Form.Label>
-                <Form.Control
-                  type="number" step="0.0000001"
-                  min="-90.0000000" max="90.0000000"
-                  placeholder='Enter the latitude'
-                  value={latFilter} onChange={(e) => { setLatFilter(e.target.value) }}
-                />
+                <InputGroup className='mb-2'>
+                  <InputGroup.Text><i class="bi bi-compass"></i></InputGroup.Text>
+                  <Form.Control
+                    type="number" step="0.0000001"
+                    min="-90.0000000" max="90.0000000"
+                    placeholder='Enter the latitude'
+                    value={latFilter} onChange={(e) => { setLatFilter(e.target.value) }}
+                  />
+                </InputGroup>
               </Form.Group>
             </Col>
             <Col>
               <Form.Group>
                 <Form.Label>Longitude</Form.Label>
-                <Form.Control
-                  type="number" step="0.0000001"
-                  min="-180.0000000" max="180.0000000"
-                  placeholder='Enter the longitude'
-                  value={longFilter} onChange={(e) => { setLongFilter(e.target.value) }}
-                />
+                <InputGroup className='mb-2'>
+                  <InputGroup.Text><i class="bi bi-compass"></i></InputGroup.Text>
+                  <Form.Control
+                    type="number" step="0.0000001"
+                    min="-180.0000000" max="180.0000000"
+                    placeholder='Enter the longitude'
+                    value={longFilter} onChange={(e) => { setLongFilter(e.target.value) }}
+                  />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group>
+                <Form.Label>Altitude</Form.Label>
+                <InputGroup className='mb-2'>
+                  <InputGroup.Text><i class="bi bi-geo-fill"></i></InputGroup.Text>
+                  <Form.Control
+                    type="number"
+                    min="0" max="4000"
+                    placeholder='Enter the altitude'
+                    value={altFilter} onChange={(e) => { setAltFilter(e.target.value) }}
+                  />
+                  <InputGroup.Text>m</InputGroup.Text>
+                </InputGroup>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+              <Form.Label style={{fontSize: 25}}>Hut's Details</Form.Label>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Group className="mb-3" controlId="name">
+                <Form.Label>Name</Form.Label>
+                <InputGroup className='mb-2'>
+                  <InputGroup.Text><i class="bi bi-house"></i></InputGroup.Text>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter the name of the hut"
+                    value={nameFilter} onChange={(e) => { setNameFilter(e.target.value) }}
+                  />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group>
+                <Form.Label>Number of beds</Form.Label>
+                <InputGroup className='mb-2'>
+                  <InputGroup.Text><i class="bi bi-person-plus"></i></InputGroup.Text>
+                  <Form.Control
+                    type="number"
+                    min="0" max="30"
+                    placeholder='Enter the numeber of beds'
+                    value={capacityFilter} onChange={(e) => { setCapacityFilter(e.target.value) }}
+                  />
+                </InputGroup>
               </Form.Group>
             </Col>
           </Row>
@@ -166,21 +254,21 @@ function SearchHutButton(props) {
   const useBackListener = (callback) => { // Handler for the back button
     const navigator = useContext(UNSAFE_NavigationContext).navigator;
     useEffect(() => {
-        const listener = ({ location, action }) => {
-            console.log("listener", { location, action });
-            if (action === "POP") {
-                callback({ location, action });
-            }
-        };
-        const unlisten = navigator.listen(listener);
-        return unlisten;
+      const listener = ({ location, action }) => {
+        console.log("listener", { location, action });
+        if (action === "POP") {
+          callback({ location, action });
+        }
+      };
+      const unlisten = navigator.listen(listener);
+      return unlisten;
     }, [callback, navigator]);
-};
+  };
 
-useBackListener(({ location }) =>{
+  useBackListener(({ location }) => {
     console.log("Navigated Back", { location });
-    if(props.searchPage){ props.setSearchPage(false); }
-});
+    if (props.searchPage) { props.setSearchPage(false); }
+  });
 
   const navigate = useNavigate();
   if (props.searchPage) {

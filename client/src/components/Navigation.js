@@ -38,20 +38,15 @@ const Navigation = (props) => {
                 {`Welcome, ${props.user.role} ${props.user.name}!`}
               </Navbar.Text>
             </Col> : null}
-            <Col>
-              <Form>
-                {props.loggedIn && props.user.role == "Hiker" ? <SearchHutButton searchPage={searchPage} setSearchPage={setSearchPage} /> : <></>}
-              </Form>
-            </Col>
             <Col >
               {props.loggedIn ? <LogoutButton logout={props.logout} /> : <LoginButton />}
             </Col>
             <Col>
-              {props.loggedIn && props.user.role == "LocalGuide" ? <PersonCircle
+              {props.loggedIn && props.user.role == "Hiker" ? <PersonCircle
                 className="m-2"
                 fill="white"
                 fontSize={32}
-                onClick={props.goToProfile}
+                onClick={props.profilePage}
                 opacity={opacity}
                 onMouseOver={() => setOpacity(OPACITY_WHEN_MOUSE_INTERACT)}
                 onMouseLeave={() => setOpacity(NORMAL_OPACITY)}

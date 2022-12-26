@@ -5,7 +5,7 @@ services:
     build: 
       context: ./server
       dockerfile: Dockerfile
-    image: r3rumcc/hike-tracker22-13:server_v1
+    image: r3rumcc/hike-tracker22-13:server_v1.1
     command: npm start
     ports:
       - 3001:3001
@@ -16,7 +16,7 @@ services:
       context: ./client
       dockerfile: Dockerfile
     command: npm start
-    image: r3rumcc/hike-tracker22-13:client_v1
+    image: r3rumcc/hike-tracker22-13:client_v1.1
     ports:
       - 3000:3000
     depends_on: 

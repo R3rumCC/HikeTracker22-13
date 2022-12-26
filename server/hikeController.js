@@ -35,18 +35,43 @@ exports.addHike = async function (req, res) {
   //better rename these two fields in start_point_address and end_point_address because they are address, not idPoint
   const startId = await dao.checkPresenceByAddress(req.body.newHike.start_point)
   const endId = await dao.checkPresenceByAddress(req.body.newHike.end_point)
+
+  if (startId == null || endId == null) {
+    return res.status(400)
+  }
   //console.log(startId.idPoint, endId.idPoint)
 
   let hike = {
     title: req.body.newHike.title, length: req.body.newHike.length, expected_time: req.body.newHike.expected_time,
     ascent: req.body.newHike.ascent, difficulty: req.body.newHike.difficulty, start_point: startId.idPoint, end_point: endId.idPoint,
     reference_points: req.body.newHike.reference_points, description: req.body.newHike.description, gpx_track: req.body.newHike.gpx_track,
-    local_guide: req.body.newHike.local_guide, hike_condition: req.body.newHike.hike_condition
+    hike_condition: req.body.newHike.hike_condition, hike_condition_description: req.body.newHike.hike_condition_description, local_guide: req.body.newHike.local_guide
   }
   console.log('Before dao call')
 
 
   dao.addHike(hike).then(
+    result => {
+      return res.status(200).json();
+    },
+    error => {
+      return res.status(500).send(error);
+    }
+  )
+}
+
+exports.updateHike = async function (req, res) {
+
+  const oldHike = await dao.getHikeByTitle(req.body.oldHikeTitle);
+
+  const updateHike = {
+    title: req.body.hike.title, length: req.body.hike.length, expected_time: req.body.hike.expected_time,
+    ascent: req.body.hike.ascent, difficulty: req.body.hike.difficulty, start_point: oldHike.start_point, end_point: oldHike.end_point,
+    reference_points: req.body.hike.reference_points, description: req.body.hike.description, gpx_track: oldHike.gpx_track,
+    hike_condition: req.body.hike.hike_condition, hike_condition_description: req.body.hike.hike_condition_description, local_guide: oldHike.local_guide
+  }
+
+  dao.updateHike(req.body.oldHikeTitle ,updateHike).then(
     result => {
       return res.status(200).json();
     },
@@ -139,18 +164,24 @@ exports.getUser = async function (req, res) {
   )
 }
 
+exports.getPoints = async function () {
+  try {
+    const points = await dao.readPoints();
+    return points;
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+}
 
 //It checks for the presence of the point in the db, then:
 //-if not present, it is added;
 //-if present, a positive feedback is sent anyway   
 exports.addPoint = async function (req, res) {
-
   try {
-    const id = await dao.checkPresenceByAddress(req.body.point.address)
-    console.log("Inside addPoint server side")
-    console.log(req.body.point)
+    const id = await dao.checkPresenceByCoordinates(req.body.point.gps_coordinates)
     if (id !== null) {
-      return res.status(200).json(id);      
+      return res.status(200).json(id);
     } else {
       dao.addPoint(req.body.point).then(
         result => {
@@ -161,7 +192,6 @@ exports.addPoint = async function (req, res) {
         }
       )
     }
-
   } catch (e) {
     console.log(e);
     throw e;
@@ -173,29 +203,29 @@ exports.addPoint = async function (req, res) {
 //-if present, a positive feedback is sent anyway   
 exports.addHut = async function (req, res) {
 
-  console.log("Inside addHut server side")
-  console.log(req.body.hut)
+  //console.log("Inside addHut server side")
+  // console.log(req.body.hut)
   try {
-    const id = await dao.checkPresenceByAddress(req.body.hut.address)
+    const id = await dao.checkPresenceByCoordinates(req.body.hut.address)
     if (id !== null) {
-      return res.status(200).json(id);      
+      return res.status(200).json(id);
     }
 
-    const res1= dao.addHut(req.body.hut).then(
-        result => {
+    const res1 = dao.addHut(req.body.hut).then(
+      result => {
 
-          dao.addPoint(req.body.hut).then(
-            result => {
-              return res.status(200).json(result);
-            },
-            error => {
-              return res.status(500).send(error);
-            }
-          )
-        },
-        error => {
-          return res.status(500).send(error);
-        }
+        dao.addPoint(req.body.hut).then(
+          result => {
+            return res.status(200).json(result);
+          },
+          error => {
+            return res.status(500).send(error);
+          }
+        )
+      },
+      error => {
+        return res.status(500).send(error);
+      }
 
     )
 

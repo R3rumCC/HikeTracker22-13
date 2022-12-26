@@ -73,6 +73,7 @@ The list of the huts
 ### Hikes functions
 
 - **readHikes()**, returns a list of every hike with every field excepted the reference points. This function returns also the fields of the starting and ending points
+- **getHikeByTitle(title)** return the entire hike associated with the argument *title*
 - **readReferencePoints(title)**, returns a list of the fields of the reference points of the hike associated with the argument *title*
 - **addHike(hike)**, inserts the object hike to the database. The argument *hike*, is an object with the every fields of an hike
 - **updateHikeTitle(oldName, newName)**, updates the hike identified by *oldName* with the *newName*
@@ -199,8 +200,8 @@ Paulina Knight:
         "expected_time": 189,
         "ascent": 600,
         "difficulty": "professional hiker",
-        "start_point": 10,
-        "end_point": 3,
+        "start_point": "Chamolé, 16, Comboé Superiore, Charvensod, Aosta Valley, 21000, Italy",
+        "end_point": "Colle Betta, Strada Regionale 43 di Staffal, Anderbatt, Gressoney-La-Trinité, Aosta Valley, Italy",
         "description": "A hike in the Dolomites Nature Park",
         "gpx_track": "Form Pian Belota to la Vacca"
       }
@@ -315,6 +316,35 @@ Paulina Knight:
 
 ## POINTS API
 
+- GET `/api/getPoints`
+  - Description: Obtain the entire list of points 
+  - Request body: _None_
+  - Response: `200 OK` (success) 
+  - Response body: Array of objects, each describing a points:
+    ``` json
+    [
+      {
+        "idPoint": 1,
+        "address": "La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy",
+        "nameLocation": "La Riposa",
+        "gps_coordinates": "45.177786,7.083372",
+        "type": "Hut",
+        "capacity": null,
+        "altitude": null
+      },
+      {
+        "idPoint": 2,
+        "address": "Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy",
+        "nameLocation": "Nostra Signora del Rocciamelone",
+        "gps_coordinates": "45.203531,7.07734",
+        "type": "Hut",
+        "capacity": null,
+        "altitude": null
+      }
+    ]
+    ```
+  - Error responses: `500 Internal Server Error` (database error)
+
 - POST `/api/Point`
   - Description: Add a new point
   - Request body: An object contains a point
@@ -332,7 +362,7 @@ Paulina Knight:
     ```
   - Response: `200 OK` (success) 
   - Response body: _None_
-  - Error responses: `500 Internal Server Error` (generic error), `400 Bad Request` (wrong fields), `422 Unprocessable Entity` (address or gps_coordinates already registered)
+  - Error responses: `500 Internal Server Error` (generic error), `400 Bad Request` (wrong fields), `422 Unprocessable Entity` (gps_coordinates already registered)
 
 ## HUTS API
 
