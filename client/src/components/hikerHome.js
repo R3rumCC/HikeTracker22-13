@@ -1,41 +1,62 @@
-import { React, useState } from 'react';
+import { React, useState, useEffect } from 'react';
 import { Row, Col, Nav } from 'react-bootstrap';
 import Profile from './profile';
 import { SearchHut } from './SearchHut';
 import { PerformancePage } from './PerformancePage';
+import { HikesContainer } from './hikesCards';
+import API from '../API';
 
-function Hiker_Home(props){
-    const [searchHutForm, setSearchHutForm] = useState(false);
-    const [performanceForm, setPerformanceForm] = useState(false);
-    const [profile, setProfile] = useState(true);
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
+function Hiker_Home(props) {
+	const [searchHutForm, setSearchHutForm] = useState(false);
+	const [performanceForm, setPerformanceForm] = useState(false);
+	const [profile, setProfile] = useState(true);
+	const [hikesCompleted, setHikesCompletedPage] = useState(true);
+	const [hikeOnGoing, setHikeOnGoingPage] = useState(true);
 
-    const selectProfile = () => {
-		setSearchHutForm(false); setPerformanceForm(false); setProfile(true);
+	const selectHut = () => {
+		setSearchHutForm(true); setPerformanceForm(false); setProfile(false); setHikesCompletedPage(false); setHikeOnGoingPage(false);
 	};
 
-    const selectHut = () => {
-		setSearchHutForm(true); setPerformanceForm(false); setProfile(false);
+	const selectPerformance = () => {
+		setSearchHutForm(false); setPerformanceForm(true); setProfile(false); setHikesCompletedPage(false); setHikeOnGoingPage(false);
 	};
 
-    const selectPerformance = () => {
-		setSearchHutForm(false); setPerformanceForm(true); setProfile(false);
+	const selectProfile = () => {
+		setSearchHutForm(false); setPerformanceForm(false); setProfile(true); setHikesCompletedPage(false); setHikeOnGoingPage(false);
 	};
 
-    return (
+	const selectHikesCompleted = () => {
+		setSearchHutForm(false); setPerformanceForm(false); setProfile(false); setHikesCompletedPage(true); setHikeOnGoingPage(false);
+	};
+
+	const selectHikeOnGoing = () => {
+		setSearchHutForm(false); setPerformanceForm(false); setProfile(false); setHikesCompletedPage(false); setHikeOnGoingPage(true);
+	};
+
+	return (
 		<Row>
 			<Col xs={2}>
-				<Hiker_Home_Sidebar setHutForm={selectHut} setPerForm={selectPerformance} setProfile={selectProfile} />
+				<Hiker_Home_Sidebar
+					setHutForm={selectHut}
+					setPerForm={selectPerformance}
+					setProfile={selectProfile}
+					setHikesCompletedPage={selectHikesCompleted}
+					setHikeOnGoingPage={selectHikeOnGoing}
+				/>
 			</Col>
 			<Col xs={10}>
 				<div>{profile ? <Profile user={props.currentUser} /> : <></>}</div>
-                <div>{searchHutForm ? <SearchHut/> : <></>}</div>
-                <div>{performanceForm ? <PerformancePage/> : <></>}</div>
+				<div>{searchHutForm ? <SearchHut /> : <></>}</div>
+				<div>{performanceForm ? <PerformancePage /> : <></>}</div>
+				<div>{hikesCompleted ? <HikesCompleted user={props.currentUser} setCurrentHike={props.setCurrentHike} /> : <></>}</div>
+				<div>{hikeOnGoing ? <OnGoingHike user={props.currentUser} setCurrentHike={props.setCurrentHike}/> : <></>}</div>
 			</Col>
 		</Row>
 	)
 }
-
 
 function Hiker_Home_Sidebar(props) {
 	return (
@@ -50,7 +71,67 @@ function Hiker_Home_Sidebar(props) {
 			<Nav.Item>
 				<Nav.Link onClick={() => props.setPerForm()}>Insert your performances</Nav.Link>
 			</Nav.Item>
+			<Nav.Item>
+				<Nav.Link onClick={() => props.setHikesCompletedPage()}>See your completed hikes</Nav.Link>
+			</Nav.Item>
+			<Nav.Item>
+				<Nav.Link onClick={() => props.setHikeOnGoingPage()}>See your ongoing hike</Nav.Link>
+			</Nav.Item>
 		</Nav>
+	)
+}
+
+function handleError(err) {
+	toast.error(
+		err.error,
+		{ position: "top-center" },
+		{ toastId: 12 }
+	);
+}
+
+function HikesCompleted(props) {	//to modify, now with the API we retrive the list of titles of hikes
+
+	const [myHikes, setMyHikes] = useState([]);
+
+	useEffect(() => {
+		async function fetchHikes() {
+			try {
+				const fetchedHikes = await API.getFinishedHikesByHiker(props.user.username);
+				setMyHikes(fetchedHikes);
+			} catch (error) {
+				handleError(error);
+			}
+		};
+		fetchHikes();
+	}, []);
+
+	return (
+		<>
+			<HikesContainer role={props.user.role} hikes={myHikes} setCurrentHike={props.setCurrentHike} />
+		</>
+	)
+}
+
+function OnGoingHike(props) { //to modify, now with the API we retrive the title of the hike and the start_time
+
+	const [myHike, setMyHike] = useState([]);
+
+	useEffect(() => {
+		async function getHike() {
+			try {
+				const hike = await API.getOnGoingHike(props.user.username);
+				setMyHike(hike);
+			} catch (error) {
+				handleError(error);
+			}
+		};
+		getHike();
+	}, []);
+
+	return (
+		<>
+			<HikesContainer role={props.user.role} hikes={myHike} setCurrentHike={props.setCurrentHike} />
+		</>
 	)
 }
 

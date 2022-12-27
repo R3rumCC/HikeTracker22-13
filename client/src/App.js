@@ -63,7 +63,7 @@ function Main() {
 
   const [hikes, setHikes] = useState([]);
   const [onChangeHikes, setOnChangeHikes] = useState(true)
-  const [onChangePoints,setOnChangePoints] = useState(true)
+  const [onChangePoints, setOnChangePoints] = useState(true)
 
   function handleError(err) {
 
@@ -87,12 +87,12 @@ function Main() {
         handleErrors(error);
       }
     };
-    if(onChangePoints){
+    if (onChangePoints) {
       setOnChangePoints(false)
       fetchInitialValues();
     }
   }, [onChangePoints]);
-  
+
   useEffect(() => {
     async function fetchHikes() {
       try {
@@ -102,7 +102,7 @@ function Main() {
         handleErrors(error);
       }
     };
-    if(onChangeHikes){
+    if (onChangeHikes) {
       setOnChangeHikes(false)
       fetchHikes();
     }
@@ -175,14 +175,14 @@ function Main() {
     }
   };
 
- //********HANDLE_ADD_HUT*******//
- const CreateNewHut = async (hut) => {
-  try {
-    await API.addHut(hut)
-  } catch (err) {
-    handleError(err);
-  }
-};
+  //********HANDLE_ADD_HUT*******//
+  const CreateNewHut = async (hut) => {
+    try {
+      await API.addHut(hut)
+    } catch (err) {
+      handleError(err);
+    }
+  };
 
   //********HANDLE_NEW_HIKE*******//
   const CreateNewHike = async (hike) => {
@@ -214,16 +214,16 @@ function Main() {
 
   }
 
-  function profilePageSwitch(){
-    if(profilePage)
+  function profilePageSwitch() {
+    if (profilePage)
       navigate('/');
     else
       navigate('/profile');
-  } 
+  }
 
-  function returnToHome(){
+  function returnToHome() {
     navigate('/');
-  } 
+  }
 
 
   /*****************************************************/
@@ -234,9 +234,9 @@ function Main() {
       <Routes>
         <Route path="/" element={
           loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHut={CreateNewHut} CreateNewHike={CreateNewHike}
-           currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} hikes={hikes} currentUser={currentUser} setCurrentHike={setCurrentHike} points = {points} 
-           setOnChangeHikes={setOnChangeHikes} setOnChangePoints={setOnChangePoints}/> :
-            <DefaultLayout role={loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike} hikes={hikes}/>  /*<FileUploadLayout></FileUploadLayout>*/
+            currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} hikes={hikes} currentUser={currentUser} setCurrentHike={setCurrentHike} points={points}
+            setOnChangeHikes={setOnChangeHikes} setOnChangePoints={setOnChangePoints} /> :
+            <DefaultLayout role={loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike} hikes={hikes} />  /*<FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>
         {/* <Route path="/NewHike" element={<HikeForm/>} /> THIS WAS A TRY TO DO THE .GPX FILE UPLOAD.*/}
@@ -246,6 +246,8 @@ function Main() {
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
         <Route path="/profile" element={loggedIn && currentUser.role == 'Hiker' ? <Hiker_Home currentUser={currentUser} /> : <Navigate replace to='/' />} />
         <Route path="/editHike" element={loggedIn && currentUser.role == 'LocalGuide' ? <EditHike updateHike={updateHike} returnToHome={returnToHome} currentHike={currentHike} /> : <Navigate replace to='/' />} />
+        <Route path="/startHike" element={loggedIn && currentUser.role == 'Hiker' ? <Hiker_Home currentUser={currentUser} setCurrentHike={setCurrentHike} />
+          : <Navigate replace to='/' />} />
       </Routes>
     </>
   );
