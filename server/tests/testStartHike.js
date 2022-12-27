@@ -44,6 +44,7 @@ describe("HikerHike test", () => {
   updatingEndTime(400, 'mario.rossi@gmail.com', null, '15.00', '18.00');
   updatingEndTime(400, 'mario.rossi@gmail.com', 'Form Pian Belota to la Vacca', null, '18.00');
 
+  obtainOnGoingHike(200, 'mario.rossi@gmail.com');
   obtainFinishedHikes(200);
   obtainDistinctFinishedHikes(200);
   obtainFinishedHikesByHiker(200, 'mario.rossi@gmail.com');
@@ -74,6 +75,15 @@ function updatingEndTime(expectedHTTPStatus, hiker_email, hike_title, start_time
       })
   });
 }
+
+function obtainOnGoingHike(expectedHTTPStatus, hiker_email) {
+  it('get list of finished hikes', async function () {
+    return agent.get('/api/getOnGoingHike/'+hiker_email)
+      .then(function (res) {
+        res.should.have.status(expectedHTTPStatus);
+      })
+  });
+};
 
 function obtainFinishedHikes(expectedHTTPStatus) {
   it('get list of finished hikes', async function () {
