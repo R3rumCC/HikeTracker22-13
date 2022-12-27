@@ -413,6 +413,26 @@ function updateEndTime(hiker_email, hike_title, start_time, end_time) {
   });
 }
 
+async function getOnGoingHike(hiker_email) {
+  return new Promise((resolve, reject) => {
+    fetch(URL + '/getOnGoingHike/'+hiker_email)
+      .then((response) => {
+        if (response.ok) {
+          response.json()
+            .then(json => resolve(json.map((row) => ({
+              hike: row.hike,
+              start_time: row.start_time
+            }))))
+            .catch(err => reject({ error: "Cannot parse server response" }))
+        } else {
+          response.json()
+            .then((obj) => { reject(obj); })
+            .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+        }
+      }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+  });
+};
+
 async function getFinishedHikes() {
   return new Promise((resolve, reject) => {
     fetch(URL + '/getFinishedHikes')
@@ -482,6 +502,6 @@ const API = {
   addNewHike, updateHike, getHikes, getMap,
   addPoint, addHut, getHuts, getPoints,
   checkUser, sendEmail, checkCode,
-  startHike, updateEndTime, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker
+  startHike, updateEndTime, getOnGoingHike, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker
 }
 export default API;
