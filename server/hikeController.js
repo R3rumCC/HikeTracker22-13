@@ -260,7 +260,9 @@ exports.updateEndTime = async function (req, res) {
 
 exports.getOnGoingHike = async function (req) {
   try {
-    const hike = await dao.getOnGoingHike(req.params.hiker);
+    const ongoing = await dao.getOnGoingHike(req.params.hiker);
+    const h = await dao.getHikeByTitle(ongoing.hike);
+    const hike = {hike: h, start_time: ongoing.start_time};
     return hike;
   } catch (error) {
     throw error;
@@ -287,7 +289,13 @@ exports.getDistinctFinishedHikes = async function () {
 
 exports.getFinishedHikesByHiker = async function (req) {
   try {
-    const hikes = await dao.getFinishedHikesByHiker(req.params.hiker);
+    const titles = await dao.getFinishedHikesByHiker(req.params.hiker);
+    let hikes = [];
+    for(t of titles) {
+      const h = await dao.getHikeByTitle(t.hike);
+      const hike = {hike: h, start_time: t.start_time, end_time: t.end_time};
+      hikes.push(hike);
+    }
     return hikes;
   } catch (error) {
     throw error;

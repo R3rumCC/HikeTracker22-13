@@ -89,7 +89,7 @@ function handleError(err) {
 	);
 }
 
-function HikesCompleted(props) {	//to modify, now with the API we retrive the list of titles of hikes
+function HikesCompleted(props) {
 
 	const [myHikes, setMyHikes] = useState([]);
 
@@ -112,7 +112,7 @@ function HikesCompleted(props) {	//to modify, now with the API we retrive the li
 	)
 }
 
-function OnGoingHike(props) { //to modify, now with the API we retrive the title of the hike and the start_time
+function OnGoingHike(props) {
 
 	const [myHike, setMyHike] = useState([]);
 

@@ -637,6 +637,7 @@ function getFinishedHikesByHiker(hiker_email) {
     });
   });
 }
+
 module.exports = {
   readUsers, addUser, deleteUser, updateUserRole, getUserByEmail,
   readHikes, addHike, deleteHike, updateHike, updateHikeTitle, getHikeByTitle,

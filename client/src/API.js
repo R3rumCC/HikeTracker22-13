@@ -420,7 +420,18 @@ async function getOnGoingHike(hiker_email) {
         if (response.ok) {
           response.json()
             .then(json => resolve(json.map((row) => ({
-              hike: row.hike,
+              title: row.hike.title,
+              length: row.hike.length,
+              expected_time: row.hike.expected_time,
+              ascent: row.hike.ascent,
+              difficulty: row.hike.difficulty,
+              start_point: row.hike.start_point,
+              end_point: row.hike.end_point,
+              description: row.hike.description,
+              gpx_track: row.hike.gpx_track,
+              hike_condition: row.hike.hike_condition,
+              hike_condition_description: row.hike.hike_condition_description,
+              local_guide: row.hike.local_guide,
               start_time: row.start_time
             }))))
             .catch(err => reject({ error: "Cannot parse server response" }))
@@ -481,9 +492,20 @@ async function getFinishedHikesByHiker(hiker_email) {
         if (response.ok) {
           response.json()
             .then(json => resolve(json.map((row) => ({
-              hike: row.hike,
+              title: row.hike.title,
+              length: row.hike.length,
+              expected_time: row.hike.expected_time,
+              ascent: row.hike.ascent,
+              difficulty: row.hike.difficulty,
+              start_point: row.hike.start_point,
+              end_point: row.hike.end_point,
+              description: row.hike.description,
+              gpx_track: row.hike.gpx_track,
+              hike_condition: row.hike.hike_condition,
+              hike_condition_description: row.hike.hike_condition_description,
+              local_guide: row.hike.local_guide,
               start_time: row.start_time,
-              end_time: row.end_time,
+              end_time: row.end_time
             }))))
             .catch(err => reject({ error: "Cannot parse server response" }))
         } else {
