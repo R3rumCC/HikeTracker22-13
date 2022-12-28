@@ -237,13 +237,4 @@ router.get('/getFinishedHikesByHiker/:hiker', async (req, res) => {
   }
 });
 
-router.get('/getHikeByTitle/:hike', async (req, res) => {
-  try {
-    const hike = await c.getHikeByTitle(req);
-    res.status(200).json(hike).end();
-  } catch (error) {
-    res.status(500).json(error).end();
-  }
-});
-
 module.exports = router

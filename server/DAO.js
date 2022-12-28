@@ -585,12 +585,12 @@ function updateHikeEndTime(hiker_email, hike_title, start_time, end_time) {
 function getOnGoingHike(hiker_email) {
   return new Promise((resolve, reject) => {
     const sql = 'SELECT hike, start_time FROM HikerHike WHERE hiker = ? AND start_time IS NOT NULL AND end_time IS NULL';
-    db.all(sql, hiker_email, (err, row) => {
+    db.all(sql, hiker_email, (err, rows) => {
       if (err) {
         reject(err);
       }
       else {
-        resolve(row);
+        resolve(rows);
       }
     });
   });

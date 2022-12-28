@@ -13,8 +13,8 @@ function Hiker_Home(props) {
 	const [searchHutForm, setSearchHutForm] = useState(false);
 	const [performanceForm, setPerformanceForm] = useState(false);
 	const [profile, setProfile] = useState(true);
-	const [hikesCompleted, setHikesCompletedPage] = useState(true);
-	const [hikeOnGoing, setHikeOnGoingPage] = useState(true);
+	const [hikesCompleted, setHikesCompletedPage] = useState(false);
+	const [hikeOnGoing, setHikeOnGoingPage] = useState(false);
 
 	const selectHut = () => {
 		setSearchHutForm(true); setPerformanceForm(false); setProfile(false); setHikesCompletedPage(false); setHikeOnGoingPage(false);

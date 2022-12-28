@@ -261,9 +261,13 @@ exports.updateEndTime = async function (req, res) {
 exports.getOnGoingHike = async function (req) {
   try {
     const ongoing = await dao.getOnGoingHike(req.params.hiker);
-    const h = await dao.getHikeByTitle(ongoing.hike);
-    const hike = {hike: h, start_time: ongoing.start_time};
-    return hike;
+    let result = [];
+    if (ongoing.length!==0) {
+      const h = await dao.getHikeByTitle(ongoing[0].hike);
+      const hike = {hike: h, start_time: ongoing[0].start_time};
+      result.push(hike);
+    }
+    return result;
   } catch (error) {
     throw error;
   }

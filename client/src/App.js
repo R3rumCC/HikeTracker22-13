@@ -225,6 +225,14 @@ function Main() {
     navigate('/');
   }
 
+  const startHike = async (hiker_email, hike_title, start_time) => {
+    try {
+      await API.startHike(hiker_email, hike_title, start_time)
+    } catch (err) {
+      handleError(err);
+    }
+  };
+
 
   /*****************************************************/
 
@@ -236,7 +244,8 @@ function Main() {
           loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHut={CreateNewHut} CreateNewHike={CreateNewHike}
             currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} hikes={hikes} currentUser={currentUser} setCurrentHike={setCurrentHike} points={points}
             setOnChangeHikes={setOnChangeHikes} setOnChangePoints={setOnChangePoints} /> :
-            <DefaultLayout role={loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike} hikes={hikes} />  /*<FileUploadLayout></FileUploadLayout>*/
+            <DefaultLayout role={loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike}
+            hikes={hikes} startHike={startHike} currentUser={currentUser ? currentUser: ''} />  /*<FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>
         {/* <Route path="/NewHike" element={<HikeForm/>} /> THIS WAS A TRY TO DO THE .GPX FILE UPLOAD.*/}

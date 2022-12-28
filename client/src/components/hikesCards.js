@@ -1,8 +1,16 @@
 import { Card, Button, Row, ListGroup, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import React from 'react';
+import dayjs from 'dayjs';
 
 function HikeCard(props) {
+
+  function startHike() {
+    let start_time = dayjs();
+    props.startHike(props.currentUser.username, props.hike.title, start_time.format('YYYY/MM/DD HH:mm:ss'));
+    props.setCurrentHike([props.hike]);
+  }
+
   return (
     <Card className="text-center me-2 my-1  " border="primary" style={{ width: '18rem' }}>
       <Card.Header as="h5"><strong>{props.hike.title}</strong></Card.Header>
@@ -31,7 +39,8 @@ function HikeCard(props) {
         <Card.Text><strong>Description:</strong><br></br> {props.hike.description}</Card.Text>
         {props.role == 'Hiker' ? <Link to='/Map'><Button style={{ margin: 5 }} onClick={() => { props.setCurrentHike([props.hike]) }}>See on map</Button></Link> : null}
         {props.role == 'LocalGuide' ? <Link to='/editHike'><Button onClick={() => { props.setCurrentHike(props.hike) }}>Edit hike</Button></Link> : null}
-        {props.role == 'Hiker' ? <Link to='/startHike'><Button style={{ margin: 5 }} onClick={() => { props.setCurrentHike([props.hike]) }} class="btn btn-success">Start hike</Button></Link> : null}
+        {/*props.role == 'Hiker' ? <Link to='/startHike'><Button style={{ margin: 5 }} onClick={() => { props.setCurrentHike([props.hike]) }} class="btn btn-success">Start hike</Button></Link> : null*/}
+        {props.role == 'Hiker' ? <Link to='/startHike'><Button class="btn btn-success" style={{ margin: 5 }} onClick={() => { startHike() }}>Start hike</Button></Link> : null}
       </Card.Body>
     </Card>
   );
@@ -41,7 +50,7 @@ function HikesContainer(props) {
   const hikes = props.hikes;
   return (
     <div className="d-flex justify-content-start flex-wrap">
-      {hikes.length != 0 ? hikes.map((hike) => { return (<HikeCard role={props.role} key={hike.title} hike={hike} setCurrentHike={props.setCurrentHike} />) }) : <h3>No result found</h3>}
+      {hikes.length != 0 ? hikes.map((hike) => { return (<HikeCard role={props.role} key={hike.title} hike={hike} setCurrentHike={props.setCurrentHike} startHike={props.startHike} currentUser={props.currentUser} />) }) : <h3>No result found</h3>}
     </div>
   );
 }
