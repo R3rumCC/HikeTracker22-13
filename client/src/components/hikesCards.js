@@ -14,8 +14,9 @@ function HikeCard(props) {
   function endHike() {
     let end_time = dayjs();
     props.endHike(props.currentUser.username, props.hike.title, props.hike.start_time, end_time.format('YYYY/MM/DD HH:mm:ss'));
-    //props.setCurrentHike([props.hike]);
   }
+
+  console.log(props.flagOnGoingHike)
 
   return (
     <Card className="text-center me-2 my-1  " border="primary" style={{ width: '18rem' }}>
@@ -45,7 +46,7 @@ function HikeCard(props) {
         <Card.Text><strong>Description:</strong><br></br> {props.hike.description}</Card.Text>
         {props.role == 'Hiker' ? <Link to='/Map'><Button style={{ margin: 5 }} onClick={() => { props.setCurrentHike([props.hike]) }}>See on map</Button></Link> : null}
         {props.role == 'LocalGuide' ? <Link to='/editHike'><Button onClick={() => { props.setCurrentHike(props.hike) }}>Edit hike</Button></Link> : null}
-        {props.role == 'Hiker' && !props.flag && !props.flagOnGoingHike ? <Link to='/startHike'><Button class="btn btn-success" style={{ margin: 5 }} onClick={() => { startHike() }}>Start hike</Button></Link> : null}
+        {props.role == 'Hiker' && !props.flagOnGoingHike ? <Link to='/profile'><Button class="btn btn-success" style={{ margin: 5 }} onClick={() => { startHike() }}>Start hike</Button></Link> : null}
         {/*flag is a costant for choose to see or not the Start Button in the hikeCard. If it is true -> we are in onGoingHike page -> no show Start button but show eventually the End button*/}
         {/*flagOnGoingHike is a costant for choose to see or not the Start Button in the hikeCard. If it is true -> there is an hike in progress for the currentUser -> no show Start button*/}
         {props.role == 'Hiker' && props.flag ? <Link to='/'><Button class="btn btn-danger" style={{ margin: 5 }} onClick={() => { endHike() }}>End hike</Button></Link> : null}

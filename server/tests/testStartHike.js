@@ -38,6 +38,7 @@ describe("HikerHike test", () => {
   startingHike(400, null, 'Form Pian Belota to la Vacca', '15.00');
   startingHike(400, 'mario.rossi@gmail.com', null, '15.00');
   startingHike(400, 'mario.rossi@gmail.com', 'Form Pian Belota to la Vacca', null);
+  startingTwoTimeAnHike(422, 'mario.rossi@gmail.com', 'Form Pian Belota to la Vacca', '15.00')
 
   updatingEndTime(200, 'mario.rossi@gmail.com', 'Form Pian Belota to la Vacca', '15.00', '18.00');
   updatingEndTime(400, null, 'Form Pian Belota to la Vacca', '15.00', '18.00');
@@ -55,6 +56,22 @@ function startingHike(expectedHTTPStatus, hiker_email, hike_title, start_time) {
   it('start a hike', async function () {
     await testDao.run('DELETE FROM HikerHike');
     let reqBody = JSON.stringify({ hiker_email, hike_title, start_time });
+    return agent.post('/api/startHike')
+      .set('Content-Type', 'application/json')
+      .send(reqBody)
+      .then(function (res) {
+        res.should.have.status(expectedHTTPStatus);
+      })
+  });
+}
+
+function startingTwoTimeAnHike(expectedHTTPStatus, hiker_email, hike_title, start_time) {
+  it('start two time a hike', async function () {
+    await testDao.run('DELETE FROM HikerHike');
+    let reqBody = JSON.stringify({ hiker_email, hike_title, start_time });
+    await agent.post('/api/startHike')
+      .set('Content-Type', 'application/json')
+      .send(reqBody);
     return agent.post('/api/startHike')
       .set('Content-Type', 'application/json')
       .send(reqBody)

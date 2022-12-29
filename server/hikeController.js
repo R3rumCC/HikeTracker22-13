@@ -237,6 +237,10 @@ exports.addHut = async function (req, res) {
 /*************HikerHike API************/
 
 exports.startHike = async function (req, res) {
+  const ongoing = await dao.getOnGoingHike(req.body.hiker_email);
+    if (ongoing.length!==0) {
+      return res.status(422).send("There is already an ongoing hike.").end();
+    }
   dao.startHike(req.body.hiker_email, req.body.hike_title, req.body.start_time).then(
     result => {
       return res.status(200).json();

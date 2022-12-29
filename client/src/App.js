@@ -135,7 +135,7 @@ function Main() {
       setLoggedIn(true);
       setCurrentUser(user);
       const hike = await API.getOnGoingHike(user.username);
-      if (hike) {
+      if (hike.length!==0) {
         setFlagOnGoingHike(true);
       }
     } catch (err) {
@@ -152,6 +152,7 @@ function Main() {
 
       //BEST PRACTISE after Logout-->Clean up everything!
       setCurrentUser({});
+      setFlagOnGoingHike(false);
     } catch (err) {
       handleError(err);
     }
@@ -267,9 +268,9 @@ function Main() {
         <Route path="/points" element={<PointsContainer points={points}></PointsContainer>} />
         <Route path="/register" element={!loggedIn ? <RegisterLayout CreateNewAccount={CreateNewAccount} checkUser={checkUser} checkCode={checkCode} sendEmail={sendEmail} /> : <Navigate replace to='/' />} />
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
-        <Route path="/profile" element={loggedIn && currentUser.role == 'Hiker' ? <Hiker_Home currentUser={currentUser} endHike={endHike} /> : <Navigate replace to='/' />} />
+        <Route path="/profile" element={loggedIn && currentUser.role == 'Hiker' ? <Hiker_Home currentUser={currentUser} setCurrentHike={setCurrentHike} endHike={endHike} flagOnGoingHike={flagOnGoingHike} /> : <Navigate replace to='/' />} />
         <Route path="/editHike" element={loggedIn && currentUser.role == 'LocalGuide' ? <EditHike updateHike={updateHike} returnToHome={returnToHome} currentHike={currentHike} /> : <Navigate replace to='/' />} />
-        <Route path="/startHike" element={loggedIn && currentUser.role == 'Hiker' ? <Hiker_Home currentUser={currentUser} setCurrentHike={setCurrentHike} endHike={endHike} /> : <Navigate replace to='/' />} />
+        {/*<Route path="/startHike" element={loggedIn && currentUser.role == 'Hiker' ? <Hiker_Home currentUser={currentUser} setCurrentHike={setCurrentHike} endHike={endHike} flagOnGoingHike={flagOnGoingHike} /> : <Navigate replace to='/' />} />*/}
       </Routes>
     </>
   );
