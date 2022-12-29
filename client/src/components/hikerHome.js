@@ -52,7 +52,7 @@ function Hiker_Home(props) {
 				<div>{searchHutForm ? <SearchHut /> : <></>}</div>
 				<div>{performanceForm ? <PerformancePage /> : <></>}</div>
 				<div>{hikesCompleted ? <HikesCompleted user={props.currentUser} setCurrentHike={props.setCurrentHike} /> : <></>}</div>
-				<div>{hikeOnGoing ? <OnGoingHike user={props.currentUser} setCurrentHike={props.setCurrentHike}/> : <></>}</div>
+				<div>{hikeOnGoing ? <OnGoingHike user={props.currentUser} setCurrentHike={props.setCurrentHike} endHike={props.endHike}/> : <></>}</div>
 			</Col>
 		</Row>
 	)
@@ -130,7 +130,8 @@ function OnGoingHike(props) {
 
 	return (
 		<>
-			<HikesContainer role={props.user.role} hikes={myHike} setCurrentHike={props.setCurrentHike} />
+			<HikesContainer role={props.user.role} hikes={myHike} setCurrentHike={props.setCurrentHike} flag={true} endHike={props.endHike} currentUser={props.user} />
+      {/*flag is a costant for choose to see or not the Start Button in the hikeCard*/}
 		</>
 	)
 }
