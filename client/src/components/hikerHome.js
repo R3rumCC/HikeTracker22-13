@@ -66,17 +66,17 @@ function Hiker_Home_Sidebar(props) {
 				<Nav.Link onClick={() => props.setProfile()}>Profile</Nav.Link>
 			</Nav.Item>
 			<Nav.Item>
-				<Nav.Link onClick={() => props.setHutForm()}>Search for a hut</Nav.Link>
-			</Nav.Item>
-			<Nav.Item>
-				<Nav.Link onClick={() => props.setPerForm()}>Insert your performances</Nav.Link>
+				<Nav.Link onClick={() => props.setHikeOnGoingPage()}>See your ongoing hike</Nav.Link>
 			</Nav.Item>
 			<Nav.Item>
 				<Nav.Link onClick={() => props.setHikesCompletedPage()}>See your completed hikes</Nav.Link>
 			</Nav.Item>
 			<Nav.Item>
-				<Nav.Link onClick={() => props.setHikeOnGoingPage()}>See your ongoing hike</Nav.Link>
+				<Nav.Link onClick={() => props.setHutForm()}>Search for a hut</Nav.Link>
 			</Nav.Item>
+			<Nav.Item>
+				<Nav.Link onClick={() => props.setPerForm()}>Insert your performances</Nav.Link>
+			</Nav.Item>			
 		</Nav>
 	)
 }
@@ -131,7 +131,7 @@ function OnGoingHike(props) {
 	return (
 		<>
 			<HikesContainer role={props.user.role} hikes={myHike} setCurrentHike={props.setCurrentHike} flag={true} endHike={props.endHike} currentUser={props.user} flagOnGoingHike={props.flagOnGoingHike} />
-      {/*flag is a costant for choose to see or not the Start Button in the hikeCard*/}
+      {/*flag is a costant for displaying (or not) the Start Button in the hikeCard*/}
 		</>
 	)
 }

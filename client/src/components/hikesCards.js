@@ -19,7 +19,7 @@ function HikeCard(props) {
   console.log(props.flagOnGoingHike)
 
   return (
-    <Card className="text-center me-2 my-1  " border="primary" style={{ width: '18rem' }}>
+    <Card className="text-center me-2 my-1" border="primary" style={{ width: '18rem' }}>
       <Card.Header as="h5"><strong>{props.hike.title}</strong></Card.Header>
       <Card.Body>
         <Row>
@@ -57,6 +57,10 @@ function HikeCard(props) {
 
 function HikesContainer(props) {
   const hikes = props.hikes;
+  //To solve the issue of showing too many hikes at once the followwing approach is to be taken:
+  //Divide the hikes in groups of fixed size (6?)
+  //Create N divs and show them using a useState akin to the profiles page system
+  //Create buttons to navigate between them
   return (
     <div className="d-flex justify-content-start flex-wrap">
       {hikes.length != 0 ? hikes.map((hike) => { return (<HikeCard role={props.role} key={hike.title} hike={hike} setCurrentHike={props.setCurrentHike} startHike={props.startHike} endHike={props.endHike} currentUser={props.currentUser} flag={props.flag} flagOnGoingHike={props.flagOnGoingHike} />) }) : <h3>No result found</h3>}
