@@ -1,6 +1,6 @@
 import { Card, Button, Row, ListGroup, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 
 function HikeCard(props) {
@@ -56,11 +56,42 @@ function HikeCard(props) {
 }
 
 function HikesContainer(props) {
+  /*const [hikes, setHikes] = useState([]);
+  const [displayedHikes, setDisplayedHikes] = useState([]);
+  const [groupNum, setGroupNum] = useState(0);
+
+  useEffect(() => {
+    setHikes(props.hikes)
+  }, [])
+
+  useEffect(() => {
+    setGroupNum(hikes.length/6);
+    if(hikes.length % 6 !=0)
+      setGroupNum(groupNum + 1);
+    changeDsiplayedHikes(1)
+  }, [hikes]);
+
+  function changeDsiplayedHikes(group){
+    if(group < groupNum){
+      let sliceStart = (group-1)*6;
+      let sliceEnd = hikes.length > sliceStart+6 ? sliceStart+6 : hikes.length;
+      setDisplayedHikes(hikes.slice(sliceStart, sliceEnd));
+    }
+  }  
+
+  return(
+    <>
+      <Row>
+        {displayedHikes.length != 0 ? displayedHikes.map((hike) => { return (<HikeCard role={props.role} key={hike.title} hike={hike} setCurrentHike={props.setCurrentHike} startHike={props.startHike} endHike={props.endHike} currentUser={props.currentUser} flag={props.flag} flagOnGoingHike={props.flagOnGoingHike} />) }) : <h3>No result found</h3>}
+      </Row> 
+      <Row>
+        Buttons go here
+      </Row>
+    </> 
+  );*/
+
   const hikes = props.hikes;
-  //To solve the issue of showing too many hikes at once the followwing approach is to be taken:
-  //Divide the hikes in groups of fixed size (6?)
-  //Create N divs and show them using a useState akin to the profiles page system
-  //Create buttons to navigate between them
+
   return (
     <div className="d-flex justify-content-start flex-wrap">
       {hikes.length != 0 ? hikes.map((hike) => { return (<HikeCard role={props.role} key={hike.title} hike={hike} setCurrentHike={props.setCurrentHike} startHike={props.startHike} endHike={props.endHike} currentUser={props.currentUser} flag={props.flag} flagOnGoingHike={props.flagOnGoingHike} />) }) : <h3>No result found</h3>}
