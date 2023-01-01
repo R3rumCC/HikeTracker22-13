@@ -1,7 +1,9 @@
-import { Card, Button, Row, ListGroup, Col } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import React from 'react';
+import { Card, Button, Row, ListGroup, Col, Container } from "react-bootstrap";
+import { Link } from "react-router-dom"; 
+import {React, useRef, useMemo, useEffect, useState} from 'react';
+import ClipLoader from 'react-spinners/ClipLoader';
 import dayjs from 'dayjs';
+import { Filter } from "react-bootstrap-icons";
 
 function HikeCard(props) {
 
@@ -46,25 +48,59 @@ function HikeCard(props) {
         <Card.Text><strong>Description:</strong><br></br> {props.hike.description}</Card.Text>
         {props.role == 'Hiker' ? <Link to='/Map'><Button style={{ margin: 5 }} onClick={() => { props.setCurrentHike([props.hike]) }}>See on map</Button></Link> : null}
         {props.role == 'LocalGuide' ? <Link to='/editHike'><Button onClick={() => { props.setCurrentHike(props.hike) }}>Edit hike</Button></Link> : null}
-        {props.role == 'Hiker' && !props.flagOnGoingHike ? <Link to='/profile'><Button class="btn btn-success" style={{ margin: 5 }} onClick={() => { startHike() }}>Start hike</Button></Link> : null}
+        {props.role == 'Hiker' && !props.flagOnGoingHike ? <Link to='/profile'><Button className="btn btn-success" style={{ margin: 5 }} onClick={() => { startHike() }}>Start hike</Button></Link> : null}
         {/*flag is a costant for choose to see or not the Start Button in the hikeCard. If it is true -> we are in onGoingHike page -> no show Start button but show eventually the End button*/}
         {/*flagOnGoingHike is a costant for choose to see or not the Start Button in the hikeCard. If it is true -> there is an hike in progress for the currentUser -> no show Start button*/}
-        {props.role == 'Hiker' && props.flag ? <Link to='/'><Button class="btn btn-danger" style={{ margin: 5 }} onClick={() => { endHike() }}>End hike</Button></Link> : null}
+        {props.role == 'Hiker' && props.flag ? <Link to='/'><Button className="btn btn-danger" style={{ margin: 5 }} onClick={() => { endHike() }}>End hike</Button></Link> : null}
       </Card.Body>
     </Card>
   );
 }
 
 function HikesContainer(props) {
-  const hikes = props.hikes;
+  const actualIdx = useRef(0)
+  const PAGE_SIZE = 8;
+  const [hikes,setHikes] = useState([]);
+  const index = useRef(PAGE_SIZE)
+  const isLoading = useRef(true)
+  useEffect(()=>{
+    setHikes(props.hikes.length !=0 ? props.hikes.slice(0, PAGE_SIZE > props.hikes.length ? props.hikes.length : PAGE_SIZE) : [])
+    isLoading.current = false
+  },[props.hikes])
+  const nextPage = () =>{
+ 
+    actualIdx.current = index.current == props.hikes.length ? actualIdx.current : index.current
+    index.current = index.current + PAGE_SIZE > props.hikes.length ? props.hikes.length : index.current + PAGE_SIZE
+    setHikes(props.hikes.slice(actualIdx.current,index.current))
+
+  }
+  const prevPage = () =>{
+    index.current = actualIdx.current == 0 ? index.current : actualIdx.current
+    actualIdx.current = actualIdx.current - PAGE_SIZE > 0 ? actualIdx.current - PAGE_SIZE : 0
+    setHikes(props.hikes.slice(actualIdx.current,index.current))
+  }
   //To solve the issue of showing too many hikes at once the followwing approach is to be taken:
   //Divide the hikes in groups of fixed size (6?)
   //Create N divs and show them using a useState akin to the profiles page system
   //Create buttons to navigate between them
   return (
-    <div className="d-flex justify-content-start flex-wrap">
-      {hikes.length != 0 ? hikes.map((hike) => { return (<HikeCard role={props.role} key={hike.title} hike={hike} setCurrentHike={props.setCurrentHike} startHike={props.startHike} endHike={props.endHike} currentUser={props.currentUser} flag={props.flag} flagOnGoingHike={props.flagOnGoingHike} />) }) : <h3>No result found</h3>}
-    </div>
+    <>
+      { hikes.length == 0 && !props.filter ? <ClipLoader color={'#fff'} size={150} /> : 
+      <> 
+        <div className="d-flex justify-content-start flex-wrap">
+          {hikes.length != 0 ? hikes.map((hike) => { return (<HikeCard role={props.role} key={hike.title} hike={hike} setCurrentHike={props.setCurrentHike} startHike={props.startHike} endHike={props.endHike} currentUser={props.currentUser} flag={props.flag} flagOnGoingHike={props.flagOnGoingHike} />) }) : <h3>No result found</h3>}
+        </div>
+        <Container className="d-flex justify-content-center mt-2">
+          <Row>
+            <Col>
+              {actualIdx.current !=0 && hikes.length !=0? <Button className="me-2" onClick={() =>prevPage()}>Previous Page</Button> : null}
+              {index.current != props.hikes.length && hikes.length !=0 ? <Button onClick={() =>nextPage()}>Next Page</Button>: null}
+            </Col>
+          </Row>
+        </Container>
+      </>}
+    </>
+
   );
 }
 
