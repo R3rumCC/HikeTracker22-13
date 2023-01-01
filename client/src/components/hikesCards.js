@@ -58,6 +58,42 @@ function HikeCard(props) {
 }
 
 function HikesContainer(props) {
+  /*const [hikes, setHikes] = useState([]);
+  const [displayedHikes, setDisplayedHikes] = useState([]);
+  const [groupNum, setGroupNum] = useState(0);
+
+  useEffect(() => {
+    setHikes(props.hikes)
+  }, [])
+
+  useEffect(() => {
+    setGroupNum(hikes.length/6);
+    if(hikes.length % 6 !=0)
+      setGroupNum(groupNum + 1);
+    changeDsiplayedHikes(1)
+  }, [hikes]);
+
+  function changeDsiplayedHikes(group){
+    if(group < groupNum){
+      let sliceStart = (group-1)*6;
+      let sliceEnd = hikes.length > sliceStart+6 ? sliceStart+6 : hikes.length;
+      setDisplayedHikes(hikes.slice(sliceStart, sliceEnd));
+    }
+  }  
+
+  return(
+    <>
+      <Row>
+        {displayedHikes.length != 0 ? displayedHikes.map((hike) => { return (<HikeCard role={props.role} key={hike.title} hike={hike} setCurrentHike={props.setCurrentHike} startHike={props.startHike} endHike={props.endHike} currentUser={props.currentUser} flag={props.flag} flagOnGoingHike={props.flagOnGoingHike} />) }) : <h3>No result found</h3>}
+      </Row> 
+      <Row>
+        Buttons go here
+      </Row>
+    </> 
+  );*/
+
+  //const hikes = props.hikes;
+
   const actualIdx = useRef(0)
   const PAGE_SIZE = 8;
   const [hikes,setHikes] = useState([]);
