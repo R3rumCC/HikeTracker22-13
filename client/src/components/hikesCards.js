@@ -5,7 +5,11 @@ import ClipLoader from 'react-spinners/ClipLoader';
 import Badge from 'react-bootstrap/Badge';
 import dayjs from 'dayjs';
 
+const default_image= 'https://www.travelmanagers.com.au/wp-content/uploads/2012/08/AdobeStock_254529936_Railroad-to-Denali-National-Park-Alaska_750x500.jpg'
+
 function HikeCard2(props){
+
+  const [colorDiff, setColorDiff]= useState('success');
 
   function startHike() {
     let start_time = dayjs();
@@ -20,36 +24,53 @@ function HikeCard2(props){
 
   console.log(props.flagOnGoingHike)
 
+  useEffect(()=>{
+    setColorDifficulty(props.hike.difficulty)
+    console.log(colorDiff)
+  },[props.hike.difficulty])
+
+  const setColorDifficulty= (difficulty)=>{
+    if(difficulty=== 'Tourist'){
+        setColorDiff('success')
+    }else if(difficulty=== 'Hiker'){
+        setColorDiff('warning')
+    }else if(difficulty=== 'Professional hiker'){
+      setColorDiff('danger')
+    }
+  }
+
   return (
     <Card border='success' style={{ width: '18rem' }}>
-      <Card.Img variant="top" src="holder.js/100px180?text=Image cap" />
+      <Card.Img variant="top" src= {default_image}/>
       <Card.Body>
-        <Card.Title style={{fontWeight:'bold', color: 'green'}}> {props.hike.title}</Card.Title>
-        <Row>
-          <Col><Badge bg='success'>Difficulty</Badge></Col>
-          <Col><Badge bg='success'>Condition</Badge></Col>
-        </Row>
+
+        <Card.Title style={{fontWeight:'bold', color: 'green'}}> {props.hike.title}</Card.Title>      
+        <ListGroup className="list-group-flush">      
+          <ListGroup.Item>
+            <Row>
+              <Col><Badge bg={colorDiff}> <i className="bi bi-graph-up-arrow"></i> {props.hike.difficulty}</Badge></Col>
+              <Col><Badge bg='info'>{props.hike.hike_condition}</Badge></Col>
+            </Row>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <Row style={{fontWeight:'bold', fontSize:13}}>
+              <Col><i className="bi bi-map"></i> {props.hike.length} km</Col>
+              <Col><i className="bi bi-stopwatch"></i> {props.hike.expected_time} h</Col>
+            </Row>
+          </ListGroup.Item>
+          <ListGroup.Item  style={{fontWeight:'bold', fontSize:13}}>
+            <i className="bi bi-compass"></i> Start Point :
+            <div  style={{fontWeight:'normal'}}>{/*props.hike.start_point_nameLocation ? <><br></br><em>{props.hike.start_point_nameLocation}</em></> : null} <br></br>{*/props.hike.start_point_address}</div>
+          </ListGroup.Item>
+          <ListGroup.Item  style={{fontWeight:'bold', fontSize:13}}>
+            <i className="bi bi-compass"></i> End Point :
+            <div  style={{fontWeight:'normal'}}>{/*props.hike.end_point_nameLocation ? <><br></br><em>{props.hike.end_point_nameLocation}</em></> : null}<br></br>{*/props.hike.end_point_address}</div>
+          </ListGroup.Item>
+        </ListGroup>
       </Card.Body>
-      <ListGroup className="list-group-flush">
-        <ListGroup.Item>
-          <Row style={{fontWeight:'bold', fontSize:13}}>
-            <Col><i className="bi bi-map"></i> {props.hike.length} km</Col>
-            <Col><i className="bi bi-stopwatch"></i> {props.hike.expected_time} h</Col>
-          </Row>
-        </ListGroup.Item>
-        <ListGroup.Item  style={{fontWeight:'bold', fontSize:13}}>
-          <i className="bi bi-compass"></i> Start :
-          <div  style={{fontWeight:'normal'}}>{props.hike.start_point_nameLocation ? <><br></br><em>{props.hike.start_point_nameLocation}</em></> : null}<br></br>{props.hike.start_point_address}</div>
-        </ListGroup.Item>
-        <ListGroup.Item  style={{fontWeight:'bold', fontSize:13}}>
-          <i className="bi bi-compass"></i> End :
-          <div  style={{fontWeight:'normal'}}>{props.hike.end_point_nameLocation ? <><br></br><em>{props.hike.end_point_nameLocation}</em></> : null}<br></br>{props.hike.end_point_address}</div>
-        </ListGroup.Item>
-      </ListGroup>
-      <Card.Body>
-        <Card.Link href="#">Card Link</Card.Link>
-      </Card.Body>
-      <Card.Footer>Card Footer</Card.Footer>
+      <Card.Footer>
+        <Button variant='outline-success'>Details</Button>
+      </Card.Footer>
     </Card>
   );
 
