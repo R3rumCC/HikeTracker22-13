@@ -63,7 +63,7 @@ function addNewPoint(expectedHTTPStatus, address, nameLocation, gps_coordinates,
     await testDao.run('DELETE FROM Points');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
     const point = new Point(address, nameLocation, gps_coordinates, type);
-    reqBody = JSON.stringify({ point });
+    let reqBody = JSON.stringify({ point });
     return agent.post('/api/Point')
       .set('Content-Type', 'application/json')
       .send(reqBody)
@@ -78,7 +78,7 @@ function addTwoTimeNewPoint(expectedHTTPStatus, address, nameLocation, gps_coord
     await testDao.run('DELETE FROM Points');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
     const point = new Point(address, nameLocation, gps_coordinates, type);
-    reqBody = JSON.stringify({ point });
+    let reqBody = JSON.stringify({ point });
     await agent.post('/api/Point')
       .set('Content-Type', 'application/json')
       .send(reqBody);

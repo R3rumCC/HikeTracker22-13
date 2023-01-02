@@ -48,7 +48,7 @@ describe('test user signup', () => {
 function registerNewUser(expectedHTTPStatus, name, lastname, role, password, email, phoneNumber) {
   it('registering a new user', async function () {
     const user = new User(name, lastname, email, password, role, phoneNumber);
-    reqBody = JSON.stringify({ user });
+    let reqBody = JSON.stringify({ user });
     return agent.post('/api/User')
       .set('Content-Type', 'application/json')
       .send(reqBody)
@@ -61,7 +61,7 @@ function registerNewUser(expectedHTTPStatus, name, lastname, role, password, ema
 function registerTwoTimeNewUser(expectedHTTPStatus, name, lastname, role, password, email, phoneNumber) {
   it('registering two time a new user', async function () {
     const user = new User(name, lastname, email, password, role, phoneNumber);
-    reqBody = JSON.stringify({ user });
+    let reqBody = JSON.stringify({ user });
     await agent.post('/api/User')
       .set('Content-Type', 'application/json')
       .send(reqBody);

@@ -1,6 +1,6 @@
-import { Card, Button, Container, Row, ListGroup, Col } from "react-bootstrap";
+import { Card, Button, Row, ListGroup, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import React, { Component }  from 'react';
+import React from 'react';
 
 function HikeCard(props) {
     return(

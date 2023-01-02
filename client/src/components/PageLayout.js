@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { Row, Col, Button, Container } from 'react-bootstrap';
-import { Link, useParams, useLocation, Outlet } from 'react-router-dom';
 import { SearchHut } from './SearchHut';
 import { HikePage } from './hikePage';
 import { UserForm } from './newUserForm';
@@ -8,7 +7,6 @@ import { LoginForm } from './Auth';
 import { HikesContainer } from './hikesCards';
 import  FilterForm from './Filter';
 import MessageContext from '../messageCtx';
-import API from '../API';
 import FileUploader from './UploadGpxForm';
 import ClipLoader from 'react-spinners/ClipLoader';
 
@@ -23,25 +21,10 @@ function DefaultLayout(props) {
 
   
   const { handleErrors } = useContext(MessageContext);
-  //const [hikes, setHikes] = useState([]);                 //move to App.js to use it also in localGuideHome
   const [hidden, setHidden] = useState(true);
   const [filteredHikes, setFilteredHikes] = useState([])
   const [filtered, setFiltered] = useState(false)
 
-
-  
-
-  /*useEffect(() => {
-    async function fetchHikes() {
-      try {
-        const fetchedHikes = await API.getHikes();
-        setHikes(fetchedHikes);
-      } catch (error) {
-        handleErrors(error);
-      }
-    }
-    fetchHikes();
-  }, []);*/
   
   return (
 
@@ -125,21 +108,4 @@ function SearchLayout(){
   )
 }
 
-/**
- * This layout shuld be rendered while we are waiting a response from the server.
- */
-/*function LoadingLayout(props) {
-  
-  return (
-    <Row className="vh-100">
-      <Col md={4} bg="light" className="below-nav" id="left-sidebar">
-      </Col>
-      <Col md={8} className="below-nav">
-        <h1>Office Queue Managment ...</h1>
-      </Col>
-    </Row>
-  )
-}
-*/
-//export { DefaultLayout, AddLayout, EditLayout, NotFoundLayout, LoginLayout, MainLayout, LoadingLayout };
 export { LoginLayout, DefaultLayout, HikerLayout, FileUploadLayout,RegisterLayout, SearchLayout };

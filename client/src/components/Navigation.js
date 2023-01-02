@@ -1,9 +1,7 @@
 import { React, useState } from 'react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-
-import { Navbar, Nav, Form, Container, Row, Col } from 'react-bootstrap';
+import { Navbar, Nav, Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { SearchHutButton } from './SearchHut';
 import { LogoutButton, LoginButton } from './Auth';
 import { PersonCircle } from "react-bootstrap-icons";
 

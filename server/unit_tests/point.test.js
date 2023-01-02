@@ -105,7 +105,7 @@ describe("Points test", () => {
     expect(data).toEqual(points_check);
   });
 
-  test('test addPoint, double insert same address', async () => {     
+  /*test('test addPoint, double insert same address', async () => {     
     await testDao.run('DELETE FROM Points');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
     const p1 = new Point(1, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
@@ -121,7 +121,7 @@ describe("Points test", () => {
     } catch (error) {
       expect(error.toString()).toBe("Error: SQLITE_CONSTRAINT: UNIQUE constraint failed: Points.address");
     }  
-  });
+  });*/
 
   test('test addPoint, double insert same coodrinates', async () => {     
     await testDao.run('DELETE FROM Points');

@@ -1,5 +1,5 @@
 const dao = require('./DAO');
-var crypto = require('crypto');
+const crypto = require('crypto');
 const { start } = require('repl');
 
 exports.getHikes = async function () {
@@ -32,6 +32,7 @@ exports.getHikes = async function () {
 
 exports.addHike = async function (req, res) {
 
+  console.log('addHike server');
   //better rename these two fields in start_point_address and end_point_address because they are address, not idPoint
   const startId = await dao.checkPresenceByAddress(req.body.newHike.start_point)
   const endId = await dao.checkPresenceByAddress(req.body.newHike.end_point)
@@ -45,7 +46,7 @@ exports.addHike = async function (req, res) {
     title: req.body.newHike.title, length: req.body.newHike.length, expected_time: req.body.newHike.expected_time,
     ascent: req.body.newHike.ascent, difficulty: req.body.newHike.difficulty, start_point: startId.idPoint, end_point: endId.idPoint,
     reference_points: req.body.newHike.reference_points, description: req.body.newHike.description, gpx_track: req.body.newHike.gpx_track,
-    hike_condition: req.body.newHike.hike_condition, hike_condition_description: req.body.newHike.hike_condition_description, local_guide: req.body.newHike.local_guide
+    hike_condition: req.body.newHike.hike_condition, local_guide: req.body.newHike.local_guide
   }
   console.log('Before dao call')
 
@@ -110,7 +111,7 @@ exports.addUser = async function (req, res) {
     const _charStr = 'abacdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789';
     let min = 0, max = _charStr.length - 1, salt = '';
     let len = 32;
-    for (var i = 0, index; i < len; i++) {
+    for (let i = 0, index; i < len; i++) {
       index = RandomIndex(min, max, i, _charStr);
       salt += _charStr[index];
     }
@@ -232,5 +233,56 @@ exports.addHut = async function (req, res) {
   } catch (e) {
     console.log(e);
     throw e;
+  }
+}
+
+/*************HikerHike API************/
+
+exports.startHike = async function (req, res) {
+  dao.startHike(req.body.hiker_email, req.body.hike_title, req.body.start_time).then(
+    result => {
+      return res.status(200).json();
+    },
+    error => {
+      return res.status(500).send(error);
+    }
+  )
+}
+
+exports.updateEndTime = async function (req, res) {
+  dao.updateHikeEndTime(req.body.hiker_email, req.body.hike_title, req.body.start_time, req.body.end_time).then(
+    result => {
+      return res.status(200).json();
+    },
+    error => {
+      return res.status(500).send(error);
+    }
+  )
+}
+
+exports.getFinishedHikes = async function () {
+  try {
+    const hikes = await dao.getFinishedHikes();
+    return hikes;
+  } catch (error) {
+    throw error;
+  }
+}
+
+exports.getDistinctFinishedHikes = async function () {
+  try {
+    const hikes = await dao.getDistinctFinishedHikes();
+    return hikes;
+  } catch (error) {
+    throw error;
+  }
+}
+
+exports.getFinishedHikesByHiker = async function (req) {
+  try {
+    const hikes = await dao.getDistinctFinishedHikes(req.params.hiker_email);
+    return hikes;
+  } catch (error) {
+    throw error;
   }
 }

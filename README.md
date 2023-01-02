@@ -60,6 +60,13 @@ The list of the huts
 - web_site: The URL of the website of the hut
 - description: The description of the hut
 
+### HikerHike
+The list of correlations between hikes and hikers
+- hiker: The email of the hiker
+- hike: The title of the hike
+- start_time: The starting time of the hike
+- end_time: The ending time of the hike (it can be null, for hikes not yet completed)
+
 ## Dao Documentation
 
 ### Users functions
@@ -115,6 +122,14 @@ The list of the huts
 - **readHuts()**, returns a list of every huts with every field
 - **addHut()**, inserts an instance of hut linked to the respective point 
 
+### HikerHike functions
+
+- **startHike(hiker_email, hike_title, start_time)**, inserts a row in the table for the starting hike, with every fields except for end_time
+- **updateHikeEndTime(hiker_email, hike_title, tart_time, end_time)**, update the row associated with the arguments *hiker_email*, *hike_title* and *start_time* with the *end_time*
+- **getFinischedHikes()**, returns all hikes that are finished, even duplicates if, for example, the same hike was completed by two or more different hikers or twice by the same one
+- **getDistinctFinishedHikes()**, returns all hikes that are finished, eliminating duplicates
+- **getFinishedHikesByHiker(hiker_email)**, returns all hikes that are finished by a specific hiker, also the duplicates
+
 
 ## Users
 
@@ -133,6 +148,14 @@ Paulina Knight:
 - name: Paulina
 - lastname: Knight
 - phone_number: +39 3276958421
+
+Richie Zuniga:
+- email: namiwak525@bitvoo.com
+- password: hello15
+- role: LocalGuide
+- name: Richie
+- lastname: Zuniga
+- phone_number: +39 3256789432
 
 ## API
 
@@ -413,3 +436,101 @@ Paulina Knight:
   - Response: `200 OK` (success) 
   - Response body: _None_
   - Error responses: `500 Internal Server Error` (generic error), `400 Bad Request` (wrong fields)
+
+## HikerHike API
+
+- POST `/api/startHike`
+  - Description: Starting an hike
+  - Request body: Three string: email of the hiker, title of the hike, starting time
+    ``` json
+    {
+      "hiker_email": "mario.rossi@gmail.com",
+      "hike_title": "Form Pian Belota to la Vacca",
+      "start_time": "15.00",
+    }
+    ```
+  - Response: `200 OK` (success) 
+  - Response body: _None_
+  - Error responses: `500 Internal Server Error` (generic error), `400 Bad Request` (wrong fields)
+
+- PUT `/api/updateEndTime`
+  - Description: Updating the ending time of an hike
+  - Request body: Four string: email of the hiker, title of the hike, starting time, ending time
+    ``` json
+    {
+      "hiker_email": "mario.rossi@gmail.com",
+      "hike_title": "Form Pian Belota to la Vacca",
+      "start_time": "15.00",
+      "end_time": "18.00",
+    }
+    ```
+  - Response: `200 OK` (success) 
+  - Response body: _None_
+  - Error responses: `503 Service unavailable` (database error), `400 Bad Request` (wrong fields)
+
+- GET `/api/getFinishedHikes`
+  - Description: Obtain the entire list of finished hikes, also the duplicates
+  - Request body: _None_
+  - Response: `200 OK` (success) 
+  - Response body: Array of objects, each describing a row of HikerHike table of the DB:
+    ``` json
+    [
+      {
+        "hiker": "mario.rossi@gmail.com",
+        "hike": "Form Pian Belota to la Vacca",
+        "start_time": "15.00",
+        "end_time": "18.00",
+      },
+      ...
+      {
+        "hiker": "mario.rossi@gmail.com",
+        "hike": "Hike Monte Thabor",
+        "start_time": "12.00",
+        "end_time": "14.00",
+      },
+      ...
+    ]
+    ```
+  - Error responses: `500 Internal Server Error` (database error)
+
+- GET `/api/getDistinctFinishedHikes`
+  - Description: Obtain the entire list of finished hikes, removing the duplicates
+  - Request body: _None_
+  - Response: `200 OK` (success) 
+  - Response body: Array of object cointains the title of the hikes:
+    ``` json
+    [
+      {
+        "hike": "Form Pian Belota to la Vacca",
+      }
+      ...
+      {
+        "hike": "Hike Monte Thabor",
+      },
+      ...
+    ]
+    ```
+  - Error responses: `500 Internal Server Error` (database error)
+
+- GET `/api/getFinishedHikesByHiker/:hiker`
+  - Description: Obtain the entire list of finished hikes by a specific hiker
+  - Request body:Three email of the hiker
+  - Response: `200 OK` (success) 
+  - Response body: Array of objects, each describing a row of HikerHike table of the DB:
+    ``` json
+    [
+      {
+        "hike": "Form Pian Belota to la Vacca",
+        "start_time": "15.00",
+        "end_time": "18.00",
+      },
+      ...
+      {
+        "hike": "Hike Monte Thabor",
+        "start_time": "12.00",
+        "end_time": "14.00",
+      },
+      ...
+    ]
+    ```
+  - Error responses: `500 Internal Server Error` (database error)

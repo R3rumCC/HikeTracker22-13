@@ -29,7 +29,8 @@ function getUserByEmail(email) {
     db.get(sql, [email], (err, rows) => {
       if (err) {
         reject(err);
-      } if (rows == undefined)
+      }
+      if (rows == undefined)
         resolve({ error: 'NOT found' });
       else {
         resolve(rows);
@@ -153,8 +154,8 @@ function readListOfReferencePoints(title) { // RP for a given hike
 
 function addHike(hike) {
   return new Promise((resolve, reject) => {
-    const sql = 'INSERT INTO HIKES (title, length, expected_time, ascent, difficulty, start_point, end_point, description, reference_points, gpx_track, hike_condition, hike_condition_description, local_guide) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)';
-    db.run(sql, hike.title, hike.length, hike.expected_time, hike.ascent, hike.difficulty, hike.start_point, hike.end_point, hike.description, hike.reference_points, hike.gpx_track, hike.hike_codition, hike.hike_condition_description, hike.local_guide, (err, rows) => {
+    const sql = 'INSERT INTO HIKES (title, length, expected_time, ascent, difficulty, start_point, end_point, description, reference_points, gpx_track, hike_condition, local_guide) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)';
+    db.run(sql, hike.title, hike.length, hike.expected_time, hike.ascent, hike.difficulty, hike.start_point, hike.end_point, hike.description, hike.reference_points, hike.gpx_track, hike.hike_condition, hike.local_guide, (err, rows) => {
       if (err) {
         reject(err);
       } else {
@@ -308,7 +309,8 @@ function readPointById(id) {
     db.get(sql, id, (err, row) => {
       if (err) {
         reject(err);
-      } if (row == undefined)
+      }
+      if (row == undefined)
         resolve({ error: 'NOT found' });
       else {
         resolve(row);
@@ -324,7 +326,8 @@ function checkPresenceByAddress(addr) {
     db.get(sql, addr, (err, id) => {
       if (err) {
         reject(err);
-      } if (id == undefined) {
+      }
+      if (id == undefined) {
         resolve(null);
       }
       else {
@@ -341,7 +344,8 @@ function checkPresenceByCoordinates(coord) {
     db.get(sql, coord, (err, id) => {
       if (err) {
         reject(err);
-      } if (id == undefined) {
+      }
+      if (id == undefined) {
         resolve(null);
       }
       else {
@@ -492,6 +496,7 @@ function addHut(hut) {
 
 
 /*************Verification Code************/
+
 function addCode(email, code) {
   return new Promise((resolve, reject) => {
     const sql = 'INSERT INTO Verification_Code (email,code) VALUES(?,?)';
@@ -546,12 +551,85 @@ function updateCode(email, code) {
   });
 }
 
+
+/*************HikerHike functions************/
+
+//add the starting hike in the HikerHike table without end_time
+function startHike(hiker_email, hike_title, start_time) {
+  return new Promise((resolve, reject) => {
+    const sql = 'INSERT INTO HikerHike (hiker, hike, start_time) VALUES(?,?,?)';
+    db.run(sql, hiker_email, hike_title, start_time, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(true);
+      }
+    });
+  });
+}
+
+//also start_time because the same hiker can do the same hike multiple times
+function updateHikeEndTime(hiker_email, hike_title, start_time, end_time) {
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE HikerHike SET end_time = ? WHERE hiker = ? and hike = ? and start_time = ?';
+    db.run(sql, end_time, hiker_email, hike_title, start_time, (err) => {
+      if (err)
+        reject(err);
+      else
+        resolve(true);
+    });
+  });
+}
+
+//Returns all hikes that are finished, even duplicates if, for example, the same hike was completed by two or more different hikers or twice by the same one
+function getFinishedHikes() {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT * FROM HikerHike WHERE start_time IS NOT NULL AND end_time IS NOT NULL'; //check also su start_time? because it can be null for db contstraints
+    db.all(sql, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
+//Returns all hikes that are finished, eliminating duplicates 
+function getDistinctFinishedHikes() {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT DISTINCT(hike) FROM HikerHike WHERE start_time IS NOT NULL AND end_time IS NOT NULL'; //check also su start_time? because it can be null for db contstraints
+    db.all(sql, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
+//Returns all hikes that are finished by a specific hiker, also the duplicates
+function getFinishedHikesByHiker(hiker_email) {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT hike, start_time, end_time FROM HikerHike WHERE hiker = ? AND start_time IS NOT NULL AND end_time IS NOT NULL'; //check also su start_time? because it can be null for db contstraints
+    db.all(sql, hiker_email, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
 module.exports = {
-  readUsers, addUser, deleteUser, updateUserRole,
+  readUsers, addUser, deleteUser, updateUserRole, getUserByEmail,
   readHikes, addHike, deleteHike, updateHike, updateHikeTitle, getHikeByTitle,
   updateHikeAscent, updateHikeLength, updateHikeDescription, updateHikeDifficulty,
-  updateHikeET, updateHikeStartPoint, updateHikeEndPoint, updateHikeRefPoint, getUserByEmail,
-  readPoints, checkPresenceByAddress, checkPresenceByCoordinates, addPoint, updatePoint, deletePoint, readHuts, addHut, addCode, deleteCode, getCode, updateCode,
+  updateHikeET, updateHikeStartPoint, updateHikeEndPoint, updateHikeRefPoint,
+  readPoints, checkPresenceByAddress, checkPresenceByCoordinates, addPoint, updatePoint, deletePoint, readHuts, addHut,
+  addCode, deleteCode, getCode, updateCode,
   updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, updatePointCapacity, updatePointAltitude,
-  readListOfReferencePoints, readPointById
+  readListOfReferencePoints, readPointById,
+  startHike, updateHikeEndTime, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker
 };

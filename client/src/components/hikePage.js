@@ -1,11 +1,10 @@
-import { Col, Row, Button, ToggleButton, ButtonGroup, Alert } from 'react-bootstrap';
+import { Col, Row, ToggleButton, ButtonGroup } from 'react-bootstrap';
 import { HikesContainer } from './hikesCards';
-import { MapContainer, Polyline, TileLayer, Map, Marker, Popup, useMapEvents, GeoJSON, useMap, Circle, LayerGroup, } from 'react-leaflet'
+import { MapContainer, Polyline, TileLayer, Marker, Popup, useMapEvents, GeoJSON, useMap, Circle, LayerGroup, } from 'react-leaflet'
 import * as L from "leaflet";
-import React, { Component, useState, useEffect, useContext, useRef } from 'react';
-import axiosInstance from "../utils/axios"
-import API from '../API';
+import { React, useEffect, useContext, useRef, useState } from 'react';
 import { UNSAFE_NavigationContext, useNavigate } from "react-router-dom";
+import API from '../API';
 
 // THE GPX FILE MUST BE PASSED AS AN STRING. HERE I LEAVE AN EXAMPLE:
 // THIS PARTICULAR GPX HAS A SINGLE TRACK AND TWO SEGMENTS. THESE 
@@ -38,21 +37,21 @@ function deg2rad(deg) {
 }
 
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) { //Calc distance between two points
-    var R = 6371; // Radius of the earth in km
-    var dLat = deg2rad(lat2 - lat1);  // deg2rad below
-    var dLon = deg2rad(lon2 - lon1);
-    var a =
+    let R = 6371; // Radius of the earth in km
+    let dLat = deg2rad(lat2 - lat1);  // deg2rad below
+    let dLon = deg2rad(lon2 - lon1);
+    let a =
         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
         Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
         Math.sin(dLon / 2) * Math.sin(dLon / 2)
         ;
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c; // Distance in km
+    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    let d = R * c; // Distance in km
     return d;
 }
 
 function calcMinDistance(latlng, positions) { //Get the min distance to from a point to a set of points
-    var distances = positions.map(p => {
+    let distances = positions.map(p => {
         return getDistanceFromLatLonInKm(latlng.lat, latlng.lng, p[0], p[1])
     })
     return Math.min(...distances)
@@ -109,7 +108,7 @@ function HikePage(props) {
                     }
                 </Col>
                 <Col sm={8} className='map'>
-                    <GenericMap currentHike={props.currentHike} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></GenericMap>
+                    <GenericMap currentHike={props.currentHike} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} hiker={true} ></GenericMap>
                 </Col>
             </Row>
         </Col>
@@ -137,24 +136,41 @@ function GenericMap(props) { //Map to be inserted anywhere.
         -'currentHike': A hike to be ploted. Can be skiped. Must be a GeoJSON to be plotted.
     */
 
-    const [map, setMap] = useState('')
+    const [map,setMap] = useState('')
+    const [positions, setPositions] = useState([])
     const mapList = useRef([])
-    const [startPoint, setStartPoint] = useState('')
-    const [endPoint, setEndPoint] = useState('')
-    const [startCheck, setStartCheck] = useState('');
-    const [endCheck, setEndCheck] = useState('');
+    const [startPoint, setStartPoint] = useState(props.startPoint ? props.startPoint : '')
+    const [endPoint, setEndPoint] = useState(props.endPoint ? props.endPoint : '')
+    const [startCheck, setStartCheck] = useState(props.startPoint ? props.startPoint : '');
+    const [endCheck, setEndCheck] = useState(props.endPoint ? props.endPoint : '');
+    const travelOnce = useRef('');
 
-    function MyComponent({ gpxPos }) {
+    function MyComponent() {
         const map = useMap()
-
-        map.flyTo(gpxPos[Math.round(gpxPos.length / 2)], gpxPos.length / 100 > 1 ? 13 : 15)
+        if(travelOnce.current != positions){
+            travelOnce.current = positions
+            map.setView(positions[Math.round(positions.length / 2)], positions.length / 100 > 1 ? 13 : 15);
+            
+        }
 
         return null
+    }
+    function setupPos(map){
+        // The commented stuff is only required if we are not passing a GeoJSON
+        let gpxParser = require('gpxparser');
+        let gpx = new gpxParser()
+        gpx.parse(map)
+        let geoJSON = gpx.toGeoJSON()
+        //let geoJSON = JSON.parse(props.currentHike[0].gpx_track) //Get the object from a string
+        // console.log(JSON.stringify(geoJSON))
+        //var positions = gpx.tracks[0].points.map(p => [p.lat, p.lon,p.ele]).filter((p)=> p[2]!=null)
+        setMap(geoJSON);
+        setPositions(geoJSON.features[0].geometry.coordinates.map(p => [p[1], p[0], p[2]]).filter((p) => p[2] != null));
     }
     async function gpxmap(name, hike = null) {
         try {
             const map = await API.getMap(name);
-            setMap(map);
+            setupPos(map);
         } catch (error) {
             throw error
         }
@@ -164,7 +180,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
             gpxmap(props.currentHike[0].gpx_track.replace(/\s/g, ''))
         }
         else if (props.gpxFile) {
-            setMap(props.gpxFile)
+            setupPos(props.gpxFile)
         } else if (props.hikes) {
             props.hikes.forEach((h) => {
                 if (mapList.current.filter((x) => x.hike == h ? true : false).length == 0 || mapList.length == 0) {
@@ -189,21 +205,26 @@ function GenericMap(props) { //Map to be inserted anywhere.
             props.setCurrentMarkers(currentMarkersMod)
         }
     }, [props.currentMarkers, mapList.current])
-    if (map != '') {
-        // The commented stuff is only required if we are not passing a GeoJSON
-        let gpxParser = require('gpxparser');
-        var gpx = new gpxParser()
-        gpx.parse(map)
-        let geoJSON = gpx.toGeoJSON()
-        //let geoJSON = JSON.parse(props.currentHike[0].gpx_track) //Get the object from a string
-        // console.log(JSON.stringify(geoJSON))
-        //var positions = gpx.tracks[0].points.map(p => [p.lat, p.lon,p.ele]).filter((p)=> p[2]!=null)
-        var positions = geoJSON.features[0].geometry.coordinates.map(p => [p[1], p[0], p[2]]).filter((p) => p[2] != null)
+
+    if (map != '' && positions.length != 0) {
         $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[0][0] + '&lon=' + positions[0][1] + '&format=json&limit=1&q=', function (data) {
-            setStartPoint(data.display_name);
+            
+            if(props.points){
+                props.setStartPoint(data.display_name);
+                props.setStartPointGps(`${positions[0][0]}, ${positions[0][1]}`)
+            }
+            setStartPoint(data.display_name)
+            setStartCheck(data.display_name)
+            
         })
         $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[positions.length - 1][0] + '&lon=' + positions[positions.length - 1][1] + '&format=json&limit=1&q=', function (data) {
-            setEndPoint(data.display_name);
+            
+            if(props.points){
+                props.setEndPoint(data.display_name);
+                props.setEndPointGps(positions[positions.length - 1][0]+','+positions[positions.length - 1][1])
+            }
+            setEndPoint(data.display_name)
+            setEndCheck(data.display_name)
         })
         return (
             <>{map != '' ?
@@ -303,14 +324,14 @@ function GenericMap(props) { //Map to be inserted anywhere.
                             </Marker>
                         )
                     }) : null}
-                    {!props.points ?
+                    {!props.points  && !props.hiker ?
                         <>
                             <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} positions={positions}></MapHandler>
                             <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>
                         </>
                         : null}
-                    {props.gpxFile ? <MyComponent gpxPos={positions}></MyComponent> : null}
-                    {<GeoJSON data={geoJSON}></GeoJSON>}
+                    <MyComponent></MyComponent>
+                    {<GeoJSON data={map}></GeoJSON>}
                 </MapContainer>
                 : null}
 
@@ -367,7 +388,7 @@ function MapHandler(props) { //Handles just the clicks on the map
                     console.log("Invalid point")
                 }
                 else if (!props.currentMarkers.find(p => p.address == newSelectedMarker.address && p.latlng.lng == newSelectedMarker.latlng.lng && p.latlng.lat == newSelectedMarker.latlng.lat)) {
-                    var newSelectedMarkers = [...props.currentMarkers, newSelectedMarker]
+                    let newSelectedMarkers = [...props.currentMarkers, newSelectedMarker]
                     props.setCurrentMarkers(newSelectedMarkers)
                 } else {
                     console.log("Location already selected")

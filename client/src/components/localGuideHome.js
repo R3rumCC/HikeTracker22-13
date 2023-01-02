@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Button, Container, Form, FormGroup, FormLabel, ButtonGroup, InputGroup, Alert, Nav } from 'react-bootstrap';
+import { Row, Col, Button, Form, InputGroup, Alert, Nav } from 'react-bootstrap';
 import { GenericMap } from './hikePage';
 import { HikesContainer } from './hikesCards';
 import Profile from './profile';
 import axiosInstance from "../utils/axios"
-import { PointsContainer } from './pointsCards';
 import "./sidebar.css";
 
 function LocalGuide_Home(props) {
@@ -49,9 +48,10 @@ function LocalGuide_Home(props) {
       <Col xs={10}>
         <div className='mx-3 my-3'>
           <div>{profile ? <Profile user={props.currentUser} /> : <></>}</div>
-          <div>{hikeForm ? <HikeForm hikes={props.hikes} currentUser={props.currentUser} CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike} points = {props.points}/> : <></>}</div>
-          <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
-          <div>{hutForm ? <HutForm CreateNewHut={props.CreateNewHut} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} /> : <></>}</div>
+          <div>{hikeForm ? <HikeForm hikes={props.hikes} currentUser={props.currentUser} CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike} points={props.points} 
+          setOnChangeHikes={props.setOnChangeHikes} setOnChangePoints={props.setOnChangePoints} /> : <></>}</div>
+          <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} setOnChangePoints={props.setOnChangePoints}/> : <></>}</div>
+          <div>{hutForm ? <HutForm CreateNewHut={props.CreateNewHut} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} setOnChangePoints={props.setOnChangePoints} /> : <></>}</div>
           <div>{seeHikes ? <HikeList hikes={props.hikes} currentUser={props.currentUser} setCurrentHike={props.setCurrentHike} /> : <></>}</div>
         </div>
       </Col>
@@ -119,7 +119,7 @@ function HikeForm(props) {
 
 
   const submitFile = () => {
-    var myBlob = new Blob(
+    let myBlob = new Blob(
       [map],
       { type: "text/plain" }
     )
@@ -135,51 +135,40 @@ function HikeForm(props) {
   }
   const submitHikeForm = (event) => {
     event.preventDefault();
-    let newHike;
+    let newHike = undefined;
     //Checks on needed fields
-    const match = props.hikes.find(h=>h.title==title);
-    if (title !== "" && match == null) {
-      if (length !== "" && difficulty !== "") {
-        if (startPoint !== '' && endPoint !== '') {
-          if (description !== "") {
-            if (map !== '') {
-              let start = { address: startPoint, gps_coordinates: startPointGps }
-              let startId = props.CreateNewPoint(start) //try to use startId and endId instead of performing again the search
-              let end = { address: endPoint, gps_coordinates: endPointGps }
-              let endId = props.CreateNewPoint(end);
+    const match = props.hikes.find(h => h.title == title);
+    if(match !== null && props.hike != null){
+      setErrorMsg("The title entered has already been used.");
+      return;
+    }
+    if (map !== '') {
+      let start = { address: startPoint, gps_coordinates: startPointGps }
+      let startId = props.CreateNewPoint(start) //try to use startId and endId instead of performing again the search
+      let end = { address: endPoint, gps_coordinates: endPointGps }
+      let endId = props.CreateNewPoint(end);
 
-              //check on user's role (?)
-              console.log(startPointGps,endPointGps)
-              console.log(startId, endId)
-              newHike = {
-                title: title, length: length, expected_time: expTime, ascent: ascent, difficulty: difficulty,
-                start_point: startPoint, end_point: endPoint, reference_points: reference_points,
-                description: description, gpx_track: title, hike_condition: condition,
-                hike_condition_description: conditionDescription, local_guide: props.currentUser.username
-                //gpx_track: map --> request entity too large
-              }
-              props.CreateNewHike(newHike)
-              console.log('newHike=' + newHike)
-              submitFile()
-              console.log('after CreateNewHike');
-              alert('New Hike correctly added!')
-              document.getElementById('hikeForm').hidden = true;
-              reset()
-            }
-            else {
-              setErrorMsg("Enter a valid gpx file.");
-            }
-          } else {
-            setErrorMsg("Enter a description before submit.");
-          }
-        } else {
-          setErrorMsg("A Start and End Point are required.")
-        }
-      } else {
-        setErrorMsg("A length and a difficulty are required.")
+      //check on user's role (?)
+      console.log(startPointGps, endPointGps)
+      console.log(startId, endId)
+      newHike = {
+        title: title, length: length, expected_time: expTime, ascent: ascent, difficulty: difficulty,
+        start_point: startPoint, end_point: endPoint, reference_points: reference_points,
+        description: description, gpx_track: title, hike_condition: 'Open', local_guide: props.currentUser.username
+        //gpx_track: map --> request entity too large
       }
-    } else {
-      setErrorMsg("Enter a valid or unused title before submit.");
+      props.CreateNewHike(newHike)
+      console.log(newHike)
+      submitFile()
+      console.log('after CreateNewHike');
+      alert('New Hike correctly added!')
+      props.setOnChangeHikes(true)
+      props.setOnChangePoints(true)
+      document.getElementById('hikeForm').hidden = true;
+      reset()
+    }
+    else {
+      setErrorMsg("Enter a valid gpx file.");
     }
   }
 
@@ -198,7 +187,7 @@ function HikeForm(props) {
   const importGpx = (selectedFile) => {
     const $ = require("jquery");
     let gpxParser = require('gpxparser');
-    var gpx = new gpxParser()
+    let gpx = new gpxParser()
     setTitle('');
     setLength(''); setExpTime(''); setAscent('')
     setDifficulty(''); setDescription('');
@@ -236,22 +225,24 @@ function HikeForm(props) {
           let minPoint = Math.min(...trackPoints)
           console.log(maxPoint)
           console.log(minPoint)
-          var totalElevation = (Number(maxPoint - minPoint).toFixed(2));
+          let totalElevation = (Number(maxPoint - minPoint).toFixed(2));
           changeAscent(totalElevation);
 
         }
 
-        var totalDistance = (Number(gpx.tracks[0].distance.total / 1000).toFixed(2));
+        let totalDistance = (Number(gpx.tracks[0].distance.total / 1000).toFixed(2));
         changeLength(totalDistance);
         console.log(positions[0]);
         console.log(positions[positions.length - 1]);
         $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[0][0] + '&lon=' + positions[0][1] + '&format=json&limit=1&q=', function (data) {
 
           changeStartP(data.display_name);
+          changeStartPGps(positions[0][0]+','+positions[0][1]);
         });
         $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[positions.length - 1][0] + '&lon=' + positions[positions.length - 1][1] + '&format=json&limit=1&q=', function (data) {
 
           changeEndP(data.display_name);
+          changeEndPGps(positions[positions.length - 1][0]+','+positions[positions.length - 1][1])
         });
 
         setMap(reader.result)
@@ -299,7 +290,7 @@ function HikeForm(props) {
           <Form.Label>Length</Form.Label>
           <InputGroup className="mb-3">
             <InputGroup.Text><i className="bi bi-map"></i></InputGroup.Text>
-            <Form.Control value={length} required={true} onChange={(ev) => changeLength(ev.target.value)} placeholder="3.2" />
+            <Form.Control disabled value={length} required={true} onChange={(ev) => changeLength(ev.target.value)} placeholder="3.2" />
             <InputGroup.Text>Km</InputGroup.Text>
           </InputGroup>
         </Form.Group>
@@ -307,7 +298,10 @@ function HikeForm(props) {
           <Form.Label>Expected Time</Form.Label>
           <InputGroup className="mb-3">
             <InputGroup.Text><i className="bi bi-stopwatch"></i></InputGroup.Text>
-            <Form.Control value={expTime} required={true} onChange={(ev) => changeExpTime(ev.target.value)} placeholder="4" />
+            <Form.Control
+              type="number"
+              min="1" 
+              value={expTime} required={true} onChange={(ev) => changeExpTime(ev.target.value)} placeholder="4" />
             <InputGroup.Text>hours</InputGroup.Text>
           </InputGroup>
         </Form.Group>
@@ -318,7 +312,7 @@ function HikeForm(props) {
           <Form.Label>Ascent</Form.Label>
           <InputGroup className="mb-3">
             <InputGroup.Text><i className="bi bi-geo-fill"></i></InputGroup.Text>
-            <Form.Control value={ascent} required={true} onChange={(ev) => changeAscent(ev.target.value)} placeholder="670" />
+            <Form.Control disabled value={ascent} required={true} onChange={(ev) => changeAscent(ev.target.value)} placeholder="670" />
             <InputGroup.Text>m</InputGroup.Text>
           </InputGroup>
         </Form.Group>
@@ -332,29 +326,6 @@ function HikeForm(props) {
               <option value='Hiker' label="Hiker" />
               <option value='Professional hiker' label="Professional Hiker" />
             </Form.Select>
-          </InputGroup>
-        </Form.Group>
-      </Row>
-      
-      <Row>
-        <Form.Group as={Col}>
-          <Form.Label>Condition</Form.Label>
-          <InputGroup>
-            <InputGroup.Text><i className="bi bi-graph-up-arrow"></i></InputGroup.Text>
-            <Form.Select onChange={(ev) => changeCondition(ev.target.value)}>
-              <option label=''></option>
-              <option value='Open' label="Open" />
-              <option value='Closed' label="Closed" />
-              <option value='Party Blocked' label="Party Blocked" />
-              <option value='Requires Special Gear' label="Requires Special Gear" />
-            </Form.Select>
-          </InputGroup>
-        </Form.Group>
-        <Form.Group as={Col}>
-          <Form.Label>Condition Description</Form.Label>
-          <InputGroup className="mb-2">
-            <InputGroup.Text><i className="bi bi-textarea-t"></i></InputGroup.Text>
-            <Form.Control as="textarea" value={conditionDescription} onChange={(ev) => changeConditionDescription(ev.target.value)} />
           </InputGroup>
         </Form.Group>
       </Row>
@@ -379,8 +350,8 @@ function HikeForm(props) {
       <Form.Group className='mt-3'>
         {gpxPos != null ?
           <>
-            <GenericMap gpxFile={map} currentHike={[]} currentMarkers={[]} setCurrentMarkers={''} points={[...props.points].filter((x)=> x.type!=null)} 
-            setStartPoint={setStartPoint} setStartPointGps ={setStartPointGps} setEndPoint={setEndPoint} setEndPointGps={setEndPointGps}/>
+            <GenericMap gpxFile={map} currentHike={[]} currentMarkers={[]} setCurrentMarkers={''} points={[...props.points].filter((x) => x.type != null)}
+              setStartPoint={setStartPoint} setStartPointGps={setStartPointGps} setEndPoint={setEndPoint} setEndPointGps={setEndPointGps} endPoint={endPoint} startPoint={startPoint} />
           </>
           : null}
       </Form.Group>
@@ -451,6 +422,7 @@ function HutForm(props) {
     console.log(newHut)
     //call to the API
     props.CreateNewHut(newHut)
+    props.setOnChangePoints(true)
     alert('New Hut correctly added!')
   }
 
@@ -601,6 +573,7 @@ function ParkingLotForm(props) {
     newPoint = { nameLocation: title, address: address, gps_coordinates: position, type: 'Parking Lot', capacity: capacity };
 
     props.CreateNewPoint(newPoint);
+    props.setOnChangePoints(true);
     alert('New parking lot added.');
     console.log(newPoint);
   }

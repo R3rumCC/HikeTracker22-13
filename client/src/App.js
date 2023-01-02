@@ -62,6 +62,8 @@ function Main() {
   const [currentMarkers, setCurrentMarkers] = useState([]);
 
   const [hikes, setHikes] = useState([]);
+  const [onChangeHikes, setOnChangeHikes] = useState(true)
+  const [onChangePoints,setOnChangePoints] = useState(true)
 
   function handleError(err) {
 
@@ -85,6 +87,13 @@ function Main() {
         handleErrors(error);
       }
     };
+    if(onChangePoints){
+      setOnChangePoints(false)
+      fetchInitialValues();
+    }
+  }, [onChangePoints]);
+  
+  useEffect(() => {
     async function fetchHikes() {
       try {
         const fetchedHikes = await API.getHikes();
@@ -93,9 +102,12 @@ function Main() {
         handleErrors(error);
       }
     };
-    fetchInitialValues();
-    fetchHikes();
-  }, []);
+    if(onChangeHikes){
+      setOnChangeHikes(false)
+      fetchHikes();
+    }
+
+  }, [onChangeHikes]);
 
   //*******CHECK_AUTH*******//
   useEffect(() => {
@@ -120,7 +132,6 @@ function Main() {
       const user = await API.logIn(credentials);
       setLoggedIn(true);
       setCurrentUser(user);
-      //setUserFilter(false);
     } catch (err) {
       handleError(err);
     }
@@ -135,8 +146,6 @@ function Main() {
 
       //BEST PRACTISE after Logout-->Clean up everything!
       setCurrentUser({});
-      //setUserFilter(false);
-      //setMessage('');
     } catch (err) {
       handleError(err);
     }
@@ -145,7 +154,6 @@ function Main() {
 
   //********HANDLE_REGISTER*******//
   const CreateNewAccount = async (user) => {
-    //console.log(user);
 
     await API.addUser(user);
 
@@ -153,7 +161,6 @@ function Main() {
 
   const checkUser = async (email) => {
     const u = await API.checkUser(email);
-    // console.log(u);
     if (u.error) return true;
     else return false;
   };
@@ -229,7 +236,9 @@ function Main() {
       <Navigation logout={handleLogout} user={currentUser} loggedIn={loggedIn} setCurrentMarkers={setCurrentMarkers} profilePage={profilePageSwitch} />
       <Routes>
         <Route path="/" element={
-          loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHut={CreateNewHut} CreateNewHike={CreateNewHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} hikes={hikes} currentUser={currentUser} setCurrentHike={setCurrentHike} points = {points} /> :
+          loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHut={CreateNewHut} CreateNewHike={CreateNewHike}
+           currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} hikes={hikes} currentUser={currentUser} setCurrentHike={setCurrentHike} points = {points} 
+           setOnChangeHikes={setOnChangeHikes} setOnChangePoints={setOnChangePoints}/> :
             <DefaultLayout role={loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike} hikes={hikes}/>  /*<FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>
