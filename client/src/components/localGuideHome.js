@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Button, Form, InputGroup, Alert, Nav } from 'react-bootstrap';
+import { Row, Col, Button, Form, InputGroup, Alert, Nav, Image } from 'react-bootstrap';
 import { GenericMap } from './hikePage';
 import { HikesContainer } from './hikesCards';
 import Profile from './profile';
@@ -102,6 +102,7 @@ function HikeForm(props) {
   let reference_points = []
   const [map, setMap] = useState('') //USED TO SAVE MAP STRING
   const [gpxPos, setGpxPos] = useState(null)
+  const [picture, setPicture]= useState(null)
   const [errorMsg, setErrorMsg] = useState("");
 
   const changeTitle = (val) => { setTitle(val) }
@@ -110,8 +111,6 @@ function HikeForm(props) {
   const changeAscent = (val) => { setAscent(val) }
   const changeDifficulty = (val) => { setDifficulty(val); }
   const changeDescription = (val) => { setDescription(val) }
-  const changeCondition = (val) => { setCondition(val) }
-  const changeConditionDescription = (val) => { setConditionDescription(val) }
   const changeStartP = (val) => { setStartPoint(val) }
   const changeStartPGps = (val) => { setStartPointGps(val) }
   const changeEndP = (val) => { setEndPoint(val) }
@@ -133,6 +132,7 @@ function HikeForm(props) {
       },
     })
   }
+
   const submitHikeForm = (event) => {
     event.preventDefault();
     let newHike = undefined;
@@ -179,7 +179,8 @@ function HikeForm(props) {
     setCondition(''); setConditionDescription('');
     setStartPoint(''); setStartPointGps('');
     setEndPoint(''); setEndPointGps('');
-    setErrorMsg(''); setMap(''); setGpxPos(null);
+    setErrorMsg(''); setMap(''); 
+    setGpxPos(null); setPicture(null);
   }
 
   //Import gpx file and read, gpx parse it is used to retreive the start point and the end point (format latitude,longitude)
@@ -194,7 +195,7 @@ function HikeForm(props) {
     setCondition(''); setConditionDescription('');
     setStartPoint(''); setStartPointGps('');
     setEndPoint(''); setEndPointGps('');
-    setErrorMsg('');
+    setErrorMsg(''); setPicture(null);
     let reader = new FileReader();
 
     reader.readAsText(selectedFile);
@@ -253,6 +254,10 @@ function HikeForm(props) {
     reader.onerror = function () {
       console.log(reader.error);
     };
+
+  }
+
+  const showPicture= (pict) =>{
 
   }
 
@@ -347,6 +352,7 @@ function HikeForm(props) {
         </Form.Group>
       </Row>
 
+      {/**GPX FILE */}
       <Form.Group className='mt-3'>
         {gpxPos != null ?
           <>
@@ -356,11 +362,27 @@ function HikeForm(props) {
           : null}
       </Form.Group>
 
-      {/* This is the form used to import the gpx, on upload of the file it call the importGpx function passing the file object */}
+        {/* This is the form used to import the gpx, on upload of the file it call the importGpx function passing the file object */}
       <Form.Group controlId="formFile" className="mt-3">
         <Form.Label style={{ fontSize: 25 }}>Upload the GPX track</Form.Label>
         <Form.Control type="file" required={true} onChange={(e) => importGpx(e.target.files[0])} />
       </Form.Group>
+
+      {/**COVER PICTURE */}
+      <Form.Group className='mt-3'>
+        {picture != null ?
+          <>
+            <Image ></Image>
+          </>
+          : null}
+      </Form.Group>
+
+      <Form.Group controlId="pictureFile" className="mt-3">
+        <Form.Label style={{ fontSize: 25 }}>Hike's Picture</Form.Label>
+        <Form.Control type="file" required onChange={(e) => showPicture(e.target.files[0])} />
+      </Form.Group>
+
+      {/**BUTTONS */}
       <Button className='mt-y' type='submit' style={{ background: 'green' }}>Save</Button>
       <Button style={{ background: 'green' }} onClick={reset} className='ms-2 my-2'>Cancel</Button>
 
