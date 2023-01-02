@@ -195,6 +195,15 @@ router.put('/updateEndTime', [
   c.updateEndTime(req, res)
 });
 
+router.get('/getOnGoingHike/:hiker', async (req, res) => {
+  try {
+    const hike = await c.getOnGoingHike(req);
+    res.status(200).json(hike).end();
+  } catch (error) {
+    res.status(500).json(error).end();
+  }
+});
+
 router.get('/getFinishedHikes', async (req, res) => {
   try {
     const hikes = await c.getFinishedHikes();
@@ -207,6 +216,15 @@ router.get('/getFinishedHikes', async (req, res) => {
 router.get('/getDistinctFinishedHikes', async (req, res) => {
   try {
     const hikes = await c.getDistinctFinishedHikes();
+    res.status(200).json(hikes).end();
+  } catch (error) {
+    res.status(500).json(error).end();
+  }
+});
+
+router.get('/getFinishedHikesByHiker/:hiker', async (req, res) => {
+  try {
+    const hikes = await c.getFinishedHikesByHiker(req);
     res.status(200).json(hikes).end();
   } catch (error) {
     res.status(500).json(error).end();

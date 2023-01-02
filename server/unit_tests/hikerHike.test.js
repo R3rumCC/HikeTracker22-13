@@ -108,6 +108,13 @@ describe("HikerHike test", () => {
     }
   });
 
+  test('test getOnGoingHike', async () => {
+    const r2 = new Row('mario.rossi@gmail.com', 'Hike Monte Thabor', '12.00', null); 
+    const data = await dao.getOnGoingHike('mario.rossi@gmail.com');
+    const hike_check = [{hike: 'Hike Monte Thabor', start_time:'12.00'}];
+    expect(data).toEqual(hike_check);
+  });
+
   test('test getFinishedHikes', async () => {
     const r1 = new Row('mario.rossi@gmail.com', 'Form Pian Belota to la Vacca', '15.00', '18.00');
     //const r2 = new Row('mario.rossi@gmail.com', 'Hike Monte Thabor', '12.00', null); //not finished

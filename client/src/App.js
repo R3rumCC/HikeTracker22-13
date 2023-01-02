@@ -62,8 +62,10 @@ function Main() {
   const [currentMarkers, setCurrentMarkers] = useState([]);
 
   const [hikes, setHikes] = useState([]);
-  const [onChangeHikes, setOnChangeHikes] = useState(true)
-  const [onChangePoints,setOnChangePoints] = useState(true)
+  const [onChangeHikes, setOnChangeHikes] = useState(true);
+  const [onChangePoints, setOnChangePoints] = useState(true);
+
+  const [flagOnGoingHike, setFlagOnGoingHike] = useState(false); //if it is true -> there is an hike in progress for the currentUser
 
   function handleError(err) {
 
@@ -87,12 +89,12 @@ function Main() {
         handleErrors(error);
       }
     };
-    if(onChangePoints){
+    if (onChangePoints) {
       setOnChangePoints(false)
       fetchInitialValues();
     }
   }, [onChangePoints]);
-  
+
   useEffect(() => {
     async function fetchHikes() {
       try {
@@ -102,7 +104,7 @@ function Main() {
         handleErrors(error);
       }
     };
-    if(onChangeHikes){
+    if (onChangeHikes) {
       setOnChangeHikes(false)
       fetchHikes();
     }
@@ -132,6 +134,10 @@ function Main() {
       const user = await API.logIn(credentials);
       setLoggedIn(true);
       setCurrentUser(user);
+      const hike = await API.getOnGoingHike(user.username);
+      if (hike.length!==0) {
+        setFlagOnGoingHike(true);
+      }
     } catch (err) {
       handleError(err);
     }
@@ -146,6 +152,7 @@ function Main() {
 
       //BEST PRACTISE after Logout-->Clean up everything!
       setCurrentUser({});
+      setFlagOnGoingHike(false);
     } catch (err) {
       handleError(err);
     }
@@ -154,9 +161,7 @@ function Main() {
 
   //********HANDLE_REGISTER*******//
   const CreateNewAccount = async (user) => {
-
     await API.addUser(user);
-
   };
 
   const checkUser = async (email) => {
@@ -178,14 +183,14 @@ function Main() {
     }
   };
 
- //********HANDLE_ADD_HUT*******//
- const CreateNewHut = async (hut) => {
-  try {
-    await API.addHut(hut)
-  } catch (err) {
-    handleError(err);
-  }
-};
+  //********HANDLE_ADD_HUT*******//
+  const CreateNewHut = async (hut) => {
+    try {
+      await API.addHut(hut)
+    } catch (err) {
+      handleError(err);
+    }
+  };
 
   //********HANDLE_NEW_HIKE*******//
   const CreateNewHike = async (hike) => {
@@ -217,16 +222,34 @@ function Main() {
 
   }
 
-  function profilePageSwitch(){
-    if(profilePage)
+  function profilePageSwitch() {
+    if (profilePage)
       navigate('/');
     else
       navigate('/profile');
-  } 
+  }
 
-  function returnToHome(){
+  function returnToHome() {
     navigate('/');
-  } 
+  }
+
+  const startHike = async (hiker_email, hike_title, start_time) => {
+    try {
+      await API.startHike(hiker_email, hike_title, start_time);
+      setFlagOnGoingHike(true);
+    } catch (err) {
+      handleError(err);
+    }
+  };
+
+  const endHike = async (hiker_email, hike_title, start_time, end_time) => {
+    try {
+      await API.updateEndTime(hiker_email, hike_title, start_time, end_time);
+      setFlagOnGoingHike(false);
+    } catch (err) {
+      handleError(err);
+    }
+  };
 
 
   /*****************************************************/
@@ -237,9 +260,10 @@ function Main() {
       <Routes>
         <Route path="/" element={
           loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHut={CreateNewHut} CreateNewHike={CreateNewHike}
-           currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} hikes={hikes} currentUser={currentUser} setCurrentHike={setCurrentHike} points = {points} 
-           setOnChangeHikes={setOnChangeHikes} setOnChangePoints={setOnChangePoints}/> :
-            <DefaultLayout role={loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike} hikes={hikes}/>  /*<FileUploadLayout></FileUploadLayout>*/
+            currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} hikes={hikes} currentUser={currentUser} setCurrentHike={setCurrentHike} points={points}
+            setOnChangeHikes={setOnChangeHikes} setOnChangePoints={setOnChangePoints} /> :
+            <DefaultLayout role={loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike}
+            hikes={hikes} startHike={startHike} currentUser={currentUser ? currentUser: ''} flagOnGoingHike={flagOnGoingHike} />  /*<FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>
         {/* <Route path="/NewHike" element={<HikeForm/>} /> THIS WAS A TRY TO DO THE .GPX FILE UPLOAD.*/}
@@ -247,8 +271,9 @@ function Main() {
         <Route path="/points" element={<PointsContainer points={points}></PointsContainer>} />
         <Route path="/register" element={!loggedIn ? <RegisterLayout CreateNewAccount={CreateNewAccount} checkUser={checkUser} checkCode={checkCode} sendEmail={sendEmail} /> : <Navigate replace to='/' />} />
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
-        <Route path="/profile" element={loggedIn && currentUser.role == 'Hiker' ? <Hiker_Home currentUser={currentUser} /> : <Navigate replace to='/' />} />
+        <Route path="/profile" element={loggedIn && currentUser.role == 'Hiker' ? <Hiker_Home currentUser={currentUser} setCurrentHike={setCurrentHike} endHike={endHike} flagOnGoingHike={flagOnGoingHike} /> : <Navigate replace to='/' />} />
         <Route path="/editHike" element={loggedIn && currentUser.role == 'LocalGuide' ? <EditHike updateHike={updateHike} returnToHome={returnToHome} currentHike={currentHike} /> : <Navigate replace to='/' />} />
+        {/*<Route path="/startHike" element={loggedIn && currentUser.role == 'Hiker' ? <Hiker_Home currentUser={currentUser} setCurrentHike={setCurrentHike} endHike={endHike} flagOnGoingHike={flagOnGoingHike} /> : <Navigate replace to='/' />} />*/}
       </Routes>
     </>
   );

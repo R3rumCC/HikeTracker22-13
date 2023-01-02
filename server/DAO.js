@@ -581,6 +581,21 @@ function updateHikeEndTime(hiker_email, hike_title, start_time, end_time) {
   });
 }
 
+//Returns the ongoing hike of a specific hiker
+function getOnGoingHike(hiker_email) {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT hike, start_time FROM HikerHike WHERE hiker = ? AND start_time IS NOT NULL AND end_time IS NULL';
+    db.all(sql, hiker_email, (err, rows) => {
+      if (err) {
+        reject(err);
+      }
+      else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
 //Returns all hikes that are finished, even duplicates if, for example, the same hike was completed by two or more different hikers or twice by the same one
 function getFinishedHikes() {
   return new Promise((resolve, reject) => {
@@ -622,6 +637,7 @@ function getFinishedHikesByHiker(hiker_email) {
     });
   });
 }
+
 module.exports = {
   readUsers, addUser, deleteUser, updateUserRole, getUserByEmail,
   readHikes, addHike, deleteHike, updateHike, updateHikeTitle, getHikeByTitle,
@@ -631,5 +647,5 @@ module.exports = {
   addCode, deleteCode, getCode, updateCode,
   updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, updatePointCapacity, updatePointAltitude,
   readListOfReferencePoints, readPointById,
-  startHike, updateHikeEndTime, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker
+  startHike, updateHikeEndTime, getOnGoingHike, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker
 };

@@ -239,6 +239,10 @@ exports.addHut = async function (req, res) {
 /*************HikerHike API************/
 
 exports.startHike = async function (req, res) {
+  const ongoing = await dao.getOnGoingHike(req.body.hiker_email);
+    if (ongoing.length!==0) {
+      return res.status(422).send("There is already an ongoing hike.").end();
+    }
   dao.startHike(req.body.hiker_email, req.body.hike_title, req.body.start_time).then(
     result => {
       return res.status(200).json();
@@ -258,6 +262,21 @@ exports.updateEndTime = async function (req, res) {
       return res.status(500).send(error);
     }
   )
+}
+
+exports.getOnGoingHike = async function (req) {
+  try {
+    const ongoing = await dao.getOnGoingHike(req.params.hiker);
+    let result = [];
+    if (ongoing.length!==0) {
+      const h = await dao.getHikeByTitle(ongoing[0].hike);
+      const hike = {hike: h, start_time: ongoing[0].start_time};
+      result.push(hike);
+    }
+    return result;
+  } catch (error) {
+    throw error;
+  }
 }
 
 exports.getFinishedHikes = async function () {
@@ -280,7 +299,13 @@ exports.getDistinctFinishedHikes = async function () {
 
 exports.getFinishedHikesByHiker = async function (req) {
   try {
-    const hikes = await dao.getDistinctFinishedHikes(req.params.hiker_email);
+    const titles = await dao.getFinishedHikesByHiker(req.params.hiker);
+    let hikes = [];
+    for(t of titles) {
+      const h = await dao.getHikeByTitle(t.hike);
+      const hike = {hike: h, start_time: t.start_time, end_time: t.end_time};
+      hikes.push(hike);
+    }
     return hikes;
   } catch (error) {
     throw error;

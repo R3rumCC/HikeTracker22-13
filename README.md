@@ -126,6 +126,7 @@ The list of correlations between hikes and hikers
 
 - **startHike(hiker_email, hike_title, start_time)**, inserts a row in the table for the starting hike, with every fields except for end_time
 - **updateHikeEndTime(hiker_email, hike_title, tart_time, end_time)**, update the row associated with the arguments *hiker_email*, *hike_title* and *start_time* with the *end_time*
+- **getOnGoingHike(hiker_email)**, returns an array with the eventually ongoing hike (its title and starting time) associated with the argument *hiker_email*
 - **getFinischedHikes()**, returns all hikes that are finished, even duplicates if, for example, the same hike was completed by two or more different hikers or twice by the same one
 - **getDistinctFinishedHikes()**, returns all hikes that are finished, eliminating duplicates
 - **getFinishedHikesByHiker(hiker_email)**, returns all hikes that are finished by a specific hiker, also the duplicates
@@ -467,6 +468,21 @@ Richie Zuniga:
   - Response: `200 OK` (success) 
   - Response body: _None_
   - Error responses: `503 Service unavailable` (database error), `400 Bad Request` (wrong fields)
+
+- GET `/api/getOnGoingHike/:hiker`
+  - Description: Obtain the title and the starting time of an ongoing hike of a specific hiker
+  - Request body: _None_
+  - Response: `200 OK` (success) 
+  - Response body: Array of objects, with the information of the hike:
+    ``` json
+    [
+      {
+        "hike": "Form Pian Belota to la Vacca",
+        "start_time": "15.00",
+      }
+    ]
+    ```
+  - Error responses: `500 Internal Server Error` (database error)
 
 - GET `/api/getFinishedHikes`
   - Description: Obtain the entire list of finished hikes, also the duplicates
