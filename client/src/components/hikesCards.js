@@ -1,9 +1,60 @@
 import { Card, Button, Row, ListGroup, Col, Container } from "react-bootstrap";
 import { Link } from "react-router-dom"; 
-import {React, useRef, useMemo, useEffect, useState} from 'react';
+import {React, useRef, useEffect, useState} from 'react';
 import ClipLoader from 'react-spinners/ClipLoader';
+import Badge from 'react-bootstrap/Badge';
 import dayjs from 'dayjs';
-import { Filter } from "react-bootstrap-icons";
+
+function HikeCard2(props){
+
+  function startHike() {
+    let start_time = dayjs();
+    props.startHike(props.currentUser.username, props.hike.title, start_time.format('YYYY/MM/DD HH:mm:ss'));
+    props.setCurrentHike([props.hike]);
+  }
+
+  function endHike() {
+    let end_time = dayjs();
+    props.endHike(props.currentUser.username, props.hike.title, props.hike.start_time, end_time.format('YYYY/MM/DD HH:mm:ss'));
+  }
+
+  console.log(props.flagOnGoingHike)
+
+  return (
+    <Card border='success' style={{ width: '18rem' }}>
+      <Card.Img variant="top" src="holder.js/100px180?text=Image cap" />
+      <Card.Body>
+        <Card.Title style={{fontWeight:'bold', color: 'green'}}> {props.hike.title}</Card.Title>
+        <Row>
+          <Col><Badge bg='success'>Difficulty</Badge></Col>
+          <Col><Badge bg='success'>Condition</Badge></Col>
+        </Row>
+      </Card.Body>
+      <ListGroup className="list-group-flush">
+        <ListGroup.Item>
+          <Row style={{fontWeight:'bold', fontSize:13}}>
+            <Col><i className="bi bi-map"></i> {props.hike.length} km</Col>
+            <Col><i className="bi bi-stopwatch"></i> {props.hike.expected_time} h</Col>
+          </Row>
+        </ListGroup.Item>
+        <ListGroup.Item  style={{fontWeight:'bold', fontSize:13}}>
+          <i className="bi bi-compass"></i> Start :
+          <div  style={{fontWeight:'normal'}}>{props.hike.start_point_nameLocation ? <><br></br><em>{props.hike.start_point_nameLocation}</em></> : null}<br></br>{props.hike.start_point_address}</div>
+        </ListGroup.Item>
+        <ListGroup.Item  style={{fontWeight:'bold', fontSize:13}}>
+          <i className="bi bi-compass"></i> End :
+          <div  style={{fontWeight:'normal'}}>{props.hike.end_point_nameLocation ? <><br></br><em>{props.hike.end_point_nameLocation}</em></> : null}<br></br>{props.hike.end_point_address}</div>
+        </ListGroup.Item>
+      </ListGroup>
+      <Card.Body>
+        <Card.Link href="#">Card Link</Card.Link>
+      </Card.Body>
+      <Card.Footer>Card Footer</Card.Footer>
+    </Card>
+  );
+
+}
+
 
 function HikeCard(props) {
 
@@ -123,11 +174,12 @@ function HikesContainer(props) {
     <>
       { hikes.length == 0 && !props.filter ? <ClipLoader color={'#fff'} size={150} /> : 
       <> 
+        {/**From grid example, to better separate cards:     <Row xs={1} md={2} className="g-4"> */}
         <div className="d-flex justify-content-start flex-wrap">
-          {hikes.length != 0 ? hikes.map((hike) => { return (<HikeCard role={props.role} key={hike.title} hike={hike} setCurrentHike={props.setCurrentHike} startHike={props.startHike} endHike={props.endHike} currentUser={props.currentUser} flag={props.flag} flagOnGoingHike={props.flagOnGoingHike} />) }) : <h3>No result found</h3>}
+          {hikes.length != 0 ? hikes.map((hike) => { return (<HikeCard2 role={props.role} key={hike.title} hike={hike} setCurrentHike={props.setCurrentHike} startHike={props.startHike} endHike={props.endHike} currentUser={props.currentUser} flag={props.flag} flagOnGoingHike={props.flagOnGoingHike} />) }) : <h3>No result found</h3>}
         </div>
         <Container className="d-flex justify-content-center mt-2">
-          <Row>
+          <Row >
             <Col>
               {actualIdx.current !=0 && hikes.length !=0? <Button className="me-2" onClick={() =>prevPage()}>Previous Page</Button> : null}
               {index.current != props.hikes.length && hikes.length !=0 ? <Button onClick={() =>nextPage()}>Next Page</Button>: null}
