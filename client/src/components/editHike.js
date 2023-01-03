@@ -8,7 +8,7 @@ function EditHike(props) {
   return (
     <>
       <Row>
-        <EditHikeForm updateHike={props.updateHike} oldHike={props.currentHike} setCurrentMarkers={props.setCurrentMarkers} currentMarkers={props.currentMarkers} returnToHome={props.returnToHome} ></EditHikeForm>
+        <EditHikeForm updateHike={props.updateHike} oldHike={props.currentHike} setCurrentMarkers={props.setCurrentMarkers} currentMarkers={props.currentMarkers} returnToHome={props.returnToHome} points = {props.points}></EditHikeForm>
       </Row>
       <div className="d-flex flex-row">
 
@@ -31,6 +31,10 @@ function EditHikeForm(props) {
   const [conditionDescription, setConditionDescription] = useState(props.oldHike.hike_condition_description ? props.oldHike.hike_condition_description : '')
   const [reference_points, setReferencePoints] = useState(props.oldHike.reference_points);
   const [errorMsg, setErrorMsg] = useState("");
+  const [startPoint, setStartPoint] = useState(props.oldHike.start_point_address)
+  const [startPointGps, setStartPointGps] = useState(props.oldHike.start_point_coordinates)
+  const [endPoint, setEndPoint] = useState(props.oldHike.end_point_address)
+  const [endPointGps, setEndPointGps] = useState(props.oldHike.end_point_coordinates)  
   const changeTitle = (val) => { setTitle(val) }
   const changeLength = (val) => { setLength(val) }
   const changeExpTime = (val) => { setExpTime(val) }
@@ -184,6 +188,22 @@ function EditHikeForm(props) {
           </InputGroup>
         </Form.Group>
       </Row>
+      <Row>
+        <Form.Group as={Col}>
+          <Form.Label>Start Point</Form.Label>
+          <InputGroup className="mb-3">
+            <InputGroup.Text><i className="bi bi-compass"></i></InputGroup.Text>
+            <Form.Control disabled value={startPoint} required={true} />
+          </InputGroup>
+        </Form.Group>
+        <Form.Group as={Col}>
+          <Form.Label>End Point</Form.Label>
+          <InputGroup className="mb-3">
+            <InputGroup.Text><i className="bi bi-compass"></i></InputGroup.Text>
+            <Form.Control disabled value={endPoint} required={true} />
+          </InputGroup>
+        </Form.Group>
+      </Row>
       <Form.Label style={{ fontSize: 25 }}> Click on the map to add Reference Points </Form.Label>
       <Row>
         { 
@@ -228,7 +248,9 @@ function EditHikeForm(props) {
             </Row>
       {console.log(reference_points)}
       <Form.Group as={Col}>
-        <GenericMap currentHike={[props.oldHike]} setCurrentMarkers={setReferencePoints} currentMarkers={reference_points}></GenericMap>
+        <GenericMap currentHike={[props.oldHike]} setCurrentMarkers={setReferencePoints} currentMarkers={reference_points} points={[...props.points].filter((x) => x.type != null)}
+              setStartPoint={setStartPoint} setStartPointGps={setStartPointGps} setEndPoint={setEndPoint} setEndPointGps={setEndPointGps} edit = {true} 
+              endPoint={endPoint} startPoint={startPoint}></GenericMap>
       </Form.Group>
       <Button className='mt-y' type='submit' style={{ background: 'green' }}>Save</Button>
       <Button style={{ background: 'green' }} onClick={reset} className='ms-2 my-2'>Cancel</Button>
