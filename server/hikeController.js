@@ -72,7 +72,7 @@ exports.updateHike = async function (req, res) {
     hike_condition: req.body.hike.hike_condition, hike_condition_description: req.body.hike.hike_condition_description, local_guide: oldHike.local_guide
   }
 
-  dao.updateHike(req.body.oldHikeTitle ,updateHike).then(
+  dao.updateHike(req.body.oldHikeTitle, updateHike).then(
     result => {
       return res.status(200).json();
     },
@@ -80,6 +80,32 @@ exports.updateHike = async function (req, res) {
       return res.status(500).send(error);
     }
   )
+
+  /*
+    This next part is to add or delete, if needed, the relationships
+    between a hike and a point. Delete everything and add new.
+  */
+  // Delete
+  dao.deleteHikePoint_Hike(oldHike.title).then(
+    result => {
+      return res.status(200).json();
+    },
+    error => {
+      return res.status(500).send(error);
+    }
+  )
+  // Add
+  updateHike.reference_points.map(point => {
+    dao.addHikePoint(point.idPoint, updateHike.title).then(
+      result => {
+        return res.status(200);
+      },
+      error => {
+        return res.status(500).send(error);
+      }
+    )
+  })
+
 }
 
 exports.getHuts = async function () {

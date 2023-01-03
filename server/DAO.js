@@ -267,8 +267,8 @@ function updateHikeDescription(title, description) {
 }
 function updateHike(oldHikeTitle, newHike) {
   return new Promise((resolve, reject) => {
-    const sql = 'UPDATE HIKES SET title = ?, length = ?, expected_time = ?, ascent = ?, difficulty = ?, start_point = ?, end_point = ?, reference_points = ?, description = ?, hike_condition =?, hike_condition_description = ?, local_guide = ? where title = ?';
-    db.run(sql, newHike.title, newHike.length, newHike.expected_time, newHike.ascent, newHike.difficulty, newHike.start_point, newHike.end_point, newHike.reference_points, newHike.description, newHike.hike_condition, newHike.hike_condition_description, newHike.local_guide, oldHikeTitle, (err) => {
+    const sql = 'UPDATE HIKES SET title = ?, length = ?, expected_time = ?, ascent = ?, difficulty = ?, start_point = ?, end_point = ?, description = ?, hike_condition =?, hike_condition_description = ?, local_guide = ? where title = ?';
+    db.run(sql, newHike.title, newHike.length, newHike.expected_time, newHike.ascent, newHike.difficulty, newHike.start_point, newHike.end_point, newHike.description, newHike.hike_condition, newHike.hike_condition_description, newHike.local_guide, oldHikeTitle, (err) => {
       if (err)
         reject(err);
       else
@@ -638,6 +638,52 @@ function getFinishedHikesByHiker(hiker_email) {
   });
 }
 
+//---------------- HikePoints ----------------------------
+
+function getHikePoint() {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT * FROM HikePoint';
+    db.all(sql, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
+function addHikePoint(idPoint, titleHike) {
+  return new Promise((resolve, reject) => {
+    const sql = 'INSERT INTO HikePoint (idPoint, titleHike) VALUES(?,?)';
+    db.run(sql, idPoint, titleHike, (err, rows) => {
+      if (err) {
+        reject(err);
+      }else{
+        resolve(true)
+      }
+    })
+  })
+}
+
+function deleteHikePoint_Hike(titleHike)  {
+  /*
+    Delete every relationship ship for a hike
+  */
+  return new Promise((resolve, reject) => {
+    const query = 'DELETE FROM HikePoint WHERE titleHike = ?;';
+    db.run(query, titleHike, idPoint, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(true);
+      }
+    });
+  });
+};
+
+
+
 module.exports = {
   readUsers, addUser, deleteUser, updateUserRole, getUserByEmail,
   readHikes, addHike, deleteHike, updateHike, updateHikeTitle, getHikeByTitle,
@@ -647,5 +693,6 @@ module.exports = {
   addCode, deleteCode, getCode, updateCode,
   updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, updatePointCapacity, updatePointAltitude,
   readListOfReferencePoints, readPointById,
-  startHike, updateHikeEndTime, getOnGoingHike, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker
+  startHike, updateHikeEndTime, getOnGoingHike, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker,
+  getHikePoint, addHikePoint, deleteHikePoint_Hike
 };
