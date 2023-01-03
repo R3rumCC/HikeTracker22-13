@@ -5,7 +5,9 @@ import * as L from "leaflet";
 import { React, useEffect, useContext, useRef, useState } from 'react';
 import { UNSAFE_NavigationContext, useNavigate } from "react-router-dom";
 import API from '../API';
-
+import redIcon from './imgUtils/redIcon.png'
+import greenIcon from './imgUtils/greenIcon.png'
+import houseIcon from './imgUtils/house.png'
 // THE GPX FILE MUST BE PASSED AS AN STRING. HERE I LEAVE AN EXAMPLE:
 // THIS PARTICULAR GPX HAS A SINGLE TRACK AND TWO SEGMENTS. THESE 
 // SEGMENTS ARE THE ANGLES THAT ARE BINDED BY LINES TO FORM THE PATH.
@@ -115,17 +117,25 @@ function HikePage(props) {
     )
 
 };
-const LeafIcon = L.Icon.extend({
-    options: {}
-});
-const blueIcon = new LeafIcon({
-    iconUrl:
-        "https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|abcdef&chf=a,s,ee00FFFF"
-}),
-    greenIcon = new LeafIcon({
-        iconUrl:
-            "https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|2ecc71&chf=a,s,ee00FFFF"
-    });
+
+const redMarker = L.icon({
+    iconUrl:  redIcon,
+    iconSize:     [48, 48],
+    iconAnchor:   [24, 48],
+    popupAnchor:  [0, -40]
+})
+const greenMarker = L.icon({
+    iconUrl:  greenIcon,
+    iconSize:     [48, 48],
+    iconAnchor:   [24, 48],
+    popupAnchor:  [0, -40]
+})
+const houseMarker = L.icon({
+    iconUrl:  houseIcon,
+    iconSize:     [32, 32],
+    iconAnchor:   [40, 32],
+    popupAnchor:  [-24, -24]
+})
 
 function GenericMap(props) { //Map to be inserted anywhere. 
     /*
@@ -239,7 +249,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                         pathOptions={{ fillColor: 'red', color: 'blue' }}
                         positions={positions}
                     />
-                    <Marker position={positions[0]}>
+                    <Marker icon={redMarker} position={positions[0]}>
                         <Popup>
                             {startPoint}
                             <hr></hr>
@@ -261,7 +271,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                 : null}
                         </Popup>
                     </Marker>
-                    <Marker position={positions[positions.length - 1]}>
+                    <Marker icon={greenMarker} position={positions[positions.length - 1]}>
                         <Popup>
                             {endPoint}
                             <hr></hr>
@@ -287,7 +297,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                     </Marker>
                     {props.points ? [...props.points].filter((x) => { return getDistanceFromLatLonInKm(x.gps_coordinates.split(',')[0], x.gps_coordinates.split(',')[1], positions[0][0],positions[0][1]) <= 5 || getDistanceFromLatLonInKm(x.gps_coordinates.split(',')[0], x.gps_coordinates.split(',')[1], positions[positions.length -1][0],positions[positions.length -1][1]) <=5 }).map((p) => {
                         return (
-                            <Marker icon={greenIcon} key={Math.random()} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
+                            <Marker icon={houseMarker} key={Math.random()} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
 
                                 <Popup >
                                     {p.nameLocation}
