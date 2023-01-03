@@ -193,20 +193,21 @@ function HikesContainer(props) {
   //Create buttons to navigate between them
   return (
     <>
-      { hikes.length == 0 && !props.filter ? <ClipLoader color={'#fff'} size={150} /> : 
+      { hikes.length == 0 && !props.filter ? <>{!props.flagOnGoingHike ? <h1>There aren't on going hikes.</h1> : <ClipLoader color={'#fff'} size={150} />}</> : 
       <> 
         {/**From grid example, to better separate cards:     <Row xs={1} md={2} className="g-4"> */}
         <div className="d-flex justify-content-start flex-wrap">
           {hikes.length != 0 ? hikes.map((hike) => { return (<HikeCard2 role={props.role} key={hike.title} hike={hike} setCurrentHike={props.setCurrentHike} startHike={props.startHike} endHike={props.endHike} currentUser={props.currentUser} flag={props.flag} flagOnGoingHike={props.flagOnGoingHike} />) }) : <h3>No result found</h3>}
         </div>
-        <Container className="d-flex justify-content-center mt-2">
+        {<Container className="d-flex justify-content-center mt-2">
           <Row >
             <Col>
               {actualIdx.current !=0 && hikes.length !=0? <Button className="me-2" onClick={() =>prevPage()}>Previous Page</Button> : null}
-              {index.current != props.hikes.length && hikes.length !=0 ? <Button onClick={() =>nextPage()}>Next Page</Button>: null}
+              {index.current < props.hikes.length && hikes.length !=0 ? <Button onClick={() =>nextPage()}>Next Page</Button>: null}
             </Col>
           </Row>
         </Container>
+        }
       </>}
     </>
 
