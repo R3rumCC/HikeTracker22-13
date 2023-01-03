@@ -155,7 +155,7 @@ function readListOfReferencePoints(title) { // RP for a given hike
 function addHike(hike) {
   return new Promise((resolve, reject) => {
     const sql = 'INSERT INTO HIKES (title, length, expected_time, ascent, difficulty, start_point, end_point, description, reference_points, gpx_track, picture, hike_condition, local_guide) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)';
-    db.run(sql, hike.title, hike.length, hike.expected_time, hike.ascent, hike.difficulty, hike.start_point, hike.end_point, hike.description, hike.reference_points, hike.gpx_track, hike.picture,hike.hike_condition, hike.local_guide, (err, rows) => {
+    db.run(sql, hike.title, hike.length, hike.expected_time, hike.ascent, hike.difficulty, hike.start_point, hike.end_point, hike.description, hike.reference_points, hike.gpx_track, hike.picture, hike.hike_condition, hike.local_guide, (err, rows) => {
       if (err) {
         reject(err);
       } else {

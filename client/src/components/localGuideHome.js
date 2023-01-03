@@ -241,7 +241,7 @@ function HikeForm(props) {
         console.log('gps_end= ' + gps_end + ', STATE endP= ' + endPointGps)
 
         let trackPoints = gpx.tracks[0].points.map((o) => o.ele).filter((x) => x != null)
-        console.log(trackPoints)
+//        console.log(trackPoints)
         if (trackPoints.length != 0) {
           let maxPoint = Math.max(...trackPoints)
           let minPoint = Math.min(...trackPoints)
@@ -405,6 +405,8 @@ function HikeForm(props) {
       </Form.Group>
 
       {/**COVER PICTURE */}
+      {gpxPos !=null ?
+      <>
       <Form.Group className='mt-3'>
         {seePic ? <div> <Image src={picture.name} ></Image> </div> : <></>}
       </Form.Group>
@@ -413,6 +415,9 @@ function HikeForm(props) {
         <Form.Label style={{ fontSize: 25 }}>Hike's Picture</Form.Label>
         <Form.Control type="file" required onChange={(e) => showPicture(e.target.files[0])} />
       </Form.Group>
+      </>
+      : null}
+
 
       {/**BUTTONS */}
       <Button className='mt-y' type='submit' style={{ background: 'green' }}>Save</Button>

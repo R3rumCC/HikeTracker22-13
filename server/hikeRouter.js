@@ -87,6 +87,7 @@ router.post('/newHike', [
 ], (req, res) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
+    console.log(errors)
     return res.status(400).json({
       errors: errors.array()
     })
@@ -119,7 +120,7 @@ router.put('/updateHike', [
 router.get('/getPoints', async (req, res) => {
   try {
     const points = await c.getPoints();
-    console.log(points);
+    //console.log(points);
     res.status(200).json(points).end();
   } catch (e) {
     res.status(500).json(e).end();
