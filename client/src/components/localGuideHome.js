@@ -236,9 +236,9 @@ function HikeForm(props) {
 
         //storing lat and lon inside the status of start/end point
         let gps_start = `${positions[0][0]}, ${positions[0][1]}`
-        setStartPointGps(gps_start);
+        //setStartPointGps(gps_start);
         let gps_end = `${positions[positions.length - 1][0]}, ${positions[positions.length - 1][1]}`
-        setEndPointGps(gps_end);
+        //setEndPointGps(gps_end);
         console.log('gps_start=' + gps_start + ', STATE startP= ' + startPointGps)
         console.log('gps_end= ' + gps_end + ', STATE endP= ' + endPointGps)
 
@@ -259,14 +259,16 @@ function HikeForm(props) {
         console.log(positions[0]);
         console.log(positions[positions.length - 1]);
         $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[0][0] + '&lon=' + positions[0][1] + '&format=json&limit=1&q=', function (data) {
-
+          /*
           changeStartP(data.display_name);
           changeStartPGps(positions[0][0]+','+positions[0][1]);
+          */
         });
         $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[positions.length - 1][0] + '&lon=' + positions[positions.length - 1][1] + '&format=json&limit=1&q=', function (data) {
-
+          /*
           changeEndP(data.display_name);
           changeEndPGps(positions[positions.length - 1][0]+','+positions[positions.length - 1][1])
+          */
         });
 
         setMap(reader.result)
@@ -392,7 +394,8 @@ function HikeForm(props) {
         {gpxPos != null ?
           <>
             <GenericMap gpxFile={map} currentHike={[]} currentMarkers={[]} setCurrentMarkers={''} points={[...props.points].filter((x) => x.type != null)}
-              setStartPoint={setStartPoint} setStartPointGps={setStartPointGps} setEndPoint={setEndPoint} setEndPointGps={setEndPointGps} endPoint={endPoint} startPoint={startPoint} />
+              setStartPoint={setStartPoint} setStartPointGps={setStartPointGps} setEndPoint={setEndPoint} setEndPointGps={setEndPointGps} 
+              endPoint={endPoint} startPoint={startPoint}/>
           </>
           : null}
       </Form.Group>

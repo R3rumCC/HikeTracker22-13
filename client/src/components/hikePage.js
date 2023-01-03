@@ -5,7 +5,13 @@ import * as L from "leaflet";
 import { React, useEffect, useContext, useRef, useState } from 'react';
 import { UNSAFE_NavigationContext, useNavigate } from "react-router-dom";
 import API from '../API';
-
+import redIcon from './imgUtils/redIcon.png'
+import greenIcon from './imgUtils/greenIcon.png'
+import blueIcon from './imgUtils/blueIcon.png'
+import houseRed from './imgUtils/houseRed.png'
+import houseGreen from './imgUtils/houseGreen.png'
+import houseBlue from './imgUtils/houseBlue.png'
+import houseOrange from './imgUtils/houseOrange.png'
 // THE GPX FILE MUST BE PASSED AS AN STRING. HERE I LEAVE AN EXAMPLE:
 // THIS PARTICULAR GPX HAS A SINGLE TRACK AND TWO SEGMENTS. THESE 
 // SEGMENTS ARE THE ANGLES THAT ARE BINDED BY LINES TO FORM THE PATH.
@@ -115,17 +121,53 @@ function HikePage(props) {
     )
 
 };
-const LeafIcon = L.Icon.extend({
-    options: {}
-});
-const blueIcon = new LeafIcon({
-    iconUrl:
-        "https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|abcdef&chf=a,s,ee00FFFF"
-}),
-    greenIcon = new LeafIcon({
-        iconUrl:
-            "https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|2ecc71&chf=a,s,ee00FFFF"
-    });
+
+const redMarker = L.icon({
+    iconUrl:  redIcon,
+    iconSize:     [32, 32],
+    iconAnchor:   [16, 32],
+    popupAnchor:  [0, -24]
+})
+const greenMarker = L.icon({
+    iconUrl:  greenIcon,
+    iconSize:     [32, 32],
+    iconAnchor:   [16, 32],
+    popupAnchor:  [0, -24]
+})
+const blueMarker = L.icon({
+    iconUrl:  blueIcon,
+    iconSize:     [32, 32],
+    iconAnchor:   [16, 32],
+    popupAnchor:  [0, -24]
+})
+const redHouse = L.icon({
+    iconUrl:  houseRed,
+    iconSize:     [32, 32],
+    iconAnchor:   [16, 32],
+    popupAnchor:  [0, -24]
+})
+const greenHouse = L.icon({
+    iconUrl:  houseGreen,
+    iconSize:     [32, 32],
+    iconAnchor:   [16, 32],
+    popupAnchor:  [0, -24]
+})
+const blueHouse = L.icon({
+    iconUrl:  houseBlue,
+    iconSize:     [32, 32],
+    iconAnchor:   [16, 32],
+    popupAnchor:  [0, -24]
+})
+const orangeHouse = L.icon({
+    iconUrl:  houseOrange,
+    iconSize:     [32, 32],
+    iconAnchor:   [16, 32],
+    popupAnchor:  [0, -24]
+    //Use the parameters below to show the icon slightly on right of the original point
+    /*iconAnchor:   [40, 32],
+    popupAnchor:  [-24, -24]
+    */
+})
 
 function GenericMap(props) { //Map to be inserted anywhere. 
     /*
@@ -141,8 +183,8 @@ function GenericMap(props) { //Map to be inserted anywhere.
     const mapList = useRef([])
     const [startPoint, setStartPoint] = useState(props.startPoint ? props.startPoint : '')
     const [endPoint, setEndPoint] = useState(props.endPoint ? props.endPoint : '')
-    const [startCheck, setStartCheck] = useState(props.startPoint ? props.startPoint : '');
-    const [endCheck, setEndCheck] = useState(props.endPoint ? props.endPoint : '');
+    const [startCheck, setStartCheck] = useState('');
+    const [endCheck, setEndCheck] = useState('');
     const travelOnce = useRef('');
 
     function MyComponent() {
@@ -205,27 +247,34 @@ function GenericMap(props) { //Map to be inserted anywhere.
             props.setCurrentMarkers(currentMarkersMod)
         }
     }, [props.currentMarkers, mapList.current])
+    useEffect(() => {
+        if(positions.length != 0){
+            $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[0][0] + '&lon=' + positions[0][1] + '&format=json&limit=1&q=', function (data) {
+                if(props.points){
+                    props.setStartPoint(data.display_name);
+                    props.setStartPointGps(positions[0][0] + ',' + positions[0][1])
+                }
+                setStartPoint(data.display_name)
+                setStartCheck(positions[0][0] + ',' + positions[0][1])
+                console.log('first start')
 
+                
+            })
+            $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[positions.length - 1][0] + '&lon=' + positions[positions.length - 1][1] + '&format=json&limit=1&q=', function (data) {
+                if(props.points){
+                    props.setEndPoint(data.display_name);
+                    props.setEndPointGps(positions[positions.length - 1][0]+','+positions[positions.length - 1][1])
+                }
+                setEndPoint(data.display_name)
+                setEndCheck(positions[positions.length - 1][0]+','+positions[positions.length - 1][1])
+                console.log('first end')
+                
+
+            })
+    }
+    }, [positions])
     if (map != '' && positions.length != 0) {
-        $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[0][0] + '&lon=' + positions[0][1] + '&format=json&limit=1&q=', function (data) {
-            
-            if(props.points){
-                props.setStartPoint(data.display_name);
-                props.setStartPointGps(`${positions[0][0]}, ${positions[0][1]}`)
-            }
-            setStartPoint(data.display_name)
-            setStartCheck(data.display_name)
-            
-        })
-        $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[positions.length - 1][0] + '&lon=' + positions[positions.length - 1][1] + '&format=json&limit=1&q=', function (data) {
-            
-            if(props.points){
-                props.setEndPoint(data.display_name);
-                props.setEndPointGps(positions[positions.length - 1][0]+','+positions[positions.length - 1][1])
-            }
-            setEndPoint(data.display_name)
-            setEndCheck(data.display_name)
-        })
+
         return (
             <>{map != '' ?
                 <MapContainer
@@ -239,7 +288,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                         pathOptions={{ fillColor: 'red', color: 'blue' }}
                         positions={positions}
                     />
-                    <Marker position={positions[0]}>
+                    <Marker icon={positions[0][0] + ',' + positions[0][1] == startCheck? greenMarker : blueMarker} position={positions[0]}>
                         <Popup>
                             {startPoint}
                             <hr></hr>
@@ -252,8 +301,8 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                         id="toggle-start"
                                         type="checkbox"
                                         variant="outline-success"
-                                        checked={startPoint == startCheck}
-                                        onChange={(e) => { setStartCheck(startPoint); props.setStartPoint(startPoint); props.setStartPointGps(positions[0].lat + ',' + positions[0].lng) }}
+                                        checked={positions[0][0] + ',' + positions[0][1] == startCheck}
+                                        onChange={(e) => { setStartCheck(positions[0][0] + ',' + positions[0][1]); props.setStartPoint(startPoint); props.setStartPointGps(positions[positions.length - 1][0]+','+positions[positions.length - 1][1]); console.log('change on initial start') }}
                                     >
                                         Start Point
                                     </ToggleButton>
@@ -261,7 +310,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                 : null}
                         </Popup>
                     </Marker>
-                    <Marker position={positions[positions.length - 1]}>
+                    <Marker icon={positions[positions.length - 1][0]+','+positions[positions.length - 1][1] == endCheck ? redMarker : blueMarker} position={positions[positions.length - 1]}>
                         <Popup>
                             {endPoint}
                             <hr></hr>
@@ -275,8 +324,8 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                         id="toggle-end"
                                         type="checkbox"
                                         variant="outline-danger"
-                                        checked={endPoint == endCheck}
-                                        onChange={(e) => { setEndCheck(endPoint); props.setEndPoint(endPoint); props.setEndPointGps(positions[positions.length - 1].lat + ',' + positions[positions.length - 1].lng) }}
+                                        checked={positions[positions.length - 1][0]+','+positions[positions.length - 1][1] == endCheck}
+                                        onChange={(e) => { setEndCheck(positions[positions.length - 1][0]+','+positions[positions.length - 1][1]); props.setEndPoint(endPoint); props.setEndPointGps(positions[positions.length - 1][0]+','+positions[positions.length - 1][1]); console.log('change on initial end')}}
                                     >
                                         End Point
                                     </ToggleButton>
@@ -287,7 +336,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                     </Marker>
                     {props.points ? [...props.points].filter((x) => { return getDistanceFromLatLonInKm(x.gps_coordinates.split(',')[0], x.gps_coordinates.split(',')[1], positions[0][0],positions[0][1]) <= 5 || getDistanceFromLatLonInKm(x.gps_coordinates.split(',')[0], x.gps_coordinates.split(',')[1], positions[positions.length -1][0],positions[positions.length -1][1]) <=5 }).map((p) => {
                         return (
-                            <Marker icon={greenIcon} key={Math.random()} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
+                            <Marker icon={p.gps_coordinates == startCheck && p.gps_coordinates == endCheck ? orangeHouse : p.gps_coordinates == startCheck ? greenHouse : p.gps_coordinates == endCheck ? redHouse : blueHouse} key={Math.random()} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
 
                                 <Popup >
                                     {p.nameLocation}
@@ -304,8 +353,9 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                             id="toggle-start"
                                             type="checkbox"
                                             variant="outline-success"
-                                            checked={p.address == startCheck}
-                                            onChange={(e) => { setStartCheck(p.address); props.setStartPoint(p.address); props.setStartPointGps(p.gps_coordinates) }}
+                                            checked={p.gps_coordinates == startCheck}
+                                            onChange={(e) => { setStartCheck(p.gps_coordinates); props.setStartPoint(p.address); props.setStartPointGps(p.gps_coordinates);
+                                                console.log('change on start')  }}
                                         >
                                             Start Point
                                         </ToggleButton>
@@ -314,8 +364,9 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                             id="toggle-end"
                                             type="checkbox"
                                             variant="outline-danger"
-                                            checked={p.address == endCheck}
-                                            onChange={(e) => { setEndCheck(p.address); props.setEndPoint(p.address); props.setEndPointGps(p.gps_coordinates) }}
+                                            checked={p.gps_coordinates == endCheck}
+                                            onChange={(e) => { setEndCheck(p.gps_coordinates); props.setEndPoint(p.address); props.setEndPointGps(p.gps_coordinates);
+                                                console.log('change on end')}}
                                         >
                                             End Point
                                         </ToggleButton>
