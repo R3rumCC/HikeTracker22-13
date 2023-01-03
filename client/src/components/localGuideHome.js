@@ -259,6 +259,34 @@ function HikeForm(props) {
 
   const showPicture= (pict) =>{
 
+    setPicture(pict);
+    console.log(pict.name);
+
+    let checkString= pict.name.split(".")
+    if(checkString[1] !== "jpg" && checkString[1] !== "jpeg" && checkString[1] !== "png"){
+      setErrorMsg("Not valid extension. Please insert a .jpg, .jpeg or .png file");
+      setPicture(null);
+    }
+
+      /**SUBMISSION WITH AXIOS (to be changed)
+       * 
+       * event.preventDefault()
+    const url = 'http://localhost:3000/uploadFile';
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('fileName', file.name);
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+    };
+    axios.post(url, formData, config).then((response) => {
+      console.log(response.data);
+    });
+
+       * 
+      */
+
   }
 
   return (<>
