@@ -49,7 +49,7 @@ exports.addHike = async function (req, res) {
     picture: req.body.newHike.picture, hike_condition: req.body.newHike.hike_condition, local_guide: req.body.newHike.local_guide
   }
   console.log('Before dao call')
-
+  console.log(hike)
 
   dao.addHike(hike).then(
     result => {

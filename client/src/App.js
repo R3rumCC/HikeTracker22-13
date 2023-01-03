@@ -84,7 +84,7 @@ function Main() {
       try {
         const fetchedPoints = await API.getPoints();
         setPoints(fetchedPoints);
-        console.log(fetchedPoints);
+        //console.log(fetchedPoints);
       } catch (error) {
         handleErrors(error);
       }
