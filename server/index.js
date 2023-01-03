@@ -3,6 +3,7 @@
 const express = require('express');
 const dao = require('./DAO');
 const upload = require("./upload")
+const upload_pictures= require("./upload_pictures")
 const multer = require("multer")
 const path = require('path');
 const userDao = require('./user-dao.js');
@@ -163,6 +164,29 @@ app.get(PREFIX+'/Maps/:name', (req, res, next) => {
   });
 });
 
+app.post("/upload_pictures", upload_pictures.single("file"), function (req, res) {
+  if (!req.file) {
+    //If the file is not uploaded, then throw custom error with message: PICTURE_MISSING
+    throw Error("PICTURE_MISSING")
+  } else {
+    //If the file is uploaded, then send a success response.
+    res.send({ status: "success" })
+  }
+})
+
+app.get(PREFIX+'/Pictures/:name', (req, res, next) => {
+  const fileName = req.params.name;
+  const options = {
+    root: path.join(__dirname,'/pictures')
+  };
+  res.sendFile(fileName, options, (err) => {
+      if (err) {
+          next(err);
+      } else {
+          console.log('File Sent:', fileName);
+      }
+  });
+});
 
 //SERVER RUNNING
 app.listen(3001, () => { console.log('Server running on Port: 3001') });
