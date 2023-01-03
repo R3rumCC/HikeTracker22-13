@@ -12,6 +12,8 @@ import houseRed from './imgUtils/houseRed.png'
 import houseGreen from './imgUtils/houseGreen.png'
 import houseBlue from './imgUtils/houseBlue.png'
 import houseOrange from './imgUtils/houseOrange.png'
+import houseBlue2 from './imgUtils/houseBlue2.png'
+import housePink from './imgUtils/housePink.png'
 // THE GPX FILE MUST BE PASSED AS AN STRING. HERE I LEAVE AN EXAMPLE:
 // THIS PARTICULAR GPX HAS A SINGLE TRACK AND TWO SEGMENTS. THESE 
 // SEGMENTS ARE THE ANGLES THAT ARE BINDED BY LINES TO FORM THE PATH.
@@ -56,12 +58,7 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) { //Calc distance bet
     return d;
 }
 
-function calcMinDistance(latlng, positions) { //Get the min distance to from a point to a set of points
-    let distances = positions.map(p => {
-        return getDistanceFromLatLonInKm(latlng.lat, latlng.lng, p[0], p[1])
-    })
-    return Math.min(...distances)
-}
+
 function refDistance(latlng, positions) { //Get the min distance to from a point to a set of points
     let min = 0.5
     let point = {}
@@ -168,6 +165,18 @@ const orangeHouse = L.icon({
     popupAnchor:  [-24, -24]
     */
 })
+const blue2House = L.icon({
+    iconUrl:  houseBlue2,
+    iconSize:     [32, 32],
+    iconAnchor:   [16, 32],
+    popupAnchor:  [0, -24]
+})
+const pinkHouse = L.icon({
+    iconUrl:  housePink,
+    iconSize:     [32, 32],
+    iconAnchor:   [16, 32],
+    popupAnchor:  [0, -24]
+})
 
 function GenericMap(props) { //Map to be inserted anywhere. 
     /*
@@ -273,6 +282,15 @@ function GenericMap(props) { //Map to be inserted anywhere.
             })
     }
     }, [positions])
+
+    function calcMinDistance(latlng) { //Get the min distance to from a point to a set of points
+        let distances = []
+        positions.forEach(p => {
+            distances.push(getDistanceFromLatLonInKm(latlng.lat, latlng.lng, p[0], p[1]))
+        })
+        return Math.min(...distances)
+    }
+
     if (map != '' && positions.length != 0) {
 
         return (
@@ -375,7 +393,87 @@ function GenericMap(props) { //Map to be inserted anywhere.
                             </Marker>
                         )
                     }) : null}
-                    {!props.points  && !props.hiker ?
+                    {/*What should be added? 
+                        - A way to link every hut (marked as linked) to the hut
+                        - A way to check if the hut is linked
+                        - Add the list of linked hut to the hike on save.
+                        A blue2House icon and a pinkHouse icon have been created to manage not linked or Linked, if it is a start point/end point or both the colour must be the same used without(green,red,orange) considering the link
+                    */}
+                    {props.points && props.edit ? [...props.points].filter((x) => { return calcMinDistance({ lat: x.gps_coordinates.split(',')[0], lng: x.gps_coordinates.split(',')[1]}) <= 5 && x.type=='Hut'}).map((p) => {
+                        return (
+                            <Marker icon={ p.gps_coordinates == startCheck && p.gps_coordinates == endCheck ? 
+                            orangeHouse : p.gps_coordinates == startCheck ? greenHouse : p.gps_coordinates == endCheck ?
+                             redHouse : blueHouse} key={Math.random()} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
+                            <Popup >
+                                {p.nameLocation}
+                                <hr></hr>
+                                {p.address}
+                                <hr></hr>
+                                {p.type}
+                                <hr></hr>
+
+                                <ButtonGroup>
+                                {getDistanceFromLatLonInKm(p.gps_coordinates.split(',')[0], p.gps_coordinates.split(',')[1], positions[0][0],positions[0][1]) <= 5 || getDistanceFromLatLonInKm(p.gps_coordinates.split(',')[0], p.gps_coordinates.split(',')[1], positions[positions.length -1][0],positions[positions.length -1][1]) <=5 ?
+                                    <>
+                                        <Col>
+                                            <ToggleButton
+                                                className="mb-2"
+                                                id="toggle-start"
+                                                type="checkbox"
+                                                variant="outline-success"
+                                                checked={p.gps_coordinates == startCheck}
+                                                onChange={(e) => { setStartCheck(p.gps_coordinates); props.setStartPoint(p.address); props.setStartPointGps(p.gps_coordinates);
+                                                    console.log('change on start')  }}
+                                            >
+                                                Start Point
+                                            </ToggleButton>
+                                            <ToggleButton
+                                                className="mb-2"
+                                                id="toggle-end"
+                                                type="checkbox"
+                                                variant="outline-danger"
+                                                checked={p.gps_coordinates == endCheck}
+                                                onChange={(e) => { setEndCheck(p.gps_coordinates); props.setEndPoint(p.address); props.setEndPointGps(p.gps_coordinates);
+                                                    console.log('change on end')}}
+                                            >
+                                                End Point
+                                            </ToggleButton>
+                                        </Col>
+
+                                    </> :
+                                    null
+                                    }
+                                    <Col>
+                                        <ToggleButton
+                                            className="mb-2"
+                                            id="toggle-start"
+                                            type="checkbox"
+                                            variant="outline-success"
+                                            checked={true /*TODO*/}
+                                            onChange={(e) => { /*TODO*/  }}
+                                        >
+                                            Link to Hike
+                                        </ToggleButton>
+                                        <ToggleButton
+                                            className="mb-2"
+                                            id="toggle-end"
+                                            type="checkbox"
+                                            variant="outline-danger"
+                                            checked={true /*TODO*/}
+                                            onChange={(e) => {/*TODO*/}}
+                                        >
+                                            Cancel
+                                        </ToggleButton>
+                                    </Col>
+
+
+                                </ButtonGroup>
+                            </Popup>
+                        </Marker>
+                        )
+                    }) : null}
+
+                    {props ?
                         <>
                             <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} positions={positions}></MapHandler>
                             <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>
@@ -491,4 +589,4 @@ function SelectedMarkers(props) {
 }
 
 
-export { HikePage, GenericMap, calcMinDistance };
+export { HikePage, GenericMap };
