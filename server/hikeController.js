@@ -46,7 +46,7 @@ exports.addHike = async function (req, res) {
     title: req.body.newHike.title, length: req.body.newHike.length, expected_time: req.body.newHike.expected_time,
     ascent: req.body.newHike.ascent, difficulty: req.body.newHike.difficulty, start_point: startId.idPoint, end_point: endId.idPoint,
     reference_points: req.body.newHike.reference_points, description: req.body.newHike.description, gpx_track: req.body.newHike.gpx_track,
-    hike_condition: req.body.newHike.hike_condition, local_guide: req.body.newHike.local_guide
+    picture: req.body.newHike.picture, hike_condition: req.body.newHike.hike_condition, local_guide: req.body.newHike.local_guide
   }
   console.log('Before dao call')
 

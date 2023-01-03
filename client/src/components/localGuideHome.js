@@ -179,10 +179,8 @@ function HikeForm(props) {
         //gpx_track: map --> request entity too large
       }
       props.CreateNewHike(newHike)
-      console.log(newHike)
       submitFile()
       submitPicture(picture)
-      console.log('after CreateNewHike');
       alert('New Hike correctly added!')
       props.setOnChangeHikes(true)
       props.setOnChangePoints(true)
