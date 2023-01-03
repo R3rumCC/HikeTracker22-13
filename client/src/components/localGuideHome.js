@@ -6,6 +6,9 @@ import Profile from './profile';
 import axiosInstance from "../utils/axios"
 import "./sidebar.css";
 
+const default_image= 'https://www.travelmanagers.com.au/wp-content/uploads/2012/08/AdobeStock_254529936_Railroad-to-Denali-National-Park-Alaska_750x500.jpg'
+
+
 function LocalGuide_Home(props) {
   const [hikeForm, setHikeForm] = useState(false);
   const [parkingLotForm, setParkingLotForm] = useState(false);
@@ -103,6 +106,7 @@ function HikeForm(props) {
   const [map, setMap] = useState('') //USED TO SAVE MAP STRING
   const [gpxPos, setGpxPos] = useState(null)
   const [picture, setPicture]= useState(null)
+  const [seePic, setSeePic]= useState(false)
   const [errorMsg, setErrorMsg] = useState("");
 
   const changeTitle = (val) => { setTitle(val) }
@@ -133,6 +137,23 @@ function HikeForm(props) {
     })
   }
 
+
+  const submitPicture= (pict)=>{
+
+    let myBlob = new Blob([pict], { type: "text/plain" })
+
+    const url = '/upload_pictures';
+    const formData = new FormData();
+
+    formData.append('file', myBlob,  pict.name);
+    const config = {
+      headers: {
+        'content-type': "text/plain",
+      },
+    };
+    axiosInstance.post(url, formData, config);
+  }
+
   const submitHikeForm = (event) => {
     event.preventDefault();
     let newHike = undefined;
@@ -154,12 +175,13 @@ function HikeForm(props) {
       newHike = {
         title: title, length: length, expected_time: expTime, ascent: ascent, difficulty: difficulty,
         start_point: startPoint, end_point: endPoint, reference_points: reference_points,
-        description: description, gpx_track: title, hike_condition: 'Open', local_guide: props.currentUser.username
+        description: description, gpx_track: title, picture: picture.name, hike_condition: 'Open', local_guide: props.currentUser.username
         //gpx_track: map --> request entity too large
       }
       props.CreateNewHike(newHike)
       console.log(newHike)
       submitFile()
+      submitPicture(picture)
       console.log('after CreateNewHike');
       alert('New Hike correctly added!')
       props.setOnChangeHikes(true)
@@ -180,7 +202,8 @@ function HikeForm(props) {
     setStartPoint(''); setStartPointGps('');
     setEndPoint(''); setEndPointGps('');
     setErrorMsg(''); setMap(''); 
-    setGpxPos(null); setPicture(null);
+    setGpxPos(null); setPicture(null); setSeePic(false)
+
   }
 
   //Import gpx file and read, gpx parse it is used to retreive the start point and the end point (format latitude,longitude)
@@ -266,26 +289,10 @@ function HikeForm(props) {
     if(checkString[1] !== "jpg" && checkString[1] !== "jpeg" && checkString[1] !== "png"){
       setErrorMsg("Not valid extension. Please insert a .jpg, .jpeg or .png file");
       setPicture(null);
+    
+    }else{
+      setSeePic(true)
     }
-
-      /**SUBMISSION WITH AXIOS (to be changed)
-       * 
-       * event.preventDefault()
-    const url = 'http://localhost:3000/uploadFile';
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('fileName', file.name);
-    const config = {
-      headers: {
-        'content-type': 'multipart/form-data',
-      },
-    };
-    axios.post(url, formData, config).then((response) => {
-      console.log(response.data);
-    });
-
-       * 
-      */
 
   }
 
@@ -398,11 +405,7 @@ function HikeForm(props) {
 
       {/**COVER PICTURE */}
       <Form.Group className='mt-3'>
-        {picture != null ?
-          <>
-            <Image ></Image>
-          </>
-          : null}
+        {seePic ? <div> <Image src={picture.name} ></Image> </div> : <></>}
       </Form.Group>
 
       <Form.Group controlId="pictureFile" className="mt-3">

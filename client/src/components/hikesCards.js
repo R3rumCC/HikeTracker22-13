@@ -40,7 +40,7 @@ function HikeCard2(props){
   }
 
   return (
-    <Card border='success' style={{ width: '18rem' }}>
+    <Card className="mx-1 my-1" border='success' style={{ width: '18rem' }}>
       <Card.Img variant="top" src= {default_image}/>
       <Card.Body>
 
