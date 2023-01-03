@@ -6,10 +6,13 @@ import Badge from 'react-bootstrap/Badge';
 import dayjs from 'dayjs';
 
 const default_image= 'https://www.travelmanagers.com.au/wp-content/uploads/2012/08/AdobeStock_254529936_Railroad-to-Denali-National-Park-Alaska_750x500.jpg'
+const URL = 'http://localhost:3001/pictures';
 
 function HikeCard2(props){
 
   const [colorDiff, setColorDiff]= useState('success');
+  const [nameStart, setNameStart]= useState('');
+  const [nameEnd, setNameEnd]= useState('');
 
   function startHike() {
     let start_time = dayjs();
@@ -22,12 +25,32 @@ function HikeCard2(props){
     props.endHike(props.currentUser.username, props.hike.title, props.hike.start_time, end_time.format('YYYY/MM/DD HH:mm:ss'));
   }
 
-  console.log(props.flagOnGoingHike)
+  //console.log(props.flagOnGoingHike)
 
   useEffect(()=>{
     setColorDifficulty(props.hike.difficulty)
     console.log(colorDiff)
   },[props.hike.difficulty])
+
+
+  useEffect( ()=>{
+
+    console.log("Start Point NameLocation")
+    if(props.hike.start_point_nameLocation !== null){
+      setNameStart(props.hike.start_point_nameLocation)
+    }else{ 
+      let split_start= props.hike.start_point_address.split(",");
+      setNameStart(split_start[0] + " , "+ split_start[1])
+    }
+
+    if(props.hike.end_point_nameLocation !== null){
+      setNameEnd(props.hike.end_point_nameLocation)
+    }else{
+      let split_end= props.hike.end_point_address.split(",");
+      setNameEnd((split_end[0]+ " , " + split_end[1]));
+    }
+
+  }, [props.hike])
 
   const setColorDifficulty= (difficulty)=>{
     if(difficulty=== 'Tourist'){
@@ -40,7 +63,7 @@ function HikeCard2(props){
   }
 
   return (
-    <Card border='success' style={{ width: '18rem' }}>
+    <Card className="mx-1 my-1" border='success' style={{ width: '18rem' }}>
       <Card.Img variant="top" src= {default_image}/>
       <Card.Body>
 
@@ -60,16 +83,28 @@ function HikeCard2(props){
           </ListGroup.Item>
           <ListGroup.Item  style={{fontWeight:'bold', fontSize:13}}>
             <i className="bi bi-compass"></i> Start Point :
-            <div  style={{fontWeight:'normal'}}>{/*props.hike.start_point_nameLocation ? <><br></br><em>{props.hike.start_point_nameLocation}</em></> : null} <br></br>{*/props.hike.start_point_address}</div>
+            <div  style={{fontWeight:'normal'}}> {nameStart} </div>
           </ListGroup.Item>
           <ListGroup.Item  style={{fontWeight:'bold', fontSize:13}}>
             <i className="bi bi-compass"></i> End Point :
-            <div  style={{fontWeight:'normal'}}>{/*props.hike.end_point_nameLocation ? <><br></br><em>{props.hike.end_point_nameLocation}</em></> : null}<br></br>{*/props.hike.end_point_address}</div>
+            <div  style={{fontWeight:'normal'}}>{nameEnd}</div>
           </ListGroup.Item>
-        </ListGroup>
+          <ListGroup.Item>
+            {props.role == 'Hiker' ? <Card.Link><Link to='/Map' onClick={() => { props.setCurrentHike([props.hike]) }}>See on map</Link></Card.Link> : null}
+          </ListGroup.Item>
+        </ListGroup>     
       </Card.Body>
       <Card.Footer>
-        <Button variant='outline-success'>Details</Button>
+        <Row>
+          <Col><Button variant='outline-success'>Details</Button></Col>
+          <Col>
+            {props.role == 'LocalGuide' ? <Link to='/editHike'><Button variant='outline-success' onClick={() => { props.setCurrentHike(props.hike) }}>Edit hike</Button></Link> : null}
+            {props.role == 'Hiker' && !props.flagOnGoingHike ? <Link to='/profile'><Button variant='outline-success' onClick={() => { startHike() }}>Start hike</Button></Link> : null}
+            {/*flag is a costant for choose to see or not the Start Button in the hikeCard. If it is true -> we are in onGoingHike page -> no show Start button but show eventually the End button*/}
+            {/*flagOnGoingHike is a costant for choose to see or not the Start Button in the hikeCard. If it is true -> there is an hike in progress for the currentUser -> no show Start button*/}
+            {props.role == 'Hiker' && props.flag ? <Link to='/'><Button className="btn btn-danger" onClick={() => { endHike() }}>End hike</Button></Link> : null}
+          </Col>
+        </Row>
       </Card.Footer>
     </Card>
   );
