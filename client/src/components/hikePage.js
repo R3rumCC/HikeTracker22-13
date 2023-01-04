@@ -14,6 +14,7 @@ import houseBlue from './imgUtils/houseBlue.png'
 import houseOrange from './imgUtils/houseOrange.png'
 import houseBlue2 from './imgUtils/houseBlue2.png'
 import housePink from './imgUtils/housePink.png'
+
 // THE GPX FILE MUST BE PASSED AS AN STRING. HERE I LEAVE AN EXAMPLE:
 // THIS PARTICULAR GPX HAS A SINGLE TRACK AND TWO SEGMENTS. THESE 
 // SEGMENTS ARE THE ANGLES THAT ARE BINDED BY LINES TO FORM THE PATH.
@@ -484,6 +485,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                     {<GeoJSON data={map}></GeoJSON>}
                 </MapContainer>
                 : null}
+            <a target="_blank" href="https://icons8.com/icon/HrlntWrGhszB/map-marker">Map Marker</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 
             </>
         )
@@ -514,6 +516,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                     {props.filter ? <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} radiusMin={props.radiusMin} radiusMax={props.radiusMax}></SelectedMarkers> :
                         <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>}
                 </MapContainer>
+                <a target="_blank" href="https://icons8.com/icon/HrlntWrGhszB/map-marker">Map Marker</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
             </>
         )
     }
