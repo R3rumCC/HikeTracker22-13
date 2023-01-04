@@ -414,6 +414,48 @@ function updateEndTime(hiker_email, hike_title, start_time, end_time) {
   });
 }
 
+function endHike(hiker_email, hike_title, duration) {
+  return new Promise((resolve, reject) => {
+    fetch(URL + '/endHikeFirstTime', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ hiker_email, hike_title, duration }),
+    }).then((response) => {
+      if (response.ok) {
+        resolve(null);
+      } else {
+        response.json()
+          .then((obj) => { reject(obj); })
+          .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+      }
+    }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+  });
+}
+
+function updateEndHike(hiker_email, hike_title, duration) {
+  return new Promise((resolve, reject) => {
+    fetch(URL + '/endHike', {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ hiker_email, hike_title, duration }),
+    }).then((response) => {
+      if (response.ok) {
+        resolve(null);
+      } else {
+        response.json()
+          .then((obj) => { reject(obj); })
+          .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+      }
+    }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+  });
+}
+
 async function getOnGoingHike(hiker_email) {
   return new Promise((resolve, reject) => {
     fetch(URL + '/getOnGoingHike/'+hiker_email)
@@ -434,8 +476,7 @@ async function getOnGoingHike(hiker_email) {
               hike_condition: row.hike.hike_condition,
               hike_condition_description: row.hike.hike_condition_description,
               local_guide: row.hike.local_guide,
-              start_time: row.start_time,
-              times_completed: row.times_completed
+              start_time: row.start_time
             }))))
             .catch(err => reject({ error: "Cannot parse server response" }))
         } else {
@@ -457,8 +498,7 @@ async function getFinishedHikes() {
               hiker: row.hiker,
               hike: row.hike,
               start_time: row.start_time,
-              end_time: row.end_time,
-              times_completed: row.times_completed
+              end_time: row.end_time
             }))))
             .catch(err => reject({ error: "Cannot parse server response" }))
         } else {
@@ -510,8 +550,7 @@ async function getFinishedHikesByHiker(hiker_email) {
               hike_condition_description: row.hike.hike_condition_description,
               local_guide: row.hike.local_guide,
               start_time: row.start_time,
-              end_time: row.end_time,
-              times_completed: row.times_completed
+              end_time: row.end_time
             }))))
             .catch(err => reject({ error: "Cannot parse server response" }))
         } else {
@@ -530,6 +569,7 @@ const API = {
   addNewHike, updateHike, getHikes, getMap,
   addPoint, addHut, getHuts, getPoints,
   checkUser, sendEmail, checkCode,
-  startHike, updateEndTime, getOnGoingHike, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker
+  startHike, updateEndTime, endHike, updateEndHike,
+  getOnGoingHike, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker
 }
 export default API;

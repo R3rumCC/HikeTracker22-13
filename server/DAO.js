@@ -571,7 +571,7 @@ function startHike(hiker_email, hike_title, start_time) {
 //also start_time because the same hiker can do the same hike multiple times
 function updateHikeEndTime(hiker_email, hike_title, start_time, end_time) {
   return new Promise((resolve, reject) => {
-    const sql = 'UPDATE HikerHike SET end_time = ?, times_completed = times_completed + 1 WHERE hiker = ? and hike = ? and start_time = ?';
+    const sql = 'UPDATE HikerHike SET end_time = ? WHERE hiker = ? and hike = ? and start_time = ?';
     db.run(sql, end_time, hiker_email, hike_title, start_time, (err) => {
       if (err)
         reject(err);
@@ -581,10 +581,63 @@ function updateHikeEndTime(hiker_email, hike_title, start_time, end_time) {
   });
 }
 
+//when an hike was terminate for the first time add a row in HikerHikeStatistics
+function endHike(hiker_email, hike_title, duration) {
+  return new Promise((resolve, reject) => {
+    const sql = 'INSERT INTO HikerHikeStatistics (hiker, hike, times_completed, best_time) VALUES(?,?,1,?)';
+    db.run(sql, hiker_email, hike_title, duration, (err) => {
+      if (err)
+        reject(err);
+      else
+        resolve(true);
+    });
+  });
+}
+
+//when an hike was terminate not for the first time update a row in HikerHikeStatistics
+function updateEndHikeBestTime(hiker_email, hike_title, duration) {
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE HikerHikeStatistics SET times_completed = times_completed + 1, best_time = ? WHERE hiker = ? and hike = ?';
+    db.run(sql, duration, hiker_email, hike_title, (err) => {
+      if (err)
+        reject(err);
+      else
+        resolve(true);
+    });
+  });
+}
+
+//when an hike was terminate not for the first time update a row in HikerHikeStatistics
+function updateEndHikeNoBestTime(hiker_email, hike_title) {
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE HikerHikeStatistics SET times_completed = times_completed + 1 WHERE hiker = ? and hike = ?';
+    db.run(sql, hiker_email, hike_title, (err) => {
+      if (err)
+        reject(err);
+      else
+        resolve(true);
+    });
+  });
+}
+
+function getBestTime(hiker_email, hike_title) {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT best_time FROM HikerHikeStatistics WHERE hiker = ? AND hike = ?';
+    db.get(sql, hiker_email, hike_title, (err, row) => {
+      if (err) {
+        reject(err);
+      }
+      else {
+        resolve(row);
+      }
+    });
+  });
+}
+
 //Returns the ongoing hike of a specific hiker
 function getOnGoingHike(hiker_email) {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT hike, start_time, times_completed FROM HikerHike WHERE hiker = ? AND start_time IS NOT NULL AND end_time IS NULL';
+    const sql = 'SELECT hike, start_time FROM HikerHike WHERE hiker = ? AND start_time IS NOT NULL AND end_time IS NULL';
     db.all(sql, hiker_email, (err, rows) => {
       if (err) {
         reject(err);
@@ -627,7 +680,7 @@ function getDistinctFinishedHikes() {
 //Returns all hikes that are finished by a specific hiker, also the duplicates
 function getFinishedHikesByHiker(hiker_email) {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT hike, start_time, end_time, times_completed FROM HikerHike WHERE hiker = ? AND start_time IS NOT NULL AND end_time IS NOT NULL'; //check also su start_time? because it can be null for db contstraints
+    const sql = 'SELECT hike, start_time, end_time FROM HikerHike WHERE hiker = ? AND start_time IS NOT NULL AND end_time IS NOT NULL'; //check also su start_time? because it can be null for db contstraints
     db.all(sql, hiker_email, (err, rows) => {
       if (err) {
         reject(err);
@@ -694,5 +747,6 @@ module.exports = {
   updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, updatePointCapacity, updatePointAltitude,
   readListOfReferencePoints, readPointById,
   startHike, updateHikeEndTime, getOnGoingHike, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker,
+  endHike, updateEndHikeBestTime, updateEndHikeNoBestTime, getBestTime,
   getHikePoint, addHikePoint, deleteHikePoint_Hike
 };
