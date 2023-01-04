@@ -458,7 +458,7 @@ function updateEndHike(hiker_email, hike_title, duration) {
 }
 
 async function checkFirstTime(hiker_email, hike_title) {
-  const response = await fetch(URL + `/checkFirstTime?hiker=${hiker_email}&hike=${hike_title}/`, {
+  const response = await fetch(URL + `/checkFirstTime?hiker=${hiker_email}&hike=${hike_title}`, {
     credentials: 'include',
   });
   const resJson = await response.json();
@@ -510,8 +510,8 @@ async function getFinishedHikes() {
             .then(json => resolve(json.map((row) => ({
               hiker: row.hiker,
               hike: row.hike,
-              start_time: row.start_time,
-              end_time: row.end_time
+              times_completed: row.times_completed,
+              best_time: row.best_time
             }))))
             .catch(err => reject({ error: "Cannot parse server response" }))
         } else {
@@ -562,8 +562,8 @@ async function getFinishedHikesByHiker(hiker_email) {
               hike_condition: row.hike.hike_condition,
               hike_condition_description: row.hike.hike_condition_description,
               local_guide: row.hike.local_guide,
-              start_time: row.start_time,
-              end_time: row.end_time
+              times_completed: row.times_completed,
+              best_time: row.best_time
             }))))
             .catch(err => reject({ error: "Cannot parse server response" }))
         } else {

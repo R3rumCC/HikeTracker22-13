@@ -327,7 +327,7 @@ exports.updateEndHike = async function (req, res) {
 
 exports.checkFirstTime = async function (req) {
   try {
-    const flag = await dao.checkFirstEnd(req.body.hiker_email, req.body.hike_title);
+    const flag = await dao.checkFirstEnd(req.query.hiker, req.query.hike);
     return flag;
   } catch (error) {
     console.error(error)
@@ -377,7 +377,7 @@ exports.getFinishedHikesByHiker = async function (req) {
     let hikes = [];
     for(let t of titles) {
       const h = await dao.getHikeByTitle(t.hike);
-      const hike = {hike: h, start_time: t.start_time, end_time: t.end_time};
+      const hike = {hike: h, times_completed: t.times_completed, best_time: t.best_time};
       hikes.push(hike);
     }
     return hikes;

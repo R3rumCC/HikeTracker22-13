@@ -666,10 +666,10 @@ function getOnGoingHike(hiker_email) {
   });
 }
 
-//Returns all hikes that are finished, even duplicates if, for example, the same hike was completed by two or more different hikers or twice by the same one
+//Returns all hikes that are finished, even duplicates if, for example, the same hike was completed by two or more different hikers
 function getFinishedHikes() {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM HikerHike WHERE start_time IS NOT NULL AND end_time IS NOT NULL'; //check also su start_time? because it can be null for db contstraints
+    const sql = 'SELECT * FROM HikerHikeStatistics';
     db.all(sql, (err, rows) => {
       if (err) {
         reject(err);
@@ -683,7 +683,7 @@ function getFinishedHikes() {
 //Returns all hikes that are finished, eliminating duplicates 
 function getDistinctFinishedHikes() {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT DISTINCT(hike) FROM HikerHike WHERE start_time IS NOT NULL AND end_time IS NOT NULL'; //check also su start_time? because it can be null for db contstraints
+    const sql = 'SELECT DISTINCT(hike) FROM HikerHikeStatistics'; 
     db.all(sql, (err, rows) => {
       if (err) {
         reject(err);
@@ -694,10 +694,10 @@ function getDistinctFinishedHikes() {
   });
 }
 
-//Returns all hikes that are finished by a specific hiker, also the duplicates
+//Returns all hikes that are finished by a specific hiker
 function getFinishedHikesByHiker(hiker_email) {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT hike, start_time, end_time FROM HikerHike WHERE hiker = ? AND start_time IS NOT NULL AND end_time IS NOT NULL'; //check also su start_time? because it can be null for db contstraints
+    const sql = 'SELECT hike, times_completed, best_time FROM HikerHikeStatistics WHERE hiker = ?';
     db.all(sql, hiker_email, (err, rows) => {
       if (err) {
         reject(err);
