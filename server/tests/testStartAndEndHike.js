@@ -6,32 +6,37 @@ chai.should();
 const testDao = require('../test-dao');
 
 const app = require('../index');
-const { startHike, updateEndTime, getFinishedHikes } = require('../hikeController');
 let agent = chai.request.agent(app); //.agent() is needed for keep cookies from one reuqent
-
-function RowNoEnd(hiker_email, hike_title, start_time){
-  this.hiker_email = hiker_email;
-  this.hike_title = hike_title;
-  this.start_time = start_time;
-}
 
 describe("HikerHike test", () => {
   beforeEach(async () => {
     await testDao.run('DELETE FROM HikerHike');
+    await testDao.run('DELETE FROM HikerHikeStatistics');
     await testDao.run("INSERT OR IGNORE INTO HikerHike(hiker, hike, start_time, end_time)\
             VALUES ('mario.rossi@gmail.com', \
             'Form Pian Belota to la Vacca', '15.00', '18.00'),\
             ('mario.rossi@gmail.com', \
             'Hike Monte Thabor', '12.00', null)");
+    await testDao.run("INSERT OR IGNORE INTO HikerHikeStatistics(hiker, hike, times_completed, best_time)\
+            VALUES ('mario.rossi@gmail.com', \
+            'Form Pian Belota to la Vacca', 2, 60),\
+            ('mario.rossi@gmail.com', \
+            'Hike Monte Thabor', 6, 30)");
   });
 
   afterEach(async () => {                                 //better afterAll but I recived a "afterAll nt defined"
     await testDao.run('DELETE FROM HikerHike');
+    await testDao.run('DELETE FROM HikerHikeStatistics');
     await testDao.run("INSERT OR IGNORE INTO HikerHike(hiker, hike, start_time, end_time)\
             VALUES ('mario.rossi@gmail.com', \
             'Form Pian Belota to la Vacca', '15.00', '18.00'),\
             ('mario.rossi@gmail.com', \
             'Hike Monte Thabor', '12.00', null)");
+    await testDao.run("INSERT OR IGNORE INTO HikerHikeStatistics(hiker, hike, times_completed, best_time)\
+            VALUES ('mario.rossi@gmail.com', \
+            'Form Pian Belota to la Vacca', 2, 60),\
+            ('mario.rossi@gmail.com', \
+            'Hike Monte Thabor', 6, 30)");
   });
 
   startingHike(200, 'mario.rossi@gmail.com', 'Form Pian Belota to la Vacca', '15.00');
@@ -44,6 +49,16 @@ describe("HikerHike test", () => {
   updatingEndTime(400, null, 'Form Pian Belota to la Vacca', '15.00', '18.00');
   updatingEndTime(400, 'mario.rossi@gmail.com', null, '15.00', '18.00');
   updatingEndTime(400, 'mario.rossi@gmail.com', 'Form Pian Belota to la Vacca', null, '18.00');
+
+  terminateHikeFirstTime(200, 'mario.rossi@gmail.com', 'Form Pian Belota to la Vacca', 60);
+  terminateHikeFirstTime(400, null, 'Form Pian Belota to la Vacca', 60);
+  terminateHikeFirstTime(400, 'mario.rossi@gmail.com', null, 60);
+
+  terminateHike(200, 'mario.rossi@gmail.com', 'Form Pian Belota to la Vacca', 60);
+  terminateHike(400, null, 'Form Pian Belota to la Vacca', 60);
+  terminateHike(400, 'mario.rossi@gmail.com', null, 60);
+
+  flagFirstTime(200, 'mario.rossi@gmail.com', 'Form Pian Belota to la Vacca');
 
   obtainOnGoingHike(200, 'mario.rossi@gmail.com');
   obtainFinishedHikes(200);
@@ -93,6 +108,40 @@ function updatingEndTime(expectedHTTPStatus, hiker_email, hike_title, start_time
   });
 }
 
+function terminateHikeFirstTime(expectedHTTPStatus, hiker_email, hike_title, duration) {
+  it('terminate an hike for the first time', async function () {
+    await testDao.run('DELETE FROM HikerHikeStatistics');
+    let reqBody = JSON.stringify({ hiker_email, hike_title, duration });
+    return agent.post('/api/endHikeFirstTime')
+      .set('Content-Type', 'application/json')
+      .send(reqBody)
+      .then(function (res) {
+        res.should.have.status(expectedHTTPStatus);
+      })
+  });
+}
+
+function terminateHike(expectedHTTPStatus, hiker_email, hike_title, duration) {
+  it('terminate an hike for the first time', async function () {
+    let reqBody = JSON.stringify({ hiker_email, hike_title, duration });
+    return agent.put('/api/endHike')
+      .set('Content-Type', 'application/json')
+      .send(reqBody)
+      .then(function (res) {
+        res.should.have.status(expectedHTTPStatus);
+      })
+  });
+}
+
+function flagFirstTime(expectedHTTPStatus, hiker_email, hike_title) {
+  it('check if it is the first time to terminate this hike', async function () {
+    return agent.get(`/api/checkFirstTime?hiker=${hiker_email}&hike=${hike_title}`)
+      .then(function (res) {
+        res.should.have.status(expectedHTTPStatus);
+      })
+  });
+};
+
 function obtainOnGoingHike(expectedHTTPStatus, hiker_email) {
   it('get list of finished hikes', async function () {
     return agent.get('/api/getOnGoingHike/'+hiker_email)
@@ -128,15 +177,3 @@ function obtainFinishedHikesByHiker(expectedHTTPStatus, hiker_email) {
       })
   });
 };
-
-/*async function logout() {
-  await agent.delete('/api/sessions/current')
-}
-
-async function login() {
-  await agent.post('/api/sessions')
-      .send(userCredentials)
-      .then(function (res) {
-          res.should.have.status(200);
-      });
-}*/
