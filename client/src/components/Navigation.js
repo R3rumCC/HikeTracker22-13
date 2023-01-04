@@ -12,9 +12,6 @@ const Navigation = (props) => {
   const NORMAL_OPACITY = 0.85;
   const [opacity, setOpacity] = useState(NORMAL_OPACITY);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-  }
 
   //State that identifies whether the user is on the search page or not
   //Used to render the text in the button differently

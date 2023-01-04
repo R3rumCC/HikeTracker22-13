@@ -196,6 +196,7 @@ async function getHikes() {
     }
   }
   catch (e) {
+    console.error(e);
     throw e;
   }
 }

@@ -168,8 +168,7 @@ function Main() {
 
   const checkUser = async (email) => {
     const u = await API.checkUser(email);
-    if (u.error) return true;
-    else return false;
+    return u.error ? true : false
   };
   /*****************************************************/
 

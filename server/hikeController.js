@@ -330,6 +330,7 @@ exports.checkFirstTime = async function (req) {
     const flag = await dao.checkFirstEnd(req.body.hiker_email, req.body.hike_title);
     return flag;
   } catch (error) {
+    console.error(error)
     throw error;
   }
 }
@@ -345,6 +346,7 @@ exports.getOnGoingHike = async function (req) {
     }
     return result;
   } catch (error) {
+    console.error(error)
     throw error;
   }
 }
@@ -354,6 +356,7 @@ exports.getFinishedHikes = async function () {
     const hikes = await dao.getFinishedHikes();
     return hikes;
   } catch (error) {
+    console.error(error)
     throw error;
   }
 }
@@ -363,6 +366,7 @@ exports.getDistinctFinishedHikes = async function () {
     const hikes = await dao.getDistinctFinishedHikes();
     return hikes;
   } catch (error) {
+    console.error(error)
     throw error;
   }
 }
@@ -371,13 +375,14 @@ exports.getFinishedHikesByHiker = async function (req) {
   try {
     const titles = await dao.getFinishedHikesByHiker(req.params.hiker);
     let hikes = [];
-    for(t of titles) {
+    for(let t of titles) {
       const h = await dao.getHikeByTitle(t.hike);
       const hike = {hike: h, start_time: t.start_time, end_time: t.end_time};
       hikes.push(hike);
     }
     return hikes;
   } catch (error) {
+    console.error(error)
     throw error;
   }
 }

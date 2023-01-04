@@ -3,7 +3,7 @@ import { HikesContainer } from './hikesCards';
 import { MapContainer, Polyline, TileLayer, Marker, Popup, useMapEvents, GeoJSON, useMap, Circle, LayerGroup, } from 'react-leaflet'
 import * as L from "leaflet";
 import { React, useEffect, useContext, useRef, useState } from 'react';
-import { UNSAFE_NavigationContext, useNavigate } from "react-router-dom";
+import { UNSAFE_NavigationContext } from "react-router-dom";
 import API from '../API';
 import redIcon from './imgUtils/redIcon.png'
 import greenIcon from './imgUtils/greenIcon.png'
@@ -223,7 +223,8 @@ function GenericMap(props) { //Map to be inserted anywhere.
             const map = await API.getMap(name);
             setupPos(map);
         } catch (error) {
-            throw error
+            console.error(error)
+            throw error;
         }
     }
     useEffect(() => {
@@ -518,7 +519,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
 }
 
 function MapHandler(props) { //Handles just the clicks on the map
-    const map = useMapEvents({
+    useMapEvents({
         click: (e) => {
             // console.log(e.latlng)
             $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + e.latlng.lat + '&lon=' + e.latlng.lng + '&format=json&limit=1', function (data) {
