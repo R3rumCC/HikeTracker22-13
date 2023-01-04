@@ -88,6 +88,7 @@ function readHikes() {
         difficulty,
         description,
         gpx_track,
+        picture,
         hike_condition,
         hike_condition_description,
         local_guide,
