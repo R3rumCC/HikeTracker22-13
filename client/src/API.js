@@ -45,30 +45,30 @@ async function logOut() {
 /*************************FILE UPLOAD API**********************/
 
 async function getMap(name) {
-  name = name.replace(/\s/g, '') 
-  const url = 'http://localhost:3001/api/Maps/'+name;
+  name = name.replace(/\s/g, '')
+  const url = 'http://localhost:3001/api/Maps/' + name;
   try {
-      const response = await fetch(url, {
+    const response = await fetch(url, {
       method: 'GET',
       credentials: 'include',
       headers: {
-          'Content-Type': 'text/plain'
+        'Content-Type': 'text/plain'
       }
-      });
-      if (response.ok) {
+    });
+    if (response.ok) {
       const map = await response.text();
       return map;
-      }
-      else {
+    }
+    else {
       const text = await response.text();
       throw new TypeError(text);
-      }
+    }
   }
   catch (e) {
-      console.log(e);
-      throw e;
+    console.log(e);
+    throw e;
   }
-  }
+}
 
 
 /*************************ADMIN API**********************/
@@ -309,7 +309,7 @@ function addPoint(point) {
       body: JSON.stringify({ point }),
     }).then((response) => {
       if (response.ok) {
-        return(response);
+        return (response);
       } else {
         response.json()
           .then((obj) => { reject(obj); })
@@ -456,9 +456,21 @@ function updateEndHike(hiker_email, hike_title, duration) {
   });
 }
 
+async function checkFirstTime(hiker_email, hike_title) {
+  const response = await fetch(URL + `/checkFirstTime?hiker=${hiker_email}&hike=${hike_title}/`, {
+    credentials: 'include',
+  });
+  const resJson = await response.json();
+  if (response.ok) {
+    return resJson;
+  }
+  else
+    throw resJson;
+};
+
 async function getOnGoingHike(hiker_email) {
   return new Promise((resolve, reject) => {
-    fetch(URL + '/getOnGoingHike/'+hiker_email)
+    fetch(URL + '/getOnGoingHike/' + hiker_email)
       .then((response) => {
         if (response.ok) {
           response.json()
@@ -470,7 +482,7 @@ async function getOnGoingHike(hiker_email) {
               difficulty: row.hike.difficulty,
               start_point_nameLocation: row.hike.start_point,
               end_point_nameLocation: row.hike.end_point,
-              reference_points : row.hike.reference_points,
+              reference_points: row.hike.reference_points,
               description: row.hike.description,
               gpx_track: row.hike.gpx_track,
               hike_condition: row.hike.hike_condition,
@@ -531,7 +543,7 @@ async function getDistinctFinishedHikes() {
 
 async function getFinishedHikesByHiker(hiker_email) {
   return new Promise((resolve, reject) => {
-    fetch(URL + '/getFinishedHikesByHiker/'+hiker_email)
+    fetch(URL + '/getFinishedHikesByHiker/' + hiker_email)
       .then((response) => {
         if (response.ok) {
           response.json()
@@ -543,7 +555,7 @@ async function getFinishedHikesByHiker(hiker_email) {
               difficulty: row.hike.difficulty,
               start_point_nameLocation: row.hike.start_point,
               end_point_nameLocation: row.hike.end_point,
-              reference_points : row.hike.reference_points,
+              reference_points: row.hike.reference_points,
               description: row.hike.description,
               gpx_track: row.hike.gpx_track,
               hike_condition: row.hike.hike_condition,
@@ -569,7 +581,7 @@ const API = {
   addNewHike, updateHike, getHikes, getMap,
   addPoint, addHut, getHuts, getPoints,
   checkUser, sendEmail, checkCode,
-  startHike, updateEndTime, endHike, updateEndHike,
+  startHike, updateEndTime, endHike, updateEndHike, checkFirstTime,
   getOnGoingHike, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker
 }
 export default API;

@@ -222,6 +222,15 @@ router.put('/endHike', [
   c.updateEndHike(req, res)
 });
 
+router.get('/checkFirstTime', async (req, res) => {
+  try {
+    const flag = await c.checkFirstTime(req);
+    res.status(200).json(flag).end();
+  } catch (error) {
+    res.status(500).json(error).end();
+  }
+});
+
 router.get('/getOnGoingHike/:hiker', async (req, res) => {
   try {
     const hike = await c.getOnGoingHike(req);

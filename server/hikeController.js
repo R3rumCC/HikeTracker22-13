@@ -325,6 +325,15 @@ exports.updateEndHike = async function (req, res) {
   }
 }
 
+exports.checkFirstTime = async function (req) {
+  try {
+    const flag = await dao.checkFirstEnd(req.body.hiker_email, req.body.hike_title);
+    return flag;
+  } catch (error) {
+    throw error;
+  }
+}
+
 exports.getOnGoingHike = async function (req) {
   try {
     const ongoing = await dao.getOnGoingHike(req.params.hiker);

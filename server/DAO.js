@@ -634,6 +634,22 @@ function getBestTime(hiker_email, hike_title) {
   });
 }
 
+function checkFirstEnd(hiker_email, hike_title) {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT * FROM HikerHikeStatistics WHERE hiker = ? AND hike = ?';
+    db.get(sql, hiker_email, hike_title, (err, row) => {
+      if (err) {
+        reject(err);
+      }
+      if (row == undefined)
+        resolve(0); //first time
+      else {
+        resolve(1); //not first time
+      }
+    });
+  });
+}
+
 //Returns the ongoing hike of a specific hiker
 function getOnGoingHike(hiker_email) {
   return new Promise((resolve, reject) => {
@@ -747,6 +763,6 @@ module.exports = {
   updatePointAddress, updatePointGpsCoordinates, updatePointLocation, updatePointType, updatePointCapacity, updatePointAltitude,
   readListOfReferencePoints, readPointById,
   startHike, updateHikeEndTime, getOnGoingHike, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker,
-  endHike, updateEndHikeBestTime, updateEndHikeNoBestTime, getBestTime,
+  endHike, updateEndHikeBestTime, updateEndHikeNoBestTime, getBestTime, checkFirstEnd,
   getHikePoint, addHikePoint, deleteHikePoint_Hike
 };

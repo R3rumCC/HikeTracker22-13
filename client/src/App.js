@@ -245,11 +245,24 @@ function Main() {
   const endHike = async (hiker_email, hike_title, start_time, end_time) => {
     try {
       await API.updateEndTime(hiker_email, hike_title, start_time, end_time);
+      const duration = calculateDuration(start_time, end_time);
+      const flag = await API.checkFirstTime(hiker_email, hike_title);
+      if(flag==0) {
+        await API.endHike(hiker_email, hike_title, duration);
+      }
+      else{
+        await API.updateEndHike(hiker_email, hike_title, duration);
+      }
       setFlagOnGoingHike(false);
     } catch (err) {
       handleError(err);
     }
   };
+
+  function calculateDuration(start_time, end_time) {
+    let duration = 0;
+
+  }
 
 
   /*****************************************************/
