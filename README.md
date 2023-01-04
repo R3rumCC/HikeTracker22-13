@@ -134,9 +134,17 @@ The list of correlations between hikes and hikers and thei statistics
 - **startHike(hiker_email, hike_title, start_time)**, inserts a row in the table for the starting hike, with every fields except for end_time
 - **updateHikeEndTime(hiker_email, hike_title, tart_time, end_time)**, update the row associated with the arguments *hiker_email*, *hike_title* and *start_time* with the *end_time*
 - **getOnGoingHike(hiker_email)**, returns an array with the eventually ongoing hike (its title and starting time) associated with the argument *hiker_email*
-- **getFinischedHikes()**, returns all hikes that are finished, even duplicates if, for example, the same hike was completed by two or more different hikers or twice by the same one
+
+### HikerHikeStatistics functions
+
+- **endHike(hiker_email, hike_title, duration)**, insert a row in the table when a hike was completed for the first time. Automatically set the times_completed field to 1
+- **updateEndHikeBestTime(hiker_email, hike_title, duration)**, update the row associated with the arguments *hiker_email* and *hike_title* if the *duration* is shorter than the actual best time. Increment also the times_completed field
+- **updateEndHikeNoBestTime(hiker_email, hike_title)**, update the row associated with the arguments *hiker_email* and *hike_title* if the *duration* is longer or ugual than the actual best time, increment the times_completed field
+- **getBestTime(hiker_email, hike_title)**, returns the best time for the hike associated with *hike_title* for the specific hiker *hiker_email*
+- **checkFirstEnd(hiker_email, hike_title)**, returns a flag for check if it is the first time that the hiker *hiker_email* complete the hike *hike_title*. The flag is 0 if it is the first time otherwise it returns 1.
+- **getFinischedHikes()**, returns all hikes that are finished, even duplicates if, for example, the same hike was completed by two or more different hikers
 - **getDistinctFinishedHikes()**, returns all hikes that are finished, eliminating duplicates
-- **getFinishedHikesByHiker(hiker_email)**, returns all hikes that are finished by a specific hiker, also the duplicates
+- **getFinishedHikesByHiker(hiker_email)**, returns all hikes that are finished by a specific hiker
 
 
 ## Users
@@ -474,7 +482,46 @@ Richie Zuniga:
     ```
   - Response: `200 OK` (success) 
   - Response body: _None_
-  - Error responses: `503 Service unavailable` (database error), `400 Bad Request` (wrong fields)
+  - Error responses: `500 Service unavailable` (database error), `400 Bad Request` (wrong fields)
+
+- POST `/api/endHikeFirstTime`
+  - Description: Terminate a hike and insert row in HikerHikeStatistics table of the db
+  - Request body: Three string: email of the hiker, title of the hike, duration of the hike (in minutes)
+    ``` json
+    {
+      "hiker_email": "mario.rossi@gmail.com",
+      "hike_title": "Form Pian Belota to la Vacca",
+      "duration": 120
+    }
+    ```
+  - Response: `200 OK` (success) 
+  - Response body: _None_
+  - Error responses: `500 Service unavailable` (database error), `400 Bad Request` (wrong fields)
+
+- PUT `/api/endHike`
+  - Description: Terminate and hike and update the statistics
+  - Request body: Three string: email of the hiker, title of the hike, duration of the hike (in minutes)
+    ``` json
+    {
+      "hiker_email": "mario.rossi@gmail.com",
+      "hike_title": "Form Pian Belota to la Vacca",
+      "duration": 120
+    }
+    ```
+  - Response: `200 OK` (success) 
+  - Response body: _None_
+  - Error responses: `500 Service unavailable` (database error), `400 Bad Request` (wrong fields)
+
+- GET `/api/checkFirstTime?hiker=${hiker_email}&hike={hike_title}`
+  - Description: Obtain a flat to check if it is the first time (0) or not (1) to complete the hike for the specific hiker
+  - Request body: _None_
+  - Response: `200 OK` (success) 
+  - Response body: A integer that rappresent the flag
+    ``` json
+      "flag": 1
+    ``` 
+  - Error responses: `500 Internal Server Error` (database error)
+
 
 - GET `/api/getOnGoingHike/:hiker`
   - Description: Obtain the title and the starting time of an ongoing hike of a specific hiker
@@ -509,15 +556,15 @@ Richie Zuniga:
       {
         "hiker": "mario.rossi@gmail.com",
         "hike": "Form Pian Belota to la Vacca",
-        "start_time": "15.00",
-        "end_time": "18.00",
+        "times_completed": 3,
+        "best_time": 120,
       },
       ...
       {
         "hiker": "mario.rossi@gmail.com",
         "hike": "Hike Monte Thabor",
-        "start_time": "12.00",
-        "end_time": "14.00",
+        "times_completed": 1,
+        "best_time": 300,
       },
       ...
     ]
@@ -560,8 +607,8 @@ Richie Zuniga:
         "gpx_track": "Form Pian Belota to la Vacca",
         "start_point_nameLocation": 2,
         "end_point_nameLocation": 4,
-        "start_time": "15.00",
-        "end_time": "18.00"
+        "times_completed": 3,
+        "best_time": 120,
       },
       ...
       {
@@ -574,8 +621,8 @@ Richie Zuniga:
         "gpx_track": "Form Pian Belota to la Vacca",
         "start_point_nameLocation": 1,
         "end_point_nameLocation": 5,
-        "start_time": "12.00",
-        "end_time": "14.00"
+        "times_completed": 1,
+        "best_time": 300
       },
       ...
     ]
