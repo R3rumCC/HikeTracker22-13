@@ -36,11 +36,11 @@ exports.addHike = async function (req, res) {
   //better rename these two fields in start_point_address and end_point_address because they are address, not idPoint
   const startId = await dao.checkPresenceByAddress(req.body.newHike.start_point)
   const endId = await dao.checkPresenceByAddress(req.body.newHike.end_point)
+  console.log(startId.idPoint, endId.idPoint)
 
   if (startId == null || endId == null) {
     return res.status(400)
   }
-  //console.log(startId.idPoint, endId.idPoint)
 
   let hike = {
     title: req.body.newHike.title, length: req.body.newHike.length, expected_time: req.body.newHike.expected_time,
