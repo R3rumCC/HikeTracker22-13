@@ -107,7 +107,15 @@ function HikeCard2(props) {
               </ListGroup.Item>
               : null
             }
-          
+            {props.role == 'Hiker' && props.flagCompleted ?
+              <ListGroup.Item>
+                <Row style={{ fontWeight: 'bold', fontSize: 12 }}>
+                  <Col>Best time: </Col>
+                  <Col style={{ fontWeight: 'normal' }}> {props.hike.best_time} min</Col>
+                </Row>
+              </ListGroup.Item>
+              : null
+            }
         </ListGroup>
       </Card.Body>
       <Card.Footer>

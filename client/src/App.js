@@ -265,7 +265,7 @@ function Main() {
     //an hike can be longer than a day?
     const start = dayjs(start_time);
     const end = dayjs(end_time);
-    duration = end.diff(start);
+    duration = end.diff(start, 'minute');
     return duration;
   }
 
