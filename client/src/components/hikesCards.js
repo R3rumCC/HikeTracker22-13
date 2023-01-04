@@ -92,11 +92,13 @@ function HikeCard2(props) {
           <ListGroup.Item>
             {props.role == 'Hiker' ? <Card.Link><Link to='/Map' onClick={() => { props.setCurrentHike([props.hike]) }}>See on map</Link></Card.Link> : null}
           </ListGroup.Item>
-          <ListGroup.Item style={{ fontWeight: 'bold', fontSize: 13 }}>
+          <ListGroup.Item>
             {props.role == 'Hiker' && props.flagCompleted ?
               <>
-                Times complted:
-                <div style={{ fontWeight: 'normal' }}> {props.hike.times_completed} </div>
+                <Row style={{ fontWeight: 'bold', fontSize: 12 }}>
+                  <Col>Times complted: </Col>
+                  <Col style={{ fontWeight: 'normal' }}> {props.hike.times_completed} </Col>
+                </Row>
               </>
               : null
             }
