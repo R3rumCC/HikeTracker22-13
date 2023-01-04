@@ -500,11 +500,13 @@ function GenericMap(props) { //Map to be inserted anywhere.
                     {props.filter ? props.hikes.map(p => {
 
                         return (
-                            <Marker icon={greenIcon} key={Math.random()} position={{ lat: p.start_point_coordinates.split(',')[0], lng: p.start_point_coordinates.split(',')[1] }}>
-                                <Popup >
-                                    {p.start_point_address}
-                                </Popup>
-                            </Marker>
+                            <>
+                                <Marker icon={greenMarker} key={Math.random()} position={{ lat: p.start_point_coordinates.split(',')[0], lng: p.start_point_coordinates.split(',')[1] }}>
+                                    <Popup >
+                                        {p.start_point_address}
+                                    </Popup>
+                                </Marker>
+                            </>
                         )
                     })
                         : ''}
