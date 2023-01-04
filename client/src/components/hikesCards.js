@@ -92,22 +92,21 @@ function HikeCard2(props) {
           <ListGroup.Item>
             {props.role == 'Hiker' ? <Card.Link><Link to='/Map' onClick={() => { props.setCurrentHike([props.hike]) }}>See on map</Link></Card.Link> : null}
           </ListGroup.Item>
-          <ListGroup.Item>
             {props.role == 'Hiker' && props.flagCompleted ?
-              <>
+              <ListGroup.Item>
                 <Row style={{ fontWeight: 'bold', fontSize: 12 }}>
                   <Col>Times complted: </Col>
                   <Col style={{ fontWeight: 'normal' }}> {props.hike.times_completed} </Col>
                 </Row>
-              </>
+              </ListGroup.Item>
               : null
             }
-          </ListGroup.Item>
+          
         </ListGroup>
       </Card.Body>
       <Card.Footer>
         <Row>
-          <Col><Button variant='outline-success'>Details</Button></Col>
+          <Col><Link  to='/Map'><Button variant='outline-success' onClick={() => {props.setCurrentHike(props.hike)}}>Details</Button></Link></Col>
           <Col>
             {props.role == 'LocalGuide' ? <Link to='/editHike'><Button variant='outline-success' onClick={() => { props.setCurrentHike(props.hike) }}>Edit hike</Button></Link> : null}
             {props.role == 'Hiker' && !props.flagOnGoingHike ? <Link to='/profile'><Button variant='outline-success' onClick={() => { startHike() }}>Start hike</Button></Link> : null}
