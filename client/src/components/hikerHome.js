@@ -51,7 +51,7 @@ function Hiker_Home(props) {
 				<div>{profile ? <Profile user={props.currentUser} /> : <></>}</div>
 				<div>{searchHutForm ? <SearchHut /> : <></>}</div>
 				<div>{performanceForm ? <PerformancePage /> : <></>}</div>
-				<div>{hikesCompleted ? <HikesCompleted user={props.currentUser} setCurrentHike={props.setCurrentHike} flagOnGoingHike={props.flagOnGoingHike} /> : <></>}</div>
+				<div>{hikesCompleted ? <HikesCompleted user={props.currentUser} setCurrentHike={props.setCurrentHike} startHike={props.startHike} flagOnGoingHike={props.flagOnGoingHike} /> : <></>}</div>
 				<div>{hikeOnGoing ? <OnGoingHike user={props.currentUser} setCurrentHike={props.setCurrentHike} endHike={props.endHike} flagOnGoingHike={props.flagOnGoingHike}/> : <></>}</div>
 			</Col>
 		</Row>
@@ -107,7 +107,7 @@ function HikesCompleted(props) {
 
 	return (
 		<>
-			<HikesContainer role={props.user.role} hikes={myHikes} setCurrentHike={props.setCurrentHike} flagOnGoingHike={props.flagOnGoingHike} />
+			<HikesContainer role={props.user.role} currentUser={props.user} hikes={myHikes} setCurrentHike={props.setCurrentHike} flagOnGoingHike={props.flagOnGoingHike} startHike={props.startHike} flagCompleted={true} />
 		</>
 	)
 }

@@ -296,7 +296,7 @@ exports.getOnGoingHike = async function (req) {
     let result = [];
     if (ongoing.length!==0) {
       const h = await dao.getHikeByTitle(ongoing[0].hike);
-      const hike = {hike: h, start_time: ongoing[0].start_time};
+      const hike = {hike: h, start_time: ongoing[0].start_time, times_completed: ongoing[0].times_completed};
       result.push(hike);
     }
     return result;
@@ -329,7 +329,7 @@ exports.getFinishedHikesByHiker = async function (req) {
     let hikes = [];
     for(t of titles) {
       const h = await dao.getHikeByTitle(t.hike);
-      const hike = {hike: h, start_time: t.start_time, end_time: t.end_time};
+      const hike = {hike: h, start_time: t.start_time, end_time: t.end_time, times_completed: t.times_completed};
       hikes.push(hike);
     }
     return hikes;

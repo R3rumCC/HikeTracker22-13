@@ -66,6 +66,7 @@ The list of correlations between hikes and hikers
 - hike: The title of the hike
 - start_time: The starting time of the hike
 - end_time: The ending time of the hike (it can be null, for hikes not yet completed)
+- times_completed: Number of times that this hike are completed by the specific hiker
 
 ## Dao Documentation
 
@@ -477,8 +478,17 @@ Richie Zuniga:
     ``` json
     [
       {
-        "hike": "Form Pian Belota to la Vacca",
+        "title": "Hike3",
+        "length": 30,
+        "expected_time": 2,
+        "ascent": 400,
+        "difficulty": "Tourist",
+		    "description": "A journey through the unspoilt nature of Monte Rosa",
+        "gpx_track": "Form Pian Belota to la Vacca",
+        "start_point_nameLocation": 1,
+        "end_point_nameLocation": 5,
         "start_time": "15.00",
+        "times_completed": 0
       }
     ]
     ```
@@ -496,6 +506,7 @@ Richie Zuniga:
         "hike": "Form Pian Belota to la Vacca",
         "start_time": "15.00",
         "end_time": "18.00",
+        "times_completed": 3
       },
       ...
       {
@@ -503,6 +514,7 @@ Richie Zuniga:
         "hike": "Hike Monte Thabor",
         "start_time": "12.00",
         "end_time": "14.00",
+        "times_completed": 2
       },
       ...
     ]
@@ -536,15 +548,33 @@ Richie Zuniga:
     ``` json
     [
       {
-        "hike": "Form Pian Belota to la Vacca",
+        "title": "Hike1",
+        "length": 33,
+        "expected_time": 7,
+        "ascent": 400,
+        "difficulty": "hiker",
+		    "description": "A journey through the unspoilt nature of Monte Rosa",
+        "gpx_track": "Form Pian Belota to la Vacca",
+        "start_point_nameLocation": 2,
+        "end_point_nameLocation": 4,
         "start_time": "15.00",
         "end_time": "18.00",
+        "times_completed": 3
       },
       ...
       {
-        "hike": "Hike Monte Thabor",
+        "title": "Hike3",
+        "length": 30,
+        "expected_time": 2,
+        "ascent": 400,
+        "difficulty": "Tourist",
+		    "description": "A journey through the unspoilt nature of Monte Rosa",
+        "gpx_track": "Form Pian Belota to la Vacca",
+        "start_point_nameLocation": 1,
+        "end_point_nameLocation": 5,
         "start_time": "12.00",
         "end_time": "14.00",
+        "times_completed": 2
       },
       ...
     ]

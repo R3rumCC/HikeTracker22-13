@@ -434,7 +434,8 @@ async function getOnGoingHike(hiker_email) {
               hike_condition: row.hike.hike_condition,
               hike_condition_description: row.hike.hike_condition_description,
               local_guide: row.hike.local_guide,
-              start_time: row.start_time
+              start_time: row.start_time,
+              times_completed: row.times_completed
             }))))
             .catch(err => reject({ error: "Cannot parse server response" }))
         } else {
@@ -457,6 +458,7 @@ async function getFinishedHikes() {
               hike: row.hike,
               start_time: row.start_time,
               end_time: row.end_time,
+              times_completed: row.times_completed
             }))))
             .catch(err => reject({ error: "Cannot parse server response" }))
         } else {
@@ -508,7 +510,8 @@ async function getFinishedHikesByHiker(hiker_email) {
               hike_condition_description: row.hike.hike_condition_description,
               local_guide: row.hike.local_guide,
               start_time: row.start_time,
-              end_time: row.end_time
+              end_time: row.end_time,
+              times_completed: row.times_completed
             }))))
             .catch(err => reject({ error: "Cannot parse server response" }))
         } else {

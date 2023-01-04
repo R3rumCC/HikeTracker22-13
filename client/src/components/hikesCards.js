@@ -1,18 +1,18 @@
 import { Card, Button, Row, ListGroup, Col, Container } from "react-bootstrap";
-import { Link } from "react-router-dom"; 
-import {React, useRef, useEffect, useState} from 'react';
+import { Link } from "react-router-dom";
+import { React, useRef, useEffect, useState } from 'react';
 import ClipLoader from 'react-spinners/ClipLoader';
 import Badge from 'react-bootstrap/Badge';
 import dayjs from 'dayjs';
 
-const default_image= 'https://www.travelmanagers.com.au/wp-content/uploads/2012/08/AdobeStock_254529936_Railroad-to-Denali-National-Park-Alaska_750x500.jpg'
+const default_image = 'https://www.travelmanagers.com.au/wp-content/uploads/2012/08/AdobeStock_254529936_Railroad-to-Denali-National-Park-Alaska_750x500.jpg'
 const URL = 'http://localhost:3001/pictures';
 
-function HikeCard2(props){
+function HikeCard2(props) {
 
-  const [colorDiff, setColorDiff]= useState('success');
-  const [nameStart, setNameStart]= useState('');
-  const [nameEnd, setNameEnd]= useState('');
+  const [colorDiff, setColorDiff] = useState('success');
+  const [nameStart, setNameStart] = useState('');
+  const [nameEnd, setNameEnd] = useState('');
 
   function startHike() {
     let start_time = dayjs();
@@ -27,48 +27,48 @@ function HikeCard2(props){
 
   //console.log(props.flagOnGoingHike)
 
-  useEffect(()=>{
+  useEffect(() => {
     setColorDifficulty(props.hike.difficulty)
     console.log(colorDiff)
-  },[props.hike.difficulty])
+  }, [props.hike.difficulty])
 
 
-  useEffect( ()=>{
+  useEffect(() => {
 
     console.log("Start Point NameLocation")
-    if(props.hike.start_point_nameLocation !== null){
+    if (props.hike.start_point_nameLocation !== null) {
       setNameStart(props.hike.start_point_nameLocation)
-    }else{ 
-      let split_start= props.hike.start_point_address.split(",");
-      setNameStart(split_start[0] + " , "+ split_start[1])
+    } else {
+      let split_start = props.hike.start_point_address.split(",");
+      setNameStart(split_start[0] + " , " + split_start[1])
     }
 
-    if(props.hike.end_point_nameLocation !== null){
+    if (props.hike.end_point_nameLocation !== null) {
       setNameEnd(props.hike.end_point_nameLocation)
-    }else{
-      let split_end= props.hike.end_point_address.split(",");
-      setNameEnd((split_end[0]+ " , " + split_end[1]));
+    } else {
+      let split_end = props.hike.end_point_address.split(",");
+      setNameEnd((split_end[0] + " , " + split_end[1]));
     }
 
   }, [props.hike])
 
-  const setColorDifficulty= (difficulty)=>{
-    if(difficulty=== 'Tourist'){
-        setColorDiff('success')
-    }else if(difficulty=== 'Hiker'){
-        setColorDiff('warning')
-    }else if(difficulty=== 'Professional hiker'){
+  const setColorDifficulty = (difficulty) => {
+    if (difficulty === 'Tourist') {
+      setColorDiff('success')
+    } else if (difficulty === 'Hiker') {
+      setColorDiff('warning')
+    } else if (difficulty === 'Professional hiker') {
       setColorDiff('danger')
     }
   }
 
   return (
     <Card className="mx-1 my-1" border='success' style={{ width: '18rem' }}>
-      <Card.Img variant="top" src= {default_image}/>
+      <Card.Img variant="top" src={default_image} />
       <Card.Body>
 
-        <Card.Title style={{fontWeight:'bold', color: 'green'}}> {props.hike.title}</Card.Title>      
-        <ListGroup className="list-group-flush">      
+        <Card.Title style={{ fontWeight: 'bold', color: 'green' }}> {props.hike.title}</Card.Title>
+        <ListGroup className="list-group-flush">
           <ListGroup.Item>
             <Row>
               <Col><Badge bg={colorDiff}> <i className="bi bi-graph-up-arrow"></i> {props.hike.difficulty}</Badge></Col>
@@ -76,23 +76,32 @@ function HikeCard2(props){
             </Row>
           </ListGroup.Item>
           <ListGroup.Item>
-            <Row style={{fontWeight:'bold', fontSize:13}}>
+            <Row style={{ fontWeight: 'bold', fontSize: 13 }}>
               <Col><i className="bi bi-map"></i> {props.hike.length} km</Col>
               <Col><i className="bi bi-stopwatch"></i> {props.hike.expected_time} h</Col>
             </Row>
           </ListGroup.Item>
-          <ListGroup.Item  style={{fontWeight:'bold', fontSize:13}}>
+          <ListGroup.Item style={{ fontWeight: 'bold', fontSize: 13 }}>
             <i className="bi bi-compass"></i> Start Point :
-            <div  style={{fontWeight:'normal'}}> {nameStart} </div>
+            <div style={{ fontWeight: 'normal' }}> {nameStart} </div>
           </ListGroup.Item>
-          <ListGroup.Item  style={{fontWeight:'bold', fontSize:13}}>
+          <ListGroup.Item style={{ fontWeight: 'bold', fontSize: 13 }}>
             <i className="bi bi-compass"></i> End Point :
-            <div  style={{fontWeight:'normal'}}>{nameEnd}</div>
+            <div style={{ fontWeight: 'normal' }}>{nameEnd}</div>
           </ListGroup.Item>
           <ListGroup.Item>
             {props.role == 'Hiker' ? <Card.Link><Link to='/Map' onClick={() => { props.setCurrentHike([props.hike]) }}>See on map</Link></Card.Link> : null}
           </ListGroup.Item>
-        </ListGroup>     
+          <ListGroup.Item style={{ fontWeight: 'bold', fontSize: 13 }}>
+            {props.role == 'Hiker' && props.flagCompleted ?
+              <>
+                Times complted:
+                <div style={{ fontWeight: 'normal' }}> {props.hike.times_completed} </div>
+              </>
+              : null
+            }
+          </ListGroup.Item>
+        </ListGroup>
       </Card.Body>
       <Card.Footer>
         <Row>
@@ -203,24 +212,24 @@ function HikesContainer(props) {
 
   const actualIdx = useRef(0)
   const PAGE_SIZE = 8;
-  const [hikes,setHikes] = useState([]);
+  const [hikes, setHikes] = useState([]);
   const index = useRef(PAGE_SIZE)
   const isLoading = useRef(true)
-  useEffect(()=>{
-    setHikes(props.hikes.length !=0 ? props.hikes.slice(0, PAGE_SIZE > props.hikes.length ? props.hikes.length : PAGE_SIZE) : [])
+  useEffect(() => {
+    setHikes(props.hikes.length != 0 ? props.hikes.slice(0, PAGE_SIZE > props.hikes.length ? props.hikes.length : PAGE_SIZE) : [])
     isLoading.current = false
-  },[props.hikes])
-  const nextPage = () =>{
- 
+  }, [props.hikes])
+  const nextPage = () => {
+
     actualIdx.current = index.current == props.hikes.length ? actualIdx.current : index.current
     index.current = index.current + PAGE_SIZE > props.hikes.length ? props.hikes.length : index.current + PAGE_SIZE
-    setHikes(props.hikes.slice(actualIdx.current,index.current))
+    setHikes(props.hikes.slice(actualIdx.current, index.current))
 
   }
-  const prevPage = () =>{
+  const prevPage = () => {
     index.current = actualIdx.current == 0 ? index.current : actualIdx.current
     actualIdx.current = actualIdx.current - PAGE_SIZE > 0 ? actualIdx.current - PAGE_SIZE : 0
-    setHikes(props.hikes.slice(actualIdx.current,index.current))
+    setHikes(props.hikes.slice(actualIdx.current, index.current))
   }
   //To solve the issue of showing too many hikes at once the followwing approach is to be taken:
   //Divide the hikes in groups of fixed size (6?)
@@ -228,22 +237,22 @@ function HikesContainer(props) {
   //Create buttons to navigate between them
   return (
     <>
-      { hikes.length == 0 && !props.filter ? <>{!props.flagOnGoingHike ? <h1>There aren't on going hikes.</h1> : <ClipLoader color={'#fff'} size={150} />}</> : 
-      <> 
-        {/**From grid example, to better separate cards:     <Row xs={1} md={2} className="g-4"> */}
-        <div className="d-flex justify-content-start flex-wrap">
-          {hikes.length != 0 ? hikes.map((hike) => { return (<HikeCard2 role={props.role} key={hike.title} hike={hike} setCurrentHike={props.setCurrentHike} startHike={props.startHike} endHike={props.endHike} currentUser={props.currentUser} flag={props.flag} flagOnGoingHike={props.flagOnGoingHike} />) }) : <h3>No result found</h3>}
-        </div>
-        {<Container className="d-flex justify-content-center mt-2">
-          <Row >
-            <Col>
-              {actualIdx.current !=0 && hikes.length !=0? <Button className="me-2" onClick={() =>prevPage()}>Previous Page</Button> : null}
-              {index.current < props.hikes.length && hikes.length !=0 ? <Button onClick={() =>nextPage()}>Next Page</Button>: null}
-            </Col>
-          </Row>
-        </Container>
-        }
-      </>}
+      {hikes.length == 0 && !props.filter ? <>{!props.flagOnGoingHike ? <h1>There aren't on going hikes.</h1> : <ClipLoader color={'#fff'} size={150} />}</> :
+        <>
+          {/**From grid example, to better separate cards:     <Row xs={1} md={2} className="g-4"> */}
+          <div className="d-flex justify-content-start flex-wrap">
+            {hikes.length != 0 ? hikes.map((hike) => { return (<HikeCard2 role={props.role} key={hike.title} hike={hike} setCurrentHike={props.setCurrentHike} startHike={props.startHike} endHike={props.endHike} currentUser={props.currentUser} flag={props.flag} flagOnGoingHike={props.flagOnGoingHike} flagCompleted={props.flagCompleted} />) }) : <h3>No result found</h3>}
+          </div>
+          {<Container className="d-flex justify-content-center mt-2">
+            <Row >
+              <Col>
+                {actualIdx.current != 0 && hikes.length != 0 ? <Button className="me-2" onClick={() => prevPage()}>Previous Page</Button> : null}
+                {index.current < props.hikes.length && hikes.length != 0 ? <Button onClick={() => nextPage()}>Next Page</Button> : null}
+              </Col>
+            </Row>
+          </Container>
+          }
+        </>}
     </>
 
   );
