@@ -290,13 +290,57 @@ exports.updateEndTime = async function (req, res) {
   )
 }
 
+exports.endHike = async function (req, res) {
+  dao.endHike(req.body.hiker_email, req.body.hike_title, req.body.duration).then(
+    result => {
+      return res.status(200).json();
+    },
+    error => {
+      return res.status(500).send(error);
+    }
+  )
+}
+
+exports.updateEndHike = async function (req, res) {
+  const actualBestTime = await dao.getBestTime(req.body.hiker_email, req.body.hike_title);
+  if (req.body.duration > actualBestTime) {
+    dao.updateEndHikeBestTime(req.body.hiker_email, req.body.hike_title, req.body.duration).then(
+      result => {
+        return res.status(200).json();
+      },
+      error => {
+        return res.status(500).send(error);
+      }
+    )
+  } 
+  else {
+    dao.updateEndHikeNoBestTime(req.body.hiker_email, req.body.hike_title).then(
+      result => {
+        return res.status(200).json();
+      },
+      error => {
+        return res.status(500).send(error);
+      }
+    )
+  }
+}
+
+exports.checkFirstTime = async function (req) {
+  try {
+    const flag = await dao.checkFirstEnd(req.body.hiker_email, req.body.hike_title);
+    return flag;
+  } catch (error) {
+    throw error;
+  }
+}
+
 exports.getOnGoingHike = async function (req) {
   try {
     const ongoing = await dao.getOnGoingHike(req.params.hiker);
     let result = [];
     if (ongoing.length!==0) {
       const h = await dao.getHikeByTitle(ongoing[0].hike);
-      const hike = {hike: h, start_time: ongoing[0].start_time, times_completed: ongoing[0].times_completed};
+      const hike = {hike: h, start_time: ongoing[0].start_time};
       result.push(hike);
     }
     return result;
@@ -329,7 +373,7 @@ exports.getFinishedHikesByHiker = async function (req) {
     let hikes = [];
     for(t of titles) {
       const h = await dao.getHikeByTitle(t.hike);
-      const hike = {hike: h, start_time: t.start_time, end_time: t.end_time, times_completed: t.times_completed};
+      const hike = {hike: h, start_time: t.start_time, end_time: t.end_time};
       hikes.push(hike);
     }
     return hikes;

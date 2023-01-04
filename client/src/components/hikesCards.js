@@ -106,7 +106,7 @@ function HikeCard2(props) {
       </Card.Body>
       <Card.Footer>
         <Row>
-          <Col><Link  to='/Map'><Button variant='outline-success' onClick={() => {props.setCurrentHike(props.hike)}}>Details</Button></Link></Col>
+          <Col><Link  to='/Maps'><Button variant='outline-success' onClick={() => {props.setCurrentHike(props.hike)}}>Details</Button></Link></Col>
           <Col>
             {props.role == 'LocalGuide' ? <Link to='/editHike'><Button variant='outline-success' onClick={() => { props.setCurrentHike(props.hike) }}>Edit hike</Button></Link> : null}
             {props.role == 'Hiker' && !props.flagOnGoingHike ? <Link to='/profile'><Button variant='outline-success' onClick={() => { startHike() }}>Start hike</Button></Link> : null}

@@ -66,7 +66,13 @@ The list of correlations between hikes and hikers
 - hike: The title of the hike
 - start_time: The starting time of the hike
 - end_time: The ending time of the hike (it can be null, for hikes not yet completed)
+
+### HikerHikeStatistics
+The list of correlations between hikes and hikers and thei statistics
+- hiker: The email of the hiker
+- hike: The title of the hike
 - times_completed: Number of times that this hike are completed by the specific hiker
+- best_time: Best time for completed that hike by that hiker, in minutes
 
 ## Dao Documentation
 
@@ -488,7 +494,6 @@ Richie Zuniga:
         "start_point_nameLocation": 1,
         "end_point_nameLocation": 5,
         "start_time": "15.00",
-        "times_completed": 0
       }
     ]
     ```
@@ -506,7 +511,6 @@ Richie Zuniga:
         "hike": "Form Pian Belota to la Vacca",
         "start_time": "15.00",
         "end_time": "18.00",
-        "times_completed": 3
       },
       ...
       {
@@ -514,7 +518,6 @@ Richie Zuniga:
         "hike": "Hike Monte Thabor",
         "start_time": "12.00",
         "end_time": "14.00",
-        "times_completed": 2
       },
       ...
     ]
@@ -558,8 +561,7 @@ Richie Zuniga:
         "start_point_nameLocation": 2,
         "end_point_nameLocation": 4,
         "start_time": "15.00",
-        "end_time": "18.00",
-        "times_completed": 3
+        "end_time": "18.00"
       },
       ...
       {
@@ -573,8 +575,7 @@ Richie Zuniga:
         "start_point_nameLocation": 1,
         "end_point_nameLocation": 5,
         "start_time": "12.00",
-        "end_time": "14.00",
-        "times_completed": 2
+        "end_time": "14.00"
       },
       ...
     ]
