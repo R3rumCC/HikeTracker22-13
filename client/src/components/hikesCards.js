@@ -6,13 +6,14 @@ import Badge from 'react-bootstrap/Badge';
 import dayjs from 'dayjs';
 
 const default_image = 'https://www.travelmanagers.com.au/wp-content/uploads/2012/08/AdobeStock_254529936_Railroad-to-Denali-National-Park-Alaska_750x500.jpg'
-const URL = 'http://localhost:3001/pictures';
+const URL = 'http://localhost:3001/api/Pictures';
 
 function HikeCard2(props) {
 
   const [colorDiff, setColorDiff] = useState('success');
   const [nameStart, setNameStart] = useState('');
   const [nameEnd, setNameEnd] = useState('');
+  const [picName, setPicName]= useState('');
 
   function startHike() {
     let start_time = dayjs();
@@ -35,7 +36,6 @@ function HikeCard2(props) {
 
   useEffect(() => {
 
-    console.log("Start Point NameLocation")
     if (props.hike.start_point_nameLocation !== null) {
       setNameStart(props.hike.start_point_nameLocation)
     } else {
@@ -49,6 +49,12 @@ function HikeCard2(props) {
       let split_end = props.hike.end_point_address.split(",");
       setNameEnd((split_end[0] + " , " + split_end[1]));
     }
+
+    console.log(props.hike.picture)
+    let name= URL + "/" + props.hike.picture
+    console.log(name)
+    setPicName(name)
+    console.log("picName=" + {picName})
 
   }, [props.hike])
 
@@ -64,7 +70,7 @@ function HikeCard2(props) {
 
   return (
     <Card className="mx-1 my-1" border='success' style={{ width: '18rem' }}>
-      <Card.Img variant="top" src={default_image} />
+      <Card.Img variant="top" src={picName} />
       <Card.Body>
 
         <Card.Title style={{ fontWeight: 'bold', color: 'green' }}> {props.hike.title}</Card.Title>

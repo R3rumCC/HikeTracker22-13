@@ -175,6 +175,8 @@ app.post("/upload_pictures", upload_pictures.single("file"), function (req, res)
 })
 
 app.get(PREFIX+'/Pictures/:name', (req, res, next) => {
+  console.log("Inside pictures.get")
+  console.log(req.params.name)
   const fileName = req.params.name;
   const options = {
     root: path.join(__dirname,'/pictures')

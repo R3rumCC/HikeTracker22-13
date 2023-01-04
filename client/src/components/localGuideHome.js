@@ -407,22 +407,21 @@ function HikeForm(props) {
       {/**COVER PICTURE */}
       {gpxPos !=null ?
       <>
-      <Form.Group className='mt-3'>
-        {seePic ? <div> <Image src={picture.name} ></Image> </div> : <></>}
-      </Form.Group>
-
       <Form.Group controlId="pictureFile" className="mt-3">
-        <Form.Label style={{ fontSize: 25 }}>Hike's Picture</Form.Label>
+        <Form.Label style={{ fontSize: 25 }}>Hike's Picture  {seePic ? <i class="bi bi-check-circle" color='success'></i> : <></> }</Form.Label>
         <Form.Control type="file" required onChange={(e) => showPicture(e.target.files[0])} />
       </Form.Group>
       </>
-      : null}
+      : 
+      <div><Form.Label>Add a gpx file first in order to add a cover picture</Form.Label></div>
+      }
 
 
       {/**BUTTONS */}
-      <Button className='mt-y' type='submit' style={{ background: 'green' }}>Save</Button>
+      <div className='mt-y'>
+      <Button type='submit' style={{ background: 'green' }}>Save</Button>
       <Button style={{ background: 'green' }} onClick={reset} className='ms-2 my-2'>Cancel</Button>
-
+      </div>
     </Form>
 
   </>)
