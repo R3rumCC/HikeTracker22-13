@@ -20,6 +20,8 @@ import API from './API';
 import { EditHike } from './components/editHike';
 import { PointsContainer } from './components/pointsCards';
 
+import dayjs from 'dayjs';
+
 
 function App() {
 
@@ -261,7 +263,11 @@ function Main() {
 
   function calculateDuration(start_time, end_time) {
     let duration = 0;
-
+    //an hike can be longer than a day?
+    const start = dayjs(start_time);
+    const end = dayjs(end_time);
+    duration = end.diff(start);
+    return duration;
   }
 
 
