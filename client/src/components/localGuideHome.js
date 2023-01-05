@@ -216,7 +216,7 @@ function HikeForm(props) {
     setCondition(''); setConditionDescription('');
     setStartPoint(''); setStartPointGps('');
     setEndPoint(''); setEndPointGps('');
-    setErrorMsg(''); setPicture(null);
+    setErrorMsg('');
     let reader = new FileReader();
 
     reader.readAsText(selectedFile);
@@ -405,16 +405,10 @@ function HikeForm(props) {
       </Form.Group>
 
       {/**COVER PICTURE */}
-      {gpxPos !=null ?
-      <>
       <Form.Group controlId="pictureFile" className="mt-3">
         <Form.Label style={{ fontSize: 25 }}>Hike's Picture  {seePic ? <i class="bi bi-check-circle" color='success'></i> : <></> }</Form.Label>
         <Form.Control type="file" required onChange={(e) => showPicture(e.target.files[0])} />
       </Form.Group>
-      </>
-      : 
-      <div><Form.Label>Add a gpx file first in order to add a cover picture</Form.Label></div>
-      }
 
 
       {/**BUTTONS */}
