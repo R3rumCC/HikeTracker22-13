@@ -15,7 +15,10 @@ import houseOrange from './imgUtils/houseOrange.png'
 import houseBlue2 from './imgUtils/houseBlue2.png'
 import housePink from './imgUtils/housePink.png'
 import refPin from './imgUtils/refPin.png'
-
+import pRed from './imgUtils/pRed.png'
+import pGreen from './imgUtils/pGreen.png'
+import pBlue from './imgUtils/pBlue.png'
+import pOrange from './imgUtils/pOrange.png'
 // THE GPX FILE MUST BE PASSED AS AN STRING. HERE I LEAVE AN EXAMPLE:
 // THIS PARTICULAR GPX HAS A SINGLE TRACK AND TWO SEGMENTS. THESE 
 // SEGMENTS ARE THE ANGLES THAT ARE BINDED BY LINES TO FORM THE PATH.
@@ -179,8 +182,26 @@ const blue2House = L.icon({
     iconAnchor:   [16, 32],
     popupAnchor:  [0, -24]
 })
-const pinkHouse = L.icon({
-    iconUrl:  housePink,
+const redParking = L.icon({
+    iconUrl:  pRed,
+    iconSize:     [32, 32],
+    iconAnchor:   [16, 32],
+    popupAnchor:  [0, -24]
+})
+const blueParking = L.icon({
+    iconUrl:  pBlue,
+    iconSize:     [32, 32],
+    iconAnchor:   [16, 32],
+    popupAnchor:  [0, -24]
+})
+const orangeParking = L.icon({
+    iconUrl:  pOrange,
+    iconSize:     [32, 32],
+    iconAnchor:   [16, 32],
+    popupAnchor:  [0, -24]
+})
+const greenParking = L.icon({
+    iconUrl:  pGreen,
     iconSize:     [32, 32],
     iconAnchor:   [16, 32],
     popupAnchor:  [0, -24]
@@ -320,7 +341,10 @@ function GenericMap(props) { //Map to be inserted anywhere.
     }
 
     if (map != '' && positions.length != 0) {
-
+        /*
+        Thanks to the stopPropagation function when u click something in the pop up the map is not triggered, the first 2 marker show the start and end point,
+        the others are used for huts and parking lots.
+        */
         return (
             <>{map != '' ?
                 <MapContainer
@@ -380,9 +404,14 @@ function GenericMap(props) { //Map to be inserted anywhere.
 
                         </Popup>
                     </Marker>
-                    {props.points ? [...props.points].filter((x) => { return getDistanceFromLatLonInKm(x.gps_coordinates.split(',')[0], x.gps_coordinates.split(',')[1], positions[0][0],positions[0][1]) <= 5 || getDistanceFromLatLonInKm(x.gps_coordinates.split(',')[0], x.gps_coordinates.split(',')[1], positions[positions.length -1][0],positions[positions.length -1][1]) <=5 }).map((p) => {
+                    {/*The following marker show the parking lots and huts at max 5km form start and end point, if we are in edit page will not show the huts
+                    because they will showed in an other specifc marker*/}
+                    {props.points ? [...props.points].filter((x) => { return getDistanceFromLatLonInKm(x.gps_coordinates.split(',')[0], x.gps_coordinates.split(',')[1], positions[0][0],positions[0][1]) <= 5 || getDistanceFromLatLonInKm(x.gps_coordinates.split(',')[0], x.gps_coordinates.split(',')[1], positions[positions.length -1][0],positions[positions.length -1][1]) <=5 && (props.edit && x.type!='Hut') }).map((p) => {
                         return (
-                            <Marker icon={p.gps_coordinates == startCheck && p.gps_coordinates == endCheck ? orangeHouse : p.gps_coordinates == startCheck ? greenHouse : p.gps_coordinates == endCheck ? redHouse : blueHouse} 
+                            <Marker icon={p.gps_coordinates == startCheck && p.gps_coordinates == endCheck ? p.type=='Hut' ? orangeHouse : orangeParking : 
+                                            p.gps_coordinates == startCheck ? p.type=='Hut' ? greenHouse: greenParking : 
+                                            p.gps_coordinates == endCheck ? p.type=='Hut' ? redHouse : redParking : 
+                                            p.type=='Hut' ? blueHouse : blueParking} 
                             key={Math.random()} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
 
                                 <Popup closeOnClick={false}>
@@ -428,6 +457,9 @@ function GenericMap(props) { //Map to be inserted anywhere.
                         - Add the list of linked hut to the hike on save.
                         A blue2House icon and a pinkHouse icon have been created to manage not linked or Linked, if it is a start point/end point or both the colour must be the same used without(green,red,orange) considering the link
                     */}
+
+                    {/*The following marker shows the huts in the edit page giving the possibility to link them to the hike, chose them as start point or both*/}
+                    
                     {props.points && props.edit ? [...props.points].filter((x) => { return calcMinDistance({ lat: x.gps_coordinates.split(',')[0], lng: x.gps_coordinates.split(',')[1]}) <= 5 && x.type=='Hut'}).map((p) => {
                         return (
                             <Marker icon={ p.gps_coordinates == startCheck && p.gps_coordinates == endCheck ? 
@@ -555,6 +587,7 @@ function MapHandler(props) { //Handles just the clicks on the map
     const click = useRef(false)
     map.on('popupopen', function(){click.current=true})
     map.on('popupclose', function(){click.current=false})
+    //The above instruction are used to not trigger the map when a popup is opened
     useMapEvents({
         click: (e) => {
             // console.log(e.latlng)
