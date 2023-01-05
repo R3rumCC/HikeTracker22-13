@@ -176,8 +176,6 @@ function Main() {
   const CreateNewPoint = async (point) => {
     try {
       let point= await API.addPoint(point)
-      console.log('Inside CreateNewPoint in App, point= ')
-      console.log(point)
       return point
     } catch (err) {
       handleError(err);
@@ -290,7 +288,7 @@ function Main() {
         <Route path="/register" element={!loggedIn ? <RegisterLayout CreateNewAccount={CreateNewAccount} checkUser={checkUser} checkCode={checkCode} sendEmail={sendEmail} /> : <Navigate replace to='/' />} />
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
         <Route path="/profile" element={loggedIn && currentUser.role == 'Hiker' ? <Hiker_Home currentUser={currentUser} setCurrentHike={setCurrentHike} endHike={endHike} startHike={startHike} flagOnGoingHike={flagOnGoingHike} /> : <Navigate replace to='/' />} />
-        <Route path="/editHike" element={loggedIn && currentUser.role == 'LocalGuide' ? <EditHike updateHike={updateHike} returnToHome={returnToHome} currentHike={currentHike} points={points} setOnChangeHikes={setOnChangeHikes}/> : <Navigate replace to='/' />} />
+        <Route path="/editHike" element={loggedIn && currentUser.role == 'LocalGuide' ? <EditHike updateHike={updateHike} returnToHome={returnToHome} currentHike={currentHike} points={points} setOnChangeHikes={setOnChangeHikes} currentMarkers={currentMarkers}/> : <Navigate replace to='/' />} />
         {/*<Route path="/startHike" element={loggedIn && currentUser.role == 'Hiker' ? <Hiker_Home currentUser={currentUser} setCurrentHike={setCurrentHike} endHike={endHike} flagOnGoingHike={flagOnGoingHike} /> : <Navigate replace to='/' />} />*/}
       </Routes>
     </>

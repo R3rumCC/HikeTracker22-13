@@ -139,15 +139,21 @@ function getHikeByTitle(title) {
 
 function readListOfReferencePoints(title) { // RP for a given hike
   return new Promise((resolve, reject) => {
-    const sql = `SELECT reference_points
-    FROM Hikes H, HikePoint HP, Points P
-    WHERE H.title = HP.titleHike
-    AND title = ?`;
-    db.get(sql, [title], (err, rp) => {
+    const sql = `SELECT *
+    FROM HikePoint HP, Points P
+    WHERE P.idPoint = HP.idPoint
+    AND HP.titleHike = ?`;
+    db.all(sql, [title], (err, rp) => {
       if (err) {
         reject(err);
       } else {
-        resolve(rp)
+        const newRp = [];
+        for(const p of rp){
+          const latlng = p.gps_coordinates.split(',');
+          p['latlng'] = {lat:latlng[0], lng:latlng[1]}
+          newRp.push(p)
+        }
+        resolve(newRp)
       }
     });
   });
@@ -358,13 +364,13 @@ function checkPresenceByCoordinates(coord) {
 
 function addPoint(point) {
   return new Promise((resolve, reject) => {
-    const sql = 'INSERT INTO POINTS (address, nameLocation, gps_coordinates, type, capacity, altitude) VALUES(?,?,?,?,?,?)';
-    db.run(sql, point.address, point.nameLocation, point.gps_coordinates, point.type, point.capacity, point.altitude,
-      (err, rows) => {
+    const sql = 'INSERT INTO Points (address, nameLocation, gps_coordinates, type, capacity, altitude) VALUES(?,?,?,?,?,?)';
+    db.run(sql, [point.address, point.nameLocation, point.gps_coordinates, point.type, point.capacity, point.altitude],
+      function(err) {
         if (err) {
           reject(err);
         } else {
-          resolve(this.lastId);
+          resolve(this.lastID);
         }
       });
   });
