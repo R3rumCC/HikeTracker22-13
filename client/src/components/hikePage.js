@@ -260,28 +260,47 @@ function GenericMap(props) { //Map to be inserted anywhere.
     }, [props.currentMarkers, mapList.current])
     useEffect(() => {
         if(positions.length != 0){
-            $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[0][0] + '&lon=' + positions[0][1] + '&format=json&limit=1&q=', function (data) {
-                if(props.points){
-                    props.setStartPoint(data.display_name);
+
+            if(!props.edit){
+                $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[0][0] + '&lon=' + positions[0][1] + '&format=json&limit=1&q=', function (data) {
+                    if(props.points){
+                        props.setStartPoint(data.display_name);
+                        props.setStartPointGps(positions[0][0] + ',' + positions[0][1])
+                    }
+                    setStartPoint(data.display_name)
                     props.setStartPointGps(positions[0][0] + ',' + positions[0][1])
-                }
-                setStartPoint(data.display_name)
-                setStartCheck(positions[0][0] + ',' + positions[0][1])
-                console.log('first start')
+                    setStartCheck(positions[0][0] + ',' + positions[0][1])
+                    console.log('first start')
 
-                
-            })
-            $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[positions.length - 1][0] + '&lon=' + positions[positions.length - 1][1] + '&format=json&limit=1&q=', function (data) {
-                if(props.points){
-                    props.setEndPoint(data.display_name);
+                    
+                })
+            }
+            else{
+                setStartPoint(props.currentHike[0].start_point_address)
+                setStartCheck(props.currentHike[0].start_point_coordinates.replace(/\s/g, ''))
+                props.setStartPointGps(props.currentHike[0].start_point_coordinates.replace(/\s/g, ''))
+            }
+            if(!props.edit){
+                $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[positions.length - 1][0] + '&lon=' + positions[positions.length - 1][1] + '&format=json&limit=1&q=', function (data) {
+                    if(props.points){
+                        props.setEndPoint(data.display_name);
+                        props.setEndPointGps(positions[positions.length - 1][0]+','+positions[positions.length - 1][1])
+                    }
+                    setEndPoint(data.display_name)
+                    setEndCheck(positions[positions.length - 1][0]+','+positions[positions.length - 1][1])
                     props.setEndPointGps(positions[positions.length - 1][0]+','+positions[positions.length - 1][1])
-                }
-                setEndPoint(data.display_name)
-                setEndCheck(positions[positions.length - 1][0]+','+positions[positions.length - 1][1])
-                console.log('first end')
-                
+                    console.log('first end')
+                    
+    
+                })
+            }
+            else{
+                setEndPoint(props.currentHike[0].end_point_address)
+                setEndCheck(props.currentHike[0].end_point_coordinates.replace(/\s/g, ''))
+                props.setEndPointGps(props.currentHike[0].end_point_coordinates.replace(/\s/g, ''))
 
-            })
+            }  
+
     }
     }, [positions])
 
@@ -322,7 +341,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                         type="checkbox"
                                         variant="outline-success"
                                         checked={positions[0][0] + ',' + positions[0][1] == startCheck}
-                                        onChange={(e) => { setStartCheck(positions[0][0] + ',' + positions[0][1]); props.setStartPoint(startPoint); props.setStartPointGps(positions[positions.length - 1][0]+','+positions[positions.length - 1][1]); console.log('change on initial start') }}
+                                        onChange={(e) => { setStartCheck(positions[0][0] + ',' + positions[0][1]); props.setStartPoint(startPoint); props.setStartPointGps(positions[0][0] + ',' + positions[0][1]); console.log('change on initial start') }}
                                     >
                                         Start Point
                                     </ToggleButton>

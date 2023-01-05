@@ -34,8 +34,8 @@ exports.addHike = async function (req, res) {
 
   console.log('addHike server');
   //better rename these two fields in start_point_address and end_point_address because they are address, not idPoint
-  const startId = await dao.checkPresenceByAddress(req.body.newHike.start_point)
-  const endId = await dao.checkPresenceByAddress(req.body.newHike.end_point)
+  const startId = await dao.checkPresenceByCoordinates(req.body.newHike.start_point.gps_coordinates)
+  const endId = await dao.checkPresenceByCoordinates(req.body.newHike.end_point.gps_coordinates)
   console.log(startId.idPoint, endId.idPoint)
 
   if (startId == null || endId == null) {
@@ -64,10 +64,24 @@ exports.addHike = async function (req, res) {
 exports.updateHike = async function (req, res) {
 
   const oldHike = await dao.getHikeByTitle(req.body.oldHikeTitle);
-
+  //Temporary solution used to check gps coordinates with or without space after the comma. Gps coordinates should be added in a single way 
+  let startId = await dao.checkPresenceByCoordinates(req.body.hike.start_point.gps_coordinates)
+  startId = startId != undefined ? startId : await dao.checkPresenceByCoordinates(req.body.hike.start_point.gps_coordinates.replace(',',', '))
+  /*
+  if(startId == undefined)
+    startId = await dao.addPoint({address : req.body.hike.start_point.address, gps_coordinates: req.body.hike.start_point.gps_coordinates})
+  */
+  let endId = await dao.checkPresenceByCoordinates(req.body.hike.end_point.gps_coordinates)
+  endId = endId != undefined ? endId : await dao.checkPresenceByCoordinates(req.body.hike.end_point.gps_coordinates.replace(',',', '))
+  /*
+  if(endId == undefined)
+    endId = await dao.addPoint({address : req.body.hike.end_point.address, gps_coordinates: req.body.hike.end_point.gps_coordinates})
+  */
+    //console.log(startId.idPoint, endId.idPoint)
+  
   const updateHike = {
     title: req.body.hike.title, length: req.body.hike.length, expected_time: req.body.hike.expected_time,
-    ascent: req.body.hike.ascent, difficulty: req.body.hike.difficulty, start_point: oldHike.start_point, end_point: oldHike.end_point,
+    ascent: req.body.hike.ascent, difficulty: req.body.hike.difficulty, start_point: startId.idPoint, end_point: endId.idPoint,
     reference_points: req.body.hike.reference_points, description: req.body.hike.description, gpx_track: oldHike.gpx_track,
     hike_condition: req.body.hike.hike_condition, hike_condition_description: req.body.hike.hike_condition_description, local_guide: oldHike.local_guide
   }
@@ -80,12 +94,14 @@ exports.updateHike = async function (req, res) {
       return res.status(500).send(error);
     }
   )
-
+  
+  
   /*
     This next part is to add or delete, if needed, the relationships
     between a hike and a point. Delete everything and add new.
   */
   // Delete
+  /*
   dao.deleteHikePoint_Hike(oldHike.title).then(
     result => {
       return res.status(200).json();
@@ -104,7 +120,7 @@ exports.updateHike = async function (req, res) {
         return res.status(500).send(error);
       }
     )
-  })
+  })*/
 
 }
 

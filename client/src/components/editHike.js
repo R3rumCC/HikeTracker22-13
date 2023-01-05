@@ -8,7 +8,8 @@ function EditHike(props) {
   return (
     <>
       <Row>
-        <EditHikeForm updateHike={props.updateHike} oldHike={props.currentHike} setCurrentMarkers={props.setCurrentMarkers} currentMarkers={props.currentMarkers} returnToHome={props.returnToHome} points = {props.points}></EditHikeForm>
+        <EditHikeForm updateHike={props.updateHike} oldHike={props.currentHike} setCurrentMarkers={props.setCurrentMarkers} 
+        currentMarkers={props.currentMarkers} returnToHome={props.returnToHome} points = {props.points} setOnChangeHikes={props.setOnChangeHikes}></EditHikeForm>
       </Row>
       <div className="d-flex flex-row">
 
@@ -62,16 +63,18 @@ function EditHikeForm(props) {
           //While adding the point we store in a string the ids of the points added
           //After adding every point in the db we can update the hike with all the info we edited and the string of ref points
           //We cannot add reference points as objects in the hikes table, other than being wrong it can cause errors
-
+          
+          //REFERENCE POINTS ARE SET TO NULL ACTUALLY
           updateHike = {
             title: title, length: length, expected_time: expTime, ascent: ascent,
-            difficulty: difficulty, reference_points: reference_points,
+            difficulty: difficulty, start_point: {address: startPoint, gps_coordinates: startPointGps}, end_point: {address: endPoint, gps_coordinates: endPointGps}, reference_points: null,
             description: description, hike_condition: condition,
             hike_condition_description: conditionDescription
           }
-
+          console.log(updateHike)
           props.updateHike(props.oldHike.title, updateHike);
           alert('Hike correctly updated!')
+          props.setOnChangeHikes(true)
           reset();
           navigate('/');
         } else {
@@ -246,7 +249,6 @@ function EditHikeForm(props) {
           )
             : null}
             </Row>
-      {console.log(reference_points)}
       <Form.Group as={Col}>
         <GenericMap currentHike={[props.oldHike]} setCurrentMarkers={setReferencePoints} currentMarkers={reference_points} points={[...props.points].filter((x) => x.type != null)}
               setStartPoint={setStartPoint} setStartPointGps={setStartPointGps} setEndPoint={setEndPoint} setEndPointGps={setEndPointGps} edit = {true} 
