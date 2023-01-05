@@ -101,7 +101,7 @@ exports.updateHike = async function (req, res) {
     between a hike and a point. Delete everything and add new.
   */
   // Delete
-  /*
+  
   dao.deleteHikePoint_Hike(oldHike.title).then(
     result => {
       return res.status(200).json();
@@ -111,16 +111,18 @@ exports.updateHike = async function (req, res) {
     }
   )
   // Add
-  updateHike.reference_points.map(point => {
-    dao.addHikePoint(point.idPoint, updateHike.title).then(
-      result => {
-        return res.status(200);
-      },
-      error => {
-        return res.status(500).send(error);
-      }
-    )
-  })*/
+  if(updateHike.reference_points){
+    updateHike.reference_points.map(point => {
+      dao.addHikePoint(point.idPoint, updateHike.title).then(
+        result => {
+          return res.status(200);
+        },
+        error => {
+          return res.status(500).send(error);
+        }
+      )
+    })
+  }
 
 }
 

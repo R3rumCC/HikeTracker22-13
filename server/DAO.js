@@ -742,7 +742,7 @@ function deleteHikePoint_Hike(titleHike)  {
   */
   return new Promise((resolve, reject) => {
     const query = 'DELETE FROM HikePoint WHERE titleHike = ?;';
-    db.run(query, titleHike, idPoint, (err) => {
+    db.run(query, titleHike, (err) => {
       if (err) {
         reject(err);
       } else {

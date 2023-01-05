@@ -146,6 +146,11 @@ The list of correlations between hikes and hikers and thei statistics
 - **getDistinctFinishedHikes()**, returns all hikes that are finished, eliminating duplicates
 - **getFinishedHikesByHiker(hiker_email)**, returns all hikes that are finished by a specific hiker
 
+### HikePoint functions
+
+- **getHikePoint()**, returns a list of every idPoints and hikeTitles assossiation
+- **addHikePoint(idPoint, titleHike)**, instart a new entry to the HikePoint table
+- **deleteHikePoint_Hike(titleHike)**, deletes all the entries associated with the argument *titleHike*
 
 ## Users
 
@@ -227,6 +232,39 @@ Richie Zuniga:
     ]
     ```
   - Error responses: `500 Internal Server Error` (database error)
+
+- PUT `/api/updateHike`
+  - Description: Update a hike
+  - Request body: An object containing a hike
+    ``` json
+    {
+      "newHike": {
+        "title": "Hike7",
+        "length": 75,
+        "expected_time": 189,
+        "ascent": 600,
+        "difficulty": "professional hiker",
+        "start_point": "Chamolé, 16, Comboé Superiore, Charvensod, Aosta Valley, 21000, Italy",
+        "end_point": "Colle Betta, Strada Regionale 43 di Staffal, Anderbatt, Gressoney-La-Trinité, Aosta Valley, Italy",
+        "reference_points" : [
+          {
+            "idPoint": 1,
+            "address": "La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy",
+            "nameLocation": "La Riposa",
+            "gps_coordinates": "45.177786,7.083372",
+            "type": "Hut",
+            "capacity": null,
+            "altitude": null
+          }
+        ],
+        "description": "A hike in the Dolomites Nature Park",
+        "gpx_track": "Form Pian Belota to la Vacca"
+      }
+    }
+    ```
+  - Response: `200 OK` (success) 
+  - Response body: _None_
+  - Error responses: `500 Internal Server Error` (generic error), `400 Bad Request` (wrong fields)
 
 - POST `/api/newHike`
   - Description: Add a new hike
