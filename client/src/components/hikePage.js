@@ -14,6 +14,7 @@ import houseBlue from './imgUtils/houseBlue.png'
 import houseOrange from './imgUtils/houseOrange.png'
 import houseBlue2 from './imgUtils/houseBlue2.png'
 import housePink from './imgUtils/housePink.png'
+import refPin from './imgUtils/refPin.png'
 
 // THE GPX FILE MUST BE PASSED AS AN STRING. HERE I LEAVE AN EXAMPLE:
 // THIS PARTICULAR GPX HAS A SINGLE TRACK AND TWO SEGMENTS. THESE 
@@ -166,6 +167,12 @@ const orangeHouse = L.icon({
     popupAnchor:  [-24, -24]
     */
 })
+const refPoints = L.icon({
+    iconUrl:  refPin,
+    iconSize:     [32, 32],
+    iconAnchor:   [16, 32],
+    popupAnchor:  [0, -24]
+})
 const blue2House = L.icon({
     iconUrl:  houseBlue2,
     iconSize:     [32, 32],
@@ -196,7 +203,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
     const [startCheck, setStartCheck] = useState('');
     const [endCheck, setEndCheck] = useState('');
     const travelOnce = useRef('');
-
+    const unclick = useRef(false)
     function MyComponent() {
         const map = useMap()
         if(travelOnce.current != positions){
@@ -327,8 +334,8 @@ function GenericMap(props) { //Map to be inserted anywhere.
                         pathOptions={{ fillColor: 'red', color: 'blue' }}
                         positions={positions}
                     />
-                    <Marker icon={positions[0][0] + ',' + positions[0][1] == startCheck? greenMarker : blueMarker} position={positions[0]}>
-                        <Popup>
+                    <Marker key={Math.random()} icon={positions[0][0] + ',' + positions[0][1] == startCheck? greenMarker : blueMarker} position={positions[0]}>
+                        <Popup closeOnClick={false}>
                             {startPoint}
                             <hr></hr>
                             {'Start Point'}
@@ -341,7 +348,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                         type="checkbox"
                                         variant="outline-success"
                                         checked={positions[0][0] + ',' + positions[0][1] == startCheck}
-                                        onChange={(e) => { setStartCheck(positions[0][0] + ',' + positions[0][1]); props.setStartPoint(startPoint); props.setStartPointGps(positions[0][0] + ',' + positions[0][1]); console.log('change on initial start') }}
+                                        onChange={(e) => {e.stopPropagation(); setStartCheck(positions[0][0] + ',' + positions[0][1]); props.setStartPoint(startPoint); props.setStartPointGps(positions[0][0] + ',' + positions[0][1]); console.log('change on initial start');}}
                                     >
                                         Start Point
                                     </ToggleButton>
@@ -349,8 +356,8 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                 : null}
                         </Popup>
                     </Marker>
-                    <Marker icon={positions[positions.length - 1][0]+','+positions[positions.length - 1][1] == endCheck ? redMarker : blueMarker} position={positions[positions.length - 1]}>
-                        <Popup>
+                    <Marker key={Math.random()} icon={positions[positions.length - 1][0]+','+positions[positions.length - 1][1] == endCheck ? redMarker : blueMarker} position={positions[positions.length - 1]}>
+                        <Popup closeOnClick={false}>
                             {endPoint}
                             <hr></hr>
                             {'End Point'}
@@ -364,7 +371,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                         type="checkbox"
                                         variant="outline-danger"
                                         checked={positions[positions.length - 1][0]+','+positions[positions.length - 1][1] == endCheck}
-                                        onChange={(e) => { setEndCheck(positions[positions.length - 1][0]+','+positions[positions.length - 1][1]); props.setEndPoint(endPoint); props.setEndPointGps(positions[positions.length - 1][0]+','+positions[positions.length - 1][1]); console.log('change on initial end')}}
+                                        onChange={(e) => { e.stopPropagation(); setEndCheck(positions[positions.length - 1][0]+','+positions[positions.length - 1][1]); props.setEndPoint(endPoint); props.setEndPointGps(positions[positions.length - 1][0]+','+positions[positions.length - 1][1]); console.log('change on initial end');}}
                                     >
                                         End Point
                                     </ToggleButton>
@@ -375,9 +382,10 @@ function GenericMap(props) { //Map to be inserted anywhere.
                     </Marker>
                     {props.points ? [...props.points].filter((x) => { return getDistanceFromLatLonInKm(x.gps_coordinates.split(',')[0], x.gps_coordinates.split(',')[1], positions[0][0],positions[0][1]) <= 5 || getDistanceFromLatLonInKm(x.gps_coordinates.split(',')[0], x.gps_coordinates.split(',')[1], positions[positions.length -1][0],positions[positions.length -1][1]) <=5 }).map((p) => {
                         return (
-                            <Marker icon={p.gps_coordinates == startCheck && p.gps_coordinates == endCheck ? orangeHouse : p.gps_coordinates == startCheck ? greenHouse : p.gps_coordinates == endCheck ? redHouse : blueHouse} key={Math.random()} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
+                            <Marker icon={p.gps_coordinates == startCheck && p.gps_coordinates == endCheck ? orangeHouse : p.gps_coordinates == startCheck ? greenHouse : p.gps_coordinates == endCheck ? redHouse : blueHouse} 
+                            key={Math.random()} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
 
-                                <Popup >
+                                <Popup closeOnClick={false}>
                                     {p.nameLocation}
                                     <hr></hr>
                                     {p.address}
@@ -389,23 +397,23 @@ function GenericMap(props) { //Map to be inserted anywhere.
 
                                         <ToggleButton
                                             className="mb-2"
-                                            id="toggle-start"
+                                            id="toggle-startp"
                                             type="checkbox"
                                             variant="outline-success"
                                             checked={p.gps_coordinates == startCheck}
-                                            onChange={(e) => { setStartCheck(p.gps_coordinates); props.setStartPoint(p.address); props.setStartPointGps(p.gps_coordinates);
-                                                console.log('change on start')  }}
+                                            onChange={(e) => {e.stopPropagation(); setStartCheck(p.gps_coordinates); props.setStartPoint(p.address); props.setStartPointGps(p.gps_coordinates);
+                                                console.log('change on start');}}
                                         >
                                             Start Point
                                         </ToggleButton>
                                         <ToggleButton
                                             className="mb-2"
-                                            id="toggle-end"
+                                            id="toggle-endp"
                                             type="checkbox"
                                             variant="outline-danger"
                                             checked={p.gps_coordinates == endCheck}
-                                            onChange={(e) => { setEndCheck(p.gps_coordinates); props.setEndPoint(p.address); props.setEndPointGps(p.gps_coordinates);
-                                                console.log('change on end')}}
+                                            onChange={(e) => {e.stopPropagation(); setEndCheck(p.gps_coordinates); props.setEndPoint(p.address); props.setEndPointGps(p.gps_coordinates);
+                                                console.log('change on end');}}
                                         >
                                             End Point
                                         </ToggleButton>
@@ -425,7 +433,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                             <Marker icon={ p.gps_coordinates == startCheck && p.gps_coordinates == endCheck ? 
                             orangeHouse : p.gps_coordinates == startCheck ? greenHouse : p.gps_coordinates == endCheck ?
                              redHouse : blueHouse} key={Math.random()} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
-                            <Popup >
+                            <Popup closeOnClick={false}>
                                 {p.nameLocation}
                                 <hr></hr>
                                 {p.address}
@@ -443,8 +451,8 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                                 type="checkbox"
                                                 variant="outline-success"
                                                 checked={p.gps_coordinates == startCheck}
-                                                onChange={(e) => { setStartCheck(p.gps_coordinates); props.setStartPoint(p.address); props.setStartPointGps(p.gps_coordinates);
-                                                    console.log('change on start')  }}
+                                                onChange={(e) => {e.stopPropagation(); setStartCheck(p.gps_coordinates); props.setStartPoint(p.address); props.setStartPointGps(p.gps_coordinates);
+                                                    console.log('change on start');}}
                                             >
                                                 Start Point
                                             </ToggleButton>
@@ -454,8 +462,8 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                                 type="checkbox"
                                                 variant="outline-danger"
                                                 checked={p.gps_coordinates == endCheck}
-                                                onChange={(e) => { setEndCheck(p.gps_coordinates); props.setEndPoint(p.address); props.setEndPointGps(p.gps_coordinates);
-                                                    console.log('change on end')}}
+                                                onChange={(e) => {e.stopPropagation(); setEndCheck(p.gps_coordinates); props.setEndPoint(p.address); props.setEndPointGps(p.gps_coordinates);
+                                                    console.log('change on end');}}
                                             >
                                                 End Point
                                             </ToggleButton>
@@ -523,7 +531,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                         return (
                             <>
                                 <Marker icon={greenMarker} key={Math.random()} position={{ lat: p.start_point_coordinates.split(',')[0], lng: p.start_point_coordinates.split(',')[1] }}>
-                                    <Popup >
+                                    <Popup closeOnClick={false}>
                                         {p.start_point_address}
                                     </Popup>
                                 </Marker>
@@ -543,32 +551,37 @@ function GenericMap(props) { //Map to be inserted anywhere.
 }
 
 function MapHandler(props) { //Handles just the clicks on the map
+    const map = useMap()
+    const click = useRef(false)
+    map.on('popupopen', function(){click.current=true})
+    map.on('popupclose', function(){click.current=false})
     useMapEvents({
         click: (e) => {
             // console.log(e.latlng)
-            $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + e.latlng.lat + '&lon=' + e.latlng.lng + '&format=json&limit=1', function (data) {
-                let newSelectedMarker = {}
-                if (!props.generic) {
-                    let point = refDistance(e.latlng, props.positions)
-                    if(point.lat && point.lng)
-                        newSelectedMarker = { nameLocation:data.display_name.split(',')[0], latlng: {lat: point.lat, lng:point.lng}, altitude: point.alt, address: data.display_name }
-                    else
-                        alert('The point is too far from the track')
-                }
-                else {
-                    newSelectedMarker = { latlng: e.latlng, address: data.display_name }
-                }
-                if ( newSelectedMarker.latlng==null ){
-                    console.log("Invalid point")
-                }
-                else if (!props.currentMarkers.find(p => p.address == newSelectedMarker.address && p.latlng.lng == newSelectedMarker.latlng.lng && p.latlng.lat == newSelectedMarker.latlng.lat)) {
-                    let newSelectedMarkers = [...props.currentMarkers, newSelectedMarker]
-                    props.setCurrentMarkers(newSelectedMarkers)
-                } else {
-                    console.log("Location already selected")
-                }
-            })
-        },
+            if(!click.current){
+                $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + e.latlng.lat + '&lon=' + e.latlng.lng + '&format=json&limit=1', function (data) {
+                    let newSelectedMarker = {}
+                    if (!props.generic) {
+                        let point = refDistance(e.latlng, props.positions)
+                        if(point.lat && point.lng)
+                            newSelectedMarker = { nameLocation:data.display_name.split(',')[0], latlng: {lat: point.lat, lng:point.lng}, altitude: point.alt, address: data.display_name }
+                        else
+                            alert('The point is too far from the track')
+                    }
+                    else {
+                        newSelectedMarker = { latlng: e.latlng, address: data.display_name }
+                    }
+                    if ( newSelectedMarker.latlng==null ){
+                        console.log("Invalid point")
+                    }
+                    else if (!props.currentMarkers.find(p => p.address == newSelectedMarker.address && p.latlng.lng == newSelectedMarker.latlng.lng && p.latlng.lat == newSelectedMarker.latlng.lat)) {
+                        let newSelectedMarkers = [...props.currentMarkers, newSelectedMarker]
+                        props.setCurrentMarkers(newSelectedMarkers)
+                    } else {
+                        console.log("Location already selected")
+                    }
+                })
+        }},
     })
     return null
 }
@@ -580,7 +593,7 @@ function SelectedMarkers(props) {
 
                 return (
                     <LayerGroup>
-                        <Marker key={Math.random()} position={p.latlng}
+                        <Marker icon={refPoints} key={Math.random()} position={p.latlng}
                             eventHandlers={{
                                 click: (e) => {
                                     console.log("CLICKERD")

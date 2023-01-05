@@ -110,7 +110,7 @@ function EditHikeForm(props) {
         <Form.Group>
           <Form.Label style={{ fontSize: 25 }}>Title</Form.Label>
           <InputGroup className="mb-2">
-            <InputGroup.Text><i class="bi bi-textarea-t"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-textarea-t"></i></InputGroup.Text>
             <Form.Control value={title} required={true} onChange={(ev) => changeTitle(ev.target.value)} />
           </InputGroup>
         </Form.Group>
@@ -120,7 +120,7 @@ function EditHikeForm(props) {
         <Form.Group>
           <Form.Label style={{ fontSize: 25 }}>Description</Form.Label>
           <InputGroup className="mb-2">
-            <InputGroup.Text><i class="bi bi-textarea-t"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-textarea-t"></i></InputGroup.Text>
             <Form.Control as="textarea" required={true} rows={3} value={description} onChange={(ev) => changeDescription(ev.target.value)} />
           </InputGroup>
         </Form.Group>
@@ -134,7 +134,7 @@ function EditHikeForm(props) {
         <Form.Group as={Col}>
           <Form.Label>Length</Form.Label>
           <InputGroup className="mb-3">
-            <InputGroup.Text><i class="bi bi-map"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-map"></i></InputGroup.Text>
             <Form.Control value={length} required={true} onChange={(ev) => changeLength(ev.target.value)} placeholder="3.2" />
             <InputGroup.Text>Km</InputGroup.Text>
           </InputGroup>
@@ -142,7 +142,7 @@ function EditHikeForm(props) {
         <Form.Group as={Col}>
           <Form.Label>Expected Time</Form.Label>
           <InputGroup className="mb-3">
-            <InputGroup.Text><i class="bi bi-stopwatch"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-stopwatch"></i></InputGroup.Text>
             <Form.Control value={expTime} required={true} onChange={(ev) => changeExpTime(ev.target.value)} placeholder="4" />
             <InputGroup.Text>hours</InputGroup.Text>
           </InputGroup>
@@ -153,7 +153,7 @@ function EditHikeForm(props) {
         <Form.Group as={Col}>
           <Form.Label>Ascent</Form.Label>
           <InputGroup className="mb-3">
-            <InputGroup.Text><i class="bi bi-geo-fill"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-geo-fill"></i></InputGroup.Text>
             <Form.Control value={ascent} required={true} onChange={(ev) => changeAscent(ev.target.value)} placeholder="670" />
             <InputGroup.Text>m</InputGroup.Text>
           </InputGroup>
@@ -161,7 +161,7 @@ function EditHikeForm(props) {
         <Form.Group as={Col}>
           <Form.Label>Difficulty</Form.Label>
           <InputGroup>
-            <InputGroup.Text><i class="bi bi-graph-up-arrow"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-graph-up-arrow"></i></InputGroup.Text>
             <Form.Select required={true} value={difficulty} onChange={(ev) => changeDifficulty(ev.target.value)}>
               <option label=''></option>
               <option value='Tourist' label="Tourist" />
@@ -173,7 +173,7 @@ function EditHikeForm(props) {
         <Form.Group as={Col}>
           <Form.Label>Condition</Form.Label>
           <InputGroup>
-            <InputGroup.Text><i class="bi bi-graph-up-arrow"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-graph-up-arrow"></i></InputGroup.Text>
             <Form.Select value={condition} onChange={(ev) => changeCondition(ev.target.value)}>
               <option label=''></option>
               <option value='Open' label="Open" />
@@ -186,7 +186,7 @@ function EditHikeForm(props) {
         <Form.Group as={Col}>
           <Form.Label>Condition Description</Form.Label>
           <InputGroup className="mb-3">
-            <InputGroup.Text><i class="bi bi-textarea-t"></i></InputGroup.Text>
+            <InputGroup.Text><i className="bi bi-textarea-t"></i></InputGroup.Text>
             <Form.Control as="textarea" value={conditionDescription} onChange={(ev) => changeConditionDescription(ev.target.value)} />
           </InputGroup>
         </Form.Group>
@@ -218,28 +218,28 @@ function EditHikeForm(props) {
                   <Form.Group as={Col}>
                     <Form.Label>Title</Form.Label>
                     <InputGroup className="mb-3">
-                      <InputGroup.Text><i class="bi bi-compass"></i></InputGroup.Text>
+                      <InputGroup.Text><i className="bi bi-compass"></i></InputGroup.Text>
                       <Form.Control value={reference_points[index].nameLocation} onChange={(ev) => { let temp = [...reference_points]; temp[index].nameLocation = ev.target.value; console.log(temp); changeReferencePoints(temp)}} />
                     </InputGroup>
                   </Form.Group>
                   <Form.Group as={Row}>
                     <Form.Label>Address</Form.Label>
                     <InputGroup className="mb-3">
-                      <InputGroup.Text><i class="bi bi-compass"></i></InputGroup.Text>
+                      <InputGroup.Text><i className="bi bi-compass"></i></InputGroup.Text>
                       <Form.Control disabled value={reference_points[index].address} onChange={(ev) => { let temp = [...reference_points]; temp[index].address = ev.target.value; console.log(temp); changeReferencePoints(temp)}} />
                     </InputGroup>
                   </Form.Group>
                   <Form.Group as={Col}>
                     <Form.Label>Coordinates</Form.Label>
                     <InputGroup className="mb-3">
-                      <InputGroup.Text><i class="bi bi-compass"></i></InputGroup.Text>
+                      <InputGroup.Text><i className="bi bi-compass"></i></InputGroup.Text>
                       <Form.Control disabled value={reference_points[index].latlng.lat+','+reference_points[index].latlng.lng} onChange={(ev) => { let temp = [...reference_points]; temp[index].latlng = {lat: ev.target.value.split(',')[0], lng:ev.target.value.split(',')[1]}; console.log(temp); changeReferencePoints(temp)}} />
                     </InputGroup>
                   </Form.Group>
                   <Form.Group as={Col}>
                     <Form.Label>Altitude</Form.Label>
                     <InputGroup className="mb-3">
-                      <InputGroup.Text><i class="bi bi-compass"></i></InputGroup.Text>
+                      <InputGroup.Text><i className="bi bi-compass"></i></InputGroup.Text>
                       <Form.Control disabled value={reference_points[index].altitude} onChange={(ev) => { let temp = [...reference_points]; temp[index].altitude = ev.target.value; console.log(temp); changeReferencePoints(temp)}} />
                     </InputGroup>
                   </Form.Group>
