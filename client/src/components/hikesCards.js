@@ -101,7 +101,7 @@ function HikeCard2(props) {
             {props.role == 'Hiker' && props.flagCompleted ?
               <ListGroup.Item>
                 <Row style={{ fontWeight: 'bold', fontSize: 12 }}>
-                  <Col>Times complted: </Col>
+                  <Col>Times completed: </Col>
                   <Col style={{ fontWeight: 'normal' }}> {props.hike.times_completed} </Col>
                 </Row>
               </ListGroup.Item>
@@ -120,7 +120,7 @@ function HikeCard2(props) {
       </Card.Body>
       <Card.Footer>
         <Row>
-          <Col><Link  to='/Maps'><Button variant='outline-success' onClick={() => {props.setCurrentHike(props.hike)}}>Details</Button></Link></Col>
+          <Col><Link  to='/Map' onClick={() => {props.setCurrentHike(props.hike)}}><Button variant='outline-success'>Details</Button></Link></Col>
           <Col>
             {props.role == 'LocalGuide' ? <Link to='/editHike'><Button variant='outline-success' onClick={() => { props.setCurrentHike(props.hike) }}>Edit hike</Button></Link> : null}
             {props.role == 'Hiker' && !props.flagOnGoingHike ? <Link to='/profile'><Button variant='outline-success' onClick={() => { startHike() }}>Start hike</Button></Link> : null}

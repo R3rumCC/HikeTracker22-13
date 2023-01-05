@@ -486,6 +486,7 @@ async function getOnGoingHike(hiker_email) {
               reference_points: row.hike.reference_points,
               description: row.hike.description,
               gpx_track: row.hike.gpx_track,
+              picture: row.hike.picture,
               hike_condition: row.hike.hike_condition,
               hike_condition_description: row.hike.hike_condition_description,
               local_guide: row.hike.local_guide,
@@ -510,6 +511,7 @@ async function getFinishedHikes() {
             .then(json => resolve(json.map((row) => ({
               hiker: row.hiker,
               hike: row.hike,
+              picture: row.picture,
               times_completed: row.times_completed,
               best_time: row.best_time
             }))))
