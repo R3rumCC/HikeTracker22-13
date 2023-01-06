@@ -88,7 +88,7 @@ The list of correlations between hikes and hikers and thei statistics
 
 - **readHikes()**, returns a list of every hike with every field excepted the reference points. This function returns also the fields of the starting and ending points
 - **getHikeByTitle(title)** return the entire hike associated with the argument *title*
-- **readReferencePoints(title)**, returns a list of the fields of the reference points of the hike associated with the argument *title*
+- **readListOfReferencePoints(title)**, returns a list of the fields of the reference points of the hike associated with the argument *title*
 - **addHike(hike)**, inserts the object hike to the database. The argument *hike*, is an object with the every fields of an hike
 - **updateHikeTitle(oldName, newName)**, updates the hike identified by *oldName* with the *newName*
 - **updateHikeLenght(title, length)**, updates the hike *title* with the new *length*
@@ -107,6 +107,7 @@ The list of correlations between hikes and hikers and thei statistics
 - **readPoints()**, returns a list of every point with every field
 - **readPointById(id)**, returns a specific point, with every field, associated with the argument *id*. If the *id* hasn't a match it returns a object with a field error: 'NOT found'
 - **checkPresenceByAddress(addr)**, returns an idPoint of the point associated with the argument *addr*. If the *addr* hasn't a match it returns *null*
+- **checkPresemceByCoordinates(coord)**, returns on idPoint of the point associated with the argument *coord*. If the *coord* hasn't a match it returns *null*
 - **addPoint(point)**, inserts the point associated with the argument *point*, that is a point with all necessary fields
 - **updatePoint(oldIdPoint, newPoint)**, updates the entire point *oldIdPoint* with the new *newPoint*
 - **deletePoint(id)**, deletes the point with the specified *id*
@@ -149,9 +150,9 @@ The list of correlations between hikes and hikers and thei statistics
 ### HikePoint functions
 
 - **getHikePoint()**, returns a list of every idPoints and hikeTitles assossiation
-- **addHikePoint(idPoint, titleHike)**, instart a new entry to the HikePoint table
+- **addHikePoint(idPoint, titleHike, nameLocation)**, instart a new entry to the HikePoint table
 - **deleteHikePoint_Hike(titleHike)**, deletes all the entries associated with the argument *titleHike*
-
+- **getHikePointByTitle(titleHike)**, returns the Hike Points associated to an hike
 ## Users
 
 Mario Rossi:
