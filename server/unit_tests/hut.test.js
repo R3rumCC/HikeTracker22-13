@@ -18,11 +18,11 @@ describe("Huts test", () => {
                     'Happy Parking Lot', '44.259583,7.039722', 'Parking Lot', null, null), \
                     ('Vinadio, Cuneo, Piedmont, Italy',\
                     'Sad Parking Lot', '44.249216,7.017648', 'Parking Lot', null, null)");
-    await testDao.run(`INSERT OR IGNORE INTO Huts(idHut, nameHut, phone, email, web_site, description)
+    await testDao.run(`INSERT OR IGNORE INTO Huts(idHut, nameHut, phone, email, web_site, description, picture)
                     VALUES (1, "Strada Provinciale 53 di Val d'Orcia",
-                    '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena'),
+                    '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena', null),
                     (2, "Hut#1",
-                    '3209987875', 'test@gmail.com', 'www.test.com', 'Testing hut')`);
+                    '3209987875', 'test@gmail.com', 'www.test.com', 'Testing hut', null)`);
   });
 
   afterAll(async () => {
@@ -39,11 +39,11 @@ describe("Huts test", () => {
                     'Happy Parking Lot', '44.259583,7.039722', 'Parking Lot', null, null), \
                     ('Vinadio, Cuneo, Piedmont, Italy',\
                     'Sad Parking Lot', '44.249216,7.017648', 'Parking Lot', null, null)");
-    await testDao.run(`INSERT OR IGNORE INTO Huts(idHut, nameHut, phone, email, web_site, description)
+    await testDao.run(`INSERT OR IGNORE INTO Huts(idHut, nameHut, phone, email, web_site, description, picture)
                     VALUES (1, "Strada Provinciale 53 di Val d'Orcia",
-                    '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena'),
+                    '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena', null),
                     (2, "Hut#1",
-                    '3209987875', 'test@gmail.com', 'www.test.com', 'Testing hut')`);
+                    '3209987875', 'test@gmail.com', 'www.test.com', 'Testing hut', null)`);
     await testDao.run("INSERT OR IGNORE INTO HikePoint(idPoint, titleHike)\
                     VALUES ('4', 'Hike#1'), \
                     ('3', 'Hike#2'), \
@@ -51,35 +51,17 @@ describe("Huts test", () => {
                     ('1', 'Hike#1')");
   });
 
-  function Point(idPoint, address, nameLocation, gps_coordinates, type, capacity, altitude) {
-    this.idPoint = idPoint;
-    this.address = address;
-    this.nameLocation = nameLocation;
-    this.gps_coordinates = gps_coordinates;
-    this.type = type;
-    this.capacity = capacity;
-    this.altitude = altitude;
-  }
-
-  function HutNameLocation(idHut, nameHut, phone, email, web_site, description) {
+  function HutNameLocation(idHut, nameHut, phone, email, web_site, description, picture) {
     this.idHut = idHut;
     this.nameLocation = nameHut;
     this.phone = phone;
     this.email = email;
     this.web_site = web_site;
     this.description = description;
+    this.picture = picture;
   }
 
-  function HutNameHut(idHut, nameHut, phone, email, web_site, description) {
-    this.idHut = idHut;
-    this.nameHut = nameHut;
-    this.phone = phone;
-    this.email = email;
-    this.web_site = web_site;
-    this.description = description;
-  }
-
-  function HutPoint(idPoint, address, nameLocation, gps_coordinates, type, capacity, altitude, idHut, nameHut, phone, email, web_site, description) {
+  function HutPoint(idPoint, address, nameLocation, gps_coordinates, type, capacity, altitude, idHut, nameHut, phone, email, web_site, description, picture) {
     this.idPoint = idPoint;
     this.address = address;
     this.nameLocation = nameLocation;
@@ -93,13 +75,14 @@ describe("Huts test", () => {
     this.email = email;
     this.web_site = web_site;
     this.description = description;
+    this.picture = picture;
   }
 
   // need to change, for now in db there is inconsistency between the huts in Points table and huts in Huts table
   test('test readHuts', async () => {
     const data = await dao.readHuts();
     const p1 = new HutPoint(1, 'La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
-      'Hut#1', '45.177786,7.083372', 'Hut', null, null, 2, 'Hut#1', '3209987875', 'test@gmail.com', 'www.test.com', 'Testing hut');
+      'Hut#1', '45.177786,7.083372', 'Hut', null, null, 2, 'Hut#1', '3209987875', 'test@gmail.com', 'www.test.com', 'Testing hut', null);
     const points_check = [p1];
     expect(data).toEqual(points_check);
   });
@@ -109,7 +92,7 @@ describe("Huts test", () => {
     await testDao.run('DELETE FROM Points');
     await testDao.run('DELETE FROM Huts');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
-    const hut = new HutNameLocation(1, "Strada Provinciale 53 di Val d'Orcia", '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena');
+    const hut = new HutNameLocation(1, "Strada Provinciale 53 di Val d'Orcia", '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena', null);
     const check = await dao.addHut(hut);
     expect(check).toBe(undefined);	//this.lastid
   });
@@ -118,7 +101,7 @@ describe("Huts test", () => {
     await testDao.run('DELETE FROM Points');
     await testDao.run('DELETE FROM Huts');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
-    const hut = new HutNameLocation(1, "Strada Provinciale 53 di Val d'Orcia", '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena');
+    const hut = new HutNameLocation(1, "Strada Provinciale 53 di Val d'Orcia", '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena', null);
     const check = await dao.addHut(hut);
     expect(check).toBe(undefined);	//this.lastId
     try {
@@ -144,7 +127,7 @@ describe("Huts test", () => {
     await testDao.run('DELETE FROM Points');
     await testDao.run('DELETE FROM Huts');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
-    const hut = new HutNameLocation(null, "Strada Provinciale 53 di Val d'Orcia", '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena');
+    const hut = new HutNameLocation(null, "Strada Provinciale 53 di Val d'Orcia", '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena', null);
     try {
       await dao.addHut(hut);
     } catch (error) {
@@ -156,7 +139,7 @@ describe("Huts test", () => {
     await testDao.run('DELETE FROM Points');
     await testDao.run('DELETE FROM Huts');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
-    const hut = new HutNameLocation(1, null, '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena');
+    const hut = new HutNameLocation(1, null, '3333071117', 'caggianomarta98@gmail.com', null, 'Nice hut in Siena', null);
     try {
       await dao.addHut(hut);
     } catch (error) {
@@ -168,7 +151,7 @@ describe("Huts test", () => {
     await testDao.run('DELETE FROM Points');
     await testDao.run('DELETE FROM Huts');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
-    const hut = new HutNameLocation(1, "Strada Provinciale 53 di Val d'Orcia", null, 'caggianomarta98@gmail.com', null, 'Nice hut in Siena');
+    const hut = new HutNameLocation(1, "Strada Provinciale 53 di Val d'Orcia", null, 'caggianomarta98@gmail.com', null, 'Nice hut in Siena', null);
     try {
       await dao.addHut(hut);
     } catch (error) {
@@ -180,7 +163,7 @@ describe("Huts test", () => {
     await testDao.run('DELETE FROM Points');
     await testDao.run('DELETE FROM Huts');
     await testDao.run('DELETE FROM SQLITE_SEQUENCE');
-    const hut = new HutNameLocation(1, "Strada Provinciale 53 di Val d'Orcia", '3333071117', null, null, 'Nice hut in Siena');
+    const hut = new HutNameLocation(1, "Strada Provinciale 53 di Val d'Orcia", '3333071117', null, null, 'Nice hut in Siena', null);
     try {
       await dao.addHut(hut);
     } catch (error) {
