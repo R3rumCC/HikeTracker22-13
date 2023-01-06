@@ -290,6 +290,7 @@ function updateHike(oldHikeTitle, hike) {
       if (response.ok) {
         resolve(null);
       } else {
+        console.log("ERROR IN THE API")
         response.json()
           .then((obj) => { reject(obj); })
           .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else

@@ -1,8 +1,12 @@
-import { Button, Form, Col, Row, Card, InputGroup } from 'react-bootstrap';
+import { Button, Form, Col, Row, Card, InputGroup, ListGroup } from 'react-bootstrap';
 import { useEffect, useState, useContext, React } from 'react';
 import { UNSAFE_NavigationContext, useNavigate } from 'react-router-dom';
 import API from '../API';
 import MessageContext from '../messageCtx';
+import { Title } from '@mui/icons-material';
+
+const URL = 'http://localhost:3001/api/Pictures';
+
 
 function hutMapping(dbHuts) {
   let newHuts = [];
@@ -65,38 +69,78 @@ function filterDouble(arg, filter) {
   else return false;
 }
 
+
+//TEMPORARY
+const default_image = 'https://www.travelmanagers.com.au/wp-content/uploads/2012/08/AdobeStock_254529936_Railroad-to-Denali-National-Park-Alaska_750x500.jpg'
+
+
 function HutCard(props) {
+
+  const [picName, setPicName]= useState('');
+
+  /*
+  useEffect(() => {
+    let name= URL + "/" + props.picture
+    setPicName(name)
+  }, [props])*/
+
   return (
-    <Card style={{ width: '20rem' }}>
-      <Card.Header>{props.name}</Card.Header>
+    <Card className="mx-1 my-1" border='primary' style={{ width: '21rem' }}>
+      
+      <Card.Img variant="top" src={default_image} />
+
       <Card.Body>
-        <Card.Text>Address: {props.address}</Card.Text>
-        <Row>
-          <Col>
-            <Card.Text>Latitude: {props.latitude}</Card.Text>
-          </Col>
-          <Col>
-            <Card.Text>Longitude: {props.longitude}</Card.Text>
-          </Col>
-          <Col>
-            <Card.Text>Altitude: {props.altitude} m</Card.Text>
-          </Col>
-        </Row>
-        <hr />
-        <Card.Text><h5>Contacts</h5></Card.Text>
-        <Row>
-          <Col>
-            <Card.Text>Phone: {props.phone}</Card.Text>
-          </Col>
-          <Col>
-            <Card.Text>Email: {props.email}</Card.Text>
-          </Col>
-        </Row>
-        {props.web_site != '' ? <Card.Text>Web site: {props.web_site}</Card.Text> : <></>}
-        <hr />
-        <Card.Text><h5>Description</h5></Card.Text>
-        <Card.Text>{props.description}</Card.Text>
-        <Card.Text>{props.capacity} Beds</Card.Text>
+        <Card.Title style={{ fontWeight: 'bold', color: 'success' }}> {props.name}</Card.Title>
+
+        <ListGroup className="list-group-flush">
+
+          <ListGroup.Item style={{ fontWeight: 'bold', fontSize: 13 }}>
+            <Row>
+              <div><i class="bi bi-signpost"></i> Address :</div> 
+              <div style={{ fontWeight: 'normal' }}> {props.address} </div> 
+            </Row>
+            <Row>
+              <Col>
+              <div><i className="bi bi-compass"></i> Latitude : </div> 
+              <div style={{ fontWeight: 'normal' }}> {props.latitude} </div> 
+              </Col>
+              <Col>
+              <div><i className="bi bi-compass"></i> Longitude : </div>
+              <div style={{ fontWeight: 'normal' }}> {props.longitude} </div>
+              </Col>
+            </Row>
+            <Row>
+              <div><i class="bi bi-geo-fill"></i> Altitude : </div>
+              <div style={{ fontWeight: 'normal' }}> {props.altitude} </div>
+            </Row>
+          </ListGroup.Item>
+
+          <ListGroup.Item style={{ fontWeight: 'bold', fontSize: 13 }}>
+            <Row><Card.Text style={{fontSize: 18}}>Contacts</Card.Text></Row>
+            <Row >
+              <div><i class="bi bi-telephone"></i> Phone : </div>
+              <div style={{ fontWeight: 'normal' }}>{props.phone}</div>
+            </Row>
+            <Row>
+              <div><i class="bi bi-envelope"></i> Email :</div>
+              <div style={{ fontWeight: 'normal' }}>{props.email}</div>
+            </Row>
+              {props.web_site != '' ? <Row><div><i class="bi bi-globe2"></i> Web site:</div><div style={{ fontWeight: 'normal' }}> {props.web_site}</div></Row> : <></>}
+
+          </ListGroup.Item>
+              
+          <ListGroup.Item style={{ fontWeight: 'bold', fontSize: 13 }}>
+            <div><i class="bi bi-person-plus"></i> Number of beds : </div>
+            <div style={{ fontWeight: 'normal' }}>{props.capacity}</div>
+          </ListGroup.Item>
+
+          <ListGroup.Item>
+            <Row><Card.Text style={{fontWeight:'bold', fontSize: 18}}>Description</Card.Text></Row>
+            <Row><Card.Text>{props.description}</Card.Text></Row>
+          </ListGroup.Item>
+
+        </ListGroup>
+
       </Card.Body>
     </Card>
   );

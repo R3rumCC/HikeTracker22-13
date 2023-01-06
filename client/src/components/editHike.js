@@ -54,7 +54,6 @@ function EditHikeForm(props) {
       if (length !== "" && difficulty !== "") {
         if (description !== "") {
           /*let temp = [...reference_points].map((x) => {
-            console.log(x.latlng.lat, x.latlng.lng)
             return { address: x.address, nameLocation: x.nameLocation, gps_coordinates: x.latlng.lat + ',' + x.latlng.lng, type: null, capacity: null, altitude: x.altitude }
           })
           setReferencePoints(temp)*/
@@ -67,11 +66,10 @@ function EditHikeForm(props) {
           //REFERENCE POINTS ARE SET TO NULL ACTUALLY
           updateHike = {
             title: title, length: length, expected_time: expTime, ascent: ascent,
-            difficulty: difficulty, start_point: {address: startPoint, gps_coordinates: startPointGps}, end_point: {address: endPoint, gps_coordinates: endPointGps}, reference_points: null,
-            description: description, hike_condition: condition,
+            difficulty: difficulty, start_point: {address: startPoint, gps_coordinates: startPointGps}, end_point: {address: endPoint, gps_coordinates: endPointGps}, 
+            reference_points: reference_points, description: description, hike_condition: condition,
             hike_condition_description: conditionDescription
           }
-          console.log(updateHike)
           props.updateHike(props.oldHike.title, updateHike);
           alert('Hike correctly updated!')
           props.setOnChangeHikes(true)
@@ -219,28 +217,28 @@ function EditHikeForm(props) {
                     <Form.Label>Title</Form.Label>
                     <InputGroup className="mb-3">
                       <InputGroup.Text><i className="bi bi-compass"></i></InputGroup.Text>
-                      <Form.Control value={reference_points[index].nameLocation} onChange={(ev) => { let temp = [...reference_points]; temp[index].nameLocation = ev.target.value; console.log(temp); changeReferencePoints(temp)}} />
+                      <Form.Control value={reference_points[index].nameLocation} onChange={(ev) => { let temp = [...reference_points]; temp[index].nameLocation = ev.target.value; changeReferencePoints(temp)}} />
                     </InputGroup>
                   </Form.Group>
                   <Form.Group as={Row}>
                     <Form.Label>Address</Form.Label>
                     <InputGroup className="mb-3">
                       <InputGroup.Text><i className="bi bi-compass"></i></InputGroup.Text>
-                      <Form.Control disabled value={reference_points[index].address} onChange={(ev) => { let temp = [...reference_points]; temp[index].address = ev.target.value; console.log(temp); changeReferencePoints(temp)}} />
+                      <Form.Control disabled value={reference_points[index].address} onChange={(ev) => { let temp = [...reference_points]; temp[index].address = ev.target.value; changeReferencePoints(temp)}} />
                     </InputGroup>
                   </Form.Group>
                   <Form.Group as={Col}>
                     <Form.Label>Coordinates</Form.Label>
                     <InputGroup className="mb-3">
                       <InputGroup.Text><i className="bi bi-compass"></i></InputGroup.Text>
-                      <Form.Control disabled value={reference_points[index].latlng.lat+','+reference_points[index].latlng.lng} onChange={(ev) => { let temp = [...reference_points]; temp[index].latlng = {lat: ev.target.value.split(',')[0], lng:ev.target.value.split(',')[1]}; console.log(temp); changeReferencePoints(temp)}} />
+                      <Form.Control disabled value={reference_points[index].latlng.lat+','+reference_points[index].latlng.lng} onChange={(ev) => { let temp = [...reference_points]; temp[index].latlng = {lat: ev.target.value.split(',')[0], lng:ev.target.value.split(',')[1]}; changeReferencePoints(temp)}} />
                     </InputGroup>
                   </Form.Group>
                   <Form.Group as={Col}>
                     <Form.Label>Altitude</Form.Label>
                     <InputGroup className="mb-3">
                       <InputGroup.Text><i className="bi bi-compass"></i></InputGroup.Text>
-                      <Form.Control disabled value={reference_points[index].altitude} onChange={(ev) => { let temp = [...reference_points]; temp[index].altitude = ev.target.value; console.log(temp); changeReferencePoints(temp)}} />
+                      <Form.Control disabled value={reference_points[index].altitude} onChange={(ev) => { let temp = [...reference_points]; temp[index].altitude = ev.target.value; changeReferencePoints(temp)}} />
                     </InputGroup>
                   </Form.Group>
                 </div>

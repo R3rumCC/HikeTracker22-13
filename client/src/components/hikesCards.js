@@ -50,11 +50,8 @@ function HikeCard2(props) {
       setNameEnd((split_end[0] + " , " + split_end[1]));
     }
 
-    console.log(props.hike.picture)
     let name= URL + "/" + props.hike.picture
-    console.log(name)
     setPicName(name)
-    console.log("picName=" + {picName})
 
   }, [props.hike])
 

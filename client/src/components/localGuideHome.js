@@ -290,10 +290,7 @@ function HikeForm(props) {
       setErrorMsg("Not valid extension. Please insert a .jpg, .jpeg or .png file");
       setPicture(null);
     
-    }else{
-      setSeePic(true)
-    }
-
+    }else{ setSeePic(true) }
   }
 
   return (<>
@@ -435,9 +432,37 @@ function HutForm(props) {
   const [email, setEmail] = useState('')
   const [webSite, setWebSite] = useState('')
   const [description, setDescription] = useState('')
+  const [picture, setPicture] = useState(null)
+  const [seePic, setSeePic] = useState(false)
   const [clicked, setClicked] = useState(false)
 
-  //const [errorMsg, setErrorMsg] = useState("");
+
+  const submitPicture= (pict)=>{
+
+    let myBlob = new Blob([pict], { type: "text/plain" })
+    const url = '/upload_pictures';
+    const formData = new FormData();
+
+    formData.append('file', myBlob,  pict.name);
+    const config = {
+      headers: {
+        'content-type': "text/plain",
+      },
+    };
+    axiosInstance.post(url, formData, config);
+  }
+
+
+  const showPicture= (pict) =>{
+    setPicture(pict);
+
+    let checkString= pict.name.split(".")
+    if(checkString[1] !== "jpg" && checkString[1] !== "jpeg" && checkString[1] !== "png"){
+//      setErrorMsg("Not valid extension. Please insert a .jpg, .jpeg or .png file");
+      setPicture(null);
+    
+    }else{ setSeePic(true) }
+  }
 
   const resetState = () => {
     setTitle('')
@@ -445,7 +470,7 @@ function HutForm(props) {
     setAddress(''); setNumBeds(0);
     setPhone(''); setEmail('');
     setWebSite(''); setDescription('');
-    setClicked(false)
+    setClicked(false); setPicture(null); setSeePic(false);
   }
 
   useEffect(() => {
@@ -469,11 +494,12 @@ function HutForm(props) {
 
     newHut = {
       address: address, nameLocation: title, gps_coordinates: position, type: 'Hut', capacity: numBeds, altitude: altitude,
-      phone: phone, email: email, web_site: webSite, description: description
+      phone: phone, email: email, web_site: webSite, description: description, picture: picture.name
     }
     console.log(newHut)
     //call to the API
     props.CreateNewHut(newHut)
+    submitPicture(picture)
     props.setOnChangePoints(true)
     alert('New Hut correctly added!')
   }
@@ -572,6 +598,11 @@ function HutForm(props) {
           <Form.Control as="textarea" rows={3} value={description} required={true} onChange={(ev) => setDescription(ev.target.value)} />
         </Form.Group>
       </Row>
+      {/**COVER PICTURE */}
+      <Form.Group controlId="pictureFile" className="mt-3">
+        <Form.Label>Hut's Picture  {seePic ? <i class="bi bi-check-circle" color='success'></i> : <></> }</Form.Label>
+        <Form.Control type="file" required onChange={(e) => showPicture(e.target.files[0])} />
+      </Form.Group>
 
       <div>
         <Button className='mt-y' type='submit' style={{ background: 'red' }}>Save</Button>

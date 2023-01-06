@@ -9,18 +9,6 @@ exports.getHikes = async function () {
     for (let hike of hikes) {
       //hike['reference_points'] = await dao.readReferencePoints(hike.title);
       hike['reference_points'] = await dao.readListOfReferencePoints(hike.title);
-      if (hike['reference_points']) {
-        let refer_points = [];
-        for (const rp of hike['reference_points'].reference_points.split("-")) {
-          const idPoint = parseInt(rp);
-          const refPoint = await dao.readPointById(idPoint);
-          refer_points.push(refPoint);
-        }
-        hike['reference_points'] = refer_points;
-      }
-      else {
-        hike['reference_points'] = [];
-      }
       fullHikes.push(hike)
     }
     return fullHikes;
@@ -32,11 +20,9 @@ exports.getHikes = async function () {
 
 exports.addHike = async function (req, res) {
 
-  console.log('addHike server');
   //better rename these two fields in start_point_address and end_point_address because they are address, not idPoint
   const startId = await dao.checkPresenceByCoordinates(req.body.newHike.start_point.gps_coordinates)
   const endId = await dao.checkPresenceByCoordinates(req.body.newHike.end_point.gps_coordinates)
-  console.log(startId.idPoint, endId.idPoint)
 
   if (startId == null || endId == null) {
     return res.status(400)
@@ -48,8 +34,6 @@ exports.addHike = async function (req, res) {
     reference_points: req.body.newHike.reference_points, description: req.body.newHike.description, gpx_track: req.body.newHike.gpx_track,
     picture: req.body.newHike.picture, hike_condition: req.body.newHike.hike_condition, local_guide: req.body.newHike.local_guide
   }
-  console.log('Before dao call')
-  console.log(hike)
 
   dao.addHike(hike).then(
     result => {
@@ -101,7 +85,7 @@ exports.updateHike = async function (req, res) {
     between a hike and a point. Delete everything and add new.
   */
   // Delete
-  /*
+  
   dao.deleteHikePoint_Hike(oldHike.title).then(
     result => {
       return res.status(200).json();
@@ -111,16 +95,29 @@ exports.updateHike = async function (req, res) {
     }
   )
   // Add
-  updateHike.reference_points.map(point => {
-    dao.addHikePoint(point.idPoint, updateHike.title).then(
-      result => {
-        return res.status(200);
-      },
-      error => {
-        return res.status(500).send(error);
-      }
-    )
-  })*/
+  if(updateHike.reference_points){
+    updateHike.reference_points.map(point => {
+
+      var newPoint = {"address":point.address, "gps_coordinates":point.latlng.lat+","+point.latlng.lng}
+      var newIdPoint;
+
+      dao.addPoint(newPoint).then(
+        result => {
+          dao.addHikePoint(result, updateHike.title).then(
+            result => {
+              return res.status(200);
+            },
+            error => {
+              return res.status(500).send(error);
+            }
+          )
+        },
+        error => {
+          return res.status(500).send(error);
+        }
+      )
+    })
+  }
 
 }
 
