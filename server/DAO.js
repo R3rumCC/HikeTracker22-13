@@ -489,8 +489,8 @@ function readHuts() {
 
 function addHut(hut) {
   return new Promise((resolve, reject) => {
-    const sql = 'INSERT INTO HUTS (nameHut, phone, email, web_site, description) VALUES(?,?,?,?,?)';
-    db.run(sql, hut.nameLocation, hut.phone, hut.email, hut.web_site, hut.description,
+    const sql = 'INSERT INTO HUTS (nameHut, phone, email, web_site, description, picture) VALUES(?,?,?,?,?,?)';
+    db.run(sql, hut.nameLocation, hut.phone, hut.email, hut.web_site, hut.description, hut.picture,
       (err, rows) => {
         if (err) {
           reject(err);

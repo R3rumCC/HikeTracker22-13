@@ -156,6 +156,7 @@ router.post('/Huts', [
   body('hut.phone').notEmpty().withMessage('Phone cannot be empty!'),
   body('hut.email').notEmpty().withMessage('Email cannot be empty!'),
   body('hut.description').notEmpty().withMessage('Description cannot be empty!'),
+  body('hut.picture').notEmpty().withMessage('Picture cannot be empty!'),
 ], (req, res) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
