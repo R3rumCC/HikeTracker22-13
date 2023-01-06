@@ -272,17 +272,14 @@ function GenericMap(props) { //Map to be inserted anywhere.
     }, [props.gpxFile, props.hikes]);
     useEffect(() => {
         if (props.currentMarkers.length != 0 && props.currentMarkers.some((x) => !x.distHikes)) {
-            console.log(props.currentMarkers)
             let currentMarkersMod = [...props.currentMarkers].map((x) => {
                 if (!x.distHikes) {
                     let dist = distanceRespectHikes(x.latlng, mapList.current)
-                    console.log(dist)
-                    return { latlng: x.latlng, address: x.address, distHikes: dist }
+                    return { nameLocation: x.nameLocation, altitude: x.altitude, latlng: x.latlng, address: x.address, distHikes: dist }
                 }
                 else
-                    return { latlng: x.latlng, address: x.address, distHikes: x.distHikes }
+                    return { nameLocation: x.nameLocation, altitude: x.altitude, latlng: x.latlng, address: x.address, distHikes: x.distHikes }
             })
-            console.log(currentMarkersMod)
             props.setCurrentMarkers(currentMarkersMod)
         }
     }, [props.currentMarkers, mapList.current])

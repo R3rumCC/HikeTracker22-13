@@ -1,4 +1,4 @@
-import { React, useState } from 'react';
+import { React, useEffect, useState } from 'react';
 import { Row, Col, Button, Form, InputGroup, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { GenericMap } from './hikePage';
@@ -70,6 +70,7 @@ function EditHikeForm(props) {
             reference_points: reference_points, description: description, hike_condition: condition,
             hike_condition_description: conditionDescription
           }
+          console.log(updateHike)
           props.updateHike(props.oldHike.title, updateHike);
           alert('Hike correctly updated!')
           props.setOnChangeHikes(true)
