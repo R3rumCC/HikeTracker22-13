@@ -28,7 +28,7 @@ function ManagerTable(props) {
               <th>LastName</th>
               <th>Role</th>
               <th>phoneNumber</th>
-              <th>operations</th>
+              <th>options</th>
             </tr>
           </thead>
           <tbody>         
