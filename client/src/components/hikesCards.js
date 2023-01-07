@@ -14,6 +14,7 @@ function HikeCard2(props) {
   const [nameStart, setNameStart] = useState('');
   const [nameEnd, setNameEnd] = useState('');
   const [picName, setPicName]= useState('');
+  const [showDetails, setShowDetails]= useState(false);
 
   function startHike() {
     let start_time = dayjs();
@@ -25,8 +26,6 @@ function HikeCard2(props) {
     let end_time = dayjs();
     props.endHike(props.currentUser.username, props.hike.title, props.hike.start_time, end_time.format('YYYY/MM/DD HH:mm:ss'));
   }
-
-  //console.log(props.flagOnGoingHike)
 
   useEffect(() => {
     setColorDifficulty(props.hike.difficulty)
@@ -71,33 +70,45 @@ function HikeCard2(props) {
       <Card.Body>
 
         <Card.Title style={{ fontWeight: 'bold', color: 'green' }}> {props.hike.title}</Card.Title>
-        <ListGroup className="list-group-flush">
+        <ListGroup className="list-group-flush" style={{ fontWeight: 'bold', fontSize: 13 }}>
           <ListGroup.Item>
-            <Row>
+            <Row style={{fontSize: 16}}>
               <Col><Badge bg={colorDiff}> <i className="bi bi-graph-up-arrow"></i> {props.hike.difficulty}</Badge></Col>
               <Col><Badge bg='info'>{props.hike.hike_condition}</Badge></Col>
             </Row>
           </ListGroup.Item>
           <ListGroup.Item>
-            <Row style={{ fontWeight: 'bold', fontSize: 13 }}>
+            <Row >
               <Col><i className="bi bi-map"></i> {props.hike.length} km</Col>
               <Col><i className="bi bi-stopwatch"></i> {props.hike.expected_time} h</Col>
             </Row>
           </ListGroup.Item>
-          <ListGroup.Item style={{ fontWeight: 'bold', fontSize: 13 }}>
+          <ListGroup.Item>
             <i className="bi bi-compass"></i> Start Point :
-            <div style={{ fontWeight: 'normal' }}> {nameStart} </div>
-          </ListGroup.Item>
-          <ListGroup.Item style={{ fontWeight: 'bold', fontSize: 13 }}>
-            <i className="bi bi-compass"></i> End Point :
-            <div style={{ fontWeight: 'normal' }}>{nameEnd}</div>
+            { !showDetails ? <div style={{ fontWeight: 'normal' }}> {nameStart} </div> : <div style={{ fontWeight: 'normal' }}> {props.hike.start_point_address} </div>}
           </ListGroup.Item>
           <ListGroup.Item>
-            {props.role == 'Hiker' ? <Card.Link><Link to='/Map' onClick={() => { props.setCurrentHike([props.hike]) }}>See on map</Link></Card.Link> : null}
+            <i className="bi bi-compass"></i> End Point :
+            { !showDetails ? <div style={{ fontWeight: 'normal' }}>{nameEnd}</div> : <div style={{ fontWeight: 'normal' }}> {props.hike.end_point_address} </div>}
+          </ListGroup.Item>
+          {showDetails ? 
+            <>
+              <ListGroup.Item>
+                <div><i class="bi bi-geo-fill"></i> {props.hike.ascent} m</div>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <div> Description : </div>
+                <div style={{ fontWeight: 'normal' }}>{props.hike.description}</div>
+              </ListGroup.Item> 
+            </>
+            
+          : null}
+          <ListGroup.Item>
+            {props.role == 'Hiker' ? <Card.Link><Link to='/Map' style={{ fontWeight: 'normal', fontSize: 16 }} onClick={() => { props.setCurrentHike([props.hike]) }}>See on map</Link></Card.Link> : null}
           </ListGroup.Item>
             {props.role == 'Hiker' && props.flagCompleted ?
               <ListGroup.Item>
-                <Row style={{ fontWeight: 'bold', fontSize: 12 }}>
+                <Row>
                   <Col>Times completed: </Col>
                   <Col style={{ fontWeight: 'normal' }}> {props.hike.times_completed} </Col>
                 </Row>
@@ -106,7 +117,7 @@ function HikeCard2(props) {
             }
             {props.role == 'Hiker' && props.flagCompleted ?
               <ListGroup.Item>
-                <Row style={{ fontWeight: 'bold', fontSize: 12 }}>
+                <Row>
                   <Col>Best time: </Col>
                   <Col style={{ fontWeight: 'normal' }}> {props.hike.best_time} min</Col>
                 </Row>
@@ -117,7 +128,7 @@ function HikeCard2(props) {
       </Card.Body>
       <Card.Footer>
         <Row>
-          <Col><Link  to='/Map' onClick={() => {props.setCurrentHike(props.hike)}}><Button variant='outline-success'>Details</Button></Link></Col>
+          <Col><Button variant='outline-success' onClick={() => {setShowDetails(!showDetails)}}>Details</Button></Col>
           <Col>
             {props.role == 'LocalGuide' ? <Link to='/editHike'><Button variant='outline-success' onClick={() => { props.setCurrentHike(props.hike) }}>Edit hike</Button></Link> : null}
             {props.role == 'Hiker' && !props.flagOnGoingHike ? <Link to='/profile'><Button variant='outline-success' onClick={() => { startHike() }}>Start hike</Button></Link> : null}

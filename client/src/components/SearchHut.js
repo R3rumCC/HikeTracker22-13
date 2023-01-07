@@ -3,7 +3,6 @@ import { useEffect, useState, useContext, React } from 'react';
 import { UNSAFE_NavigationContext, useNavigate } from 'react-router-dom';
 import API from '../API';
 import MessageContext from '../messageCtx';
-import { Title } from '@mui/icons-material';
 
 const URL = 'http://localhost:3001/api/Pictures';
 
@@ -13,7 +12,7 @@ function hutMapping(dbHuts) {
   newHuts = dbHuts.map((h) => {
     return {
       name: h.nameLocation, address: h.address, latitude: h.gps_coordinates.split(',')[0], longitude: h.gps_coordinates.split(',')[1],
-      altitude: h.altitude, capacity: h.capacity, phone: h.phone, email: h.email, web_site: h.web_site, description: h.description
+      altitude: h.altitude, capacity: h.capacity, phone: h.phone, email: h.email, web_site: h.web_site, description: h.description, picture: h.picture
     }
   });
   console.log(newHuts);
@@ -24,7 +23,7 @@ function HutContainer(props) {
   const huts = props.huts;
   return (
     <div className="d-flex justify-content-start flex-wrap">
-      {huts.length != 0 ? huts.map((hut) => { return (<HutCard key={hut.address} name={hut.name} address={hut.address} latitude={hut.latitude} longitude={hut.longitude} altitude={hut.altitude} capacity={hut.capacity} phone={hut.phone} email={hut.email} web_site={hut.web_site} description={hut.description} />) }) : <h4>No result found</h4>}
+      {huts.length != 0 ? huts.map((hut) => { return (<HutCard key={hut.address} name={hut.name} address={hut.address} latitude={hut.latitude} longitude={hut.longitude} altitude={hut.altitude} capacity={hut.capacity} phone={hut.phone} email={hut.email} web_site={hut.web_site} description={hut.description}  picture={hut.picture}/>) }) : <h4>No result found</h4>}
     </div>
   );
 }
@@ -70,24 +69,19 @@ function filterDouble(arg, filter) {
 }
 
 
-//TEMPORARY
-const default_image = 'https://www.travelmanagers.com.au/wp-content/uploads/2012/08/AdobeStock_254529936_Railroad-to-Denali-National-Park-Alaska_750x500.jpg'
-
-
 function HutCard(props) {
 
   const [picName, setPicName]= useState('');
 
-  /*
   useEffect(() => {
     let name= URL + "/" + props.picture
     setPicName(name)
-  }, [props])*/
+  }, [props])
 
   return (
-    <Card className="mx-1 my-1" border='primary' style={{ width: '21rem' }}>
+    <Card className="mx-1 my-1" border='primary' style={{ width: '25rem' }}>
       
-      <Card.Img variant="top" src={default_image} />
+      <Card.Img variant="top" src={picName} />
 
       <Card.Body>
         <Card.Title style={{ fontWeight: 'bold', color: 'success' }}> {props.name}</Card.Title>
