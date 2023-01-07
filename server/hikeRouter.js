@@ -81,6 +81,7 @@ router.post('/newHike', [
     //.isNumeric().withMessage('End point must be numeric!'),
   ,body('newHike.description').notEmpty().withMessage('Description cannot be empty!'),
   body('newHike.gpx_track').notEmpty().withMessage('Gpx track cannot be empty!'),
+  body('newHike.picture').notEmpty().withMessage('Picture cannot be empty!'),
   //body('newHike.local_guide').notEmpty().withMessage('Local Guide cannot be empty!'),
   //body('newHike.hike_condition').notEmpty().withMessage('Hike condition cannot be empty!'),
 

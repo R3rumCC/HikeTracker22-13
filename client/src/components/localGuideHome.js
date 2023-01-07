@@ -165,18 +165,14 @@ function HikeForm(props) {
     }
     if (map !== '') {
       const start = { address: startPoint, gps_coordinates: startPointGps }
-      let startId = props.CreateNewPoint(start) //try to use startId and endId instead of performing again the search
+       //try to use startId and endId instead of performing again the search
       const end = { address: endPoint, gps_coordinates: endPointGps }
-      let endId = props.CreateNewPoint(end);
 
       //check on user's role (?)
-      console.log(startPointGps, endPointGps)
-      console.log(startId, endId)
       newHike = {
         title: title, length: length, expected_time: expTime, ascent: ascent, difficulty: difficulty,
         start_point: start, end_point: end, reference_points: reference_points,
         description: description, gpx_track: title, picture: picture.name, hike_condition: 'Open', local_guide: props.currentUser.username
-        //gpx_track: map --> request entity too large
       }
       props.CreateNewHike(newHike)
       submitFile()
