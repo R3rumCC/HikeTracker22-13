@@ -709,6 +709,28 @@ function getFinishedHikesByHiker(hiker_email) {
     });
   });
 }
+function updateHikerHike_Hike(oldHike,newHike) {
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE HikerHike SET hike = ? WHERE hike = ?';
+    db.run(sql, newHike,oldHike, (err) => {
+      if (err)
+        reject(err);
+      else
+        resolve(true);
+    });
+  });
+}
+function updateHikerHikeStatistics_Hike(oldHike,newHike) {
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE HikerHikeStatistics SET hike = ? WHERE hike = ?';
+    db.run(sql, newHike,oldHike, (err) => {
+      if (err)
+        reject(err);
+      else
+        resolve(true);
+    });
+  });
+}
 
 //---------------- HikePoints ----------------------------
 
@@ -820,5 +842,6 @@ module.exports = {
   readListOfReferencePoints, readPointById,
   startHike, updateHikeEndTime, getOnGoingHike, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker,
   endHike, updateEndHikeBestTime, updateEndHikeNoBestTime, getBestTime, checkFirstEnd,
-  getHikePoint, addHikePoint, deleteHikePoint_Hike, getHikePointByTitle, addLinkedHut, getHutsLinkedByTitle, deleteLinkedHut_byTitle
+  getHikePoint, addHikePoint, deleteHikePoint_Hike, getHikePointByTitle, addLinkedHut, getHutsLinkedByTitle, deleteLinkedHut_byTitle,
+  updateHikerHike_Hike, updateHikerHikeStatistics_Hike
 };

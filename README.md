@@ -135,7 +135,7 @@ The list of correlations between hikes and hikers and thei statistics
 - **startHike(hiker_email, hike_title, start_time)**, inserts a row in the table for the starting hike, with every fields except for end_time
 - **updateHikeEndTime(hiker_email, hike_title, tart_time, end_time)**, update the row associated with the arguments *hiker_email*, *hike_title* and *start_time* with the *end_time*
 - **getOnGoingHike(hiker_email)**, returns an array with the eventually ongoing hike (its title and starting time) associated with the argument *hiker_email*
-
+- **updateHikerHike_Hike(oldHike,newHike)**, update the hike name with the new hike name
 ### HikerHikeStatistics functions
 
 - **endHike(hiker_email, hike_title, duration)**, insert a row in the table when a hike was completed for the first time. Automatically set the times_completed field to 1
@@ -146,7 +146,7 @@ The list of correlations between hikes and hikers and thei statistics
 - **getFinischedHikes()**, returns all hikes that are finished, even duplicates if, for example, the same hike was completed by two or more different hikers
 - **getDistinctFinishedHikes()**, returns all hikes that are finished, eliminating duplicates
 - **getFinishedHikesByHiker(hiker_email)**, returns all hikes that are finished by a specific hiker
-
+- **updateHikerHikeStatistics_Hike(oldHike,newHike)**, update the hike name with the new hike name
 ### HikePoint functions
 
 - **getHikePoint()**, returns a list of every idPoints and hikeTitles assossiation

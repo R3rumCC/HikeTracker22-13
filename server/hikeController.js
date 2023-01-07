@@ -142,7 +142,25 @@ exports.updateHike = async function (req, res) {
       return res.status(500).send(error);
     }
   )
-  
+  if(req.body.oldHikeTitle !== updateHike.title){
+    dao.updateHikerHikeStatistics_Hike(req.body.oldHikeTitle,updateHike.title).then(
+      result => {
+        return res.status(200).json();
+      },
+      error => {
+        return res.status(500).send(error);
+      }
+    )
+    dao.updateHikerHike_Hike(req.body.oldHikeTitle,updateHike.title).then(
+      result => {
+        return res.status(200).json();
+      },
+      error => {
+        return res.status(500).send(error);
+      }
+    )
+  }
+
   
   /*
     This next part is to add or delete, if needed, the relationships
@@ -231,64 +249,6 @@ exports.updateHike = async function (req, res) {
         return res.status(500).send(error)
       }
     )
-  /*
-  dao.deleteHikePoint_Hike(oldHike.title).then(
-    result => {
-      return res.status(200).json();
-    },
-    error => {
-      console.log("Error on deleteHikePoint"+`${error}`)
-      return res.status(500).send(error);
-    }
-  )
-  // Add
-  if(updateHike.reference_points){
-    updateHike.reference_points.map(point => {
-
-      var newPoint = {"address":point.address, "gps_coordinates":point.latlng.lat+","+point.latlng.lng}
-      var newIdPoint;
-      dao.checkPresenceByCoordinates(newPoint.gps_coordinates).then(
-        result => {
-          if(result == null){
-            dao.addPoint(newPoint).then(
-              result => {
-                dao.addHikePoint(result, updateHike.title).then(
-                  result => {
-                    return res.status(200);
-                  },
-                  error => {
-                    console.log("Error on addHikePoint in result with new point "+`${error}`)
-                    return res.status(500).send(error);
-                  }
-                )
-              },
-              error => {
-                console.log("Error on addPoint with new point "+`${error}`)
-                return res.status(500).send(error);
-              }
-            )
-          }
-          else{
-            console.log(result)
-            dao.addHikePoint(result.idPoint, updateHike.title).then(
-              result => {
-                return res.status(200);
-              },
-              error => {
-                console.log("Error on addHikePoint with point available "+`${error}`)
-                return res.status(500).send(error);
-              }
-            )
-          }
-        },
-        error => {
-          console.log("Error on checkPresencebyCoordinates "+`${error}`)
-          return res.status(500).send(error);
-        }
-      )
-    })
-  }
-*/
 }
 
 exports.getHuts = async function () {
