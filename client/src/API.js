@@ -494,7 +494,7 @@ async function getOnGoingHike(hiker_email) {
               local_guide: row.hike.local_guide,
               start_time: row.start_time
             }))))
-            .catch(err => reject({ error: "Cannot parse server response" }))
+            .catch(err => {console.log(err); reject({ error: "Cannot parse server response" })})
         } else {
           response.json()
             .then((obj) => { reject(obj); })
@@ -517,11 +517,11 @@ async function getFinishedHikes() {
               times_completed: row.times_completed,
               best_time: row.best_time
             }))))
-            .catch(err => reject({ error: "Cannot parse server response" }))
+            .catch(err => { console.log(err); reject({ error: "Cannot parse server response" })})
         } else {
           response.json()
             .then((obj) => { reject(obj); })
-            .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+            .catch((err) => {{console.log(err); reject({ error: "Cannot parse server response." }) }}); // something else
         }
       }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
   });
@@ -564,12 +564,13 @@ async function getFinishedHikesByHiker(hiker_email) {
               description: row.hike.description,
               gpx_track: row.hike.gpx_track,
               hike_condition: row.hike.hike_condition,
+              picture: row.hike.picture,
               hike_condition_description: row.hike.hike_condition_description,
               local_guide: row.hike.local_guide,
               times_completed: row.times_completed,
               best_time: row.best_time
             }))))
-            .catch(err => reject({ error: "Cannot parse server response" }))
+            .catch(err =>{console.log(err); reject({ error: "Cannot parse server response" })})
         } else {
           response.json()
             .then((obj) => { reject(obj); })

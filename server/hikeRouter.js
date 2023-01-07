@@ -267,13 +267,4 @@ router.get('/getFinishedHikesByHiker/:hiker', async (req, res) => {
   }
 });
 
-router.get('/getFinishedHikesByHiker/:hiker', async (req, res) => {
-  try {
-    const hikes = await c.getFinishedHikesByHiker(req);
-    res.status(200).json(hikes).end();
-  } catch (error) {
-    res.status(500).json(error).end();
-  }
-});
-
 module.exports = router
