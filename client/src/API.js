@@ -215,7 +215,7 @@ async function getHuts() {
     });
     if (response.ok) {
       const list = await response.json();
-      console.log(list)
+      //console.log(list)
       return list;
     }
     else {

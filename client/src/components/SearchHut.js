@@ -74,10 +74,7 @@ function HutCard(props) {
   const [picName, setPicName]= useState('');
 
   useEffect(() => {
-    console.log("Picture name=")
-    console.log(props.picture)
     let name= URL + "/" + props.picture
-    console.log(name)
     setPicName(name)
   }, [props])
 

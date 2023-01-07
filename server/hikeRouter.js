@@ -142,7 +142,7 @@ router.post('/Point', [
 router.get('/getHuts', async (req, res) => {
   try {
     const huts = await c.getHuts();
-    console.log(huts);
+    //console.log(huts);
     res.status(200).json(huts).end();
   } catch (e) {
     res.status(500).json(e).end();
