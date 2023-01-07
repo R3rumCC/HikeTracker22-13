@@ -64,6 +64,8 @@ function Main() {
   const [currentMarkers, setCurrentMarkers] = useState([]);
 
   const [hikes, setHikes] = useState([]);
+  const [filteredHikes, setFilteredHikes] = useState([])
+  const [filtered, setFiltered] = useState(false)
   const [onChangeHikes, setOnChangeHikes] = useState(true);
   const [onChangePoints, setOnChangePoints] = useState(true);
 
@@ -278,7 +280,8 @@ function Main() {
           loggedIn && currentUser.role == 'LocalGuide' ? <LocalGuide_Home CreateNewPoint={CreateNewPoint} CreateNewHut={CreateNewHut} CreateNewHike={CreateNewHike}
             currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} hikes={hikes} currentUser={currentUser} setCurrentHike={setCurrentHike} points={points}
             setOnChangeHikes={setOnChangeHikes} setOnChangePoints={setOnChangePoints} /> :
-            <DefaultLayout role={loggedIn ? currentUser.role : ''} isLoading={isLoading} setLoading={setLoading} setCurrentHike={setCurrentHike}
+            <DefaultLayout role={loggedIn ? currentUser.role : ''} isLoading={isLoading} filteredHikes={filteredHikes}
+             setFilteredHikes={setFilteredHikes} filtered={filtered} setFiltered={setFiltered} setLoading={setLoading} setCurrentHike={setCurrentHike}
             hikes={hikes} startHike={startHike} currentUser={currentUser ? currentUser: ''} flagOnGoingHike={flagOnGoingHike} />  /*<FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>

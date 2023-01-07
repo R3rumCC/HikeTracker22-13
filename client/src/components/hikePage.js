@@ -244,7 +244,6 @@ function GenericMap(props) { //Map to be inserted anywhere.
     const [startCheck, setStartCheck] = useState('');
     const [endCheck, setEndCheck] = useState('');
     const travelOnce = useRef('');
-    const unclick = useRef(false)
     function MyComponent() {
         const map = useMap()
         if(travelOnce.current != positions){
@@ -313,10 +312,11 @@ function GenericMap(props) { //Map to be inserted anywhere.
                         props.setStartPointGps(positions[0][0] + ',' + positions[0][1])
                     }
                     setStartPoint(data.display_name)
-                    props.setStartPointGps(positions[0][0] + ',' + positions[0][1])
                     setStartCheck(positions[0][0] + ',' + positions[0][1])
-                    console.log('first start')
-
+                    if(!props.hiker){
+                        props.setStartPointGps(positions[0][0] + ',' + positions[0][1])
+                        console.log('first start')
+                    }
                     
                 })
             }
@@ -333,9 +333,10 @@ function GenericMap(props) { //Map to be inserted anywhere.
                     }
                     setEndPoint(data.display_name)
                     setEndCheck(positions[positions.length - 1][0]+','+positions[positions.length - 1][1])
-                    props.setEndPointGps(positions[positions.length - 1][0]+','+positions[positions.length - 1][1])
-                    console.log('first end')
-                    
+                    if(!props.hiker){
+                        props.setEndPointGps(positions[positions.length - 1][0]+','+positions[positions.length - 1][1])
+                        console.log('first end')
+                    }
     
                 })
             }
@@ -565,7 +566,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                         )
                     }) : null}
 
-                    {props ?
+                    {!props.gpxFile && !props.hiker ?
                         <>
                             <MapHandler currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} positions={positions}></MapHandler>
                             <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>
@@ -596,6 +597,11 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                 <Marker icon={greenMarker} key={Math.random()} position={{ lat: p.start_point_coordinates.split(',')[0], lng: p.start_point_coordinates.split(',')[1] }}>
                                     <Popup closeOnClick={false}>
                                         {p.start_point_address}
+                                    </Popup>
+                                </Marker>
+                                <Marker icon={redMarker} key={Math.random()} position={{ lat: p.end_point_coordinates.split(',')[0], lng: p.end_point_coordinates.split(',')[1] }}>
+                                    <Popup closeOnClick={false}>
+                                        {p.end_point_address}
                                     </Popup>
                                 </Marker>
                             </>

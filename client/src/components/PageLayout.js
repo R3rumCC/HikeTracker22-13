@@ -22,8 +22,7 @@ function DefaultLayout(props) {
   
   const { handleErrors } = useContext(MessageContext);
   const [hidden, setHidden] = useState(true);
-  const [filteredHikes, setFilteredHikes] = useState([])
-  const [filtered, setFiltered] = useState(false)
+
 
   
   return (
@@ -39,17 +38,17 @@ function DefaultLayout(props) {
             <Row >
               <Col>
                 { <Button className='mt-5 mb-3'  onClick={()=>setHidden( s =>!s)}>Filter</Button> }
-                {filtered ? <Button className='mt-5 mb-3 ms-3'  onClick={()=>{setFiltered(false); setFilteredHikes([])}}>Clear</Button> : null }
+                {props.filtered ? <Button className='mt-5 mb-3 ms-3'  onClick={()=>{props.setFiltered(false); props.setFilteredHikes([])}}>Clear</Button> : null }
               </Col>
 
             </Row>
             <Row>
-              {!hidden ? <FilterForm isLoading={props.isLoading} setLoading={props.setLoading} hikes={props.hikes} setFiltered = {setFiltered} setFilteredHikes={setFilteredHikes} setHidden={setHidden} ></FilterForm> : null}
+              {!hidden ? <FilterForm isLoading={props.isLoading} setLoading={props.setLoading} hikes={props.hikes} setFiltered = {props.setFiltered} setFilteredHikes={props.setFilteredHikes} setHidden={setHidden} ></FilterForm> : null}
             </Row>
 
           </Row>
           <Row>
-            {hidden ? <HikesContainer role= {props.role} name ={props.name} filter = {filtered} hikes={!filtered ? props.hikes : filteredHikes} setCurrentHike={props.setCurrentHike} startHike={props.startHike} currentUser={props.currentUser} flagOnGoingHike={props.flagOnGoingHike}/> : null}
+            {hidden ? <HikesContainer role= {props.role} name ={props.name} filter = {props.filtered} hikes={!props.filtered ? props.hikes : props.filteredHikes} setCurrentHike={props.setCurrentHike} startHike={props.startHike} currentUser={props.currentUser} flagOnGoingHike={props.flagOnGoingHike}/> : null}
           </Row>
         </Container>
         )
