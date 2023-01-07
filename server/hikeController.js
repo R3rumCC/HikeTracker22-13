@@ -22,11 +22,14 @@ exports.getHikes = async function () {
 exports.addHike = async function (req, res) {
 
   //better rename these two fields in start_point_address and end_point_address because they are address, not idPoint
-  const startId = await dao.checkPresenceByCoordinates(req.body.newHike.start_point.gps_coordinates)
-  const endId = await dao.checkPresenceByCoordinates(req.body.newHike.end_point.gps_coordinates)
+  let startId = await dao.checkPresenceByCoordinates(req.body.newHike.start_point.gps_coordinates)
+  let endId = await dao.checkPresenceByCoordinates(req.body.newHike.end_point.gps_coordinates)
 
-  if (startId == null || endId == null) {
-    return res.status(400)
+
+  if (startId == null)
+    startId = { idPoint: await dao.addPoint(req.body.newHike.start_point)}
+  if(endId == null) {
+    endId = {idPoint: await dao.addPoint(req.body.newHike.end_point)}
   }
 
   let hike = {
@@ -35,7 +38,6 @@ exports.addHike = async function (req, res) {
     reference_points: req.body.newHike.reference_points, description: req.body.newHike.description, gpx_track: req.body.newHike.gpx_track,
     picture: req.body.newHike.picture, hike_condition: req.body.newHike.hike_condition, local_guide: req.body.newHike.local_guide
   }
-
   dao.addHike(hike).then(
     result => {
       return res.status(200).json();
