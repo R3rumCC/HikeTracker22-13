@@ -141,18 +141,14 @@ function readListOfReferencePoints(title) { // RP for a given hike
   return new Promise((resolve, reject) => {
     const sql = `SELECT *
     FROM HikePoint HP, Points P
-    WHERE P.idPoint = HP.idPoint
-    AND HP.titleHike = ?`;
-    db.all(sql, [title], (err, rp) => {
+    WHERE P.idPoint = HP.idPoint AND HP.titleHike = ?`;
+    db.all(sql, [title], (err, rows) => {
       if (err) {
         reject(err);
       } else {
-        const newRp = [];
-        for(const p of rp){
-          const latlng = p.gps_coordinates.split(',');
-          p['latlng'] = {lat:latlng[0], lng:latlng[1]}
-          newRp.push(p)
-        }
+        const newRp = rows.map(rp =>{
+          return {nameLocation: rp.PnameLocation, address: rp.address, latlng:{lat:rp.gps_coordinates.split(',')[0],lng:rp.gps_coordinates.split(',')[1]},altitude:rp.altitude}
+        });
         resolve(newRp)
       }
     });
@@ -729,14 +725,14 @@ function getHikePoint() {
   });
 }
 
-function addHikePoint(idPoint, titleHike) {
+function addHikePoint(idPoint, titleHike,nameLocation) {
   return new Promise((resolve, reject) => {
-    const sql = 'INSERT INTO HikePoint (idPoint, titleHike) VALUES(?,?)';
-    db.run(sql, idPoint, titleHike, (err, rows) => {
+    const sql = 'INSERT INTO HikePoint (idPoint, titleHike,PnameLocation) VALUES(?,?,?)';
+    db.run(sql, idPoint, titleHike, nameLocation, (err, rows) => {
       if (err) {
         reject(err);
       }else{
-        resolve(true)
+        resolve(idPoint)
       }
     })
   })
@@ -758,6 +754,19 @@ function deleteHikePoint_Hike(titleHike)  {
   });
 };
 
+function getHikePointByTitle(titleHike) {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT * FROM HikePoint WHERE titleHike = ?';
+    db.all(sql, titleHike, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
 
 
 module.exports = {
@@ -771,5 +780,5 @@ module.exports = {
   readListOfReferencePoints, readPointById,
   startHike, updateHikeEndTime, getOnGoingHike, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker,
   endHike, updateEndHikeBestTime, updateEndHikeNoBestTime, getBestTime, checkFirstEnd,
-  getHikePoint, addHikePoint, deleteHikePoint_Hike
+  getHikePoint, addHikePoint, deleteHikePoint_Hike, getHikePointByTitle
 };

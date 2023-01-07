@@ -70,6 +70,69 @@ exports.updateHike = async function (req, res) {
     hike_condition: req.body.hike.hike_condition, hike_condition_description: req.body.hike.hike_condition_description, local_guide: oldHike.local_guide
   }
 
+  function deletePointsInPTables(oldRP){
+    console.log('Points to delete: '+`${oldRP}`)
+    console.log(oldRP)
+    if(oldRP.length != 0){
+      dao.getHikePoint().then(
+        result=>{
+          let otherP = result.map(x =>{x.idPoint})
+          oldRP.filter(j =>{!otherP.includes(j)})
+          oldRP.forEach(element => {
+            dao.deletePoint(element).then(
+              result=>{
+                return res.status(200)
+              },
+              error=>{
+                return res.status(500).send(error)
+              }
+            )
+          });
+        },
+        error =>{
+          return res.status(500).send(error)
+        }
+      )
+    }
+  }
+
+  function addNewPoint(newPoint){
+    dao.addPoint(newPoint).then(
+      result => {
+        console.log('New Point: '+`${result}`)
+        dao.addHikePoint(result, updateHike.title,newPoint.nameLocation).then(
+          result => {
+            return res.status(200);
+          },
+          error => {
+            console.log("Error on addHikePoint in result with new point "+`${error}`)
+            return res.status(500).send(error);
+          }
+        )
+      },
+      error => {
+        console.log("Error on addPoint with new point "+`${error}`)
+        return res.status(500).send(error);
+      }
+    )
+
+  }
+  function addOldPoint(oldRP, oldPoint, nameLocation){
+    if(Object.values(oldRP).includes(oldPoint)){
+      oldRP.splice(oldRP.indexOf(oldPoint),1)
+    }
+    console.log('Old Point: '+`${oldPoint}`)
+    dao.addHikePoint(oldPoint, updateHike.title, nameLocation).then(
+      result => {
+        return res.status(200);
+      },
+      error => {
+        console.log("Error on addHikePoint with point available "+`${error}`)
+        return res.status(500).send(error);
+      }
+    )
+  }
+
   dao.updateHike(req.body.oldHikeTitle, updateHike).then(
     result => {
       return res.status(200).json();
@@ -85,12 +148,55 @@ exports.updateHike = async function (req, res) {
     between a hike and a point. Delete everything and add new.
   */
   // Delete
-  
+  dao.getHikePointByTitle(oldHike.title).then(
+    result => {
+
+        let oldRP = result.map(x =>x.idPoint)
+
+        dao.deleteHikePoint_Hike(oldHike.title).then(
+          result => {
+            if(updateHike.reference_points.length == 0){
+              deletePointsInPTables(oldRP)
+            }
+            else{
+              updateHike.reference_points.map((rp, index) =>{
+                let newPoint = {nameLocation: rp.nameLocation, altitude: rp.altitude, address: rp.address, gps_coordinates: rp.latlng.lat+","+rp.latlng.lng}
+                dao.checkPresenceByCoordinates(newPoint.gps_coordinates).then(
+                  result =>{
+                    if(result == null){
+                      addNewPoint(newPoint)
+                    }
+                    else{
+                      addOldPoint(oldRP, result.idPoint,newPoint.nameLocation)
+                    }
+                    if(updateHike.reference_points.length-1 == index){
+                      deletePointsInPTables(oldRP)
+                    }
+                  },
+                  error =>{
+                    console.log(error);
+                    return res.status(500).send(error)
+                  }
+                )
+      
+              })
+            }
+            return res.status(200).json();
+          },
+          error => {
+            console.log("Error on deleteHikePoint"+`${error}`)
+            return res.status(500).send(error);
+          }
+        )
+    }
+  )
+  /*
   dao.deleteHikePoint_Hike(oldHike.title).then(
     result => {
       return res.status(200).json();
     },
     error => {
+      console.log("Error on deleteHikePoint"+`${error}`)
       return res.status(500).send(error);
     }
   )
@@ -100,25 +206,48 @@ exports.updateHike = async function (req, res) {
 
       var newPoint = {"address":point.address, "gps_coordinates":point.latlng.lat+","+point.latlng.lng}
       var newIdPoint;
-
-      dao.addPoint(newPoint).then(
+      dao.checkPresenceByCoordinates(newPoint.gps_coordinates).then(
         result => {
-          dao.addHikePoint(result, updateHike.title).then(
-            result => {
-              return res.status(200);
-            },
-            error => {
-              return res.status(500).send(error);
-            }
-          )
+          if(result == null){
+            dao.addPoint(newPoint).then(
+              result => {
+                dao.addHikePoint(result, updateHike.title).then(
+                  result => {
+                    return res.status(200);
+                  },
+                  error => {
+                    console.log("Error on addHikePoint in result with new point "+`${error}`)
+                    return res.status(500).send(error);
+                  }
+                )
+              },
+              error => {
+                console.log("Error on addPoint with new point "+`${error}`)
+                return res.status(500).send(error);
+              }
+            )
+          }
+          else{
+            console.log(result)
+            dao.addHikePoint(result.idPoint, updateHike.title).then(
+              result => {
+                return res.status(200);
+              },
+              error => {
+                console.log("Error on addHikePoint with point available "+`${error}`)
+                return res.status(500).send(error);
+              }
+            )
+          }
         },
         error => {
+          console.log("Error on checkPresencebyCoordinates "+`${error}`)
           return res.status(500).send(error);
         }
       )
     })
   }
-
+*/
 }
 
 exports.getHuts = async function () {

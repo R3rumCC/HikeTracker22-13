@@ -78,16 +78,18 @@ function HutCard(props) {
 
   const [picName, setPicName]= useState('');
 
-  /*
   useEffect(() => {
+    console.log("Picture name=")
+    console.log(props.picture)
     let name= URL + "/" + props.picture
+    console.log(name)
     setPicName(name)
-  }, [props])*/
+  }, [props])
 
   return (
     <Card className="mx-1 my-1" border='primary' style={{ width: '21rem' }}>
       
-      <Card.Img variant="top" src={default_image} />
+      <Card.Img variant="top" src={picName} />
 
       <Card.Body>
         <Card.Title style={{ fontWeight: 'bold', color: 'success' }}> {props.name}</Card.Title>
