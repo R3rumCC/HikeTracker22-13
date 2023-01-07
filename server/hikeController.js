@@ -524,6 +524,10 @@ exports.getOnGoingHike = async function (req) {
     let result = [];
     if (ongoing.length!==0) {
       const h = await dao.getHikeByTitle(ongoing[0].hike);
+      const startPoint = (await dao.readPointById(h.start_point)).address
+      const endPoint = (await dao.readPointById(h.end_point)).address
+      h['start_point'] = startPoint;
+      h['end_point'] = endPoint;
       const hike = {hike: h, start_time: ongoing[0].start_time};
       result.push(hike);
     }
@@ -560,6 +564,10 @@ exports.getFinishedHikesByHiker = async function (req) {
     let hikes = [];
     for(let t of titles) {
       const h = await dao.getHikeByTitle(t.hike);
+      const startPoint = (await dao.readPointById(h.start_point)).address
+      const endPoint = (await dao.readPointById(h.end_point)).address
+      h['start_point'] = startPoint;
+      h['end_point'] = endPoint;
       const hike = {hike: h, times_completed: t.times_completed, best_time: t.best_time};
       hikes.push(hike);
     }
