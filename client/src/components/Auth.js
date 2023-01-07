@@ -30,6 +30,7 @@ function LoginForm(props) {
       setErrorMessage('Password cannot be empty.');
       return;
     }
+
     props.login(credentials)
       .then(() => navigate(oldPath));
 

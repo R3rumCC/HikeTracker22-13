@@ -11,7 +11,7 @@ function ManagerPage(props){
     return(
         <Col sm={8} >
           <h1 className='mx-3 my-3'>Hello Manager</h1>
-          <ManagerTable list={props.list} CreateNewAccount={props.CreateNewAccount}></ManagerTable>
+          <ManagerTable list={props.list} CreateNewAccount={props.CreateNewAccount} sendNotice={props.sendNotice}></ManagerTable>
         </Col>
     );
 }
@@ -34,7 +34,7 @@ function ManagerTable(props) {
             {              
 
                props.list.map((r) => 
-               <ManagerRow req={r} key={r.email}  CreateNewAccount={props.CreateNewAccount}></ManagerRow>)
+               <ManagerRow req={r} key={r.email}  CreateNewAccount={props.CreateNewAccount} sendNotice={props.sendNotice}></ManagerRow>)
             }
           </tbody>
         </Table>
@@ -45,7 +45,7 @@ function ManagerRow(props){
   
     return(
         <tr>
-          <ManagerData key={props.req.email}  CreateNewAccount={props.CreateNewAccount} req={props.req}/>
+          <ManagerData key={props.req.email}  CreateNewAccount={props.CreateNewAccount} req={props.req} sendNotice={props.sendNotice}/>
         </tr>
     );
 }
@@ -54,6 +54,7 @@ function ManagerData(props){
     let newUser = { name: props.req.name, lastname: props.req.lastname, email:props.req.email, password: props.req.password, role:props.req.role, phoneNumber: props.req.phone_number }
     props.CreateNewAccount(newUser)
     alert('Account verified');
+    props.sendNotice(props.req.email);
     window.location.reload([true]);
   }
   return(

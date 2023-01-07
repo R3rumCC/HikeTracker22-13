@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
 email.post('/getCode/:email',async (req, res) => {
     const to=req.params.email;
     let code = Math.floor(Math.random()*900000) +100000
-
+    console.log(req.body.phoneNumber);
     const mailOptions = {
         from:'"HIKETRACKER"<736076274@qq.com>',
         to, 
@@ -47,5 +47,21 @@ email.post('/getCode/:email',async (req, res) => {
    
 
 });
+
+email.get('/notice/:email',async (req, res) => {
+    const to=req.params.email;
+    const mailOptions = {
+        from:'"HIKETRACKER"<736076274@qq.com>',
+        to, 
+        subject:'Your account is available now ', // title
+       html:`<div style="vh-100 justify-content-md-center"><h1 style="text-align:center;">Your account has being verified, You can login now!</h1></div>`
+    };
+    //  send
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) return console.log(error);
+        console.log(info);
+    });
+        return res.status(200).json();                      
+})
 
 module.exports = email;

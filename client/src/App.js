@@ -125,6 +125,7 @@ function Main() {
       try {
         const user_curr = await API.getUserInfo(); // we have the user info here
         user_curr.name === 'Guest' ? setLoggedIn(false) : setLoggedIn(true);
+        user_curr.role === 'Admin' && navigate ('/manager'); 
         setCurrentUser(user_curr);
       } catch (err) {
         handleError(err); // mostly unauthenticated user, thus set not logged in
@@ -227,6 +228,11 @@ function Main() {
     // console.log(reqList);
   }
 
+  const sendNotice = async (email) => {
+
+    await API.sendNotice(email);
+  }
+
   const checkCode = async (email) => {
 
     const c = await API.checkCode(email);
@@ -296,6 +302,10 @@ function Main() {
             hikes={hikes} startHike={startHike} currentUser={currentUser ? currentUser: ''} flagOnGoingHike={flagOnGoingHike} />  /*<FileUploadLayout></FileUploadLayout>*/
         } >
         </Route>
+        <Route path="/manager" element={
+          loggedIn && currentUser.role == 'Admin' ? <ManagerPage list={reqList} CreateNewAccount={CreateNewAccount} sendNotice={sendNotice}/> : <Navigate replace to='/' />
+        } >
+        </Route>
         {/* <Route path="/NewHike" element={<HikeForm/>} /> THIS WAS A TRY TO DO THE .GPX FILE UPLOAD.*/}
         <Route path="/map" element={loggedIn && currentUser.role == 'Hiker' && currentHike.length != 0 ? <HikerLayout currentHike={currentHike} currentMarkers={currentMarkers} setCurrentMarkers={setCurrentMarkers} /> : <Navigate replace to='/' />} />
         <Route path="/points" element={<PointsContainer points={points}></PointsContainer>} />
@@ -303,7 +313,7 @@ function Main() {
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
         <Route path="/profile" element={loggedIn && currentUser.role == 'Hiker' ? <Hiker_Home currentUser={currentUser} setCurrentHike={setCurrentHike} endHike={endHike} startHike={startHike} flagOnGoingHike={flagOnGoingHike} /> : <Navigate replace to='/' />} />
         <Route path="/editHike" element={loggedIn && currentUser.role == 'LocalGuide' ? <EditHike updateHike={updateHike} returnToHome={returnToHome} currentHike={currentHike} points={points} setOnChangeHikes={setOnChangeHikes} currentMarkers={currentMarkers}/> : <Navigate replace to='/' />} />
-        <Route path="/manager" element={<ManagerPage list={reqList} CreateNewAccount={CreateNewAccount}></ManagerPage>} />
+        {/* <Route path="/manager" element={<ManagerPage list={reqList} CreateNewAccount={CreateNewAccount}></ManagerPage>} /> */}
         {/*<Route path="/startHike" element={loggedIn && currentUser.role == 'Hiker' ? <Hiker_Home currentUser={currentUser} setCurrentHike={setCurrentHike} endHike={endHike} flagOnGoingHike={flagOnGoingHike} /> : <Navigate replace to='/' />} />*/}
       </Routes>
     </>

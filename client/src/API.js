@@ -28,6 +28,7 @@ const getUserInfo = async () => {
     credentials: 'include',
   });
   const user = await response.json();
+
   if (response.ok) {
     return user;
   } else {
@@ -358,7 +359,20 @@ async function sendEmail(email,user) {
         phoneNumber:user.phoneNumber
      })
   });
-   console.log(user)
+  // console.log(user);
+
+  if (response.ok) {
+    return null;
+  }
+
+}
+
+async function sendNotice(email) {
+  const response = await fetch(`http://localhost:3001/email/notice/${email}`, {
+    method:'GET',
+    headers:{'Content-Type':'application/json'},
+    credentials: 'include',
+  });
 
   if (response.ok) {
     return null;
@@ -621,6 +635,6 @@ const API = {
   addPoint, addHut, getHuts, getPoints,
   checkUser, sendEmail, checkCode,
   startHike, updateEndTime, endHike, updateEndHike, checkFirstTime,
-  getOnGoingHike, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker,getAllRequests
+  getOnGoingHike, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker,getAllRequests,sendNotice
 }
 export default API;
