@@ -126,6 +126,7 @@ function Main() {
         const user_curr = await API.getUserInfo(); // we have the user info here
         user_curr.name === 'Guest' ? setLoggedIn(false) : setLoggedIn(true);
         user_curr.role === 'Admin' && navigate ('/manager'); 
+        getReqList();
         setCurrentUser(user_curr);
       } catch (err) {
         handleError(err); // mostly unauthenticated user, thus set not logged in
