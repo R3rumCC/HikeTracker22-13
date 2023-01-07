@@ -768,7 +768,47 @@ function getHikePointByTitle(titleHike) {
 }
 
 
+//-----------------------HutsLinkedHike----------------------
+function addLinkedHut(idHut, titleHike) {
+  return new Promise((resolve, reject) => {
+    const sql = 'INSERT INTO HikeHut (idHut, titleHike) VALUES(?,?)';
+    db.run(sql, idHut, titleHike, (err, rows) => {
+      if (err) {
+        reject(err);
+      }else{
+        resolve(idHut)
+      }
+    })
+  })
+}
+function getHutsLinkedByTitle(titleHike) {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT address,nameLocation,gps_coordinates,capacity,altitude FROM HikeHut HH, Points P, Huts H WHERE HH.idHut==H.idHut AND P.nameLocation == H.nameHut AND titleHike = ?';
+    db.all(sql, titleHike, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
 
+function deleteLinkedHut_byTitle(titleHike)  {
+  /*
+    Delete every relationship ship for a hike
+  */
+  return new Promise((resolve, reject) => {
+    const query = 'DELETE FROM HikeHut WHERE titleHike = ?;';
+    db.run(query, titleHike, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(true);
+      }
+    });
+  });
+};
 module.exports = {
   readUsers, addUser, deleteUser, updateUserRole, getUserByEmail,
   readHikes, addHike, deleteHike, updateHike, updateHikeTitle, getHikeByTitle,
@@ -780,5 +820,5 @@ module.exports = {
   readListOfReferencePoints, readPointById,
   startHike, updateHikeEndTime, getOnGoingHike, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker,
   endHike, updateEndHikeBestTime, updateEndHikeNoBestTime, getBestTime, checkFirstEnd,
-  getHikePoint, addHikePoint, deleteHikePoint_Hike, getHikePointByTitle
+  getHikePoint, addHikePoint, deleteHikePoint_Hike, getHikePointByTitle, addLinkedHut, getHutsLinkedByTitle, deleteLinkedHut_byTitle
 };

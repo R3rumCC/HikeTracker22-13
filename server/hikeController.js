@@ -9,6 +9,7 @@ exports.getHikes = async function () {
     for (let hike of hikes) {
       //hike['reference_points'] = await dao.readReferencePoints(hike.title);
       hike['reference_points'] = await dao.readListOfReferencePoints(hike.title);
+      hike['linkedHuts'] = await dao.getHutsLinkedByTitle(hike.title)
       fullHikes.push(hike)
     }
     return fullHikes;
@@ -66,7 +67,7 @@ exports.updateHike = async function (req, res) {
   const updateHike = {
     title: req.body.hike.title, length: req.body.hike.length, expected_time: req.body.hike.expected_time,
     ascent: req.body.hike.ascent, difficulty: req.body.hike.difficulty, start_point: startId.idPoint, end_point: endId.idPoint,
-    reference_points: req.body.hike.reference_points, description: req.body.hike.description, gpx_track: oldHike.gpx_track,
+    reference_points: req.body.hike.reference_points, description: req.body.hike.description, linkedHuts:req.body.hike.linkedHuts,  gpx_track: oldHike.gpx_track,
     hike_condition: req.body.hike.hike_condition, hike_condition_description: req.body.hike.hike_condition_description, local_guide: oldHike.local_guide
   }
 
@@ -190,6 +191,46 @@ exports.updateHike = async function (req, res) {
         )
     }
   )
+
+    dao.deleteLinkedHut_byTitle(oldHike.title).then(
+      result=>{
+        if(updateHike.linkedHuts.length != 0){
+          dao.readHuts().then(
+            result=>{
+              let huts = result.map(h =>{return {idPoint: h.idPoint, idHut: h.idHut}})
+              updateHike.linkedHuts.map(lh=>{
+                dao.checkPresenceByCoordinates(lh.gps_coordinates).then(
+                  result=>{
+                    let hut = huts.find(x=>{return x.idPoint == result.idPoint})
+                    dao.addLinkedHut(hut.idHut,updateHike.title).then(
+                      result=>{
+                        return res.status(200)
+                      },
+                      error =>{
+                        console.log("Error on addLinkedHut: "+ `${error}`)
+                        return res.status(500).send(error)
+                      }
+                    )
+                  },
+                  error=>{
+                    console.log("Error on checkPresenceByCoordinates of updateHike/LinkHut: "+ `${error}`)
+                    return res.status(500).send(error)
+                  }
+                )
+              }) 
+            },
+            error =>{
+              console.log("Error on readHuts of updateHike/LinkHut: "+ `${error}`)
+              return res.status(500).send(error)
+            }
+          )
+        }
+      },
+      error=>{
+        console.log("Error on deleteLinkedHut_byTitle: "+ `${error}`)
+        return res.status(500).send(error)
+      }
+    )
   /*
   dao.deleteHikePoint_Hike(oldHike.title).then(
     result => {

@@ -1,4 +1,4 @@
-import { Col, Row, ToggleButton, ButtonGroup } from 'react-bootstrap';
+import { Col, Row, ToggleButton, ButtonGroup, Button } from 'react-bootstrap';
 import { HikesContainer } from './hikesCards';
 import { MapContainer, Polyline, TileLayer, Marker, Popup, useMapEvents, GeoJSON, useMap, Circle, LayerGroup, } from 'react-leaflet'
 import * as L from "leaflet";
@@ -14,6 +14,8 @@ import houseBlue from './imgUtils/houseBlue.png'
 import houseOrange from './imgUtils/houseOrange.png'
 import houseBlue2 from './imgUtils/houseBlue2.png'
 import housePink from './imgUtils/housePink.png'
+import houseViolet from './imgUtils/houseViolet.png'
+import housePink2 from './imgUtils/housePink2.png'
 import refPin from './imgUtils/refPin.png'
 import pRed from './imgUtils/pRed.png'
 import pGreen from './imgUtils/pGreen.png'
@@ -169,6 +171,24 @@ const orangeHouse = L.icon({
     /*iconAnchor:   [40, 32],
     popupAnchor:  [-24, -24]
     */
+})
+const pinkHouse = L.icon({
+    iconUrl:  housePink,
+    iconSize:     [32, 32],
+    iconAnchor:   [16, 32],
+    popupAnchor:  [0, -24]
+})
+const pink2House = L.icon({
+    iconUrl:  housePink2,
+    iconSize:     [32, 32],
+    iconAnchor:   [16, 32],
+    popupAnchor:  [0, -24]
+})
+const violetHouse = L.icon({
+    iconUrl:  houseViolet,
+    iconSize:     [32, 32],
+    iconAnchor:   [16, 32],
+    popupAnchor:  [0, -24]
 })
 const refPoints = L.icon({
     iconUrl:  refPin,
@@ -337,6 +357,17 @@ function GenericMap(props) { //Map to be inserted anywhere.
         return Math.min(...distances)
     }
 
+    function deleteLinkedHut(p){
+        const tempLH = [...props.linkedHuts]; 
+        tempLH.splice(tempLH.indexOf(tempLH.find(x=>{ return x.gps_coordinates == p.gps_coordinates})),1); 
+        props.setLinkedHuts(tempLH)
+    }
+    function checkLinkedHut(p){
+        return props.linkedHuts ? props.linkedHuts.find(x=>{return x.gps_coordinates == p.gps_coordinates}) ? true : false : false
+    }
+    useEffect(()=>{
+        console.log(props.linkedHuts)
+    },[props.linkedHuts])
     if (map != '' && positions.length != 0) {
         /*
         Thanks to the stopPropagation function when u click something in the pop up the map is not triggered, the first 2 marker show the start and end point,
@@ -459,9 +490,14 @@ function GenericMap(props) { //Map to be inserted anywhere.
                     
                     {props.points && props.edit ? [...props.points].filter((x) => { return calcMinDistance({ lat: x.gps_coordinates.split(',')[0], lng: x.gps_coordinates.split(',')[1]}) <= 5 && x.type=='Hut'}).map((p) => {
                         return (
-                            <Marker icon={ p.gps_coordinates == startCheck && p.gps_coordinates == endCheck ? 
-                            orangeHouse : p.gps_coordinates == startCheck ? greenHouse : p.gps_coordinates == endCheck ?
-                             redHouse : blueHouse} key={Math.random()} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
+                            <Marker icon={  (p.gps_coordinates == startCheck && p.gps_coordinates == endCheck) && checkLinkedHut(p) ? pinkHouse :
+                                            p.gps_coordinates == startCheck && checkLinkedHut(p) ? violetHouse :
+                                            p.gps_coordinates == endCheck && checkLinkedHut(p) ? pink2House :
+                                            checkLinkedHut(p) ? blue2House :
+                                            p.gps_coordinates == startCheck && p.gps_coordinates == endCheck ? orangeHouse : 
+                                            p.gps_coordinates == startCheck ? greenHouse : p.gps_coordinates == endCheck ? redHouse : blueHouse} 
+                            
+                            key={Math.random()} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
                             <Popup closeOnClick={false}>
                                 {p.nameLocation}
                                 <hr></hr>
@@ -504,24 +540,22 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                     <Col>
                                         <ToggleButton
                                             className="mb-2"
-                                            id="toggle-start"
+                                            id="toggle-link"
                                             type="checkbox"
                                             variant="outline-success"
-                                            checked={true /*TODO*/}
-                                            onChange={(e) => { /*TODO*/  }}
+                                            checked={checkLinkedHut(p)}
+                                            onChange={(e) => {e.stopPropagation(); let tempLH = [...props.linkedHuts]; tempLH.push(p); props.setLinkedHuts(tempLH) }}
                                         >
                                             Link to Hike
                                         </ToggleButton>
-                                        <ToggleButton
+                                        <Button
                                             className="mb-2"
-                                            id="toggle-end"
-                                            type="checkbox"
+                                            id="button-cancel"
                                             variant="outline-danger"
-                                            checked={true /*TODO*/}
-                                            onChange={(e) => {/*TODO*/}}
+                                            onClick={(e) => {e.stopPropagation(); deleteLinkedHut(p)}}
                                         >
                                             Cancel
-                                        </ToggleButton>
+                                        </Button>
                                     </Col>
 
 

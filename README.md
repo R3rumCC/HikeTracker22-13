@@ -150,9 +150,15 @@ The list of correlations between hikes and hikers and thei statistics
 ### HikePoint functions
 
 - **getHikePoint()**, returns a list of every idPoints and hikeTitles assossiation
-- **addHikePoint(idPoint, titleHike, nameLocation)**, instart a new entry to the HikePoint table
+- **addHikePoint(idPoint, titleHike, nameLocation)**, instart a new entry to the HikePoint table, return the idPoint
 - **deleteHikePoint_Hike(titleHike)**, deletes all the entries associated with the argument *titleHike*
 - **getHikePointByTitle(titleHike)**, returns the Hike Points associated to an hike
+
+### HutsLinkedHike (HutHike) functions
+- **addLinkedHut(idHut, titleHike)**, insert into HikeHut table a new instance and return the idHut or error
+- **getHutsLinkedByTitle(titleHike)**, return the huts linked to an hike
+- **deleteLinkedHut_byTitle(titleHike)**, delete all the huts linked to an hike
+
 ## Users
 
 Mario Rossi:

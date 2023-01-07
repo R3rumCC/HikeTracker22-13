@@ -35,7 +35,8 @@ function EditHikeForm(props) {
   const [startPoint, setStartPoint] = useState(props.oldHike.start_point_address)
   const [startPointGps, setStartPointGps] = useState(props.oldHike.start_point_coordinates)
   const [endPoint, setEndPoint] = useState(props.oldHike.end_point_address)
-  const [endPointGps, setEndPointGps] = useState(props.oldHike.end_point_coordinates)  
+  const [endPointGps, setEndPointGps] = useState(props.oldHike.end_point_coordinates)
+  const [linkedHuts, setLinkedHuts] = useState(props.oldHike.linkedHuts? props.oldHike.linkedHuts : [])  
   const changeTitle = (val) => { setTitle(val) }
   const changeLength = (val) => { setLength(val) }
   const changeExpTime = (val) => { setExpTime(val) }
@@ -67,7 +68,7 @@ function EditHikeForm(props) {
           updateHike = {
             title: title, length: length, expected_time: expTime, ascent: ascent,
             difficulty: difficulty, start_point: {address: startPoint, gps_coordinates: startPointGps}, end_point: {address: endPoint, gps_coordinates: endPointGps}, 
-            reference_points: reference_points, description: description, hike_condition: condition,
+            reference_points: reference_points, linkedHuts: linkedHuts, description: description, hike_condition: condition,
             hike_condition_description: conditionDescription
           }
           console.log(updateHike)
@@ -250,7 +251,7 @@ function EditHikeForm(props) {
             </Row>
       <Form.Group as={Col}>
         <GenericMap currentHike={[props.oldHike]} setCurrentMarkers={setReferencePoints} currentMarkers={reference_points} points={[...props.points].filter((x) => x.type != null)}
-              setStartPoint={setStartPoint} setStartPointGps={setStartPointGps} setEndPoint={setEndPoint} setEndPointGps={setEndPointGps} edit = {true} 
+              setStartPoint={setStartPoint} setStartPointGps={setStartPointGps} setEndPoint={setEndPoint} setEndPointGps={setEndPointGps} edit = {true} linkedHuts={linkedHuts} setLinkedHuts={setLinkedHuts}
               endPoint={endPoint} startPoint={startPoint}></GenericMap>
       </Form.Group>
       <Button className='mt-y' type='submit' style={{ background: 'green' }}>Save</Button>
