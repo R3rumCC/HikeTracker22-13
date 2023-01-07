@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-email.get('/getCode/:email',async (req, res) => {
+email.post('/getCode/:email',async (req, res) => {
     const to=req.params.email;
     let code = Math.floor(Math.random()*900000) +100000
 
@@ -29,7 +29,7 @@ email.get('/getCode/:email',async (req, res) => {
         if (error) return console.log(error);
         console.log(info);
     });
-    dao.addCode(to,code).then(
+    dao.addCode(to,code,req.body.name,req.body.lastname,req.body.role,req.body.password,req.body.phoneNumber).then(
         result => {
             return res.status(200).json();                       
         },

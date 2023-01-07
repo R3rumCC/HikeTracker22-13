@@ -345,12 +345,20 @@ function addHut(hut) {
 
 /*************************Email Verification**********************/
 
-async function sendEmail(email) {
+async function sendEmail(email,user) {
   const response = await fetch(`http://localhost:3001/email/getCode/${email}`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
     credentials: 'include',
+    body:JSON.stringify({
+        name:user.name,
+        lastname:user.lastname,
+        role:user.role,
+        password:user.password,
+        phoneNumber:user.phoneNumber
+     })
   });
-
-
+   console.log(user)
 
   if (response.ok) {
     return null;
@@ -371,6 +379,31 @@ async function checkCode(email) {
   }
   else
     throw resJson;
+}
+
+function list(email,name,lastName,role, password,phoneNumber){
+    
+this.email=email
+this.name=name
+this.lastname=lastName;
+this.role=role;
+this.phone_number=phoneNumber
+this.password=password
+
+}  
+
+const getAllRequests = async ()=>{
+  const response = await fetch(`http://localhost:3001/api/request`,{
+      credentials: 'include',
+  });
+  const reqJson = await response.json();
+  // console.log(reqJson)
+  
+  if(response.ok){
+      return reqJson.map(r=> new list(r.email,r.name,r.lastName,r.role,r.password,r.phoneNumber));
+  }
+  else
+      throw reqJson;
 }
 
 /*************HikerHike API************/
@@ -588,6 +621,6 @@ const API = {
   addPoint, addHut, getHuts, getPoints,
   checkUser, sendEmail, checkCode,
   startHike, updateEndTime, endHike, updateEndHike, checkFirstTime,
-  getOnGoingHike, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker
+  getOnGoingHike, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker,getAllRequests
 }
 export default API;

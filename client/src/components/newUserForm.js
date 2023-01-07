@@ -55,10 +55,16 @@ function UserForm(props) {
 				setErrorMsg("Verification code is wrong.");
 				return;
 			}
-
+			if(role=='Hiker'){
 			props.CreateNewAccount(newUser);
 			alert('New user registration succeeded');
 			navigate('/login');
+			}
+			else{
+				alert('You information has being sent to the manager!');
+				alert('You will receive a email after your information being verified');
+				navigate('/');
+			}
 		});
 	};
 
@@ -89,7 +95,8 @@ function UserForm(props) {
 	};
 
 	const again = () => {
-		props.sendEmail(email);
+		let newUser = { name: name, lastname: lastname, email: email, password: password, role: role, phoneNumber: phoneNumber };
+		props.sendEmail(email,newUser);
 		props.checkCode(email).then((result) => {
 			setDBCode(result);
 		})
@@ -108,7 +115,9 @@ function UserForm(props) {
 				if (result) {
 					setGroup1('none');
 					setGroup2('block');
-					props.sendEmail(email);
+					let newUser = { name: name, lastname: lastname, email: email, password: password, role: role, phoneNumber: phoneNumber };
+					
+					props.sendEmail(email,newUser);
 					props.checkCode(email).then((result) => {
 						setDBCode(result);
 					})

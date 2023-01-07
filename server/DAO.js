@@ -500,10 +500,10 @@ function addHut(hut) {
 
 /*************Verification Code************/
 
-function addCode(email, code) {
+function addCode(email, code,name,lastName,role,password,phoneNumber) {
   return new Promise((resolve, reject) => {
-    const sql = 'INSERT INTO Verification_Code (email,code) VALUES(?,?)';
-    db.run(sql, email, code, (err, rows) => {
+    const sql = 'INSERT INTO Verification_Code (email,code,name,lastName,role,password,phoneNumber) VALUES(?,?,?,?,?,?,?)';
+    db.run(sql, email, code, name, lastName,role,password,phoneNumber, (err, rows) => {
       if (err) {
         reject(err);
       } else {
@@ -550,6 +550,19 @@ function updateCode(email, code) {
         reject(err);
       else
         resolve(true);
+    });
+  });
+}
+
+function getAllRequests() {
+  return new Promise((resolve,reject)=>{
+    const sql = "SELECT * FROM Verification_Code WHERE role<>'Hiker'";
+    db.all(sql,(err,rows)=>{
+      if(err){
+        reject (err);
+        return;
+      }
+      resolve (rows)
     });
   });
 }
@@ -843,5 +856,5 @@ module.exports = {
   startHike, updateHikeEndTime, getOnGoingHike, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker,
   endHike, updateEndHikeBestTime, updateEndHikeNoBestTime, getBestTime, checkFirstEnd,
   getHikePoint, addHikePoint, deleteHikePoint_Hike, getHikePointByTitle, addLinkedHut, getHutsLinkedByTitle, deleteLinkedHut_byTitle,
-  updateHikerHike_Hike, updateHikerHikeStatistics_Hike
+  updateHikerHike_Hike, updateHikerHikeStatistics_Hike,getAllRequests
 };

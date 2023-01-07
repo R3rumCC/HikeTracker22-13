@@ -185,6 +185,14 @@ Richie Zuniga:
 - lastname: Zuniga
 - phone_number: +39 3256789432
 
+Marino Carriero:
+- email: manager.admin@gmail.com
+- password: hello00
+- role: Admin
+- name: Marino
+- lastname: Carriero
+- phone_number: ++39 3454617712
+
 ## API
 
 ## HIKES API

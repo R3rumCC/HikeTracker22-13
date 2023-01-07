@@ -15,6 +15,8 @@ import { Navigation } from './components/Navigation';
 import { LocalGuide_Home } from './components/localGuideHome';
 import { Hiker_Home } from './components/hikerHome';
 
+import {  ManagerPage } from './components/managerPage';
+
 import MessageContext from './messageCtx';
 import API from './API';
 import { EditHike } from './components/editHike';
@@ -64,6 +66,7 @@ function Main() {
   const [currentMarkers, setCurrentMarkers] = useState([]);
 
   const [hikes, setHikes] = useState([]);
+  const [reqList, setReqList] = useState([]);
   const [filteredHikes, setFilteredHikes] = useState([])
   const [filtered, setFiltered] = useState(false)
   const [onChangeHikes, setOnChangeHikes] = useState(true);
@@ -103,6 +106,7 @@ function Main() {
     async function fetchHikes() {
       try {
         const fetchedHikes = await API.getHikes();
+        getReqList();
         setHikes(fetchedHikes);
       } catch (error) {
         handleErrors(error);
@@ -211,9 +215,16 @@ function Main() {
   };
 
   //********HANDLE_VERIFICATION_CODE*******//
-  const sendEmail = async (email) => {
+  const sendEmail = async (email,user) => {
 
-    await API.sendEmail(email);
+    await API.sendEmail(email,user);
+  }
+
+  const getReqList = async () => {
+
+   const r = await API.getAllRequests();
+    setReqList(r);
+    // console.log(reqList);
   }
 
   const checkCode = async (email) => {
@@ -292,6 +303,7 @@ function Main() {
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
         <Route path="/profile" element={loggedIn && currentUser.role == 'Hiker' ? <Hiker_Home currentUser={currentUser} setCurrentHike={setCurrentHike} endHike={endHike} startHike={startHike} flagOnGoingHike={flagOnGoingHike} /> : <Navigate replace to='/' />} />
         <Route path="/editHike" element={loggedIn && currentUser.role == 'LocalGuide' ? <EditHike updateHike={updateHike} returnToHome={returnToHome} currentHike={currentHike} points={points} setOnChangeHikes={setOnChangeHikes} currentMarkers={currentMarkers}/> : <Navigate replace to='/' />} />
+        <Route path="/manager" element={<ManagerPage list={reqList} CreateNewAccount={CreateNewAccount}></ManagerPage>} />
         {/*<Route path="/startHike" element={loggedIn && currentUser.role == 'Hiker' ? <Hiker_Home currentUser={currentUser} setCurrentHike={setCurrentHike} endHike={endHike} flagOnGoingHike={flagOnGoingHike} /> : <Navigate replace to='/' />} />*/}
       </Routes>
     </>

@@ -34,6 +34,8 @@ router.post('/User', [
   c.addUser(req, res)
 });
 
+router.get('/request',c.getAllRequests);
+
 router.get('/User/:email', [
   param('email').notEmpty().withMessage('Email cannot be empty!')
     .isEmail().withMessage('Incorrect email format!'),
