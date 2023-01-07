@@ -367,8 +367,21 @@ async function sendEmail(email,user) {
 
 }
 
-async function sendNotice(email) {
-  const response = await fetch(`http://localhost:3001/email/notice/${email}`, {
+async function sendNotice1(email) {
+  const response = await fetch(`http://localhost:3001/email/notice1/${email}`, {
+    method:'GET',
+    headers:{'Content-Type':'application/json'},
+    credentials: 'include',
+  });
+
+  if (response.ok) {
+    return null;
+  }
+
+}
+
+async function sendNotice2(email) {
+  const response = await fetch(`http://localhost:3001/email/notice2/${email}`, {
     method:'GET',
     headers:{'Content-Type':'application/json'},
     credentials: 'include',
@@ -393,6 +406,26 @@ async function checkCode(email) {
   }
   else
     throw resJson;
+}
+
+function deleteReq(email) {
+  return new Promise((resolve, reject) => {
+    fetch(URL + '/request/' + email, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then((response) => {
+      if (response.ok) {
+        resolve(null);
+      } else {
+        response.json()
+          .then((message) => { reject(message); })
+          .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+      }
+    }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+  });
 }
 
 function list(email,name,lastName,role, password,phoneNumber){
@@ -635,6 +668,6 @@ const API = {
   addPoint, addHut, getHuts, getPoints,
   checkUser, sendEmail, checkCode,
   startHike, updateEndTime, endHike, updateEndHike, checkFirstTime,
-  getOnGoingHike, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker,getAllRequests,sendNotice
+  getOnGoingHike, getFinishedHikes, getDistinctFinishedHikes, getFinishedHikesByHiker,getAllRequests,sendNotice1,sendNotice2,deleteReq
 }
 export default API;

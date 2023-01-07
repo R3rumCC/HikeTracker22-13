@@ -336,6 +336,18 @@ exports.getAllRequests = function(req,res)  {
 
 }
 
+exports.deleteReq = function(req,res)  {
+  dao.deleteCode(req.params.email).then(
+      result => {
+           return res.status(200).json(result);                       
+      },
+      error => {
+          return res.status(500).send(error);
+      }
+  )
+
+}
+
 exports.getUser = async function (req, res) {
   dao.getUserByEmail(req.params.email).then(
     result => {

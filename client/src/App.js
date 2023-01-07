@@ -178,6 +178,11 @@ function Main() {
     const u = await API.checkUser(email);
     return u.error ? true : false
   };
+
+  const deleteReq = async(email) =>{
+    await API.deleteReq(email);
+
+  }
   /*****************************************************/
 
   //********HANDLE_ADD_POINT*******//
@@ -229,9 +234,11 @@ function Main() {
     // console.log(reqList);
   }
 
-  const sendNotice = async (email) => {
-
-    await API.sendNotice(email);
+  const sendNotice1 = async (email) => {
+    await API.sendNotice1(email);
+  }
+  const sendNotice2 = async (email) => {
+    await API.sendNotice2(email);
   }
 
   const checkCode = async (email) => {
@@ -304,7 +311,7 @@ function Main() {
         } >
         </Route>
         <Route path="/manager" element={
-          loggedIn && currentUser.role == 'Admin' ? <ManagerPage list={reqList} CreateNewAccount={CreateNewAccount} sendNotice={sendNotice}/> : <Navigate replace to='/' />
+          loggedIn && currentUser.role == 'Admin' ? <ManagerPage list={reqList} CreateNewAccount={CreateNewAccount} deleteReq={deleteReq} sendNotice1={sendNotice1} sendNotice2={sendNotice2}/> : <Navigate replace to='/' />
         } >
         </Route>
         {/* <Route path="/NewHike" element={<HikeForm/>} /> THIS WAS A TRY TO DO THE .GPX FILE UPLOAD.*/}

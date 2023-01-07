@@ -62,7 +62,7 @@ function UserForm(props) {
 			}
 			else{
 				alert('You information has being sent to the manager!');
-				alert('You will receive a email after your information being verified');
+				alert('You will receive a email after your information been verified');
 				navigate('/');
 			}
 		});

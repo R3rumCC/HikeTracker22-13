@@ -6,12 +6,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Link,location,useNavigate } from 'react-router-dom';
 
 
+
 function ManagerPage(props){
 
     return(
         <Col sm={8} >
           <h1 className='mx-3 my-3'>Hello Manager</h1>
-          <ManagerTable list={props.list} CreateNewAccount={props.CreateNewAccount} sendNotice={props.sendNotice}></ManagerTable>
+          <ManagerTable list={props.list} CreateNewAccount={props.CreateNewAccount} deleteReq={props.deleteReq} sendNotice1={props.sendNotice1} sendNotice2={props.sendNotice2}></ManagerTable>
         </Col>
     );
 }
@@ -27,14 +28,14 @@ function ManagerTable(props) {
               <th>LastName</th>
               <th>Role</th>
               <th>phoneNumber</th>
-              <th>verify</th>
+              <th>operations</th>
             </tr>
           </thead>
           <tbody>         
             {              
 
                props.list.map((r) => 
-               <ManagerRow req={r} key={r.email}  CreateNewAccount={props.CreateNewAccount} sendNotice={props.sendNotice}></ManagerRow>)
+               <ManagerRow req={r} key={r.email}  CreateNewAccount={props.CreateNewAccount} deleteReq={props.deleteReq} sendNotice1={props.sendNotice1} sendNotice2={props.sendNotice2}></ManagerRow>)
             }
           </tbody>
         </Table>
@@ -45,7 +46,7 @@ function ManagerRow(props){
   
     return(
         <tr>
-          <ManagerData key={props.req.email}  CreateNewAccount={props.CreateNewAccount} req={props.req} sendNotice={props.sendNotice}/>
+          <ManagerData key={props.req.email}  CreateNewAccount={props.CreateNewAccount} deleteReq={props.deleteReq} req={props.req} sendNotice1={props.sendNotice1} sendNotice2={props.sendNotice2}/>
         </tr>
     );
 }
@@ -54,9 +55,17 @@ function ManagerData(props){
     let newUser = { name: props.req.name, lastname: props.req.lastname, email:props.req.email, password: props.req.password, role:props.req.role, phoneNumber: props.req.phone_number }
     props.CreateNewAccount(newUser)
     alert('Account verified');
-    props.sendNotice(props.req.email);
+    props.sendNotice1(props.req.email);
     window.location.reload([true]);
   }
+
+  const reject= () => {
+    props.deleteReq(props.req.email);
+    alert('Account reject');
+    props.sendNotice2(props.req.email);
+    window.location.reload([true]);
+  }
+
   return(
     <>
       
@@ -69,7 +78,8 @@ function ManagerData(props){
       <td > {props.req.role}</td>
       <td > {props.req.phone_number}</td>
       <td> 
-          <Button variant='success' onClick={confirm}>Verify</Button>
+          <Button variant='success' onClick={confirm}>Confirm</Button>
+          <Button variant='danger' onClick={reject}>Reject</Button>
         </td>
   
     </>
