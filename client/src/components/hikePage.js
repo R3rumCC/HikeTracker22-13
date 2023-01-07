@@ -1,4 +1,4 @@
-import { Col, Row, ToggleButton, ButtonGroup, Button } from 'react-bootstrap';
+import { Col, Row, ToggleButton, ButtonGroup, Button, Container } from 'react-bootstrap';
 import { HikesContainer } from './hikesCards';
 import { MapContainer, Polyline, TileLayer, Marker, Popup, useMapEvents, GeoJSON, useMap, Circle, LayerGroup, } from 'react-leaflet'
 import * as L from "leaflet";
@@ -109,19 +109,20 @@ function HikePage(props) {
 
     // console.log(positions[0]," ",positions[positions.length-1])
     return (
-        <Col className="vh-100 justify-content-md-center">
+        <Container>
             <Row className='my-3'>
-                <Col sm={4}>
+                <Col sm={3}>
                     {props.currentHike.length > 0 ?
-                        <HikesContainer hikes={props.currentHike}></HikesContainer> :
+                        <HikesContainer hikes={props.currentHike}></HikesContainer> 
+                        :
                         <div>No map has been selected selected</div>
                     }
                 </Col>
-                <Col sm={8} className='map'>
+                <Col  >
                     <GenericMap currentHike={props.currentHike} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} hiker={true} ></GenericMap>
                 </Col>
             </Row>
-        </Col>
+        </Container>
     )
 
 };
@@ -366,9 +367,6 @@ function GenericMap(props) { //Map to be inserted anywhere.
     function checkLinkedHut(p){
         return props.linkedHuts ? props.linkedHuts.find(x=>{return x.gps_coordinates == p.gps_coordinates}) ? true : false : false
     }
-    useEffect(()=>{
-        console.log(props.linkedHuts)
-    },[props.linkedHuts])
     if (map != '' && positions.length != 0) {
         /*
         Thanks to the stopPropagation function when u click something in the pop up the map is not triggered, the first 2 marker show the start and end point,
@@ -376,6 +374,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
         */
         return (
             <>{map != '' ?
+
                 <MapContainer
                     center={positions[Math.round(positions.length / 2)]}
                     zoom={positions.length / 100 > 1 ? 13 : 15}
@@ -583,7 +582,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
     } else {
 
         return (
-            <>
+            <Container >
                 <MapContainer
                     className="leaflet-container"
                     center={[42.715, 12.437]} //Center somewhere random as default
@@ -594,12 +593,12 @@ function GenericMap(props) { //Map to be inserted anywhere.
 
                         return (
                             <>
-                                <Marker icon={greenMarker} key={Math.random()} position={{ lat: p.start_point_coordinates.split(',')[0], lng: p.start_point_coordinates.split(',')[1] }}>
+                                <Marker key={Math.random()*100} icon={greenMarker}  position={{ lat: p.start_point_coordinates.split(',')[0], lng: p.start_point_coordinates.split(',')[1] }}>
                                     <Popup closeOnClick={false}>
                                         {p.start_point_address}
                                     </Popup>
                                 </Marker>
-                                <Marker icon={redMarker} key={Math.random()} position={{ lat: p.end_point_coordinates.split(',')[0], lng: p.end_point_coordinates.split(',')[1] }}>
+                                <Marker key={Math.random()*100} icon={redMarker}  position={{ lat: p.end_point_coordinates.split(',')[0], lng: p.end_point_coordinates.split(',')[1] }}>
                                     <Popup closeOnClick={false}>
                                         {p.end_point_address}
                                     </Popup>
@@ -613,7 +612,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                         <SelectedMarkers currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers}></SelectedMarkers>}
                 </MapContainer>
                 <a target="_blank" href="https://icons8.com/icon/HrlntWrGhszB/map-marker">Map Marker</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
-            </>
+            </Container>
         )
     }
 

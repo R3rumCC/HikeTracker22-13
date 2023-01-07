@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Row, Col, Button, Container } from 'react-bootstrap';
 import { SearchHut } from './SearchHut';
 import { HikePage } from './hikePage';
@@ -9,7 +9,7 @@ import  FilterForm from './Filter';
 import MessageContext from '../messageCtx';
 import FileUploader from './UploadGpxForm';
 import ClipLoader from 'react-spinners/ClipLoader';
-
+import { UNSAFE_NavigationContext } from "react-router-dom";
 /**
  * Except when we are waiting for the data from the server, this layout is always rendered.
  * <Outlet /> component is replaced according to which route is matching the URL.
@@ -23,8 +23,25 @@ function DefaultLayout(props) {
   const { handleErrors } = useContext(MessageContext);
   const [hidden, setHidden] = useState(true);
 
+  const useBackListener = (callback) => { // Handler for the back button
+    const navigator = useContext(UNSAFE_NavigationContext).navigator;
+    useEffect(() => {
+        const listener = ({ location, action }) => {
+            // console.log("listener", { location, action });
+            if (action === "POP") {
+                callback({ location, action });
+            }
+        };
+        const unlisten = navigator.listen(listener);
+        return unlisten;
+    }, [callback, navigator]);
+};
 
-  
+useBackListener(({ location }) => {
+    // console.log("Navigated Back", { location });
+    setHidden(true)
+});
+
   return (
 
   <>
@@ -32,7 +49,7 @@ function DefaultLayout(props) {
         (<ClipLoader color={'#fff'} size={150} />) : (
         <Container >
           <Row>
-            <h1>Welcome, this is the Available Hikes List!</h1>
+            <h1 style={{ fontWeight: 'bold', color: 'green' }}>Welcome, this is the Available Hikes List!</h1>
           </Row>
           <Row bg='white'>
             <Row >

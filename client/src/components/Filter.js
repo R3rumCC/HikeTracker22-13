@@ -154,6 +154,7 @@ const FilterForm = (props) => {
         reset()
     }
       return (
+        <>
         <Form  className="border border-primary rounded d-flex justify-content-center flex-wrap" onSubmit={handleSubmit}>
 
 
@@ -361,10 +362,12 @@ const FilterForm = (props) => {
             : null}
             </Row>     
             <Button className="align-self-end mb-2 ms-4" variant="primary" type="submit">Search</Button>
+            <Button className="align-self-end mb-2 ms-2" variant="primary" onClick={()=>{props.setHidden(true)}}>Back</Button>
 
     </Form>
 
-        
+
+        </>
       );
   }
   export default FilterForm;

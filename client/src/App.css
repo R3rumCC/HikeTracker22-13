@@ -52,8 +52,8 @@
 }
 
 .leaflet-container {
-    width: 80vh; 
-    height: 80vh;
+    width: 70vw; 
+    height: 40vh;
 }
 
 .loader-container {
