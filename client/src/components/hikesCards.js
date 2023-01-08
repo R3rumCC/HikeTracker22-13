@@ -1,12 +1,13 @@
-import { Card, Button, Row, ListGroup, Col, Container, Form } from "react-bootstrap";
+import { Card, Button, Row, ListGroup, Col, Container, Form, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { React, useRef, useEffect, useState  } from 'react';
 import ClipLoader from 'react-spinners/ClipLoader';
 import Badge from 'react-bootstrap/Badge';
 import dayjs from 'dayjs';
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom"
 import DateTimePicker from 'react-datetime-picker';
-
 const default_image = 'https://www.travelmanagers.com.au/wp-content/uploads/2012/08/AdobeStock_254529936_Railroad-to-Denali-National-Park-Alaska_750x500.jpg'
 const URL = 'http://localhost:3001/api/Pictures';
 
@@ -18,22 +19,37 @@ function HikeCard2(props) {
   const [picName, setPicName]= useState('');
   const [dateEnd, setDateEnd] = useState(new Date())
   const [showDetails, setShowDetails]= useState(false);
-
+  const [errorMsg, setErrorMsg] = useState("");
   function startHike() {
     let start_time = new Date();
     props.startHike(props.currentUser.username, props.hike.title, start_time.toISOString());
     props.setCurrentHike([props.hike]);
+  }
+  function handleError(err) {
+
+    toast.error(
+      err.error,
+      { position: "top-center" },
+      { toastId: 12 }
+    );
+
   }
 
   function endHike(event) {
     event.preventDefault()
     console.log(dateEnd)
     let end_time = new Date();
-    if(dateEnd.toISOString() !== end_time.toISOString())
-      props.endHike(props.currentUser.username, props.hike.title, props.hike.start_time, dateEnd.toISOString());
-    else
-      props.endHike(props.currentUser.username, props.hike.title, props.hike.start_time, end_time.toISOString());
+    if(dateEnd - new Date() >= 0){
+      if(dateEnd.toISOString() !== end_time.toISOString())
+        props.endHike(props.currentUser.username, props.hike.title, props.hike.start_time, dateEnd.toISOString());
+      else
+        props.endHike(props.currentUser.username, props.hike.title, props.hike.start_time, end_time.toISOString());
       navigate('/')
+    }
+    else{
+      handleError({error:'End time cannot be before the start time'})
+    }
+
   }
 
   useEffect(() => {
@@ -76,7 +92,8 @@ function HikeCard2(props) {
     }
   }
 
-  return (
+  return ( <>
+    {errorMsg ? (<Alert variant="danger" onClose={() => { setErrorMsg(""); }} dismissible> {errorMsg}</Alert>) : (false)}
     <Card className="mx-1 my-1" border='success' style={{ width: '18rem' }}>
       <Card.Img variant="top" src={picName} />
       <Card.Body>
@@ -143,7 +160,7 @@ function HikeCard2(props) {
           <Form  className="d-flex justify-content-center flex-wrap" onSubmit={endHike}>
             <Form.Group className="my-2 px-1" style={{ width: 'maxWidth' }}>
                   <Form.Label></Form.Label>
-                  <DateTimePicker onChange={(e) => {setDateEnd(e); console.log(e)}} value={dateEnd} />
+                  <DateTimePicker minDate={new Date()} onChange={(e) => {setDateEnd(e); console.log(e)}} value={dateEnd} />
             </Form.Group>
             <Button className="btn btn-danger" type='submit'>End hike</Button>
           </Form>
@@ -161,6 +178,7 @@ function HikeCard2(props) {
         </Row>
       </Card.Footer>
     </Card>
+    </>
   );
 
 }
