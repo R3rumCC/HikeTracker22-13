@@ -29,7 +29,6 @@ function HikeCard2(props) {
 
   useEffect(() => {
     setColorDifficulty(props.hike.difficulty)
-    console.log(colorDiff)
   }, [props.hike.difficulty])
 
 
@@ -51,6 +50,10 @@ function HikeCard2(props) {
 
     let name= URL + "/" + props.hike.picture
     setPicName(name)
+
+    console.log('hike=')
+    console.log(props.hike)
+    console.log(showDetails)
 
   }, [props.hike])
 

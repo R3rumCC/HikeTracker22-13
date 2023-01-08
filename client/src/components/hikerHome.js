@@ -97,6 +97,8 @@ function HikesCompleted(props) {
 		async function fetchHikes() {
 			try {
 				const fetchedHikes = await API.getFinishedHikesByHiker(props.user.username);
+				console.log("fetchedHikes=")
+				console.log(fetchedHikes)
 				setMyHikes(fetchedHikes);
 			} catch (error) {
 				handleError(error);
