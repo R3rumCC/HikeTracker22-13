@@ -25,12 +25,17 @@ exports.addHike = async function (req, res) {
   let startId = await dao.checkPresenceByCoordinates(req.body.newHike.start_point.gps_coordinates)
   let endId = await dao.checkPresenceByCoordinates(req.body.newHike.end_point.gps_coordinates)
 
-
-  if (startId == null)
-    startId = { idPoint: await dao.addPoint(req.body.newHike.start_point)}
-  if(endId == null) {
-    endId = {idPoint: await dao.addPoint(req.body.newHike.end_point)}
+  if(req.body.newHike.start_point.gps_coordinates == req.body.newHike.end_point.gps_coordinates && startId == null && endId == null ){
+    startId = endId = { idPoint: await dao.addPoint(req.body.newHike.start_point)}
   }
+  else{
+    if (startId == null)
+      startId = { idPoint: await dao.addPoint(req.body.newHike.start_point)}
+    if(endId == null) {
+      endId = {idPoint: await dao.addPoint(req.body.newHike.end_point)}
+    }
+  }
+
 
   let hike = {
     title: req.body.newHike.title, length: req.body.newHike.length, expected_time: req.body.newHike.expected_time,
