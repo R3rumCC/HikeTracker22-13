@@ -471,7 +471,9 @@ exports.endHike = async function (req, res) {
 
 exports.updateEndHike = async function (req, res) {
   const actualBestTime = await dao.getBestTime(req.body.hiker_email, req.body.hike_title);
-  if (req.body.duration > actualBestTime) {
+  console.log(actualBestTime)
+  console.log(req.body.duration)
+  if (req.body.duration < actualBestTime.best_time) {
     dao.updateEndHikeBestTime(req.body.hiker_email, req.body.hike_title, req.body.duration).then(
       result => {
         return res.status(200).json();

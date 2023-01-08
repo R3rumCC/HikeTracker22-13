@@ -88,7 +88,7 @@ function distanceRespectHikes(latlng, list) {
 
 function HikePage(props) {
 
-    const useBackListener = (callback) => { // Handler for the back button
+    /*const useBackListener = (callback) => { // Handler for the back button
         const navigator = useContext(UNSAFE_NavigationContext).navigator;
         useEffect(() => {
             const listener = ({ location, action }) => {
@@ -106,7 +106,7 @@ function HikePage(props) {
         // console.log("Navigated Back", { location });
         props.setCurrentMarkers([])
     });
-
+*/
     // console.log(positions[0]," ",positions[positions.length-1])
     return (
         <Container>
@@ -378,7 +378,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                 <MapContainer
                     center={positions[Math.round(positions.length / 2)]}
                     zoom={positions.length / 100 > 1 ? 13 : 15}
-                    scrollWheelZoom={false}
+                    scrollWheelZoom={true}
                 >
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                     {/* This object below is needed if we are passing the path line as a parsed XML, not as a GeoJSON */}
@@ -587,6 +587,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                     className="leaflet-container"
                     center={[42.715, 12.437]} //Center somewhere random as default
                     zoom={5}
+                    scrollWheelZoom={true}
                 >
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                     {props.filter ? props.hikes.map(p => {

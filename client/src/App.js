@@ -288,9 +288,9 @@ function Main() {
   function calculateDuration(start_time, end_time) {
     let duration = 0;
     //an hike can be longer than a day?
-    const start = dayjs(start_time);
-    const end = dayjs(end_time);
-    duration = end.diff(start, 'minute');
+    const start = new Date(start_time);
+    const end = new Date(end_time);
+    duration = Math.floor((end.getTime() - start.getTime())/60000)
     return duration;
   }
 

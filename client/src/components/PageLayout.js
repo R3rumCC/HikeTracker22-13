@@ -23,7 +23,7 @@ function DefaultLayout(props) {
   const { handleErrors } = useContext(MessageContext);
   const [hidden, setHidden] = useState(true);
 
-  const useBackListener = (callback) => { // Handler for the back button
+  /*const useBackListener = (callback) => { // Handler for the back button
     const navigator = useContext(UNSAFE_NavigationContext).navigator;
     useEffect(() => {
         const listener = ({ location, action }) => {
@@ -41,7 +41,7 @@ useBackListener(({ location }) => {
     // console.log("Navigated Back", { location });
     setHidden(true)
 });
-
+*/
   return (
 
   <>

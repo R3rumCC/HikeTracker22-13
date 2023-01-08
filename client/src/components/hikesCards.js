@@ -1,30 +1,39 @@
-import { Card, Button, Row, ListGroup, Col, Container } from "react-bootstrap";
+import { Card, Button, Row, ListGroup, Col, Container, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { React, useRef, useEffect, useState } from 'react';
+import { React, useRef, useEffect, useState  } from 'react';
 import ClipLoader from 'react-spinners/ClipLoader';
 import Badge from 'react-bootstrap/Badge';
 import dayjs from 'dayjs';
+import { useNavigate } from "react-router-dom"
+import DateTimePicker from 'react-datetime-picker';
 
 const default_image = 'https://www.travelmanagers.com.au/wp-content/uploads/2012/08/AdobeStock_254529936_Railroad-to-Denali-National-Park-Alaska_750x500.jpg'
 const URL = 'http://localhost:3001/api/Pictures';
 
 function HikeCard2(props) {
-
+  const navigate = useNavigate()
   const [colorDiff, setColorDiff] = useState('success');
   const [nameStart, setNameStart] = useState('');
   const [nameEnd, setNameEnd] = useState('');
   const [picName, setPicName]= useState('');
+  const [dateEnd, setDateEnd] = useState(new Date())
   const [showDetails, setShowDetails]= useState(false);
 
   function startHike() {
-    let start_time = dayjs();
-    props.startHike(props.currentUser.username, props.hike.title, start_time.format('YYYY/MM/DD HH:mm:ss'));
+    let start_time = new Date();
+    props.startHike(props.currentUser.username, props.hike.title, start_time.toISOString());
     props.setCurrentHike([props.hike]);
   }
 
-  function endHike() {
-    let end_time = dayjs();
-    props.endHike(props.currentUser.username, props.hike.title, props.hike.start_time, end_time.format('YYYY/MM/DD HH:mm:ss'));
+  function endHike(event) {
+    event.preventDefault()
+    console.log(dateEnd)
+    let end_time = new Date();
+    if(dateEnd.toISOString() !== end_time.toISOString())
+      props.endHike(props.currentUser.username, props.hike.title, props.hike.start_time, dateEnd.toISOString());
+    else
+      props.endHike(props.currentUser.username, props.hike.title, props.hike.start_time, end_time.toISOString());
+      navigate('/')
   }
 
   useEffect(() => {
@@ -122,12 +131,23 @@ function HikeCard2(props) {
               <ListGroup.Item>
                 <Row>
                   <Col>Best time: </Col>
-                  <Col style={{ fontWeight: 'normal' }}> {props.hike.best_time} min</Col>
+                  <Col style={{ fontWeight: 'normal' }}>{props.hike.best_time >= 60*24 ? Math.floor(props.hike.best_time/(60*24))+' d ' : '' }
+                                                        {props.hike.best_time/(60*24) >= 1 ?  Math.floor(props.hike.best_time%(24*60))+' h ' : Math.floor(props.hike.best_time/(60)) > 0 ? Math.floor(props.hike.best_time/(60)) +' h ' : '' }
+                                                        {props.hike.best_time >= 60 ? props.hike.best_time%60 : props.hike.best_time } min</Col>
                 </Row>
               </ListGroup.Item>
               : null
             }
         </ListGroup>
+        {props.role == 'Hiker' && props.flag ? 
+          <Form  className="d-flex justify-content-center flex-wrap" onSubmit={endHike}>
+            <Form.Group className="my-2 px-1" style={{ width: 'maxWidth' }}>
+                  <Form.Label></Form.Label>
+                  <DateTimePicker onChange={(e) => {setDateEnd(e); console.log(e)}} value={dateEnd} />
+            </Form.Group>
+            <Button className="btn btn-danger" type='submit'>End hike</Button>
+          </Form>
+          : null}
       </Card.Body>
       <Card.Footer>
         <Row>
@@ -137,7 +157,6 @@ function HikeCard2(props) {
             {props.role == 'Hiker' && !props.flagOnGoingHike ? <Link to='/profile'><Button variant='outline-success' onClick={() => { startHike() }}>Start hike</Button></Link> : null}
             {/*flag is a costant for choose to see or not the Start Button in the hikeCard. If it is true -> we are in onGoingHike page -> no show Start button but show eventually the End button*/}
             {/*flagOnGoingHike is a costant for choose to see or not the Start Button in the hikeCard. If it is true -> there is an hike in progress for the currentUser -> no show Start button*/}
-            {props.role == 'Hiker' && props.flag ? <Link to='/'><Button className="btn btn-danger" onClick={() => { endHike() }}>End hike</Button></Link> : null}
           </Col>
         </Row>
       </Card.Footer>
