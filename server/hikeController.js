@@ -75,8 +75,8 @@ exports.updateHike = async function (req, res) {
     if(oldRP.length != 0){
       dao.getHikePoint().then(
         result=>{
-          let otherP = result.map(x =>{x.idPoint})
-          oldRP.filter(j =>{!otherP.includes(j)})
+          let otherP = result.map(x =>{return x.idPoint})
+          oldRP.filter(j =>{return !otherP.includes(j)})
           oldRP.forEach(element => {
             dao.deletePoint(element).then(
               result=>{
@@ -261,7 +261,7 @@ exports.getHuts = async function () {
 
 function RandomIndex(min, max, i, _charStr) {
 
-  let index = Math.floor(Math.random() * (max - min + 1) + min),
+  let index = Math.floor(crypto.randomBytes(1).readUInt8(0) * (max - min + 1) + min),
     numStart = _charStr.length - 10;
   if (i == 0 && index >= numStart) {
     index = RandomIndex(min, max, i, _charStr);

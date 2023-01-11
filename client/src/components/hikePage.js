@@ -23,7 +23,8 @@ import pBlue from './imgUtils/pBlue.png'
 import pOrange from './imgUtils/pOrange.png'
 // THE GPX FILE MUST BE PASSED AS AN STRING.
 
-
+const crypto = window.crypto || window.msCrypto;
+let array = new Uint32Array(1);
 
 const $ = require("jquery");
 
@@ -205,6 +206,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
     const [startCheck, setStartCheck] = useState('');
     const [endCheck, setEndCheck] = useState('');
     const travelOnce = useRef('');
+
     function MyComponent() {
         const map = useMap()
         if(travelOnce.current != positions){
@@ -346,7 +348,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                         pathOptions={{ fillColor: 'red', color: 'blue' }}
                         positions={positions}
                     />
-                    <Marker key={Math.random()} icon={positions[0][0] + ',' + positions[0][1] == startCheck? greenMarker : blueMarker} position={positions[0]}>
+                    <Marker key={crypto.getRandomValues(array)} icon={positions[0][0] + ',' + positions[0][1] == startCheck? greenMarker : blueMarker} position={positions[0]}>
                         <Popup closeOnClick={false}>
                             {startPoint}
                             <hr></hr>
@@ -368,7 +370,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                 : null}
                         </Popup>
                     </Marker>
-                    <Marker key={Math.random()} icon={positions[positions.length - 1][0]+','+positions[positions.length - 1][1] == endCheck ? redMarker : blueMarker} position={positions[positions.length - 1]}>
+                    <Marker key={ crypto.getRandomValues(array)} icon={positions[positions.length - 1][0]+','+positions[positions.length - 1][1] == endCheck ? redMarker : blueMarker} position={positions[positions.length - 1]}>
                         <Popup closeOnClick={false}>
                             {endPoint}
                             <hr></hr>
@@ -400,7 +402,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                             p.gps_coordinates == startCheck ? p.type=='Hut' ? greenHouse: greenParking : 
                                             p.gps_coordinates == endCheck ? p.type=='Hut' ? redHouse : redParking : 
                                             p.type=='Hut' ? blueHouse : blueParking} 
-                            key={Math.random()} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
+                            key={ crypto.getRandomValues(array)} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
 
                                 <Popup closeOnClick={false}>
                                     {p.nameLocation}
@@ -457,7 +459,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                             p.gps_coordinates == startCheck && p.gps_coordinates == endCheck ? orangeHouse : 
                                             p.gps_coordinates == startCheck ? greenHouse : p.gps_coordinates == endCheck ? redHouse : blueHouse} 
                             
-                            key={Math.random()} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
+                            key={ crypto.getRandomValues(array)} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
                             <Popup closeOnClick={false}>
                                 {p.nameLocation}
                                 <hr></hr>
@@ -554,12 +556,12 @@ function GenericMap(props) { //Map to be inserted anywhere.
 
                         return (
                             <>
-                                <Marker key={Math.random()*100} icon={greenMarker}  position={{ lat: p.start_point_coordinates.split(',')[0], lng: p.start_point_coordinates.split(',')[1] }}>
+                                <Marker key={ crypto.getRandomValues(array)} icon={greenMarker}  position={{ lat: p.start_point_coordinates.split(',')[0], lng: p.start_point_coordinates.split(',')[1] }}>
                                     <Popup closeOnClick={false}>
                                         {p.start_point_address}
                                     </Popup>
                                 </Marker>
-                                <Marker key={Math.random()*100} icon={redMarker}  position={{ lat: p.end_point_coordinates.split(',')[0], lng: p.end_point_coordinates.split(',')[1] }}>
+                                <Marker key={ crypto.getRandomValues(array)} icon={redMarker}  position={{ lat: p.end_point_coordinates.split(',')[0], lng: p.end_point_coordinates.split(',')[1] }}>
                                     <Popup closeOnClick={false}>
                                         {p.end_point_address}
                                     </Popup>
@@ -621,7 +623,7 @@ function SelectedMarkers(props) {
 
                 return (
                     <LayerGroup>
-                        <Marker icon={refPoints} key={Math.random()} position={p.latlng}
+                        <Marker icon={refPoints} key={ crypto.getRandomValues(array)} position={p.latlng}
                             eventHandlers={{
                                 click: (e) => {
                                     console.log("CLICKERD")
