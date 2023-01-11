@@ -261,7 +261,7 @@ exports.getHuts = async function () {
 
 function RandomIndex(min, max, i, _charStr) {
 
-  let index = Math.floor(Math.random() * (max - min + 1) + min),
+  let index = Math.floor(crypto.randomBytes(1).readUInt8(0) * (max - min + 1) + min),
     numStart = _charStr.length - 10;
   if (i == 0 && index >= numStart) {
     index = RandomIndex(min, max, i, _charStr);

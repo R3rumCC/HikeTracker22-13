@@ -2,7 +2,7 @@ const express = require('express');
 const email = express.Router();
 const dao = require('./DAO');
 const nodemailer = require('nodemailer');
-
+const crypto = require('crypto');
 //  creat a sender
 const transporter = nodemailer.createTransport({
     host: 'smtp.qq.com',
@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
 
 email.post('/getCode/:email',async (req, res) => {
     const to=req.params.email;
-    let code = Math.floor(Math.random()*900000) +100000
+    let code = Math.floor(crypto.randomBytes(1).readUInt8(0)*crypto.randomBytes(1).readUInt8(0)*90) +100
     console.log(req.body.phoneNumber);
     const mailOptions = {
         from:'"HIKETRACKER"<736076274@qq.com>',
