@@ -2,8 +2,7 @@ import { Col, Row, ToggleButton, ButtonGroup, Button, Container } from 'react-bo
 import { HikesContainer } from './hikesCards';
 import { MapContainer, Polyline, TileLayer, Marker, Popup, useMapEvents, GeoJSON, useMap, Circle, LayerGroup, } from 'react-leaflet'
 import * as L from "leaflet";
-import { React, useEffect, useContext, useRef, useState } from 'react';
-import { UNSAFE_NavigationContext } from "react-router-dom";
+import { React, useEffect, useRef, useState } from 'react';
 import API from '../API';
 import redIcon from './imgUtils/redIcon.png'
 import greenIcon from './imgUtils/greenIcon.png'

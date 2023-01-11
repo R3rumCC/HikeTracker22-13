@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Button, Form, InputGroup, Alert, Nav, Image } from 'react-bootstrap';
+import { Row, Col, Button, Form, InputGroup, Alert, Nav } from 'react-bootstrap';
 import { GenericMap } from './hikePage';
 import { HikesContainer } from './hikesCards';
 import Profile from './profile';
