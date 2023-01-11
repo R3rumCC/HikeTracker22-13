@@ -37,14 +37,30 @@ function EditHikeForm(props) {
   const [endPoint, setEndPoint] = useState(props.oldHike.end_point_address)
   const [endPointGps, setEndPointGps] = useState(props.oldHike.end_point_coordinates)
   const [linkedHuts, setLinkedHuts] = useState(props.oldHike.linkedHuts? props.oldHike.linkedHuts : [])  
-  const changeTitle = (val) => { setTitle(val) }
-  const changeLength = (val) => { setLength(val) }
-  const changeExpTime = (val) => { setExpTime(val) }
-  const changeAscent = (val) => { setAscent(val) }
-  const changeDifficulty = (val) => { setDifficulty(val); }
-  const changeDescription = (val) => { setDescription(val) }
-  const changeCondition = (val) => { setCondition(val) }
-  const changeConditionDescription = (val) => { setConditionDescription(val) }
+  function changeTitle (event){ 
+    setTitle(event.target.value) 
+  }
+  function changeLength (event) { 
+    setLength(event.target.value) 
+  }
+  function changeExpTime(event){ 
+    setExpTime(event.target.value) 
+  }
+  function changeAscent(event){ 
+    setAscent(event.target.value) 
+  }
+  function changeDifficulty(event){ 
+    setDifficulty(event.target.value) 
+  }
+  function changeDescription (event){ 
+    setDescription(event.target.value) 
+  }
+  function changeCondition(event){ 
+    setCondition(event.target.value) 
+  }
+  function changeConditionDescription(event){ 
+    setConditionDescription(event.target.value) 
+  }
   const changeReferencePoints = (val) => { setReferencePoints(val) }
 
   const submitHikeForm = (event) => {
@@ -91,8 +107,12 @@ function EditHikeForm(props) {
     setErrorMsg('');
   }
 
+  function clearErrorMsg(){
+    setErrorMsg("")
+  }
+
   return (<>
-    {errorMsg ? (<Alert variant="danger" onClose={() => { setErrorMsg(""); }} dismissible> {errorMsg}</Alert>) : (false)}
+    {errorMsg ? (<Alert variant="danger" onClose={clearErrorMsg} dismissible> {errorMsg}</Alert>) : (false)}
 
     <Form id='editHikeForm' onSubmit={submitHikeForm} style={{ fontSize: 15, fontWeight: 'bold' }}>
 
@@ -101,7 +121,7 @@ function EditHikeForm(props) {
           <Form.Label style={{ fontSize: 25 }}>Title</Form.Label>
           <InputGroup className="mb-2">
             <InputGroup.Text><i className="bi bi-textarea-t"></i></InputGroup.Text>
-            <Form.Control value={title} required={true} onChange={(ev) => changeTitle(ev.target.value)} />
+            <Form.Control value={title} required={true} onChange={changeTitle} />
           </InputGroup>
         </Form.Group>
       </Row>
@@ -111,7 +131,7 @@ function EditHikeForm(props) {
           <Form.Label style={{ fontSize: 25 }}>Description</Form.Label>
           <InputGroup className="mb-2">
             <InputGroup.Text><i className="bi bi-textarea-t"></i></InputGroup.Text>
-            <Form.Control as="textarea" required={true} rows={3} value={description} onChange={(ev) => changeDescription(ev.target.value)} />
+            <Form.Control as="textarea" required={true} rows={3} value={description} onChange={changeDescription} />
           </InputGroup>
         </Form.Group>
       </Row>
@@ -125,7 +145,7 @@ function EditHikeForm(props) {
           <Form.Label>Length</Form.Label>
           <InputGroup className="mb-3">
             <InputGroup.Text><i className="bi bi-map"></i></InputGroup.Text>
-            <Form.Control value={length} required={true} onChange={(ev) => changeLength(ev.target.value)} placeholder="3.2" />
+            <Form.Control value={length} required={true} onChange={changeLength} placeholder="3.2" />
             <InputGroup.Text>Km</InputGroup.Text>
           </InputGroup>
         </Form.Group>
@@ -133,7 +153,7 @@ function EditHikeForm(props) {
           <Form.Label>Expected Time</Form.Label>
           <InputGroup className="mb-3">
             <InputGroup.Text><i className="bi bi-stopwatch"></i></InputGroup.Text>
-            <Form.Control value={expTime} required={true} onChange={(ev) => changeExpTime(ev.target.value)} placeholder="4" />
+            <Form.Control value={expTime} required={true} onChange={changeExpTime} placeholder="4" />
             <InputGroup.Text>hours</InputGroup.Text>
           </InputGroup>
         </Form.Group>
@@ -144,7 +164,7 @@ function EditHikeForm(props) {
           <Form.Label>Ascent</Form.Label>
           <InputGroup className="mb-3">
             <InputGroup.Text><i className="bi bi-geo-fill"></i></InputGroup.Text>
-            <Form.Control value={ascent} required={true} onChange={(ev) => changeAscent(ev.target.value)} placeholder="670" />
+            <Form.Control value={ascent} required={true} onChange={changeAscent} placeholder="670" />
             <InputGroup.Text>m</InputGroup.Text>
           </InputGroup>
         </Form.Group>
@@ -152,7 +172,7 @@ function EditHikeForm(props) {
           <Form.Label>Difficulty</Form.Label>
           <InputGroup>
             <InputGroup.Text><i className="bi bi-graph-up-arrow"></i></InputGroup.Text>
-            <Form.Select required={true} value={difficulty} onChange={(ev) => changeDifficulty(ev.target.value)}>
+            <Form.Select required={true} value={difficulty} onChange={changeDifficulty}>
               <option label=''></option>
               <option value='Tourist' label="Tourist" />
               <option value='Hiker' label="Hiker" />
@@ -164,7 +184,7 @@ function EditHikeForm(props) {
           <Form.Label>Condition</Form.Label>
           <InputGroup>
             <InputGroup.Text><i className="bi bi-graph-up-arrow"></i></InputGroup.Text>
-            <Form.Select value={condition} onChange={(ev) => changeCondition(ev.target.value)}>
+            <Form.Select value={condition} onChange={changeCondition}>
               <option label=''></option>
               <option value='Open' label="Open" />
               <option value='Closed' label="Closed" />
@@ -177,7 +197,7 @@ function EditHikeForm(props) {
           <Form.Label>Condition Description</Form.Label>
           <InputGroup className="mb-3">
             <InputGroup.Text><i className="bi bi-textarea-t"></i></InputGroup.Text>
-            <Form.Control as="textarea" value={conditionDescription} onChange={(ev) => changeConditionDescription(ev.target.value)} />
+            <Form.Control as="textarea" value={conditionDescription} onChange={changeConditionDescription} />
           </InputGroup>
         </Form.Group>
       </Row>

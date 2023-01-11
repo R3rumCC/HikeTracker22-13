@@ -19,6 +19,15 @@ function DefaultLayout(props) {
 
   const [hidden, setHidden] = useState(true);
 
+  function changeVisibility(){
+    setHidden(!hidden)
+  }
+
+  function clearButton(){
+    props.setFiltered(false)
+    props.setCurrentMarkers([])
+  }
+
   return (
 
   <>
@@ -31,8 +40,8 @@ function DefaultLayout(props) {
           <Row bg='white'>
             <Row >
               <Col>
-                { <Button className='mt-5 mb-3'  onClick={()=>setHidden( s =>!s)}>Filter</Button> }
-                {props.filtered ? <Button className='mt-5 mb-3 ms-3'  onClick={()=>{props.setFiltered(false); props.setFilteredHikes([])}}>Clear</Button> : null }
+                { <Button className='mt-5 mb-3'  onClick={changeVisibility}>Filter</Button> }
+                {props.filtered ? <Button className='mt-5 mb-3 ms-3'  onClick={clearButton}>Clear</Button> : null }
               </Col>
 
             </Row>
