@@ -9,7 +9,6 @@ router.get('/getHikes', async (req, res) => {
     //console.log(hikes)
     res.status(200).json(hikes).end();
   } catch (error) {
-    // console.log(error);
     res.status(500).json(error).end();
   }
 });
@@ -65,7 +64,6 @@ router.get('/Code/:email', [
 }, c.checkCode);
 
 
-//router.post('/newHike', c.addHike);
 
 router.post('/newHike', [
   body('newHike.title').notEmpty().withMessage('Title cannot be empty!'),
@@ -122,7 +120,6 @@ router.put('/updateHike', [
 router.get('/getPoints', async (req, res) => {
   try {
     const points = await c.getPoints();
-    //console.log(points);
     res.status(200).json(points).end();
   } catch (e) {
     res.status(500).json(e).end();
@@ -145,7 +142,6 @@ router.post('/Point', [
 router.get('/getHuts', async (req, res) => {
   try {
     const huts = await c.getHuts();
-    //console.log(huts);
     res.status(200).json(huts).end();
   } catch (e) {
     res.status(500).json(e).end();

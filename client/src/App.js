@@ -22,8 +22,6 @@ import API from './API';
 import { EditHike } from './components/editHike';
 import { PointsContainer } from './components/pointsCards';
 
-import dayjs from 'dayjs';
-
 
 function App() {
 
@@ -91,7 +89,6 @@ function Main() {
       try {
         const fetchedPoints = await API.getPoints();
         setPoints(fetchedPoints);
-        //console.log(fetchedPoints);
       } catch (error) {
         handleErrors(error);
       }
@@ -231,7 +228,6 @@ function Main() {
 
    const r = await API.getAllRequests();
     setReqList(r);
-    // console.log(reqList);
   }
 
   const sendNotice1 = async (email) => {

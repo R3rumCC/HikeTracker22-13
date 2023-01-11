@@ -21,26 +21,7 @@ import pRed from './imgUtils/pRed.png'
 import pGreen from './imgUtils/pGreen.png'
 import pBlue from './imgUtils/pBlue.png'
 import pOrange from './imgUtils/pOrange.png'
-// THE GPX FILE MUST BE PASSED AS AN STRING. HERE I LEAVE AN EXAMPLE:
-// THIS PARTICULAR GPX HAS A SINGLE TRACK AND TWO SEGMENTS. THESE 
-// SEGMENTS ARE THE ANGLES THAT ARE BINDED BY LINES TO FORM THE PATH.
-
-// let mockGpx = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
-// <gpx creator="www.flyisfun.com" version="1.1" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
-//   <trk>
-//     <name>Track_n1</name>
-//     <trkseg>
-//       <trkpt lat="-48.843895" lon="10.9835696">
-//         <ele>126.75549</ele>
-//         <time>2016-04-16T11:05:00Z</time>
-//       </trkpt>
-//       <trkpt lat="-48.843254" lon="11.9823042">
-//         <ele>126.90486</ele>
-//         <time>2016-04-16T11:05:05Z</time>
-//       </trkpt>
-//     </trkseg>
-//   </trk>
-// </gpx>`;
+// THE GPX FILE MUST BE PASSED AS AN STRING.
 
 
 
@@ -87,27 +68,6 @@ function distanceRespectHikes(latlng, list) {
 }
 
 function HikePage(props) {
-
-    /*const useBackListener = (callback) => { // Handler for the back button
-        const navigator = useContext(UNSAFE_NavigationContext).navigator;
-        useEffect(() => {
-            const listener = ({ location, action }) => {
-                // console.log("listener", { location, action });
-                if (action === "POP") {
-                    callback({ location, action });
-                }
-            };
-            const unlisten = navigator.listen(listener);
-            return unlisten;
-        }, [callback, navigator]);
-    };
-
-    useBackListener(({ location }) => {
-        // console.log("Navigated Back", { location });
-        props.setCurrentMarkers([])
-    });
-*/
-    // console.log(positions[0]," ",positions[positions.length-1])
     return (
         <Container>
             <Row className='my-3'>
@@ -627,7 +587,6 @@ function MapHandler(props) { //Handles just the clicks on the map
     //The above instruction are used to not trigger the map when a popup is opened
     useMapEvents({
         click: (e) => {
-            // console.log(e.latlng)
             if(!click.current){
                 $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + e.latlng.lat + '&lon=' + e.latlng.lng + '&format=json&limit=1', function (data) {
                     let newSelectedMarker = {}
@@ -658,7 +617,6 @@ function MapHandler(props) { //Handles just the clicks on the map
 function SelectedMarkers(props) {
     return (
         <>
-            {/* {console.log(props.currentMarkers)} */}
             {props.currentMarkers.length > 0 ? props.currentMarkers.map(p => {
 
                 return (

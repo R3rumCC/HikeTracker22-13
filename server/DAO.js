@@ -1,7 +1,6 @@
 'use strict';
 
 const sqlite = require('sqlite3');
-//const { Resolver } = require('dns/promises');
 
 const db = new sqlite.Database('hikeTracker.db', (err) => {
   if (err) {
