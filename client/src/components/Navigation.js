@@ -12,10 +12,26 @@ const Navigation = (props) => {
   const NORMAL_OPACITY = 0.85;
   const [opacity, setOpacity] = useState(NORMAL_OPACITY);
 
+  function normalOpacity(){
+    setOpacity(NORMAL_OPACITY)
+  }
+
+  function interactOpacity(){
+    setOpacity(OPACITY_WHEN_MOUSE_INTERACT)
+  }
+
+  function downOpacity(){
+    setOpacity(1)
+  }
+
+  function emptyCurrentMarkers(){
+    props.setCurrentMarkers([])
+  }
+
   return (
     // 
     <Navbar bg="primary" expand="lg" variant="dark" className="justify-content-between">
-      <Link to="/" onClick={() => { props.setCurrentMarkers([]) }}>
+      <Link to="/" onClick={emptyCurrentMarkers}>
         <Navbar.Brand>
           <i className="bi bi-compass icon-size m-2" /> Hike Tracker
         </Navbar.Brand>
@@ -38,10 +54,10 @@ const Navigation = (props) => {
                 fontSize={32}
                 onClick={props.profilePage}
                 opacity={opacity}
-                onMouseOver={() => setOpacity(OPACITY_WHEN_MOUSE_INTERACT)}
-                onMouseLeave={() => setOpacity(NORMAL_OPACITY)}
-                onMouseDown={() => setOpacity(1)}
-                onMouseUp={() => setOpacity(OPACITY_WHEN_MOUSE_INTERACT)}
+                onMouseOver={interactOpacity}
+                onMouseLeave={normalOpacity}
+                onMouseDown={downOpacity}
+                onMouseUp={interactOpacity}
               /> : <></>}
             </Col>
           </Row>
