@@ -84,8 +84,8 @@ exports.updateHike = async function (req, res) {
     if(oldRP.length != 0){
       dao.getHikePoint().then(
         result=>{
-          let otherP = result.map(x =>{x.idPoint})
-          oldRP.filter(j =>{!otherP.includes(j)})
+          let otherP = result.map(x =>{return x.idPoint})
+          oldRP.filter(j =>{return !otherP.includes(j)})
           oldRP.forEach(element => {
             dao.deletePoint(element).then(
               result=>{
