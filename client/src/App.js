@@ -22,8 +22,6 @@ import API from './API';
 import { EditHike } from './components/editHike';
 import { PointsContainer } from './components/pointsCards';
 
-import dayjs from 'dayjs';
-
 
 function App() {
 
@@ -91,7 +89,6 @@ function Main() {
       try {
         const fetchedPoints = await API.getPoints();
         setPoints(fetchedPoints);
-        //console.log(fetchedPoints);
       } catch (error) {
         handleErrors(error);
       }
@@ -231,7 +228,6 @@ function Main() {
 
    const r = await API.getAllRequests();
     setReqList(r);
-    // console.log(reqList);
   }
 
   const sendNotice1 = async (email) => {
@@ -288,9 +284,9 @@ function Main() {
   function calculateDuration(start_time, end_time) {
     let duration = 0;
     //an hike can be longer than a day?
-    const start = dayjs(start_time);
-    const end = dayjs(end_time);
-    duration = end.diff(start, 'minute');
+    const start = new Date(start_time);
+    const end = new Date(end_time);
+    duration = Math.floor((end.getTime() - start.getTime())/60000)
     return duration;
   }
 

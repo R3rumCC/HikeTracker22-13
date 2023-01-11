@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from 'react';
+import { React, useState } from 'react';
 import { Row, Col, Button, Form, InputGroup, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { GenericMap } from './hikePage';
@@ -54,17 +54,7 @@ function EditHikeForm(props) {
     if (title !== "") {
       if (length !== "" && difficulty !== "") {
         if (description !== "") {
-          /*let temp = [...reference_points].map((x) => {
-            return { address: x.address, nameLocation: x.nameLocation, gps_coordinates: x.latlng.lat + ',' + x.latlng.lng, type: null, capacity: null, altitude: x.altitude }
-          })
-          setReferencePoints(temp)*/
-
-          //After mapping the data we need on a vector we have to add each point in the db and check if it already exists
-          //While adding the point we store in a string the ids of the points added
-          //After adding every point in the db we can update the hike with all the info we edited and the string of ref points
-          //We cannot add reference points as objects in the hikes table, other than being wrong it can cause errors
           
-          //REFERENCE POINTS ARE SET TO NULL ACTUALLY
           updateHike = {
             title: title, length: length, expected_time: expTime, ascent: ascent,
             difficulty: difficulty, start_point: {address: startPoint, gps_coordinates: startPointGps}, end_point: {address: endPoint, gps_coordinates: endPointGps}, 

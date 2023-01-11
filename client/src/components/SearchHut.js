@@ -154,6 +154,38 @@ function SearchHut() {
   const [capacityFilter, setCapacityFilter] = useState(0);
   const [filters, setFilters] = useState(false);
 
+  function changeGeoFilter(event){
+    setGeoFilter(event.target.value)
+  }
+
+  function changeLatFilter(event){
+    setLatFilter(event.target.value)
+  }
+
+  function changeLongFilter(event){
+    setLongFilter(event.target.value)
+  }
+
+  function changeAltFilter(event){
+    setAltFilter(event.target.value)
+  }
+
+  function changeNameFilter(event){
+    setNameFilter(event.target.value)
+  }
+
+  function changeCapacityFilter(event){
+    setCapacityFilter(event.target.value)
+  }
+
+  function applyFilters(){
+    setFilters(true)
+  }
+
+  function resetFilters(){
+    setFilters(false)
+  }
+
   async function getHuts() {
     try {
       const list = await API.getHuts();
@@ -194,7 +226,7 @@ function SearchHut() {
                 <Form.Control
                   type="text"
                   placeholder="Enter the address of the hut"
-                  value={geoFilter} onChange={(e) => { setGeoFilter(e.target.value) }}
+                  value={geoFilter} onChange={changeGeoFilter}
                 />
               </InputGroup>
           </Form.Group>
@@ -208,7 +240,7 @@ function SearchHut() {
                     type="number" step="0.0000001"
                     min="-90.0000000" max="90.0000000"
                     placeholder='Enter the latitude'
-                    value={latFilter} onChange={(e) => { setLatFilter(e.target.value) }}
+                    value={latFilter} onChange={changeLatFilter}
                   />
                 </InputGroup>
               </Form.Group>
@@ -222,7 +254,7 @@ function SearchHut() {
                     type="number" step="0.0000001"
                     min="-180.0000000" max="180.0000000"
                     placeholder='Enter the longitude'
-                    value={longFilter} onChange={(e) => { setLongFilter(e.target.value) }}
+                    value={longFilter} onChange={changeLongFilter}
                   />
                 </InputGroup>
               </Form.Group>
@@ -236,7 +268,7 @@ function SearchHut() {
                     type="number"
                     min="0" max="4000"
                     placeholder='Enter the altitude'
-                    value={altFilter} onChange={(e) => { setAltFilter(e.target.value) }}
+                    value={altFilter} onChange={changeAltFilter}
                   />
                   <InputGroup.Text>m</InputGroup.Text>
                 </InputGroup>
@@ -255,7 +287,7 @@ function SearchHut() {
                   <Form.Control
                     type="text"
                     placeholder="Enter the name of the hut"
-                    value={nameFilter} onChange={(e) => { setNameFilter(e.target.value) }}
+                    value={nameFilter} onChange={changeNameFilter}
                   />
                 </InputGroup>
               </Form.Group>
@@ -269,14 +301,14 @@ function SearchHut() {
                     type="number"
                     min="0" max="30"
                     placeholder='Enter the numeber of beds'
-                    value={capacityFilter} onChange={(e) => { setCapacityFilter(e.target.value) }}
+                    value={capacityFilter} onChange={changeCapacityFilter}
                   />
                 </InputGroup>
               </Form.Group>
             </Col>
           </Row>
-          <Button className="mt-3 me-3" onClick={() => { setFilters(true) }}>Search</Button>
-          <Button className="mt-3" type='reset' onClick={() => { setFilters(false) }}>Reset Filters</Button>
+          <Button className="mt-3 me-3" onClick={applyFilters}>Search</Button>
+          <Button className="mt-3" type='reset' onClick={resetFilters}>Reset Filters</Button>
         </Form>
       </Row>
       <br />

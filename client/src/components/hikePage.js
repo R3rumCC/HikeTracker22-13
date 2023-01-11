@@ -2,8 +2,7 @@ import { Col, Row, ToggleButton, ButtonGroup, Button, Container } from 'react-bo
 import { HikesContainer } from './hikesCards';
 import { MapContainer, Polyline, TileLayer, Marker, Popup, useMapEvents, GeoJSON, useMap, Circle, LayerGroup, } from 'react-leaflet'
 import * as L from "leaflet";
-import { React, useEffect, useContext, useRef, useState } from 'react';
-import { UNSAFE_NavigationContext } from "react-router-dom";
+import { React, useEffect, useRef, useState } from 'react';
 import API from '../API';
 import redIcon from './imgUtils/redIcon.png'
 import greenIcon from './imgUtils/greenIcon.png'
@@ -21,28 +20,10 @@ import pRed from './imgUtils/pRed.png'
 import pGreen from './imgUtils/pGreen.png'
 import pBlue from './imgUtils/pBlue.png'
 import pOrange from './imgUtils/pOrange.png'
-// THE GPX FILE MUST BE PASSED AS AN STRING. HERE I LEAVE AN EXAMPLE:
-// THIS PARTICULAR GPX HAS A SINGLE TRACK AND TWO SEGMENTS. THESE 
-// SEGMENTS ARE THE ANGLES THAT ARE BINDED BY LINES TO FORM THE PATH.
+// THE GPX FILE MUST BE PASSED AS AN STRING.
 
-// let mockGpx = `<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
-// <gpx creator="www.flyisfun.com" version="1.1" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
-//   <trk>
-//     <name>Track_n1</name>
-//     <trkseg>
-//       <trkpt lat="-48.843895" lon="10.9835696">
-//         <ele>126.75549</ele>
-//         <time>2016-04-16T11:05:00Z</time>
-//       </trkpt>
-//       <trkpt lat="-48.843254" lon="11.9823042">
-//         <ele>126.90486</ele>
-//         <time>2016-04-16T11:05:05Z</time>
-//       </trkpt>
-//     </trkseg>
-//   </trk>
-// </gpx>`;
-
-
+const crypto = window.crypto || window.msCrypto;
+let array = new Uint32Array(1);
 
 const $ = require("jquery");
 
@@ -87,27 +68,6 @@ function distanceRespectHikes(latlng, list) {
 }
 
 function HikePage(props) {
-
-    const useBackListener = (callback) => { // Handler for the back button
-        const navigator = useContext(UNSAFE_NavigationContext).navigator;
-        useEffect(() => {
-            const listener = ({ location, action }) => {
-                // console.log("listener", { location, action });
-                if (action === "POP") {
-                    callback({ location, action });
-                }
-            };
-            const unlisten = navigator.listen(listener);
-            return unlisten;
-        }, [callback, navigator]);
-    };
-
-    useBackListener(({ location }) => {
-        // console.log("Navigated Back", { location });
-        props.setCurrentMarkers([])
-    });
-
-    // console.log(positions[0]," ",positions[positions.length-1])
     return (
         <Container>
             <Row className='my-3'>
@@ -245,6 +205,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
     const [startCheck, setStartCheck] = useState('');
     const [endCheck, setEndCheck] = useState('');
     const travelOnce = useRef('');
+
     function MyComponent() {
         const map = useMap()
         if(travelOnce.current != positions){
@@ -378,7 +339,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                 <MapContainer
                     center={positions[Math.round(positions.length / 2)]}
                     zoom={positions.length / 100 > 1 ? 13 : 15}
-                    scrollWheelZoom={false}
+                    scrollWheelZoom={true}
                 >
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                     {/* This object below is needed if we are passing the path line as a parsed XML, not as a GeoJSON */}
@@ -386,7 +347,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                         pathOptions={{ fillColor: 'red', color: 'blue' }}
                         positions={positions}
                     />
-                    <Marker key={Math.random()} icon={positions[0][0] + ',' + positions[0][1] == startCheck? greenMarker : blueMarker} position={positions[0]}>
+                    <Marker key={crypto.getRandomValues(array)} icon={positions[0][0] + ',' + positions[0][1] == startCheck? greenMarker : blueMarker} position={positions[0]}>
                         <Popup closeOnClick={false}>
                             {startPoint}
                             <hr></hr>
@@ -408,7 +369,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                 : null}
                         </Popup>
                     </Marker>
-                    <Marker key={Math.random()} icon={positions[positions.length - 1][0]+','+positions[positions.length - 1][1] == endCheck ? redMarker : blueMarker} position={positions[positions.length - 1]}>
+                    <Marker key={ crypto.getRandomValues(array)} icon={positions[positions.length - 1][0]+','+positions[positions.length - 1][1] == endCheck ? redMarker : blueMarker} position={positions[positions.length - 1]}>
                         <Popup closeOnClick={false}>
                             {endPoint}
                             <hr></hr>
@@ -440,7 +401,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                             p.gps_coordinates == startCheck ? p.type=='Hut' ? greenHouse: greenParking : 
                                             p.gps_coordinates == endCheck ? p.type=='Hut' ? redHouse : redParking : 
                                             p.type=='Hut' ? blueHouse : blueParking} 
-                            key={Math.random()} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
+                            key={ crypto.getRandomValues(array)} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
 
                                 <Popup closeOnClick={false}>
                                     {p.nameLocation}
@@ -497,7 +458,7 @@ function GenericMap(props) { //Map to be inserted anywhere.
                                             p.gps_coordinates == startCheck && p.gps_coordinates == endCheck ? orangeHouse : 
                                             p.gps_coordinates == startCheck ? greenHouse : p.gps_coordinates == endCheck ? redHouse : blueHouse} 
                             
-                            key={Math.random()} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
+                            key={ crypto.getRandomValues(array)} position={{ lat: p.gps_coordinates.split(',')[0], lng: p.gps_coordinates.split(',')[1] }}>
                             <Popup closeOnClick={false}>
                                 {p.nameLocation}
                                 <hr></hr>
@@ -587,18 +548,19 @@ function GenericMap(props) { //Map to be inserted anywhere.
                     className="leaflet-container"
                     center={[42.715, 12.437]} //Center somewhere random as default
                     zoom={5}
+                    scrollWheelZoom={true}
                 >
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                     {props.filter ? props.hikes.map(p => {
 
                         return (
                             <>
-                                <Marker key={Math.random()*100} icon={greenMarker}  position={{ lat: p.start_point_coordinates.split(',')[0], lng: p.start_point_coordinates.split(',')[1] }}>
+                                <Marker key={ crypto.getRandomValues(array)} icon={greenMarker}  position={{ lat: p.start_point_coordinates.split(',')[0], lng: p.start_point_coordinates.split(',')[1] }}>
                                     <Popup closeOnClick={false}>
                                         {p.start_point_address}
                                     </Popup>
                                 </Marker>
-                                <Marker key={Math.random()*100} icon={redMarker}  position={{ lat: p.end_point_coordinates.split(',')[0], lng: p.end_point_coordinates.split(',')[1] }}>
+                                <Marker key={ crypto.getRandomValues(array)} icon={redMarker}  position={{ lat: p.end_point_coordinates.split(',')[0], lng: p.end_point_coordinates.split(',')[1] }}>
                                     <Popup closeOnClick={false}>
                                         {p.end_point_address}
                                     </Popup>
@@ -626,7 +588,6 @@ function MapHandler(props) { //Handles just the clicks on the map
     //The above instruction are used to not trigger the map when a popup is opened
     useMapEvents({
         click: (e) => {
-            // console.log(e.latlng)
             if(!click.current){
                 $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + e.latlng.lat + '&lon=' + e.latlng.lng + '&format=json&limit=1', function (data) {
                     let newSelectedMarker = {}
@@ -657,12 +618,11 @@ function MapHandler(props) { //Handles just the clicks on the map
 function SelectedMarkers(props) {
     return (
         <>
-            {/* {console.log(props.currentMarkers)} */}
             {props.currentMarkers.length > 0 ? props.currentMarkers.map(p => {
 
                 return (
                     <LayerGroup>
-                        <Marker icon={refPoints} key={Math.random()} position={p.latlng}
+                        <Marker icon={refPoints} key={ crypto.getRandomValues(array)} position={p.latlng}
                             eventHandlers={{
                                 click: (e) => {
                                     console.log("CLICKERD")

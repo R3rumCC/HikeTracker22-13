@@ -7,7 +7,6 @@ exports.getHikes = async function () {
     let fullHikes = []
     let hikes = await dao.readHikes();
     for (let hike of hikes) {
-      //hike['reference_points'] = await dao.readReferencePoints(hike.title);
       hike['reference_points'] = await dao.readListOfReferencePoints(hike.title);
       hike['linkedHuts'] = await dao.getHutsLinkedByTitle(hike.title)
       fullHikes.push(hike)
@@ -25,12 +24,17 @@ exports.addHike = async function (req, res) {
   let startId = await dao.checkPresenceByCoordinates(req.body.newHike.start_point.gps_coordinates)
   let endId = await dao.checkPresenceByCoordinates(req.body.newHike.end_point.gps_coordinates)
 
-
-  if (startId == null)
-    startId = { idPoint: await dao.addPoint(req.body.newHike.start_point)}
-  if(endId == null) {
-    endId = {idPoint: await dao.addPoint(req.body.newHike.end_point)}
+  if(req.body.newHike.start_point.gps_coordinates == req.body.newHike.end_point.gps_coordinates && startId == null && endId == null ){
+    startId = endId = { idPoint: await dao.addPoint(req.body.newHike.start_point)}
   }
+  else{
+    if (startId == null)
+      startId = { idPoint: await dao.addPoint(req.body.newHike.start_point)}
+    if(endId == null) {
+      endId = {idPoint: await dao.addPoint(req.body.newHike.end_point)}
+    }
+  }
+
 
   let hike = {
     title: req.body.newHike.title, length: req.body.newHike.length, expected_time: req.body.newHike.expected_time,
@@ -54,16 +58,8 @@ exports.updateHike = async function (req, res) {
   //Temporary solution used to check gps coordinates with or without space after the comma. Gps coordinates should be added in a single way 
   let startId = await dao.checkPresenceByCoordinates(req.body.hike.start_point.gps_coordinates)
   startId = startId != undefined ? startId : await dao.checkPresenceByCoordinates(req.body.hike.start_point.gps_coordinates.replace(',',', '))
-  /*
-  if(startId == undefined)
-    startId = await dao.addPoint({address : req.body.hike.start_point.address, gps_coordinates: req.body.hike.start_point.gps_coordinates})
-  */
   let endId = await dao.checkPresenceByCoordinates(req.body.hike.end_point.gps_coordinates)
   endId = endId != undefined ? endId : await dao.checkPresenceByCoordinates(req.body.hike.end_point.gps_coordinates.replace(',',', '))
-  /*
-  if(endId == undefined)
-    endId = await dao.addPoint({address : req.body.hike.end_point.address, gps_coordinates: req.body.hike.end_point.gps_coordinates})
-  */
     //console.log(startId.idPoint, endId.idPoint)
   
   const updateHike = {
@@ -79,8 +75,8 @@ exports.updateHike = async function (req, res) {
     if(oldRP.length != 0){
       dao.getHikePoint().then(
         result=>{
-          let otherP = result.map(x =>{x.idPoint})
-          oldRP.filter(j =>{!otherP.includes(j)})
+          let otherP = result.map(x =>{return x.idPoint})
+          oldRP.filter(j =>{return !otherP.includes(j)})
           oldRP.forEach(element => {
             dao.deletePoint(element).then(
               result=>{
@@ -265,7 +261,7 @@ exports.getHuts = async function () {
 
 function RandomIndex(min, max, i, _charStr) {
 
-  let index = Math.floor(Math.random() * (max - min + 1) + min),
+  let index = Math.floor(crypto.randomBytes(1).readUInt8(0) * (max - min + 1) + min),
     numStart = _charStr.length - 10;
   if (i == 0 && index >= numStart) {
     index = RandomIndex(min, max, i, _charStr);
@@ -276,7 +272,6 @@ function RandomIndex(min, max, i, _charStr) {
 
 exports.addUser = async function (req, res) {
   const u = await dao.getUserByEmail(req.body.user.email);
-  // console.log(u);
   if (!u.error) { res.status(422).send("This email has been registered.").end(); }
   else {
     const _charStr = 'abacdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789';
@@ -287,8 +282,6 @@ exports.addUser = async function (req, res) {
       salt += _charStr[index];
     }
 
-    // var hash = crypto.createHmac('sha512', salt); 
-    // var hash = crypto.createHash('sha512', salt); //use sha512 
     crypto.scrypt(req.body.user.password, salt, 32, function (err, value) {
       if (err) reject(err);
       else {
@@ -313,7 +306,6 @@ exports.addUser = async function (req, res) {
 }
 
 exports.checkCode = async function (req, res) {
-  //   console.log(req.body.point);
   dao.getCode(req.params.email).then(
     result => {
       return res.status(200).json(result);
@@ -471,7 +463,9 @@ exports.endHike = async function (req, res) {
 
 exports.updateEndHike = async function (req, res) {
   const actualBestTime = await dao.getBestTime(req.body.hiker_email, req.body.hike_title);
-  if (req.body.duration > actualBestTime) {
+  console.log(actualBestTime)
+  console.log(req.body.duration)
+  if (req.body.duration < actualBestTime.best_time) {
     dao.updateEndHikeBestTime(req.body.hiker_email, req.body.hike_title, req.body.duration).then(
       result => {
         return res.status(200).json();

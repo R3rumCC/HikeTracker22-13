@@ -3,6 +3,7 @@ import { Form, Button, Row, Col} from "react-bootstrap";
 import MultiRangeSlider from "multi-range-slider-react";
 import '../App.css';
 import { GenericMap } from "./hikePage";
+
 const FilterForm = (props) => {
 
     const [minLength, setminLength] = useState(0)
@@ -23,6 +24,7 @@ const FilterForm = (props) => {
     const [filterDistance,setFilterDistance] = useState(false)
     const [point, setPoint] = useState([])
     const [clicked, setClicked] = useState(false)
+
     useEffect(() => {
 		if (point.length != 0) {
 			setClicked(true)
@@ -31,6 +33,7 @@ const FilterForm = (props) => {
 			setClicked(false)
 		}
 	}, [point]);
+
     function reset(){
         setminLength(0); setmaxLength(20);
         setETmin(0); setETmax(5); 
@@ -153,6 +156,95 @@ const FilterForm = (props) => {
 
         reset()
     }
+
+    function changeCity(event){
+        setCity(event.target.value)
+    }
+
+    function changeProvince(event){
+        setProvince(event.target.value)
+    }
+
+    function changeRegion(event){
+        setRegion(event.target.value)
+    }
+
+    function changeDifficulty(event){
+        setDifficulty(event.target.value)
+    }
+
+    function lengthFilterBool(){
+        setFilterLength(!filterLength)
+    }
+
+    function ETfilterBool(){
+        setFilterET(!filterET)
+    }
+
+    function ascentFilterBool(){
+        setFilterAscent(!filterAscent)
+    }
+
+    function distanceFilterBool(){
+        setFilterDistance(!filterDistance)
+    }
+
+    function changeMinMaxLength(event){
+        setminLength(event.minValue)
+        setmaxLength(event.maxValue)
+    }
+
+    function changeMinLength(event){
+        setminLength(event.target.value)
+    }
+
+    function changeMaxLength(event){
+        setmaxLength(event.target.value)
+    }
+
+    function changeMinMaxET(event){
+        setETmin(event.minValue)
+        setETmax(event.maxValue)
+    }
+
+    function changeMinET(event){
+        setETmin(event.target.value)
+    }
+
+    function changeMaxET(event){
+        setETmax(event.target.value)
+    }
+
+    function changeMinMaxAscent(event){
+        setAscentMin(event.minValue)
+        setAscentMax(event.maxValue)
+    }
+
+    function changeMinAscent(event){
+        setAscentMin(event.target.value)
+    }
+
+    function changeMaxAscent(event){
+        setAscentMax(event.target.value)
+    }
+
+    function changeMinMaxDistance(event){
+        setDistanceMin(event.minValue)
+        setDistanceMax(event.maxValue)
+    }
+
+    function changeMinDistance(event){
+        setDistanceMin(event.target.value)
+    }
+
+    function changeMaxDistance(event){
+        setDistanceMax(event.target.value)
+    }
+
+    function hideFilters(){
+        props.setHidden(true)
+    }
+
       return (
         <>
         <Form  className="border border-primary rounded d-flex justify-content-center flex-wrap" onSubmit={handleSubmit}>
@@ -160,24 +252,24 @@ const FilterForm = (props) => {
 
             <Form.Group className="my-2 px-1" style={{ width: 'maxWidth' }}>
                 <Form.Label>City</Form.Label>
-                <Form.Control type="text" required={false} value={city} placeholder = {'Turin'} onChange={event => setCity(event.target.value)}/>
+                <Form.Control type="text" required={false} value={city} placeholder = {'Turin'} onChange={changeCity}/>
             </Form.Group>
 
 
             <Form.Group className="my-2 px-1" style={{ width: 'maxWidth' }}>
                 <Form.Label>Province</Form.Label>
-                <Form.Control type="text" required={false} value={province} placeholder = {'Turin'} onChange={event => setProvince(event.target.value)}/>
+                <Form.Control type="text" required={false} value={province} placeholder = {'Turin'} onChange={changeProvince}/>
             </Form.Group>
 
 
             <Form.Group className="my-2 px-1" style={{ width: 'maxWidth' }}>
                 <Form.Label>Region</Form.Label>
-                <Form.Control type="text" required={false} value={region} placeholder = {'Piedmont'} onChange={event => setRegion(event.target.value)}/>
+                <Form.Control type="text" required={false} value={region} placeholder = {'Piedmont'} onChange={changeRegion}/>
             </Form.Group>   
 
             <Form.Group className="my-2 px-1" style={{ width: 'maxWidth' }}>
                 <Form.Label>Difficulty</Form.Label>
-                    <Form.Select onChange={(e) => setDifficulty(e.target.value)}>
+                    <Form.Select onChange={changeDifficulty}>
                         <option label=''></option>
                         <option value='Tourist'  label="Tourist"/>
                         <option value='Hiker' label="Hiker"/>
@@ -187,22 +279,22 @@ const FilterForm = (props) => {
             <Col className="px-3">
                 <Row>
                     <Form.Group className="my-2">
-                        <Form.Check type="checkbox" label="Filter by Lenght" onChange={()=>setFilterLength(!filterLength)}/>
+                        <Form.Check type="checkbox" label="Filter by Lenght" onChange={lengthFilterBool}/>
                     </Form.Group>
                 </Row>
                 <Row>
                     <Form.Group className="my-2">
-                        <Form.Check type="checkbox" label="Filter by Expected Time" onChange={()=>setFilterET(!filterET)}/>
+                        <Form.Check type="checkbox" label="Filter by Expected Time" onChange={ETfilterBool}/>
                     </Form.Group>
                 </Row>
                 <Row>
                     <Form.Group className="my-2 ">
-                        <Form.Check type="checkbox" label="Filter by Ascent" onChange={()=>setFilterAscent(!filterAscent)}/>
+                        <Form.Check type="checkbox" label="Filter by Ascent" onChange={ascentFilterBool}/>
                     </Form.Group>
                 </Row>
                 <Row>
                     <Form.Group className="my-2 ">
-                        <Form.Check type="checkbox" label="Filter by Distance" onChange={()=>setFilterDistance(!filterDistance)}/>
+                        <Form.Check type="checkbox" label="Filter by Distance" onChange={distanceFilterBool}/>
                     </Form.Group>
                 </Row>
             </Col>
@@ -223,23 +315,20 @@ const FilterForm = (props) => {
                             maxValue={20}
                             minCaption = {minLength}
                             maxCaption = {maxLength}
-                            onInput={(e) => {
-                                setminLength(e.minValue);
-                                setmaxLength(e.maxValue);
-                            }}
+                            onInput={changeMinMaxLength}
                         />
                     </Row>
                     <Row>
                         <Col>
                             <Form.Group className="mb-3">
                                 <Form.Label>From</Form.Label>
-                                <Form.Control type="number" required={false} value={minLength} placeholder = {minLength} onChange={event => setminLength(event.target.value)}/>
+                                <Form.Control type="number" required={false} value={minLength} placeholder = {minLength} onChange={changeMinLength}/>
                             </Form.Group>  
                         </Col>
                         <Col>
                             <Form.Group className="mb-3">
                                 <Form.Label>to</Form.Label>
-                                <Form.Control type="number" required={false} value={maxLength} placeholder = {maxLength} onChange={event => setmaxLength(event.target.value)}/>
+                                <Form.Control type="number" required={false} value={maxLength} placeholder = {maxLength} onChange={changeMaxLength}/>
                             </Form.Group>  
                         </Col>
                     </Row>
@@ -261,23 +350,20 @@ const FilterForm = (props) => {
                             maxValue={etMax}
                             minCaption = {etMin}
                             maxCaption = {etMax}
-                            onInput={(e) => {
-                                setETmin(e.minValue)
-                                setETmax(e.maxValue)
-                            }}
+                            onInput={changeMinMaxET}
                         />
                     </Row>
                     <Row>
                         <Col>
                             <Form.Group className="mb-3">
                                 <Form.Label>From</Form.Label>
-                                <Form.Control type="number" required={false} value={etMin} placeholder = {etMin} onChange={event => setETmin(event.target.value)}/>
+                                <Form.Control type="number" required={false} value={etMin} placeholder = {etMin} onChange={changeMinET}/>
                             </Form.Group>  
                         </Col>
                         <Col>
                             <Form.Group className="mb-3">
                                 <Form.Label>to</Form.Label>
-                                <Form.Control type="number" required={false} value={etMax} placeholder = {etMax} onChange={event => setETmax(event.target.value)}/>
+                                <Form.Control type="number" required={false} value={etMax} placeholder = {etMax} onChange={changeMaxET}/>
                             </Form.Group>  
                         </Col>
                     </Row>
@@ -299,23 +385,20 @@ const FilterForm = (props) => {
                             maxValue={ascentMax}
                             minCaption = {ascentMin}
                             maxCaption = {ascentMax}
-                            onInput={(e) => {
-                                setAscentMin(e.minValue)
-                                setAscentMax(e.maxValue)
-                            }}
+                            onInput={changeMinMaxAscent}
                         />
                     </Row>
                     <Row>
                         <Col>
                             <Form.Group className="mb-3">
                                 <Form.Label>From</Form.Label>
-                                <Form.Control type="number" required={false} value={ascentMin} placeholder = {ascentMin} onChange={event => setAscentMin(event.target.value)}/>
+                                <Form.Control type="number" required={false} value={ascentMin} placeholder = {ascentMin} onChange={changeMinAscent}/>
                             </Form.Group>  
                         </Col>
                         <Col>
                             <Form.Group className="mb-3">
                                 <Form.Label>to</Form.Label>
-                                <Form.Control type="number" required={false} value={ascentMax} placeholder = {ascentMax} onChange={event => setAscentMax(event.target.value)}/>
+                                <Form.Control type="number" required={false} value={ascentMax} placeholder = {ascentMax} onChange={changeMaxAscent}/>
                             </Form.Group>  
                         </Col>
                     </Row>
@@ -337,23 +420,20 @@ const FilterForm = (props) => {
                             maxValue={distanceMax}
                             minCaption = {distanceMin}
                             maxCaption = {distanceMax}
-                            onInput={(e) => {
-                                setDistanceMin(e.minValue)
-                                setDistanceMax(e.maxValue)
-                            }}
+                            onInput={changeMinMaxDistance}
                         />
                     </Row>
                     <Row>
                         <Col>
                             <Form.Group className="mb-3">
                                 <Form.Label>From</Form.Label>
-                                <Form.Control type="number" required={false} value={distanceMin} placeholder = {distanceMin} onChange={event => setDistanceMin(event.target.value)}/>
+                                <Form.Control type="number" required={false} value={distanceMin} placeholder = {distanceMin} onChange={changeMinDistance}/>
                             </Form.Group>  
                         </Col>
                         <Col>
                             <Form.Group className="mb-3">
                                 <Form.Label>to</Form.Label>
-                                <Form.Control type="number" required={false} value={distanceMax} placeholder = {distanceMax} onChange={event => setDistanceMax(event.target.value)}/>
+                                <Form.Control type="number" required={false} value={distanceMax} placeholder = {distanceMax} onChange={changeMaxDistance}/>
                             </Form.Group>  
                         </Col>
                     </Row>
@@ -362,7 +442,7 @@ const FilterForm = (props) => {
             : null}
             </Row>     
             <Button className="align-self-end mb-2 ms-4" variant="primary" type="submit">Search</Button>
-            <Button className="align-self-end mb-2 ms-2" variant="primary" onClick={()=>{props.setHidden(true)}}>Back</Button>
+            <Button className="align-self-end mb-2 ms-2" variant="primary" onClick={hideFilters}>Back</Button>
 
     </Form>
 

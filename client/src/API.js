@@ -359,7 +359,6 @@ async function sendEmail(email,user) {
         phoneNumber:user.phoneNumber
      })
   });
-  // console.log(user);
 
   if (response.ok) {
     return null;
@@ -563,10 +562,8 @@ async function getOnGoingHike(hiker_email) {
               expected_time: row.hike.expected_time,
               ascent: row.hike.ascent,
               difficulty: row.hike.difficulty,
-              start_point_nameLocation: row.hike.start_point_nameLocation,
-              end_point_nameLocation: row.hike.end_point_nameLocation,
-              start_point_address: row.hike.start_point_address,
-              end_point_address: row.hike.end_point_address,
+              start_point_nameLocation: row.hike.start_point,
+              end_point_nameLocation: row.hike.end_point,
               reference_points: row.hike.reference_points,
               description: row.hike.description,
               gpx_track: row.hike.gpx_track,
@@ -640,10 +637,8 @@ async function getFinishedHikesByHiker(hiker_email) {
               expected_time: row.hike.expected_time,
               ascent: row.hike.ascent,
               difficulty: row.hike.difficulty,
-              start_point_address: row.hike.start_point_address,
-              start_point_nameLocation: row.hike.start_point_nameLocation,
-              end_point_address: row.hike.end_point_address,
-              end_point_nameLocation:  row.hike.end_point_nameLocation,
+              start_point_nameLocation: row.hike.start_point,
+              end_point_nameLocation: row.hike.end_point,
               reference_points: row.hike.reference_points,
               description: row.hike.description,
               gpx_track: row.hike.gpx_track,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Button, Form, InputGroup, Alert, Nav, Image } from 'react-bootstrap';
+import { Row, Col, Button, Form, InputGroup, Alert, Nav } from 'react-bootstrap';
 import { GenericMap } from './hikePage';
 import { HikesContainer } from './hikesCards';
 import Profile from './profile';
@@ -15,6 +15,21 @@ function LocalGuide_Home(props) {
   const [hutForm, setHutForm] = useState(false);
   const [seeHikes, setSeeHikes] = useState(false);
   const [profile, setProfile] = useState(true);
+
+  function submitPicture(pict){
+    let myBlob = new Blob([pict], { type: "text/plain" })
+  
+      const url = '/upload_pictures';
+      const formData = new FormData();
+  
+      formData.append('file', myBlob,  pict.name);
+      const config = {
+        headers: {
+          'content-type': "text/plain",
+        },
+      };
+      axiosInstance.post(url, formData, config);
+  }
 
   //handlers for the onClick events on buttons
   const selectProfile = () => {
@@ -52,9 +67,9 @@ function LocalGuide_Home(props) {
         <div className='mx-3 my-3'>
           <div>{profile ? <Profile user={props.currentUser} /> : <></>}</div>
           <div>{hikeForm ? <HikeForm hikes={props.hikes} currentUser={props.currentUser} CreateNewPoint={props.CreateNewPoint} CreateNewHike={props.CreateNewHike} points={props.points} 
-          setOnChangeHikes={props.setOnChangeHikes} setOnChangePoints={props.setOnChangePoints} /> : <></>}</div>
+          setOnChangeHikes={props.setOnChangeHikes} setOnChangePoints={props.setOnChangePoints} submitPicture={submitPicture}/> : <></>}</div>
           <div>{parkingLotForm ? <ParkingLotForm CreateNewPoint={props.CreateNewPoint} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} setOnChangePoints={props.setOnChangePoints}/> : <></>}</div>
-          <div>{hutForm ? <HutForm CreateNewHut={props.CreateNewHut} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} setOnChangePoints={props.setOnChangePoints} /> : <></>}</div>
+          <div>{hutForm ? <HutForm CreateNewHut={props.CreateNewHut} currentMarkers={props.currentMarkers} setCurrentMarkers={props.setCurrentMarkers} setOnChangePoints={props.setOnChangePoints} submitPicture={submitPicture}/> : <></>}</div>
           <div>{seeHikes ? <HikeList hikes={props.hikes} currentUser={props.currentUser} setCurrentHike={props.setCurrentHike} /> : <></>}</div>
         </div>
       </Col>
@@ -85,6 +100,8 @@ function LocalGuide_Home_Sidebar(props) {
   )
 }
 
+
+
 /**HIKE FORM */
 
 function HikeForm(props) {
@@ -95,8 +112,6 @@ function HikeForm(props) {
   const [ascent, setAscent] = useState('')
   const [difficulty, setDifficulty] = useState('')
   const [description, setDescription] = useState('')
-  const [condition, setCondition] = useState('')
-  const [conditionDescription, setConditionDescription] = useState('')
 
   const [startPoint, setStartPoint] = useState('')
   const [startPointGps, setStartPointGps] = useState('')
@@ -116,9 +131,7 @@ function HikeForm(props) {
   const changeDifficulty = (val) => { setDifficulty(val); }
   const changeDescription = (val) => { setDescription(val) }
   const changeStartP = (val) => { setStartPoint(val) }
-  const changeStartPGps = (val) => { setStartPointGps(val) }
   const changeEndP = (val) => { setEndPoint(val) }
-  const changeEndPGps = (val) => { setEndPointGps(val) }
 
 
   const submitFile = () => {
@@ -135,23 +148,6 @@ function HikeForm(props) {
         "Content-Type": "text/plain",
       },
     })
-  }
-
-
-  const submitPicture= (pict)=>{
-
-    let myBlob = new Blob([pict], { type: "text/plain" })
-
-    const url = '/upload_pictures';
-    const formData = new FormData();
-
-    formData.append('file', myBlob,  pict.name);
-    const config = {
-      headers: {
-        'content-type': "text/plain",
-      },
-    };
-    axiosInstance.post(url, formData, config);
   }
 
   const submitHikeForm = (event) => {
@@ -176,7 +172,7 @@ function HikeForm(props) {
       }
       props.CreateNewHike(newHike)
       submitFile()
-      submitPicture(picture)
+      props.submitPicture(picture)
       alert('New Hike correctly added!')
       props.setOnChangeHikes(true)
       props.setOnChangePoints(true)
@@ -192,7 +188,6 @@ function HikeForm(props) {
     setTitle('');
     setLength(''); setExpTime(''); setAscent('')
     setDifficulty(''); setDescription('');
-    setCondition(''); setConditionDescription('');
     setStartPoint(''); setStartPointGps('');
     setEndPoint(''); setEndPointGps('');
     setErrorMsg(''); setMap(''); 
@@ -209,7 +204,6 @@ function HikeForm(props) {
     setTitle('');
     setLength(''); setExpTime(''); setAscent('')
     setDifficulty(''); setDescription('');
-    setCondition(''); setConditionDescription('');
     setStartPoint(''); setStartPointGps('');
     setEndPoint(''); setEndPointGps('');
     setErrorMsg('');
@@ -230,9 +224,7 @@ function HikeForm(props) {
 
         //storing lat and lon inside the status of start/end point
         let gps_start = `${positions[0][0]}, ${positions[0][1]}`
-        //setStartPointGps(gps_start);
         let gps_end = `${positions[positions.length - 1][0]}, ${positions[positions.length - 1][1]}`
-        //setEndPointGps(gps_end);
         console.log('gps_start=' + gps_start + ', STATE startP= ' + startPointGps)
         console.log('gps_end= ' + gps_end + ', STATE endP= ' + endPointGps)
 
@@ -253,16 +245,8 @@ function HikeForm(props) {
         console.log(positions[0]);
         console.log(positions[positions.length - 1]);
         $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[0][0] + '&lon=' + positions[0][1] + '&format=json&limit=1&q=', function (data) {
-          /*
-          changeStartP(data.display_name);
-          changeStartPGps(positions[0][0]+','+positions[0][1]);
-          */
         });
         $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + positions[positions.length - 1][0] + '&lon=' + positions[positions.length - 1][1] + '&format=json&limit=1&q=', function (data) {
-          /*
-          changeEndP(data.display_name);
-          changeEndPGps(positions[positions.length - 1][0]+','+positions[positions.length - 1][1])
-          */
         });
 
         setMap(reader.result)
@@ -432,23 +416,6 @@ function HutForm(props) {
   const [seePic, setSeePic] = useState(false)
   const [clicked, setClicked] = useState(false)
 
-
-  const submitPicture= (pict)=>{
-
-    let myBlob = new Blob([pict], { type: "text/plain" })
-    const url = '/upload_pictures';
-    const formData = new FormData();
-
-    formData.append('file', myBlob,  pict.name);
-    const config = {
-      headers: {
-        'content-type': "text/plain",
-      },
-    };
-    axiosInstance.post(url, formData, config);
-  }
-
-
   const showPicture= (pict) =>{
     setPicture(pict);
 
@@ -495,7 +462,7 @@ function HutForm(props) {
     console.log(newHut)
     //call to the API
     props.CreateNewHut(newHut)
-    submitPicture(picture)
+    props.submitPicture(picture)
     props.setOnChangePoints(true)
     alert('New Hut correctly added!')
   }
