@@ -8,8 +8,15 @@ const testDao = require('../test-dao');
 const app = require('../index');
 let agent = chai.request.agent(app); //.agent() is needed for keep cookies from one reuqent
 
+const rocciamelone = require('../unit_tests/maps/rocciamelone').rocciamelone;
+const carborant = require('../unit_tests/maps/Corborant-dal-buco-della-Marmotta').carborant;
+
 describe("HikerHike test", () => {
   beforeEach(async () => {
+    await testDao.run('DELETE FROM HikePoint');
+    await testDao.run('DELETE FROM Points');
+    await testDao.run('DELETE FROM Hikes');
+    await testDao.run('DELETE FROM SQLITE_SEQUENCE');
     await testDao.run('DELETE FROM HikerHike');
     await testDao.run('DELETE FROM HikerHikeStatistics');
     await testDao.run("INSERT OR IGNORE INTO HikerHike(hiker, hike, start_time, end_time)\
@@ -22,9 +29,31 @@ describe("HikerHike test", () => {
             'Form Pian Belota to la Vacca', 2, 60),\
             ('mario.rossi@gmail.com', \
             'Hike Monte Thabor', 6, 30)");
+    await testDao.run(`INSERT OR IGNORE INTO Hikes(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track, picture, hike_condition, hike_condition_description, local_guide)
+                    VALUES ('Form Pian Belota to la Vacca', 5.0, 5, 5.0, 'Tourist', 1, 2,
+                    '2-3', 'First easy example hike', ?, 'img', null, null, 'paulina.knight@gmail.com'), 
+                    ('Hike Monte Thabor', 10.0, 10, 10.0, 'Professional hiker', 3, 4,
+                    '4', 'Second example hike, very difficult', ?, 'img', null, null, 'mario.rossi@gmail.com')`,[rocciamelone, carborant]);
+    await testDao.run(`INSERT OR IGNORE INTO Points(address, nameLocation, gps_coordinates, type)
+                                    VALUES ('La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
+                                    'Hut#1', '45.177786,7.083372', 'Hut'), 
+                                    ('Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy',
+                                    'Hut#2', '45.203531,7.07734', 'Hut'), 
+                                    ('327, Lago di San Bernolfo - Collalunga, Vinadio, Cuneo, Piedmont, Italy',
+                                    'Happy Parking Lot', '44.259583,7.039722', 'Parking Lot'), 
+                                    ('Vinadio, Cuneo, Piedmont, Italy',
+                                    'Sad Parking Lot', '44.249216,7.017648', 'Parking Lot')`);
+    await testDao.run(`INSERT OR IGNORE INTO HikePoint(idPoint, titleHike)
+                                                    VALUES ('2', 'Form Pian Belota to la Vacca'), 
+                                                    ('4', 'Hike Monte Thabor'),  
+                                                    ('3', 'Form Pian Belota to la Vacca')`);
   });
 
   afterEach(async () => {                                 //better afterAll but I recived a "afterAll nt defined"
+    await testDao.run('DELETE FROM HikePoint');
+    await testDao.run('DELETE FROM Points');
+    await testDao.run('DELETE FROM Hikes');
+    await testDao.run('DELETE FROM SQLITE_SEQUENCE');
     await testDao.run('DELETE FROM HikerHike');
     await testDao.run('DELETE FROM HikerHikeStatistics');
     await testDao.run("INSERT OR IGNORE INTO HikerHike(hiker, hike, start_time, end_time)\
@@ -37,6 +66,24 @@ describe("HikerHike test", () => {
             'Form Pian Belota to la Vacca', 2, 60),\
             ('mario.rossi@gmail.com', \
             'Hike Monte Thabor', 6, 30)");
+    await testDao.run(`INSERT OR IGNORE INTO Hikes(title, length, expected_time, ascent, difficulty, start_point, end_point, reference_points, description, gpx_track, picture, hike_condition, hike_condition_description, local_guide)
+                    VALUES ('Form Pian Belota to la Vacca', 5.0, 5, 5.0, 'Tourist', 1, 2,
+                    '2-3', 'First easy example hike', ?, 'img', null, null, 'paulina.knight@gmail.com'), 
+                    ('Hike Monte Thabor', 10.0, 10, 10.0, 'Professional hiker', 3, 4,
+                    '4', 'Second example hike, very difficult', ?, 'img', null, null, 'mario.rossi@gmail.com')`,[rocciamelone, carborant]);
+    await testDao.run(`INSERT OR IGNORE INTO Points(address, nameLocation, gps_coordinates, type)
+                                    VALUES ('La Riposa, GTA / 529 / SI, Trucco, Mompantero, Torino, Piedmont, 10059, Italy',
+                                    'Hut#1', '45.177786,7.083372', 'Hut'), 
+                                    ('Nostra Signora del Rocciamelone, 585, Novalesa, Torino, Piedmont, 10059, Italy',
+                                    'Hut#2', '45.203531,7.07734', 'Hut'), 
+                                    ('327, Lago di San Bernolfo - Collalunga, Vinadio, Cuneo, Piedmont, Italy',
+                                    'Happy Parking Lot', '44.259583,7.039722', 'Parking Lot'), 
+                                    ('Vinadio, Cuneo, Piedmont, Italy',
+                                    'Sad Parking Lot', '44.249216,7.017648', 'Parking Lot')`);
+    await testDao.run(`INSERT OR IGNORE INTO HikePoint(idPoint, titleHike)
+                                                    VALUES ('2', 'Form Pian Belota to la Vacca'), 
+                                                    ('4', 'Hike Monte Thabor'),  
+                                                    ('3', 'Form Pian Belota to la Vacca')`);
   });
 
   startingHike(200, 'mario.rossi@gmail.com', 'Form Pian Belota to la Vacca', '15.00');
