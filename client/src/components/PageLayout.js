@@ -9,7 +9,6 @@ import  FilterForm from './Filter';
 import MessageContext from '../messageCtx';
 import FileUploader from './UploadGpxForm';
 import ClipLoader from 'react-spinners/ClipLoader';
-import { UNSAFE_NavigationContext } from "react-router-dom";
 /**
  * Except when we are waiting for the data from the server, this layout is always rendered.
  * <Outlet /> component is replaced according to which route is matching the URL.
@@ -19,29 +18,8 @@ import { UNSAFE_NavigationContext } from "react-router-dom";
 //SERVICE CARD LAYOUT FOR NO LOGGED USERS
 function DefaultLayout(props) {
 
-  
-  const { handleErrors } = useContext(MessageContext);
   const [hidden, setHidden] = useState(true);
 
-  /*const useBackListener = (callback) => { // Handler for the back button
-    const navigator = useContext(UNSAFE_NavigationContext).navigator;
-    useEffect(() => {
-        const listener = ({ location, action }) => {
-            // console.log("listener", { location, action });
-            if (action === "POP") {
-                callback({ location, action });
-            }
-        };
-        const unlisten = navigator.listen(listener);
-        return unlisten;
-    }, [callback, navigator]);
-};
-
-useBackListener(({ location }) => {
-    // console.log("Navigated Back", { location });
-    setHidden(true)
-});
-*/
   return (
 
   <>

@@ -24,7 +24,6 @@ const app = express();
 // set up the middlewares
 app.use(morgan('dev'));
 app.use(express.json());
-// app.use('/api',userRouter);
 
 //corsOptions
 const corsOptions = {
@@ -54,17 +53,7 @@ passport.deserializeUser(function (user, cb) {
   return cb(null, user);
 });
 
-/*
-// starting from the data in the session, we extract the current (logged-in) user
-passport.deserializeUser((email, done) => {
-  userDao.getUserByEmail(email)
-    .then(user => {
-      done(null, user); // this will be available in req.user
-    }).catch(err => {
-      done(err, null);
-    });
-});
-*/
+
 
 //6 STEP EXPRESS-SESSION-->Express-session installed on Passport
 app.use(session({

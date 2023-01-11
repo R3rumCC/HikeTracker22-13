@@ -7,7 +7,6 @@ exports.getHikes = async function () {
     let fullHikes = []
     let hikes = await dao.readHikes();
     for (let hike of hikes) {
-      //hike['reference_points'] = await dao.readReferencePoints(hike.title);
       hike['reference_points'] = await dao.readListOfReferencePoints(hike.title);
       hike['linkedHuts'] = await dao.getHutsLinkedByTitle(hike.title)
       fullHikes.push(hike)
@@ -59,16 +58,8 @@ exports.updateHike = async function (req, res) {
   //Temporary solution used to check gps coordinates with or without space after the comma. Gps coordinates should be added in a single way 
   let startId = await dao.checkPresenceByCoordinates(req.body.hike.start_point.gps_coordinates)
   startId = startId != undefined ? startId : await dao.checkPresenceByCoordinates(req.body.hike.start_point.gps_coordinates.replace(',',', '))
-  /*
-  if(startId == undefined)
-    startId = await dao.addPoint({address : req.body.hike.start_point.address, gps_coordinates: req.body.hike.start_point.gps_coordinates})
-  */
   let endId = await dao.checkPresenceByCoordinates(req.body.hike.end_point.gps_coordinates)
   endId = endId != undefined ? endId : await dao.checkPresenceByCoordinates(req.body.hike.end_point.gps_coordinates.replace(',',', '))
-  /*
-  if(endId == undefined)
-    endId = await dao.addPoint({address : req.body.hike.end_point.address, gps_coordinates: req.body.hike.end_point.gps_coordinates})
-  */
     //console.log(startId.idPoint, endId.idPoint)
   
   const updateHike = {
@@ -281,7 +272,6 @@ function RandomIndex(min, max, i, _charStr) {
 
 exports.addUser = async function (req, res) {
   const u = await dao.getUserByEmail(req.body.user.email);
-  // console.log(u);
   if (!u.error) { res.status(422).send("This email has been registered.").end(); }
   else {
     const _charStr = 'abacdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789';
@@ -292,8 +282,6 @@ exports.addUser = async function (req, res) {
       salt += _charStr[index];
     }
 
-    // var hash = crypto.createHmac('sha512', salt); 
-    // var hash = crypto.createHash('sha512', salt); //use sha512 
     crypto.scrypt(req.body.user.password, salt, 32, function (err, value) {
       if (err) reject(err);
       else {
@@ -318,7 +306,6 @@ exports.addUser = async function (req, res) {
 }
 
 exports.checkCode = async function (req, res) {
-  //   console.log(req.body.point);
   dao.getCode(req.params.email).then(
     result => {
       return res.status(200).json(result);

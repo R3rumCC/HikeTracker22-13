@@ -359,7 +359,6 @@ async function sendEmail(email,user) {
         phoneNumber:user.phoneNumber
      })
   });
-  // console.log(user);
 
   if (response.ok) {
     return null;
