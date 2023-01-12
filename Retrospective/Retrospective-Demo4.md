@@ -60,26 +60,25 @@ sections:
   - Total hours spent: 2
 - Technical Debt management:
   - Total hours estimated: 3
-  - Total hours spent: 4,5
-  - Hours estimated for remediation by SonarQube:
-  - Hours estimated for remediation by SonarQube only for the selected and planned issues: 
-  - Hours spent on remediation: 
-  - debt ratio (as reported by SonarQube under "Measures-Maintainability"): 
+  - Total hours spent: 4.5
+  - Hours estimated for remediation by SonarQube: 4d 7h 20m
+  - Hours estimated for remediation by SonarQube only for the selected and planned issues: 1d 4h 41m
+  - Hours spent on remediation: 4.5
+  - debt ratio (as reported by SonarQube under "Measures-Maintainability"): 0.9%
   - rating for each quality characteristic reported in SonarQube under "Measures" (namely reliability, security, maintainability ): 
-    - Reliability: 
-    - Security: 
-    - Maintainability: 
+    - Reliability: C (after remediation: A)
+    - Security: A
+    - Maintainability: A
 
 ## ASSESSMENT
 
 - What caused your errors in estimation (if any)?
 
-  - We overestimated just the HT-17 story considering that would have been the more 'heavy' of this sprint, instead it took less time than what we thought
+  - We overestimated the story HT-17 thinking that it would have been the more 'heavy' of this sprint, instead it took less time than what we thought
  
 - What lessons did you learn (both positive and negative) in this sprint?
 
-  - The large part of team mates learned to work with the others trying to have a good communication, some time this communication has failed and one of our team mates started
-  to work on a story that wasn't even committed and in a lower priority without respecting the order of the stories. This brought us to learn that communication is foundamental to avoid these errors.
+  - Almost every team mate has learned to work with the others trying to have good communication. Sometimes, this communication has failed and one of our team mates started to work on a story that wasn't even committed and in a lower priority, without respecting the order of the stories. This has made us learn that communication is foundamental to avoid these errors.
 
 - Which improvement goals set in the previous retrospective were you able to achieve?
   - We spent more time on DB. 
@@ -88,10 +87,10 @@ sections:
     - For the first goal at least we improved our communication when somebody was working on db to avoid problems.
     - For the second goal we just hadn't enough time to work on it.
 - Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)
-  - Make all the team members more partecipate. Try to ask a feedback before take decisions.
+  - Make all the team members more partecipative. Try to ask a feedback before take decisions.
 
 > Propose one or two
 
 - One thing you are proud of as a Team!!
 
-Each of us try to be helpfull, sometime doing well, sometime doing wrong. But we try to be solid and achive our goals in any case.
+Each of us tried to be helpfull, sometimes doing well, sometimes doing wrong. But we tried to be solid and achive our goals in any case.
